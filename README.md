@@ -34,6 +34,7 @@
 | [10-구현-기록](10-%EA%B5%AC%ED%98%84-%EA%B8%B0%EB%A1%9D/README.md) | 구현·리팩토링 기록 | 11 |
 | [11-경험-노트](11-%EA%B2%BD%ED%97%98-%EB%85%B8%ED%8A%B8/README.md) | 옵시디언 경험 노트 — 날짜순 프로젝트 기록과 주제별 교훈 | 114 |
 | [12-온보딩-규약](12-%EC%98%A8%EB%B3%B4%EB%94%A9-%EA%B7%9C%EC%95%BD/README.md) | 온보딩 자료와 레포별 소개·코딩 규약 | 17 |
+| [13-옵시디언-볼트](13-%EC%98%B5%EC%8B%9C%EB%94%94%EC%96%B8-%EB%B3%BC%ED%8A%B8/) | 옵시디언 Vault 원본 — `claude-experiences`(Claude Code)·`Codex-experiences`(Codex) 경험 노트, 위키링크 그대로 | 2,358 |
 
 ## 참고
 
