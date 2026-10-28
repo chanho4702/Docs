@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "OpenTelemetry 데이터 흐름 — 고객 앱에서 moveseye BE까지",
+    "output": "_workspace/guides/diagram_otel-collector-basics.html",
+    "viewBox": [
+      1080,
+      620
+    ],
+    "quality_profile": "showcase"
+  },
+  "stages": [
+    {
+      "label": "고객 앱"
+    },
+    {
+      "label": "Collector 입구"
+    },
+    {
+      "label": "Collector 가공"
+    },
+    {
+      "label": "Collector 출구"
+    },
+    {
+      "label": "moveseye"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "app-java",
+      "type": "backend",
+      "label": "Java 앱 (JVM)",
+      "sublabel": "-javaagent jar 1개",
+      "stage": 0,
+      "row": 0,
+      "tag": "코드 수정 없음"
+    },
+    {
+      "id": "app-node",
+      "type": "backend",
+      "label": "Node.js 앱",
+      "sublabel": "npm 패키지 + --require",
+      "stage": 0,
+      "row": 2,
+      "tag": "코드 수정 없음"
+    },
+    {
+      "id": "receiver",
+      "type": "cloud",
+      "label": "receiver",
+      "sublabel": "otlp :4317 / :4318",
+      "stage": 1,
+      "row": 1,
+      "tag": "입구"
+    },
+    {
+      "id": "processor",
+      "type": "security",
+      "label": "processor",
+      "sublabel": "limiter → 마스킹 → batch",
+      "stage": 2,
+      "row": 1,
+      "tag": "가공"
+    },
+    {
+      "id": "exporter",
+      "type": "cloud",
+      "label": "exporter",
+      "sublabel": "otlphttp, json 변환",
+      "stage": 3,
+      "row": 1,
+      "tag": "출구"
+    },
+    {
+      "id": "queue",
+      "type": "database",
+      "label": "디스크 큐",
+      "sublabel": "file_storage",
+      "stage": 3,
+      "row": 2,
+      "tag": "장애 대비"
+    },
+    {
+      "id": "be",
+      "type": "backend",
+      "label": "moveseye BE",
+      "sublabel": "/apm/otlp/v1/*",
+      "stage": 4,
+      "row": 1,
+      "tag": "Bearer 토큰"
+    },
+    {
+      "id": "db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "메트릭·트레이스 저장",
+      "stage": 4,
+      "row": 2,
+      "tag": "저장"
+    }
+  ],
+  "flows": [
+    {
+      "id": "java-otlp",
+      "from": "app-java",
+      "to": "receiver",
+      "label": "OTLP gRPC",
+      "classification": "span·metric·log",
+      "variant": "emphasis"
+    },
+    {
+      "id": "node-otlp",
+      "from": "app-node",
+      "to": "receiver",
+      "label": "OTLP HTTP",
+      "classification": "span·metric·log",
+      "variant": "emphasis"
+    },
+    {
+      "id": "recv-proc",
+      "from": "receiver",
+      "to": "processor",
+      "label": "원본",
+      "classification": "protobuf",
+      "variant": "emphasis"
+    },
+    {
+      "id": "proc-exp",
+      "from": "processor",
+      "to": "exporter",
+      "label": "정리된 배치",
+      "classification": "마스킹 완료",
+      "variant": "emphasis"
+    },
+    {
+      "id": "exp-be",
+      "from": "exporter",
+      "to": "be",
+      "label": "OTLP HTTP json",
+      "classification": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "exp-queue",
+      "from": "exporter",
+      "to": "queue",
+      "label": "BE 장애 시 보관·재시도",
+      "classification": "버퍼",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight",
+      "labelDy": 24
+    },
+    {
+      "id": "be-db",
+      "from": "be",
+      "to": "db",
+      "label": "정규화 후 저장",
+      "classification": "쓰기",
+      "variant": "default",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "route": "straight",
+      "labelDy": 24
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "앱이 지는 부담",
+      "items": [
+        "Java: jar 약 26 MB를 -javaagent로 붙이고 환경변수 2개만 추가",
+        "Node.js: npm 패키지 1개 설치 후 --require 또는 NODE_OPTIONS",
+        "Java 실측 기동 약 +1.3초, p95 약 +5%, 힙 약 +42 MB (Elastic)"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Collector가 하는 일",
+      "items": [
+        "Go 실행 파일 1개 + config.yaml, 런타임 의존성 없음",
+        "memory_limiter가 OOM을 막고 batch가 전송 횟수를 줄인다",
+        "BE 주소·토큰은 Collector 한 곳, 앱은 localhost:4317만 안다"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "최소 사양 (근거: Splunk 사이징)",
+      "items": [
+        "코어당 15,000 spans/s, 코어당 메모리 2 GB, 기본 리밋 512 MB",
+        "소규모 사이트는 1 vCPU, 1 GB면 충분",
+        "디스크는 큐를 켤 때만 수백 MB"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+---
+type: project
+tags: [moveseye, zabbix, host, error-ux, bugfix]
+created: 2026-09-22
+updated: 2026-09-22
+status: done
+---
+
+# 2026-09-22 — ZM-166 호스트 등록 "중복 이름" 안내 (기술명/표시명 두 축)
+
+- 프로젝트: [[moveseye]] · 상태: ✅ BE `631d420`(3파일)·FE `2ac4cd5`(7파일) master 직접 커밋(미푸시). 인계 `_workspace/features/zabbix-config/host-registration/review_host-duplicate-name.md`.
+
+## 증상
+
+사용자 보고: `host.create`가 `Host with the same name "10.220.0.82" already exists`로 실패하는데 **화면엔 그 호스트가 없고 오류도 안 보인다.** 원인을 못 보고 5회 반복 시도.
+
+## 원인(실측)
+
+- dmove.co.kr Zabbix에 hostid 10696 = **기술명 `10.220.0.82`, 표시명 `zabbix-server`**(네트워크 디스커버리 생성). Zabbix 중복 판정은 **기술명(`host`)**, 우리 목록 검색은 `search {name}`(**표시명**)만 → 화면에서 못 찾음.
+- BE는 HTTP 200 + code 400으로 원문을 정상 전달했으나 FE `HostFormDrawer.handleError`가 403·INVALID_NAME 외 전부 "요청 처리 실패"로 치환 → **원인 은폐**.
+
+## 수정
+
+- BE: `HOST_DUPLICATE_NAME` 전용 코드 + 생성/수정 전 `host.get filter host/name` 선검사(data = `{field, hostid, host, name}`) + Zabbix "already exists" 폴백 매핑. 목록은 `search {host, name}` + `searchByAny`(🔴 filter까지 OR가 되므로 `status`는 Java 후처리).
+- FE: 필드 에러로 표시, 기타 오류는 BE 원인 문장을 토스트에 그대로.
+- 검증 BE 29/29 · FE 23/23 · `:3002` 실측 통과.
+
+## 교훈
+
+- Zabbix 이름 관련 오류는 **기술명/표시명 축을 먼저 구분**. 호스트 검색 UI는 두 축 다 검색한다. → [[zabbix-api-quirks]] 에러 처리 절에 등재.
+- **원문 오류를 "일반 실패" 문구로 덮지 말 것** — 전용 코드가 있으면 필드 에러, 없으면 원인 문장을 같이. [[2026-08-25-zm114-error-ux]]의 "안정 errorCode와 사용자 안내 분리" 원칙과 같은 결.
+- 🔴 master 작업 트리에 타 세션 APM 미커밋 변경이 혼재 — **선별 커밋**(경로 명시 `git add`).
+
+관련: [[2026-07-18-host-registration]] · [[zabbix-api-quirks]] · 메모리 `host-duplicate-name-fix`

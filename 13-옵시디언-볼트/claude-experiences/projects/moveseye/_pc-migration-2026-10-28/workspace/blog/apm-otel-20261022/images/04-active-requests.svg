@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+<title id="title">아직 끝나지 않은 요청도 관측하려면</title><desc id="desc">아직 끝나지 않은 요청도 관측하려면; 완료 Span의 전송과 진행 중 요청의 주기 집계는 서로 다른 경로다.; MOVESEYE  /  ENGINEERING NOTES; 직접 제작한 설명 도식; 요청의 수명; HTTP 요청 처리 중; 시작; 종료; 완료 Span 경로; 종료된 작업 구간을 전송; Span 종료; 배치·전송 → 분석; 진행 중 요청 확장; 경과 시간과 상태를 집계; 집계 1; 건수 · 경과 시간; 집계 2; 건수 · 경과 시간; 집계 3; 건수 · 경과 시간; 종료 시 토큰 제거; 관측 상태와 업무 실행 상태를 구분한다; TTL 만료는 추적 토큰 회수이며 업무 요청 취소가 아니다. 용량 상한으로 추적이 누락될 수 있다.; 집계 시점과 화면 도착 시점은 다르다. 목록은 오래된 일부 요청이며 하위 작업 표시는 제한적이다.</desc>
+<defs>
+<marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#087F82"/></marker>
+<marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#526777"/></marker>
+<marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#D2C8E3"/></marker>
+<marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#D8E2EA"/></marker>
+</defs>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5"/>
+<rect x="56" y="49" width="8" height="52" rx="3" fill="#087F82" stroke="#087F82" stroke-width="1.5"/>
+<text x="84" y="70.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="#142C3D">아직 끝나지 않은 요청도 관측하려면</text>
+<text x="84" y="121.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">완료 Span의 전송과 진행 중 요청의 주기 집계는 서로 다른 경로다.</text>
+<polyline points="56,838 1384,838" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round"/>
+<text x="56" y="865.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#526777">MOVESEYE  /  ENGINEERING NOTES</text>
+<text x="1384" y="865.0" dominant-baseline="central" text-anchor="end" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="400" fill="#526777">직접 제작한 설명 도식</text>
+<text x="56" y="197.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="22" font-weight="700" fill="#142C3D">요청의 수명</text>
+<polyline points="380,230 1310,230" fill="none" stroke="#526777" stroke-width="3" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="380" y="210" width="730" height="40" rx="8" fill="#EAF0F8" stroke="#EAF0F8" stroke-width="1.5"/>
+<text x="745.0" y="230.0" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#2563B5">HTTP 요청 처리 중</text>
+<text x="400.0" y="276.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#526777">시작</text>
+<text x="1112.5" y="276.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#526777">종료</text>
+<polyline points="400,200 400,605" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<polyline points="1110,200 1110,605" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="56" y="361.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#7257AC">완료 Span 경로</text>
+<text x="56" y="416.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#526777">종료된 작업 구간을 전송</text>
+<polyline points="400,388 1108,388" fill="none" stroke="#D2C8E3" stroke-width="3" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<rect x="1110" y="350" width="224" height="88" rx="14" fill="#F5F1FC" stroke="#7257AC" stroke-width="1.5"/>
+<text x="1222.0" y="375.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="700" fill="#7257AC">Span 종료</text>
+<text x="1222.0" y="410.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="17" font-weight="400" fill="#142C3D">배치·전송 → 분석</text>
+<text x="56" y="520.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#087F82">진행 중 요청 확장</text>
+<text x="56" y="575.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#526777">경과 시간과 상태를 집계</text>
+<polyline points="480,250 480,497" fill="none" stroke="#087F82" stroke-width="2" stroke-linejoin="round" marker-end="url(#a0)" stroke-dasharray="7 6"/>
+<rect x="404" y="503" width="152" height="77" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="480.0" y="523.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#087F82">집계 1</text>
+<text x="480.0" y="556.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#142C3D">건수 · 경과 시간</text>
+<polyline points="690,250 690,497" fill="none" stroke="#087F82" stroke-width="2" stroke-linejoin="round" marker-end="url(#a0)" stroke-dasharray="7 6"/>
+<rect x="614" y="503" width="152" height="77" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="690.0" y="523.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#087F82">집계 2</text>
+<text x="690.0" y="556.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#142C3D">건수 · 경과 시간</text>
+<polyline points="900,250 900,497" fill="none" stroke="#087F82" stroke-width="2" stroke-linejoin="round" marker-end="url(#a0)" stroke-dasharray="7 6"/>
+<rect x="824" y="503" width="152" height="77" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="900.0" y="523.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#087F82">집계 3</text>
+<text x="900.0" y="556.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#142C3D">건수 · 경과 시간</text>
+<rect x="1110" y="503" width="224" height="77" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="1222.0" y="538.0" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#087F82">종료 시 토큰 제거</text>
+<rect x="56" y="649" width="1328" height="139" rx="14" fill="#F4F7FA" stroke="#D8E2EA" stroke-width="1.5"/>
+<text x="82" y="682.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#142C3D">관측 상태와 업무 실행 상태를 구분한다</text>
+<text x="82" y="725.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">TTL 만료는 추적 토큰 회수이며 업무 요청 취소가 아니다. 용량 상한으로 추적이 누락될 수 있다.</text>
+<text x="82" y="762.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">집계 시점과 화면 도착 시점은 다르다. 목록은 오래된 일부 요청이며 하위 작업 표시는 제한적이다.</text>
+</svg>

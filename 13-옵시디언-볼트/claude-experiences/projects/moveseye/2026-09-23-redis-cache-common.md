@@ -1,0 +1,32 @@
+# 2026-09-23 Redis 읽기-통과 캐시 공통화 + 스탬피드 방어
+
+- 프로젝트: [[moveseye]] · BE `moveseye-be-spring`
+- 상태: ✅ ZM-168 **master ff 병합 완료**(`66f916e` 구현·`e82b2da` 검수 반영, master `2339a2d` 위 리베이스 — 같은 날 다른 세션이 master를 3번 전진시켜 리베이스 2회)·워크트리 정리 → 사용자 요청으로 Redis 코드를 `common/redis` 한 패키지로 집결(`dc68dbe`, 51파일)·미푸시. 가이드 `_workspace/guides/guide_redis-cache.md`. 코덱스(gpt-5.6-sol high) 조건부 승인 → 🟡3·🟢2 전건 반영. 인계서 `_workspace/features/platform/redis-cache/review_redis-cache-common.md`.
+- 출발점: 09-19 "레디스 활용 어떻게 하고 있지?" 조사(후보 4개 중 1·4 유효, 2·3은 설치형이라 보류).
+
+## 무엇을
+- `common/redis/RedisCache` 하나로 `readCache/writeCache + try/catch + loader` 복붙 6곳을 걷어냄(-179/+114).
+  - 실패 격리(Redis 장애 = 미스, 500 금지) · 역직렬화 실패는 **키 삭제**(안 지우면 TTL 내내 실패→재계산 반복) · **스탬피드 방어**는 기존 인메모리 `SingleFlightExecutor` 재사용 + 리더 double-check · null 미저장 · 로더 예외 전파.
+- 호출처: 홈 요약·시스템 상태·자산 라이브·자빅스 구성 현황(`refresh`→`reload`)·이벤트 가시 호스트·태그 필터 가드(`"1"/"0"`→Boolean).
+- 테스트: `RedisCacheTest` 10건(동시 미스 8건→로더 1회) + 호출처 테스트 4개를 `@Mock RedisCache` + `RedisCacheStubs.passthrough`로 전환. 전체 `:test` 4104건, 내 변경 관련 실패 0.
+
+## 결정과 이유
+- **분산 락 대신 JVM single-flight.** 09-19 메모는 `acquireLock` 재사용을 적었지만, 같은 메모의 결정(설치형 고객사당 1벌)에 따르면 인스턴스 안 합류로 충분. 락은 비리더가 폴링·대기해야 해 왕복이 늘고 코드가 복잡. HA 요구가 생기면 헬퍼 안에서만 확장.
+- **Spring Cache 미도입.** 사용자 스코프 키·null 미저장·refresh 같은 조건이 SpEL `key`/`unless`로 흩어진다. 수동 `RedisClientService` 관례와 맞는 명시적 헬퍼가 낫다.
+- **역직렬화 실패만 del.** 연결 장애에서 del을 시도하면 또 예외 — `cause instanceof JsonProcessingException`으로 구분.
+
+## 코덱스 검수에서 배운 것
+- **reload가 일반 조회 flight에 합류하면 "새로고침" 계약이 깨진다** — 같은 single-flight 키를 쓰면 새로고침이 직전 일반 계산의 double-check 히트나 예외까지 받는다. 별도 키(`reload:`)로 분리하면 동시 새로고침끼리만 합쳐진다. 스스로는 "수 초 이내 값이니 괜찮다"고 넘겼던 지점.
+- **합류자의 무기한 대기**는 single-flight의 구조적 약점 — 리더가 행 걸리면 같은 키 전원이 매달린다. 제한 시간 뒤 "스스로 실행"으로 퇴화시키면 합류만 잃고 리더에 묶이지 않는다. 기존 2인자 `run`은 건드리지 않고 오버로드로.
+- **mock 클라이언트 테스트는 JSON 왕복을 증명하지 않는다** — Boolean·String[]·record가 실제 `ObjectMapper`로 되읽히는지, 옛 저장 표현이 자가 복구되는지는 실제 `RedisClientService` + 인메모리 `StringRedisTemplate` 대역이 있어야 본다.
+
+## 교훈
+- 🔴 **도커 IT DB(`moveseye_it`)는 워크트리끼리 공유된다.** 다른 세션이 V67 워크트리로 IT를 돌리는 동안 내 전체 `:test`에서 `FlywayMigrationSmokeIT`(적용 67≠리소스 66)·`ApmSchemaIT`(중복 키)가 깨졌다 — 단독 재실행으로 통과를 확인해 가짜 실패로 판정. 전체 스위트 실패는 먼저 "동시 IT 실행 중인가"를 본다.
+- 🔴 **`@InjectMocks` 생성자 주입 테스트에서 의존을 래퍼로 바꾸면 테스트 4개가 같이 움직인다.** 실제 헬퍼를 주입하려면 mock 초기화 순서 때문에 `@Spy` 초기화식이 안 먹는다 — 헬퍼를 `@Mock`으로 두고 `lenient()` 패스스루 스텁(로더 실행)을 공용 `RedisCacheStubs`로 빼는 게 가장 깔끔. 캐시 자체 동작은 헬퍼 테스트 한 곳에서.
+- 🔴 **"이전엔 없던 격리"가 행위 변화다.** `EventService.visibleHostIds`는 try/catch 없이 Redis를 읽어 장애 시 목록·벨이 500이었다. 공통화가 조용히 고쳤으니 인계서에 명시(검수자가 알아야 함).
+- 저장 표현을 바꾸면(`"1"`→`true`) 업그레이드 직후 옛 값이 남는 창을 생각할 것 — 헬퍼의 "파싱 실패→삭제→재적재"가 자가 복구를 보장하지만, fail-closed 경로와 섞이는 순서는 검수 항목으로.
+- 다른 세션이 master 체크아웃에 미커밋 변경을 두고 있을 땐 **격리 워크트리**가 정답(이번에도 `git worktree add`로 시작, 충돌 0). 병합은 "리베이스 → 컴파일 → ff"를 **한 명령 체인**으로 — master가 분 단위로 움직여 ff가 두 번 거부됐다. 병합본 검증은 master 체크아웃(남의 작업 중)이 아니라 **임시 detached 워크트리**에서.
+- 🔴 Git Bash에서 `cmd //c "gradlew.bat …"`는 배치 파일을 못 찾고 exit 1만 낸다 — `grep error:`로 걸러 보면 조용히 "통과"처럼 보인다. 컴파일 확인은 PowerShell 도구로, 그리고 **exit 코드가 1이면 로그 원문을 먼저** 본다.
+- 전체 IT 실패 1건(`ApmSchemaIT` 8≠9)은 V65 시드 vs 테스트 미갱신 — **원인을 커밋 이력으로 짚어 "내 것 아님"을 근거 있게** 말해야 한다(테스트 최종 수정 09-07, V65는 09-22).
+
+관련: [[2026-09-22-zm151-156-backlog-sprint]] · 메모리 `redis-improvement-backlog`

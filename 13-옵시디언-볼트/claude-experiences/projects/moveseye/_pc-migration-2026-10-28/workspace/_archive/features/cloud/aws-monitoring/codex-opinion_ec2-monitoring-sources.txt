@@ -1,0 +1,2744 @@
+OpenAI Codex v0.149.0
+--------
+workdir: C:\solutions\moveseye-be-spring
+model: gpt-5.6-terra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a03b6f-72b5-7912-9c06-65491412ff30
+--------
+user
+설계 검토 요청 (읽기 전용 — 코드 수정 금지, 의견만)
+
+C:\solutions\_workspace\devdesign_ec2-monitoring-sources.md 를 읽고 설계 의견을 달라.
+배경 문서: 같은 폴더의 devdesign_aws-status-timeline.md, devdesign_cloud-cost-optin.md,
+reference_aws-api-cost.md. 관련 구현: moveseye-be-spring/src/main/java/com/dmove/moveseye/aws/
+(CloudMetricsService, CloudSnapshotService 등)와 engine-api의 InventoryPort/MetricPort.
+
+핵심 질문:
+1. 소스 우선순위 "zabbix-agent > cloudwatch > 밴드만" — 동의하나? agent 매칭 시 CW 병행 조회를 끊는 결정(Q2)의 리스크는?
+2. IP 자동 매칭(1차) + 다중 매칭 시 연결 포기 — 오연결 방지로 충분한가? 놓친 매칭 신호나 함정(ENI 다중 IP, NAT, Zabbix proxy 뒤 호스트 등)?
+3. 매칭 판정을 /ec2/metrics 요청 시점에 하는 구조(5분 캐시) vs 스냅샷 배치에서 미리 계산해 저장 — 어느 쪽이 맞다고 보나?
+4. 커버리지 표시(개요 카드+목록 컬럼)와 P3(유료 GetMetricData) 우선순위 하향 판단에 대한 의견.
+5. 설계에서 빠진 위험이나 더 단순한 대안이 있으면 지적해달라.
+
+출력: 항목별 의견 + 총평(진행 가능/보완 필요). 한국어로.
+
+hook: SessionStart
+hook: SessionStart Completed
+hook: UserPromptSubmit
+hook: UserPromptSubmit
+hook: UserPromptSubmit Completed
+hook: UserPromptSubmit Failed
+codex
+요청하신 문서와 현재 구현을 읽기 전용으로 대조해, 소스 우선순위·매칭·캐시 위치·비용/UX 관점에서 검토하겠습니다. 먼저 경험 Vault 인덱스와 대상 설계 문서를 확인하겠습니다.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw C:\\Users\\DMOVE\\Codex-experiences\\INDEX.md; Get-Content -Raw C:\\solutions\\_workspace\\designs\\devdesign_ec2-monitoring-sources.md; Get-Content -Raw C:\\solutions\\_workspace\\designs\\devdesign_aws-status-timeline.md; Get-Content -Raw C:\\solutions\\_workspace\\designs\\devdesign_cloud-cost-optin.md; Get-Content -Raw C:\\solutions\\_workspace\\analysis\\reference_aws-api-cost.md" in C:\solutions\moveseye-be-spring
+ succeeded in 283ms:
+# Codex Experiences
+
+- [[projects/moves-workforce-documentation-sync-2026-08-20]] Moves Workforce 2026-08-20 ?뚯뒪 湲곗? 臾몄꽌 理쒖떊?? ??쒕낫?쑣룰컙???뺤옣怨?v018~v019 ?ㅽ궎留?諛섏쁺.
+
+- [[projects/confluence-approval-dc-2026-08-20-document-sync]] 怨좉컼 ?꾨떖쨌?명솚?굿룸같??룰?利?臾몄꽌??理쒖떊 ?곹깭 ?숆린?붿? ?낆옄 寃??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-cluster-lock-fail-closed]] Cluster lock ?쒕퉬??誘명솗蹂????뱀씤 ?곹깭 蹂寃쎌쓣 李⑤떒?섎뒗 fail-closed 蹂댁젙怨??⑦궎吏?寃利?
+
+- [[projects/confluence-approval-dc-2026-08-20-marketplace-approval-gap]] Marketplace Data Center ?ъ궗 ?붽굔怨??꾩옱 利앸튃??李⑥씠 遺꾩꽍.
+
+- [[projects/confluence-approval-dc-2026-08-20-production-readiness-audit]] C9/C10怨??ㅼ쨷 node 湲곗????댁쁺 諛고룷 以鍮꾨룄 ?먭? 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-live-expiry-reschedule]] 留뚮즺쨌?뚮┝ scheduler媛 ?ш린???놁씠 二쇨린瑜??щ벑濡앺븯?꾨줉 蹂댁젙??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-direct-approver-selection-repair]] 湲곕낯 ?뱀씤??寃??寃곌낵瑜??좏깮??寃곗옱?좎뿉 異붽??섏? 紐삵븯??click 遺꾧린 蹂듦뎄 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-delegation-date-layout]] ???꾩엫 ?쒖옉?셋룹쥌猷뚯씪????以?湲곌컙 洹몃９?쇰줈 ?뺣젹??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-user-picker-state-invalidation]] ?곸꽭 ?ъ슜??寃??紐⑤떖???レ쓣 ???곹깭? 鍮꾨룞湲??묐떟??臾댄슚?뷀븳 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-inbox-resource-type-column]] ?낅Т???섏씠吏쨌留ㅽ겕濡??뱀씤 ?좏삎???낅┰ 而щ읆?쇰줈 遺꾨━??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-detailed-user-list-default]] ?곸꽭 ?ъ슜??寃???뚯씠釉붿쓽 湲곕낯 紐⑸줉쨌寃??踰붿쐞 ?숈옉 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-picker-and-expiry-scheduler-repair]] ?뱀씤??湲곕낯쨌?곸꽭 寃????븷 遺꾨━? 留뚮즺 scheduler ?щ벑濡??ㅻ쪟 蹂댁젙 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-user-picker-modal-repair]] ?뱀씤???곸꽭 寃??紐⑤떖???붿껌 form?먯꽌 遺꾨━???대┝쨌?낅젰쨌?ㅼ쨷 ?좏깮 ?숈옉??蹂댁젙??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-14-build-and-flow-user-picker]] Confluence 9 Java쨌Maven 鍮뚮뱶 議곌굔, SAL OSGi ?ㅼ젙 議고쉶? Flow ?ъ슜??key ?좏깮 UI 湲곕줉.
+
+- [[projects/moves-workforce-dashboard-enhance-m8-2026-08-14]] Moves Workforce ?ы듃?대━???ㅽ럹?댁뒪 ?댁뒋 ?쒕┫?ㅼ슫??沅뚰븳쨌罹먯떆쨌partial fallback 怨꾩빟.
+
+- [[projects/confluence-approval-dc-2026-08-14-plugin-settings-osgi]] Confluence 9 `PluginSettingsFactory`瑜?`ComponentLocator` ???plugin-scoped OSGi service濡?議고쉶???먯씤怨??섏젙 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-14-batch-8e-signature-ui]] Confluence Approval DC 諛곗튂 8e ???쒕챸 寃곗옱? 以묒떖 UI, ?묎렐 媛?ν븳 ?깅줉 ?? servlet text block constant-pool 遺꾪븷 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-13-batch-8c-final]] Confluence Approval DC 諛곗튂 8c signatureResolver ?곌껐怨????쒕챸 ?낅┰ 酉??꾪솚 留덇컧 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-13-batch-8b-cc]] Confluence Approval DC 諛곗튂 8b CC 李몄“??AO, ?뚮┝, ?낅Т??諛깆뿏??援ы쁽 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-13-batch-8a-signature-pin]] Confluence Approval DC 諛곗튂 8a ?꾩옄?쒕챸쨌PIN 諛깆뿏?? AO 諛??쒕쾭痢?寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-batch-7b-ui]] Confluence Approval DC 諛곗튂 7b ?낅Т???쒕쾭 ?곕룞, ???뚯닔, 409 諛?諛섎젮 ?몃씪??UX 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-qa-6b-rework]] Confluence Approval DC 諛곗튂 6b QA 寃고븿 ?ъ옉?낃낵 寃利??섍꼍 ?쒖빟 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-qa-6a-rework]] Confluence Approval DC 諛곗튂 6a QA ?ъ옉?? ?곸뿭 ?ㅼ틦?? ?댁떆 ?대갚, ?ㅼ젙 諛??대찓???명솚 ?섏젙.
+
+- [[projects/confluence-approval-dc-2026-08-12-cancel-region-hash]] Confluence Approval DC 痍⑥냼 ?곹깭, ?붿껌 硫붾え, ?곸뿭 蹂몃Ц ?댁떆 湲곕컲 ?뺣? 留뚮즺 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-reapproval-qa-fixes]] Confluence Approval DC ?ъ듅???④퀎 snapshot 蹂듭썝, 洹몃９ 異쒖쿂 蹂댁〈 諛?QA ?섏젙 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-email-due-soon]] Confluence Approval DC C9 email MailQueue 梨꾨꼸, 留덇컧 ?꾨컯 ?⑹꽦 ???뚮┝, ?ㅼ젙 諛?寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-notification-outbox]] Confluence Approval DC C9 媛먯궗 ?대깽??湲곕컲 in-app ?뚮┝ outbox, ?ъ떆??drain, 沅뚰븳 ?꾪꽣 寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-review-fixes]] Confluence Approval DC C9 ?ㅼ젙 ??κ낵 scheduler lifecycle, macro render-context ?ㅼ젙 cache??由щ럭 ?섎━ 諛?寃利?湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-11-deadline-scheduler]] Confluence Approval DC C9 cluster ?⑥씪 留뚮즺 sweep, ?ㅼ젙 ?щ벑濡? `dueSoon` ?뚯깮 ?묐떟怨?寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-group-approver-snapshot]] Confluence Approval DC C9 洹몃９ ?뱀씤???좏깮, user key snapshot, `VIA_GROUP` 蹂댁〈怨?Flow 寃利??쒖젏 遺꾨━ 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-10-app-settings]] Confluence Approval DC ???꾩뿭 ?ㅼ젙 援ы쁽怨?C9 寃利?李⑤떒 ?먯씤 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-user-key-regression]] Confluence Approval DC ?ъ슜??寃??key瑜?Confluence user key濡?蹂듦뎄?섍퀬 username ????곗씠???쒖떆 fallback??異붽???湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-formatting]] Confluence Approval DC C9 Java ?뚯씪???뺤텞???щ㎎??湲곕뒫 蹂寃??놁씠 蹂듦뎄?섍퀬 Maven 寃利앹쓣 ?꾨즺??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11]] C9 ?뱀씤 ?낅Т??3-tab, ?곸꽭 REST ?묐떟, AO Flow ?곌껐怨??ㅽ뻾 以?target lock 寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-09]] Confluence 9 REST媛 Jersey HK2濡??앹꽦?섎뒗 ?쒖빟, ActiveObjects??plugin-scoped OSGi 議고쉶, C9/C10 manifest쨌?⑦궎吏?寃利?湲곕줉.
+
+- [[projects/moves-workforce-documentation-2026-08-06-sync]] 2026-08-06 肄붾뱶 湲곗??좉낵 ?쒗뭹 臾몄꽌??鍮꾨룞湲??ъ쭛怨꽷톢017 schema ?쒕━?꾪듃瑜??숆린?뷀븳 湲곕줉.
+
+- [[topics/confluence-dc-ao-table-name]] Confluence Data Center Active Objects entity table-name 30???쒗븳怨?吏㏃? `@Table` 紐낅챸 洹쒖튃.
+
+- [[topics/tanstack-query-cross-domain-invalidation]] ???섎굹???ㅼ젙 蹂寃쎌씠 ?щ윭 ?붾㈃???뚯깮 cache??誘몄튂???곹뼢??query key prefix helper濡?愿由ы븯???⑦꽩.
+- [[projects/moves-workforce-documentation-baseline-sync]] ???댁쁺 諛고룷蹂멸낵 媛쒕컻 湲곗???遺꾨━, ?ㅼ젣 ?곹븳쨌沅뚰븳쨌schema 怨꾩빟??援먯감 寃利앺빐 臾몄꽌瑜??숆린?뷀븯???⑦꽩.
+- [[projects/moveseye-documentation-system]] ??multi-repo ?쒗뭹 臾몄꽌 ?뺣낯쨌?묒뾽 利앷굅쨌Obsidian MOC瑜?遺꾨━?섍퀬 code/OpenAPI/Flyway/route瑜??ъ떎 ?먯쿇?쇰줈 ?곌껐?섎뒗 ?⑦꽩.
+- [[topics/forge-kvs-eventual-consistency-cache]] ??Custom Entity query??eventual consistency媛 mutation 吏곹썑 frontend refetch瑜??댁쟾 媛믪쑝濡??섎룎由????덈뒗 寃쎄퀎? ????⑦꽩.
+- [[topics/confluence-dc-forge-approval-estimation]] ??Confluence Data Center ?뱀씤 ???곗젙?먯꽌 Forge Cloud? Java P2瑜?遺꾨━?섍퀬 macro쨌?대윭?ㅽ꽣쨌Marketplace 鍮꾩슜??怨꾩궛?섎뒗 湲곗?.
+- [[topics/code-splitting-bundle-budget-contract]] ??肄붾뱶 ?ㅽ뵆由ы똿 援ъ“媛 諛붾???initial/async chunk ?덉궛怨?CI gate瑜??④퍡 媛깆떊?섎뒗 ?⑦꽩.
+- [[projects/escore-resume-customization]] ???먯뒪肄붿뼱 Elastic Stack ?ъ??섏슜 ?대젰?쒖쓽 MovesEye쨌Moves Workforce 洹쇨굅, 怨쇱옣 諛⑹? ?먯튃, 7?섏씠吏 Word 寃??湲곗???
+- [[projects/escore-resume-movesai-expansion]] ???붾Т釉?寃쎈젰??MovesEye쨌Moves Workforce쨌Elastic Stack쨌?덉쭏/?댁쁺?쇰줈 理쒕? ?뺤옣?섍퀬 8?섏씠吏 Word ?뚮뜑留곸쓣 寃?섑븳 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-batch-7a-tests]] Confluence Approval DC 諛곗튂 7a ?좉퇋 ?⑥쐞 ?뚯뒪?몄? Maven 寃利?湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-12-qa-7a-rework]] Confluence Approval DC QA 7a hydrate쨌snapshot쨌REST ?뚭? ?섏젙怨?寃뚯씠??寃利?湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-13-batch-8c-qa-rework]] Confluence Approval DC 諛곗튂 8c 紐⑤떖 PIN ?곹깭쨌諛섎젮 TypeError쨌?쒕챸 寃利?QA ?ъ옉??湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-13-batch-8d-cc-ui]] Confluence Approval DC 諛곗튂 8d CC picker쨌?곸꽭 李몄“?먃룹뾽臾댄븿 李몄“ view? 8c ?붿뿬 蹂댁젙 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-inbox-pagination-and-header-menu]] ?낅Т?㉱텳low ?ъ슜???쒕쾭 ?섏씠吏뺢낵 Confluence ?꾩뿭 ?ㅻ뜑 ?뱀씤 ?쒕∼?ㅼ슫 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-readme-build-guide]] JDK 21 湲곕컲 鍮뚮뱶쨌諛고룷 README 媛?대뱶 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-directory-pagination-hardening]] ??⑸웾 ?ъ슜??directory ?ㅼ젣 PageRequest 議고쉶? 寃???묐떟 ??쟾 諛⑹? 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-header-summary-and-sidebar-toggle]] ?곹깭???꾩뿭 ?ㅻ뜑 ?뱀씤 popover? ?ъ씠?쒕컮 寃쎄퀎 toggle 蹂댁젙 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-15-header-anchor-and-modal-bounds]] C9 header anchor fallback, request modal field bound, Maven validation record.
+- [[projects/confluence-approval-dc-2026-08-15-inbox-export-and-full-history]] Inbox type badge, safe Excel-compatible export, and full approval audit history.
+- [[projects/confluence-approval-dc-2026-08-15-automatic-macro-id]] Automatic persistent approval-region identity using Confluence macro-id.
+- [[projects/confluence-approval-dc-2026-08-15-space-administration]] ?ㅽ럹?댁뒪 ?곸슜 踰붿쐞? ?꾩엫 愿由ъ옄 ?ㅼ젙, ?쒕쾭 媛뺤젣 寃利?
+- [[projects/confluence-approval-dc-2026-08-15-v1-release-baseline]] 泥??댁쁺 湲곗? 踰꾩쟾 `1.0.0` ?ㅼ젙.
+- [[projects/confluence-approval-dc-2026-08-20-verification-and-doc-sync]] ?꾨찓??寃利??듦낵, ?ㅽ뻾 以?Cargo ?뚯씪 ?좉툑???곕Ⅸ ?대뙌??build 蹂대쪟, 吏??踰붿쐞? 諛고룷 寃利??곹깭 臾몄꽌??
+- [[projects/confluence-approval-dc-2026-08-20-request-user-picker]] ?뱀씤 ?붿껌 ?ъ슜??寃?됱쓽 湲곕낯 紐⑸줉 ?쒓굅, ?곸꽭 寃???ㅼ쨷 ?좏깮 紐⑤떖怨?C9 compile 寃利?
+- [[projects/moves-workforce-gantt-review-2026-08-20]] 媛꾪듃 李⑦듃???꾨줈?앺듃-?댁뒋 踰붿쐞 寃利? WBS?뷀뤃??遺遺??깃났, 濡쒕뵫쨌?깅뒫 ?꾪뿕 吏꾨떒.
+- [[projects/moves-workforce-gantt-reliability-hardening-2026-08-20]] 媛꾪듃 ?덉젙?? ?꾨줈?앺듃-?댁뒋 踰붿쐞 寃利? WBS?믫뤃??蹂댁긽 saga, ?꾩씠肄?fallback 諛??몃━ 媛?대뱶.
+- [[projects/moves-workforce-gantt-hierarchy-presentation-2026-08-20]] 媛꾪듃???ㅼ젣 ?곌껐??蹂댁옣?섏? 紐삵븯??CSS ?몃━ 媛?대뱶 ?쒓굅 寃곗젙.
+
+# ?ㅺ퀎 ??EC2 紐⑤땲?곕쭅 ?뚯뒪 留ㅽ듃由?뒪 (Zabbix agent 횞 CloudWatch)
+
+- ?묒꽦: 2026-08-26 쨌 ?곹깭: **寃??以?援ы쁽 蹂대쪟 ???ъ슜??吏??** 쨌 ?좏뻾: devdesign_aws-status-timeline.md 쨌 devdesign_cloud-cost-optin.md
+
+## 0. 臾몄젣
+
+?꾩옱 EC2 ?깅뒫 ?쒓퀎?댁? "CloudWatch(GetMetricStatistics) ?꾨땲硫??놁쓬" ?⑥씪 異뺤씠?? ?ㅼ젣濡쒕뒗
+**?몄뒪?댁뒪留덈떎** ?곹솴???ㅻⅤ?? Zabbix agent媛 源붾┛ EC2???덇퀬(?대? ?곕━ ?뚯씠?꾨씪?몄뿉 ?쒓퀎?댁씠
+?ㅼ뼱?ㅻ뒗??EC2 ?붾㈃? 紐⑤쫫), CloudWatch 沅뚰븳???녿뒗 怨꾩젙???덈떎. ?뚯뒪瑜?遺꾨━?섍퀬 ?곗꽑?쒖쐞瑜??뺥븳??
+
+## 1. 留ㅽ듃由?뒪 (?뵶 ?먯젙 ?⑥쐞??怨꾩젙???꾨땲??"?몄뒪?댁뒪"??
+
+|  | CloudWatch 媛??| CloudWatch 遺덇? (沅뚰븳?놁쓬쨌?덉궛?뚯쭊) |
+|---|---|---|
+| **agent ?덉쓬** | **A1** ??agent 1李? CW????遺由?| **A2 (?댁긽??** ??agent ?⑤룆, AWS 吏???몄텧 0 |
+| **agent ?놁쓬** | **B1 (?꾪뻾)** ??CW 5吏?? 硫붾え由?룸뵒?ㅽ겕 ?ъ슜瑜좎? ?놁쓬 | **B2 (理쒖냼)** ???곹깭 諛대뱶 + CloudTrail留?|
+
+- ?대뒓 移몄씠??**?곹깭 諛대뱶(?ㅻ깄??쨌CloudTrail 留덉빱????긽 ?숈옉**(?대? 援ы쁽) ????留ㅽ듃由?뒪???깅뒫 ?쒓퀎???뚯뒪留?媛瑜몃떎.
+- CW異뺤? ?ㅼ젣濡?3媛?臾대즺 GMS / ?좊즺 GMD ?듯듃??/ 遺덇?)?댁?留??뚯뒪 ?좏깮??媛??遺덇? 2媛믪쑝濡?異⑸텇 ???좊즺 ?щ???B1 ?덉쓽 臾몄젣??
+
+## 2. ?뚯뒪 ?곗꽑?쒖쐞 (寃곗젙 ?쒖븞 D11)
+
+**zabbix-agent > cloudwatch > ?놁쓬(諛대뱶留?**
+
+?댁쑀: agent媛 ?곸쐞?명솚?대떎 ????硫붾え由?룸뵒?ㅽ겕 **?ъ슜瑜?* ?ы븿(CW 湲곕낯吏?쒖뿏 ?놁쓬) ???섏쭛 ?댁긽?꽷룹씠??蹂댁〈???⑦봽?섍낵 ?숆툒 ??AWS 吏???몄텧 0(?꾨━?곗뼱 ?덉빟) ???쒗뭹 蹂몃쪟(Zabbix)? ?뚯씠?꾨씪???⑥씪??
+- agent 留ㅼ묶 ??**CW瑜?蹂묓뻾 議고쉶?섏? ?딅뒗??*(?꾨━?곗뼱 ?덉빟 + ?뚯뒪 ?⑥씪 ?쒓린). "???뚯뒪 鍮꾧탳" ?덉쫰媛 ?ㅼ옱?섎㈃ 洹몃븣 ?좉?濡?
+- CW 怨좎쑀媛?StatusCheck)? ?대? ?ㅻ깄??異뺤씠 而ㅻ쾭?섎?濡??먯떎 ?놁쓬.
+- ?묐떟 怨꾩빟: `collection.source = 'zabbix-agent' | 'cloudwatch'` + 湲곗〈 媛뺣벑 ?ъ쑀 泥닿퀎 ?좎?. FE???뚯뒪 諛곗?瑜???긽 ?쒖떆 ??"??李⑦듃媛 ?대뵒????媛믪씤媛"瑜??④린吏 ?딅뒗??
+
+## 3. 留ㅼ묶 ??"??EC2媛 ?대뒓 Zabbix ?몄뒪?몄씤媛"
+
+| ?쒖꽌 | 諛⑸쾿 | 鍮꾧퀬 |
+|---|---|---|
+| 1李?| **IP 留ㅼ묶** ??`InventoryPort.listHosts`??interfaces 二쇱냼 ??EC2 privateIp/publicIp | ?ы듃 寃쎌쑀 媛???뺤씤 2026-08-26). ?기넂?붿쭊 ?먯튃 以??|
+| 2李?| ?몄뒪?몃챸 ?꾩쟾 ?쇱튂 ??Zabbix host name == instanceId ?먮뒗 Name ?쒓렇 | 蹂댁“ ?좏샇 |
+| ?ㅽ뙣 | **留ㅼ묶 ?ш린 + ?붾㈃??"誘몄뿰寃? ?쒖떆** | ?뵶 ?ъ꽕 IP??VPC 媛?以묐났 媛????**?ㅼ쨷 留ㅼ묶?대㈃ ?곌껐?섏? ?딅뒗??*(?ㅼ뿰寃곗씠 誘몄뿰寃곕낫???섏걯?? |
+
+- 留ㅼ묶 寃곌낵??5遺?罹먯떆(?몄뒪??紐⑸줉 議고쉶 鍮꾩슜쨌?ㅻ깄??二쇨린? ?쇱튂).
+- ?섎룞 ?곌껐(?ㅻ쾭?쇱씠??? **2李?怨쇱젣** ???먯궛??linked_hostid 異뺢낵 ?뺥빀???꾩슂?댁꽌 媛먭??곴컖 ?붿쭊(?먯궛 ?듯빀) ???④퍡 ?ㅺ퀎?쒕떎.
+
+## 4. ?붾㈃ ?숈옉
+
+- **EC2 ?곸꽭 ??꾨씪??*: ?뚯뒪 諛곗?(agent/CloudWatch). agent硫?李⑦듃 ?뺤옣 ??CPU + **硫붾え由??ъ슜瑜?+ ?붿뒪???ъ슜瑜?* + ?ㅽ듃?뚰겕(Zabbix ?쒓퀎??. ?ㅻ뜑??"Zabbix ?몄뒪???곸꽭濡??대룞" 留곹겕.
+- **EC2 紐⑸줉**: "紐⑤땲?곕쭅" 而щ읆 3媛???`agent` / `CloudWatch` / `誘멸?痢?.
+- **媛쒖슂**: 而ㅻ쾭由ъ? 移대뱶 ??"agent N? 쨌 CloudWatch-only M? 쨌 臾닿?痢?K?" + ?덈궡 臾멸뎄("?먯씠?꾪듃瑜??ㅼ튂?섎㈃ 硫붾え由?룸뵒?ㅽ겕 ?ъ슜瑜좉퉴吏 臾대즺濡??섏쭛?⑸땲??) ???쒗뭹 蹂몃쪟 ?좊룄?댁옄 鍮꾩슜 ?덇컧 ?덈궡.
+- **鍮꾩슜 ?붾㈃ ?쒕꼫吏**: agent 而ㅻ쾭由ъ?媛 ?믪쓣?섎줉 ?좊즺 fleetMetrics(P3)??媛移섍? ?⑥뼱吏꾨떎 ???듯듃???ㅻ챸쨌P3 ?곗꽑?쒖쐞 ?먮떒??諛섏쁺.
+
+## 5. 鍮꾩슜쨌?꾨왂 愿??
+- **A2媛 紐⑺몴 ?곹깭**: AWS 吏???몄텧 0 ???꾨━?곗뼱???ㅻ깄?력룹뿰寃고뀒?ㅽ듃 紐ル쭔 ?⑤뒗??
+- ?먮ℓ ?ㅽ넗由? "?먯씠?꾪듃 ?놁씠??湲곕낯 紐⑤땲?곕쭅???섍퀬, ?먯씠?꾪듃瑜?源붾㈃ ?⑦봽???쒕쾭? ?숆툒???쒕떎" ???ㅼ튂 ?좊룄媛 怨?怨좉컼??CloudWatch 鍮꾩슜 ?덇컧?대떎.
+- P3(?좊즺 GetMetricData)??**agent 誘몄꽕移??洹쒕え ?뚮┸**?먯꽌留??ㅺ?移??????ㅺ퀎 ?댄썑濡??곗꽑?쒖쐞 ?ы룊媛 沅뚯옣.
+
+## 6. 誘멸껐 (?ъ슜??寃곗젙 ?湲?
+
+| # | 吏덈Ц | 沅뚯옣 |
+|---|---|---|
+| Q1 | ?섎룞 ?곌껐 UI瑜?1李⑥뿉 ?ы븿? | **2李⑤줈** (?먯궛 異뺢낵 ?④퍡) |
+| Q2 | agent 留ㅼ묶 ??CW 蹂묓뻾 議고쉶? | **????* (짠2) |
+| Q3 | 而ㅻ쾭由ъ? ?쒖떆 踰붿쐞 ??媛쒖슂 移대뱶留? 紐⑸줉 而щ읆源뚯?? | **????* (?먮떒 洹쇨굅媛 紐⑸줉???덉뼱???ㅼ튂 ?좊룄媛 ?? |
+| Q4 | 援ы쁽 ?쒖꽌 | 留ㅼ묶+?뚯뒪 ?좏깮(BE) ???곸꽭 ??꾨씪???뚯뒪 遺꾧린(FE) ??而ㅻ쾭由ъ? 移대뱶/而щ읆 |
+
+## 7. 援ы쁽 ?ㅼ?移?(李⑹닔 ?????꾩옱 蹂대쪟)
+
+- BE: `Ec2ZabbixMatcher`(InventoryPort 湲곕컲, 5遺?罹먯떆) ??`/ec2/metrics`媛 留ㅼ묶 ??MetricPort ?쒓퀎?대줈 ?묐떟(`items`??memoryUsage쨌diskUsage ??異붽?, source='zabbix-agent') / 誘몃ℓ移????꾪뻾 CW 寃쎈줈. `/ec2s` 紐⑸줉쨌overview??`monitoredBy` ?꾨뱶.
+- FE: ??꾨씪???뚯뒪 諛곗?쨌李⑦듃 ?뺤옣, 紐⑸줉 而щ읆, 媛쒖슂 而ㅻ쾭由ъ? 移대뱶.
+- 怨꾩빟 臾몄꽌: contract_aws-status-timeline.md 媛쒖젙.
+
+# ?ㅺ퀎 ??AWS ?곹깭 李⑦듃??"?듯빀 ??꾨씪?? (怨쇨툑 0)
+
+- ?묒꽦?? 2026-08-24 쨌 ?곹깭: ?뺤젙(?ъ슜???뱀씤) 쨌 援ы쁽: Claude (SOLO-CLAUDE)
+- 怨쇨툑 洹쇨굅 ?뺣낯: `_workspace/analysis/reference_aws-api-cost.md` 쨌 ?좏뻾 怨꾩빟: `contract_aws-zero-cost.md`
+
+## 0. ?섎뱶 ?쒖빟 (?ъ슜??吏??
+
+1. ?뵶 **怨쇨툑 ?덈? 湲덉?.** ?꾨━?곗뼱 珥덇낵 ?ы븿. ?좊즺 API??`AwsReadOnlyGateway`??硫붿꽌?쒕? 留뚮뱾吏 ?딅뒗??
+2. ?뵶 **CloudWatch瑜????곕뒗 怨좉컼???덈떎** (IAM??cloudwatch 沅뚰븳 ?놁쓬/?뺤콉??誘몄궗??.
+   ??CloudWatch??**?좏깮??媛뺥솕**??肉? ?놁뼱??湲곕뒫???깅┰?댁빞 ?쒕떎. **湲곕낯?좎? ?먯껜 ?ㅻ깄??*.
+
+## 1. 紐⑺몴 ???댁쁺?먯쓽 吏덈Ц???쒓컙 異뺤쑝濡??듯븳??
+吏湲??붾㈃? ?꾨? "?꾩옱 ?ㅻ깄???닿퀬, ?댁쁺?먯쓽 吏덈Ц("?몄젣遺?? ?? ?꾧??")? ?꾨? ?쒓컙??? 吏덈Ц?대떎.
+???щ즺瑜?????꾨씪?몄뿉 寃뱀튇??
+
+| ?щ즺 | ?댁슜 | 異쒖쿂 | ?놁쓣 ???덈굹 |
+|---|---|---|---|
+| **B. ?곹깭 ?쒓퀎??* | ?몄뒪?댁뒪 ?곹깭쨌StatusCheck쨌?꾪뿕?깃툒, VPC 吏꾨떒 寃곌낵???대젰 | 臾대즺 `Describe*` 寃곌낵瑜?**?곕━ DB???곸옱** | ????긽 ?덉쓬 (湲곕낯?? |
+| A. ?깅뒫 ?쒓퀎??| CPU쨌?ㅽ듃?뚰겕쨌?붿뒪??| `GetMetricStatistics` (?꾨━?곗뼱) | ??沅뚰븳 ?놁쑝硫?媛뺣벑 |
+| C. ?먯씤 留덉빱 | 洹??쒖젏???꾧? 臾댁뒯 API瑜?爾ㅻ굹 | CloudTrail `LookupEvents` (湲곗〈 EP ?ъ궗?? | ???놁쑝硫?留덉빱留??앸왂 |
+
+## 2. ?④퀎
+
+### Phase 1 ???ㅻ깄???섏쭛湲?(?щ즺 B) ???대쾲 援ы쁽
+- **V28**: `cloud_instance_snapshot`(run_at, region, instance_id, name, state, status_check, severity)
+  + `cloud_vpc_snapshot`(run_at, region, vpc_id, counts, findings jsonb)
+  + scheduler_setting ?쒕뱶 2?? `cloud_snapshot`(interval 5遺? 쨌 `cloud_snapshot_cleanup`(daily, 蹂댁〈 30??
+- `CloudSnapshotJob`(SchedulerJob): ?먭꺽利앸챸 誘몄꽕?뺤씠硫?**?덉쇅媛 ?꾨땲??"skipped: unconfigured" ?붿빟** ??  ?뺤긽 ?곹깭???대씪?곕뱶 ???곕뒗 ?ㅼ튂蹂?. ?ㅼ젙???덉쑝硫?由ъ쟾 ?ъ븘?껎빐 `DescribeInstances`+`DescribeInstanceStatus`
+  (+`DescribeVpcs`쨌SG 吏꾨떒)瑜??곸옱. overview???꾪뿕 ?먯젙 濡쒖쭅??**?ъ궗??*(蹂듭젣 湲덉? ??寃뚯씠?????뺣┰???먯튃).
+- cleanup job? `requiresActiveLicense=false`(?뺣━ 怨꾩뿴 洹쒖튃), ?섏쭛 job? 湲곕낯 true ?좎?.
+- ?몄텧 鍮꾩슜: EC2 API??臾닿낵湲덉씠誘濡?5遺?二쇨린 ?ъ븘???먯껜媛 0??
+
+### Phase 2 ??API (?щ즺 B ?뚮퉬 + ?щ즺 A)
+- `GET /cloud-infras/ec2/state-history?instanceId&region&from&to` ???곹깭 諛대뱶??(?ㅻ깄??DB留? AWS 誘명샇異?
+- `GET /cloud-infras/overview`??`trends.instanceStates` 梨꾩? ???쒓컙蹂??뺤긽/寃쎄퀬/?꾪뿕/以묒? ???(?ㅻ깄??吏묎퀎)
+- `GET /cloud-infras/vpcs/detail`??`history` 異붽? ??吏꾨떒 寃곌낵 異붿씠 ("22踰?媛쒕갑???몄젣 ?앷꼈??)
+- `GET /cloud-infras/ec2/metrics?instanceId&region&range` ??`GetMetricStatistics` ?쒓퀎?? ??
+  - **沅뚰븳 ?꾨줈釉?*: AccessDenied ??`collection.state='unavailable', reason='CLOUDWATCH_ACCESS_DENIED'` 罹먯떆(TTL)
+    ???ъ떆???듭젣. ?먮윭 ?묐떟???꾨땲??200 + 鍮?series (FE???깅뒫 李⑦듃 ?④?).
+  - **???덉궛 媛??*: ???몄텧 移댁슫??DB), ?곹븳 湲곕낯 500,000(?꾨━?곗뼱??50% ??怨좉컼??CloudWatch瑜??ㅻⅨ ?⑸룄濡?    ?????덉쑝???덈컲留??곕━ 紐レ쑝濡?. 珥덇낵 ???몄텧 以묐떒 + `reason='BUDGET_EXHAUSTED'`. ??媛???놁씠??諛고룷 湲덉?.
+  - Period ?먮룞 ?곗젙: 議고쉶 踰붿쐞媛 15???대궡=300s(湲곕낯 紐⑤땲?곕쭅 ?댁긽??, 15~63??300s, 63??=3600s.
+    ?몄텧??1,440 ?ъ씤???쒗븳 以??
+  - SDK ?섏〈??`software.amazon.awssdk:cloudwatch` 蹂듭썝 ????寃뚯씠?몄썾?댁뿉 `getMetricStatistics`留?留뚮뱺??
+    (`contract_aws-zero-cost.md` 짠?먯튃 媛깆떊 ?꾩슂: 湲덉???GetMetricData쨌GetMetricWidgetImage쨌GetInsightRuleReport)
+
+### Phase 3 ??FE
+- EC2 ?곸꽭: ?듯빀 ??꾨씪?????깅뒫 ?쇱씤李⑦듃(A, ?덉쓣 ?뚮쭔) + ?곹깭 諛곌꼍 諛대뱶(B) + CloudTrail 留덉빱(C, 湲곗〈
+  events EP瑜?resourceId濡??꾪꽣). CloudWatch 媛뺣벑 ??諛대뱶+留덉빱留뚯쑝濡??깅┰.
+- Overview: `trends.instanceStates` ?ㅽ깮 ?곸뿭 李⑦듃.
+- VPC ?곸꽭: 吏꾨떒 異붿씠(諛쒓껄 ?쒓컖 ?쒖떆) + SG 蹂寃??대깽??
+
+## 3. 寃곗젙 ?ы빆
+
+| # | 寃곗젙 | ?댁쑀 |
+|---|---|---|
+| D1 | ?곹깭 ?대젰? CloudWatch媛 ?꾨땲???먯껜 ?곸옱 | CloudWatch???곹깭????궗媛 ?녾퀬, VPC??湲곕낯 吏???먯껜媛 ?놁쓬. 洹몃━怨??쒖빟 2 |
+| D2 | ?ㅻ깄?룹? per-instance/per-vpc ??(jsonb 萸됱튂 ?꾨떂) | 李⑦듃 吏덉쓽媛 由ъ냼???⑥쐞 ???몃뜳??(instance_id, run_at) |
+| D3 | ?덉궛 ?곹븳 湲곕낯 50% (500k) | ?꾨━?곗뼱??怨꾩젙 ?꾩껜 怨듭쑀 ??怨좉컼???ㅻⅨ ?꾧뎄 紐レ쓣 ?④릿??|
+| D4 | CloudWatch 遺덇????먮윭媛 ?꾨땲??媛뺣벑 | ?쒖빟 2. "???곕뒗 怨좉컼"? ?뺤긽 ?곹깭 |
+| D5 | ?섏쭛 二쇨린 5遺?| EC2 湲곕낯 紐⑤땲?곕쭅 ?댁긽?꾩? ?쇱튂. ??珥섏킌?대룄 ???뺣낫 ?놁쓬 |
+| D6 | 蹂댁〈 30??+ cleanup 諛곗튂 | 100 ?몄뒪?댁뒪 湲곗? ~86留??? ?쒖? ?뺣━ 諛곗튂 ?⑦꽩(report_cleanup) ?ъ궗??|
+
+## 4. 寃利?怨꾪쉷
+- ?⑥쐞: ?꾪뿕 ?먯젙 ?ъ궗??寃쎈줈쨌Period ?곗젙쨌?덉궛 媛??寃쎄퀎(?붿뿬 0)쨌AccessDenied 媛뺣벑.
+- ?고??? dev?먯꽌 job ?섎룞 ?ㅽ뻾 ???ㅻ깄???곸옱 ?뺤씤 ??state-history ?묐떟 ??FE 李⑦듃.
+- 怨쇨툑 寃利? 寃뚯씠?몄썾??硫붿꽌??紐⑸줉 ?議?`reference_aws-api-cost.md` 짠1쨌짠2留? ??由щ럭 泥댄겕由ъ뒪?몄뿉 ?ы븿.
+
+# ?ㅺ퀎 ???대씪?곕뱶 鍮꾩슜 + ?좊즺 API ?듯듃???꾨젅??
+- ?묒꽦: 2026-08-25 쨌 ?곹깭: ?뺤젙(?ъ슜???뱀씤 ??"怨좎? 諛⑹떇 + ?ㅼ젙?쇰줈 ?좉툑") 쨌 援ы쁽: Claude
+- ?좏뻾: `devdesign_aws-status-timeline.md`(臾닿낵湲?湲곕컲) 쨌 `reference_aws-api-cost.md`(怨쇨툑 洹쇨굅) 쨌 `devdesign_asset-cost.md`(?먯궛 鍮꾩슜 ?? 媛먭??곴컖)
+- 寃곗젙 硫붾え由? [[cloud-paid-api-optin]]
+
+## 0. ?먯튃 (?ъ슜??寃곗젙 2026-08-25)
+
+1. **湲곕낯? 怨쇨툑 0** ???쒖? 紐⑤뱶?먯꽌???좊즺 API 肄붾뱶 寃쎈줈 ?먯껜媛 ?ロ? ?덈떎.
+2. **?좊즺????ぉ蹂??듯듃??* ???ㅼ젙 > ?대씪?곕뱶 ?명봽?쇱쓽 ?좉?. 耳???**?덉긽 ??鍮꾩슜 怨좎? + 紐낆떆???뺤씤**(Modal). 怨좉컼 AWS 怨꾩젙??泥?뎄?섎뒗 ?덉씠??
+3. 耳쒖졇??**???덉궛 媛??*(cloud_api_budget ?⑦꽩) ?곸슜 ??"?듯듃?명뻽?쇰땲 臾댄븳?????꾨땲??
+4. ?덇컪 ?⑹쓽: ?듯듃????곸? **Cost Explorer(?ㅼ껌援ъ븸)** ? **GetMetricData(?뚮┸ 吏??** ?섎퓧. 硫붾え由??붿뒪??룹븣?뙿?遺??댁긽?꾨뒗 Zabbix agent쨌?먯껜 ?먯젙?쇰줈 臾대즺 ?泥?留뚮뱾吏 ?딆쓬).
+
+## 1. ???援ъ“
+
+`Setting(CLOUD).value`????異붽? (媛숈? ?붾㈃쨌媛숈? ?뺣낯 ????SettingType 留뚮뱾吏 ?딆쓬):
+```json
+{ "username": "...", "password": "enc:v1:...", "type": "AWS",
+  "paidFeatures": { "costExplorer": false, "fleetMetrics": false } }
+```
+- `CloudInfraInfoDto`??boolean 2?꾨뱶 異붽?(湲곕낯 false). 鍮꾨?媛믪씠 ?꾨땲誘濡?"鍮꾩슦硫??좎?" 洹쒖튃 誘몄쟻?????쇱씠 ??긽 紐낆떆 ?꾩넚.
+- BE ?먮룆: `CloudPaidFeatures`(resolver) ??`CloudCredentialsResolver`? 媛숈? ?먮━. `CloudStatusDto`??`paidFeatures` ?몄텧(FE ?뚮뜑 遺꾧린?? 鍮꾨? ?꾨떂).
+
+## 2. ?④퀎
+
+### P0 ???듯듃???꾨젅??(BE+FE)
+- BE: DTO ?뺤옣 쨌 `CloudPaidFeatures` ?먮룆 쨌 `GET /cloud-infras/status`???몄텧.
+- ?좊즺 寃쎈줈 寃뚯씠?? 爰쇱졇 ?덉쑝硫?**200 + `collection.state='disabled', reason='PAID_FEATURE_OFF'`** (媛뺣벑 ?⑦꽩 ?ъ궗?????먮윭 ?꾨떂).
+- FE ?ㅼ젙 ?붾㈃(CloudInfraInfo): "?뺤옣 湲곕뒫(?좊즺)" ?뱀뀡 ???좉? 2媛? 耳쒕뒗 ?쒓컙 Modal.confirm:
+  - ?덉긽 ??鍮꾩슜 ?쒖떆. fleetMetrics??**怨꾩궛湲?*: 理쒓렐 ?ㅻ깄???몄뒪?댁뒪 ??횞 吏??5 횞 ?대쭅 媛????$ ?섏궛. costExplorer??怨좎젙 臾멸뎄(??2肄?諛곗튂 湲곗? ??$1 誘몃쭔).
+  - "??湲곕뒫? 怨좉컼??AWS 怨꾩젙??怨쇨툑?⑸땲?? 怨좎? + AWS ?붽툑 臾몄꽌 留곹겕.
+- ?????status 荑쇰━ 臾댄슚??湲곗〈 洹쒖튃).
+
+### P1 ??Cost Explorer ?ㅼ껌援ъ븸 (?듯듃????
+- 寃뚯씠?몄썾?댁뿉 `ce:GetCostAndUsage` **?⑥씪 硫붿꽌??*(?좎씪??CE ?덉슜 ??Javadoc 異쒖쿂 ?꾩닔).
+- ?뵶 ?붾㈃?먯꽌 CE瑜?吏곸젒 遺瑜댁? ?딅뒗????**??1??諛곗튂(`cloud_cost_sync`)媛 ?곸옱**?섍퀬 ?붾㈃? DB留??쎈뒗??
+  ?댁쑀: (a) ?붿껌??$0.01?대씪 ?붾㈃ 議고쉶留덈떎 肄쒗븯硫?鍮꾩슜 ?덉륫 遺덇? (b) CE???먮━??(c) ?덉궛????2~3肄쒕줈 怨좎젙????<$1).
+- V32: `cloud_cost_daily` (?좑툘 V30쨌V31? 2026-08-25 蹂묓뻾 ?몄뀡 aimonitor媛 ?좎젏 ??李⑹닔 ??理쒖떊 踰덊샇 ?ы솗??(date, service, amount, currency) + scheduler ?쒕뱶(`cloud_cost_sync` daily, ?듯듃??爰쇱쭚/誘몄꽕????"skipped" ??cloud_snapshot怨?媛숈? 洹쒖튃).
+- 議고쉶 踰붿쐞: ?뱀썡 MTD + ?꾩썡(鍮꾧탳??. ?쒕퉬?ㅻ퀎 遺꾪빐. 由ъ냼???⑥쐞??14???쒖빟???덉뼱 **1李??쒖쇅**(?먯궛蹂?諛곕텇? P2 異붿젙 ?붿쭊???대떦).
+- ?붾㈃: ?대씪?곕뱶 媛쒖슂??"?ㅼ껌援ъ븸" 移대뱶(???꾩쟻쨌?쒕퉬?ㅻ퀎쨌?꾩썡 ?鍮? + ?먯궛>鍮꾩슜 ??뿉???ъ궗?? ?듯듃??爰쇱쭚 ???좉툑 移대뱶("?ㅼ젙?먯꽌 耳쒖꽭?? + ?덉긽 鍮꾩슜).
+
+### P2 ???먯궛?봂C2 ?곕룞 + 臾대즺 異붿젙 ?붿쭊 (?쒖? 紐⑤뱶 湲곕낯??
+- `AssetSyncService.cloudData` 梨꾩?(EC2 ???먯궛: 怨꾩젙쨌由ъ쟾쨌??끒룹긽?쑣룹뿰寃?蹂쇰ⅷ).
+- 異붿젙: **Price List API(臾대즺)** ?④? 횞 **?ㅻ깄??媛?숈떆媛?*(cloud_instance_snapshot ??5遺??댁긽?꾨줈 running ?쒓컙 ?곗텧) = ?몄뒪?댁뒪蹂???異붿젙(?⑤뵒留⑤뱶 湲곗? 紐낆떆).
+- ??퉬 吏꾨떒: 誘몃?李?EBS 쨌 誘몄궗??EIP(???곕㈃ ?ㅽ엳??怨쇨툑) 쨌 stopped ?몄뒪?댁뒪??EBS ?붿〈 鍮꾩슜.
+- ?먯궛 鍮꾩슜 ?? ?⑦봽??媛먭??곴컖(湲곗〈 ?ㅺ퀎) / ?대씪?곕뱶=??異붿젙(+?듯듃?????ㅼ껌援ъ븸 ?議? 蹂묐젹 ?뚯쫰.
+- ?ㅼ튂?? ?먯뇙留앹슜 ?④? ?ㅻ깄???숇큺 ?щ???李⑹닔 ??寃곗젙(open question).
+
+### P3 ??GetMetricData ?뚮┸ ?뺤옣 (?듯듃????
+- overview `cpuTop`/`networkTop` 蹂듭썝 + ?몄뒪?댁뒪 鍮꾧탳. ?덉궛 媛???꾩닔. 洹쒕え ?묒쑝硫???0?) 臾대즺 GetMetricStatistics ?ъ븘???대갚 寃??
+
+## 3. 寃곗젙
+
+| # | 寃곗젙 | ?댁쑀 |
+|---|---|---|
+| D1 | ?듯듃???뚮옒洹몃뒗 Setting(CLOUD) jsonb | ?먭꺽利앸챸怨?媛숈? ?붾㈃쨌媛숈? ?뺣낯. ?뚯씠釉?????좎꽕? 怨쇱꽕怨?|
+| D2 | CE??諛곗튂 ?곸옱, ?붾㈃? DB留?| 鍮꾩슜 怨좎젙쨌?묐떟 ?띾룄쨌?덉궛 ?덉륫 媛??|
+| D3 | 爰쇱쭚 = ?먮윭媛 ?꾨땲??disabled 媛뺣벑 | CLOUDWATCH_ACCESS_DENIED? ?숈씪 臾몃쾿 ??FE 遺꾧린 ?쇨? |
+| D4 | 由ъ냼???⑥쐞 CE??1李??쒖쇅 | 14???쒖빟쨌鍮꾩슜 利앷?. ?먯궛蹂?諛곕텇? 臾대즺 異붿젙???대떦 |
+| D5 | 怨좎???耳쒕뒗 ?쒓컙 Modal + ?덉긽 鍮꾩슜 怨꾩궛 | ?????議곗슜??怨쇨툑?섎뒗 援ъ“ 湲덉?(?ъ슜??吏?? |
+
+## 4. 援ы쁽 ?쒖꽌
+P0 ??P1 (?대쾲 ?뱀씤 踰붿쐞 ?듭떖) ??P2 ??P3. 媛??④퀎 ?꾨즺 ??寃??臾몄꽌 媛깆떊.
+
+## 5. 吏꾪뻾 ?꾪솴 (2026-08-25, 蹂묓뻾 ?몄뀡 ?뚰뵾 紐⑤뱶)
+
+?좑툘 蹂묓뻾 ?몄뀡(aimonitor)??BE쨌FE 怨듭쑀 ?뚯씪 ?묒뾽 以묒씠??**寃뱀튂吏 ?딅뒗 ?뚯씪留?* 癒쇱? 援ы쁽(?ъ슜??吏??.
+
+**?꾨즺 (誘몄빱諛?**
+- BE P0: `CloudPaidFeatures`(?먮룆, ?좊ℓ?섎㈃ 爰쇱쭚) 쨌 `CloudInfraInfoDto` paidFeatures 쨌 `CloudStatusDto/Service` ?몄텧
+- BE P1: gradle `costexplorer` 쨌 寃뚯씠?몄썾??`getCostAndUsageDailyByService`(?좎씪 CE 硫붿꽌?? 쨌 V32(`cloud_cost_daily`+`cloud_cost_sync` ?쒕뱶) 쨌 `CloudCostSyncService`(?듯듃???먭꺽利앸챸 skip, TOTAL ?? ?덉궛 湲곕줉) 쨌 `CloudCostQueryService`(DB留? 爰쇱쭚=PAID_FEATURE_OFF 媛뺣벑) 쨌 `CloudCostSyncJob` 쨌 `GET /cloud-infras/costs` 쨌 ?뚯뒪??4?대옒??aws ?ㅼ퐫??35嫄?green)
+- FE P0: `CloudInfraInfo` ?뺤옣 湲곕뒫 ?뱀뀡(Switch 2 + 鍮꾩슜 怨좎? Modal + ?????紐낆떆 ?꾩넚) 쨌 ????뺤옣. tsc/eslint 0. i18n? t() ?대갚?쇰줈 ?곗꽑 ?숈옉.
+
+**蹂대쪟 ??蹂묓뻾 ?몄뀡 醫낅즺 ??(怨듭쑀 ?뚯씪)**
+- [x] locales kr/en ?뺤떇 ?깅줉 ?꾨즺
+- [x] queryKey COSTS 異붽? ?꾨즺
+- [x] EC2 ??쒕낫???ㅼ껌援ъ븸 移대뱶 ?꾨즺(耳쒖쭚: MTD+諛붿감??top5 / 爰쇱쭚: ?좉툑 移대뱶)
+- [x] ?묐떟 二쇰룄濡??泥????좉툑 ?먯젙? /costs??collection.state ?섎굹濡??먯젙 蹂듭젣 諛⑹?)
+- [x] BE ?꾩껜 green + ?고???round-trip ?ㅼ륫 ?꾨즺(??CE 1肄? 144???곸옱, ?댄썑 爰쇱쭚 蹂듭썝)
+- [x] 寃???붿껌???묒꽦(review_cloud-cost-optin.md) ??肄붾뜳??寃利??湲?
+**P2(?먯궛?봂C2+異붿젙 ?붿쭊)쨌P3(GetMetricData ?뚮퉬 ?붾㈃)??誘몄갑??**
+
+## 6. P2 ?곸꽭 ?ㅺ퀎 (2026-08-25 ?뺤젙 ??"B濡?媛??)
+
+**紐⑺몴**: "?몄뒪?댁뒪蹂????ъ뿉 ?쇰쭏 + ?대뵒???덈뒗媛"瑜?怨쇨툑 0?쇰줈. ?좎꽕 ?붾㈃ **?대씪?곕뱶 ?명봽??> 鍮꾩슜**.
+
+### 寃곗젙
+| # | 寃곗젙 | ?댁쑀 |
+|---|---|---|
+| D6 | EC2瑜??먯궛?쇰줈 **?먮룞 ?앹꽦?섏? ?딅뒗??* | Asset.source(zabbix/custom) 異뺢낵 ?몄쭛 ?뚯쑀沅뙿룸룞湲고솕 濡쒖쭅 ?꾨컲???뚭툒. cloudData?????ㅺ퀎 ?섎룄??"湲곗〈 ?먯궛??AWS 硫뷀? 遺李??대떎. ?먯궛 ?듯빀? 媛먭??곴컖 ?붿쭊(devdesign_asset-cost.md) 援ы쁽 ???щ줎 |
+| D7 | ?④???**Price List API(臾대즺)** + DB 罹먯떆(V35 `cloud_price`, TTL 30?? | Pricing 肄쒖? 臾대즺吏留??먮━???섎갚ms+). ?먯뇙留앹? 罹먯떆 誘몄뒪 ??`PRICING_UNAVAILABLE` 媛뺣벑(??퉬 吏꾨떒 紐⑸줉? 湲덉븸 ?놁씠 ?좎?) |
+| D8 | 媛?숈떆媛꾩? **?먯껜 ?ㅻ깄??*(cloud_instance_snapshot MTD running ??횞 5遺? | CloudWatch 遺덊븘???쒖빟 2). 異붿젙 = ?쒓컙?④? 횞 ?ㅺ??숈떆媛???stopped ?쒓컙 ?먮룞 ?쒖쇅 |
+| D9 | 異붿젙? **?⑤뵒留⑤뱶 湲곗? 紐낆떆** ??RI/SP쨌?곗씠?곗쟾??誘몃컲??臾멸뎄 ?꾩닔 | 泥?뎄?쒖? ?ㅻⅤ?ㅻ뒗 臾몄쓽 諛⑹?. ?듯듃?????ㅼ껌援ъ븸怨??섎????議?|
+| D10 | ??퉬 吏꾨떒 3醫? 誘몃?李?EBS 쨌 誘몄궗??EIP 쨌 stopped ?몄뒪?댁뒪??EBS | ?꾨? 臾대즺 Describe*濡??먯젙. EIP??誘몄궗?⑹씠 ?ㅽ엳??怨쇨툑?섎뒗 由ъ냼??|
+
+### BE
+- gradle `pricing` + 寃뚯씠?몄썾??臾대즺 硫붿꽌??3醫? `getProducts`(pricing, us-east-1 怨좎젙) 쨌 `describeVolumes(region)` ?꾩껜 쨌 `describeAddresses(region)`
+- V35 `cloud_price`(region, resource_key, unit, usd, fetched_at) ??resource_key = ?몄뒪?댁뒪???or `ebs:gp3`
+- `CloudPriceService`: 罹먯떆 ?곗꽑, 誘몄뒪 ??Pricing API 1肄????곸옱. OS??platformDetails濡?Linux/Windows 遺꾧린
+- `CloudCostEstimateService` + `GET /cloud-infras/cost-estimate`:
+  `{ summary:{estimatedMtdUsd, projectedMonthUsd}, instances:[{instanceId,name,region,type,state,runningHours,computeUsd,ebsGb,ebsUsd,totalUsd}], waste:[{kind,resourceId,region,detail,monthlyUsd}], collection }`
+- AWS ?몄텧? ?붾㈃ ?붿껌 ??由ъ쟾 ?ъ븘??臾대즺 Describe*) ???ㅻ깄?룰낵 ?숈씪 ?먯튃
+
+### FE
+- ?좎꽕 ?섏씠吏 `?대씪?곕뱶 ?명봽??> 鍮꾩슜`: ???붿빟(異붿젙 MTD쨌?붾쭚 ?덉긽쨌?듯듃?????ㅼ껌援ъ븸 ?議? ???몄뒪?댁뒪蹂?異붿젙 ??????퉬 吏꾨떒 ??????퉬???⑷퀎) ??CE ?쇰퀎/?쒕퉬?ㅻ퀎(湲곗〈 移대뱶 ?댁쟾쨌?뺤옣)
+- ?좑툘 SideNav쨌routes??蹂묓뻾 ?몄뀡 怨듭쑀 ?뚯씪 ??異붽???理쒖냼 ?몄쭛
+
+# AWS API 怨쇨툑 ?뺣━ ??臾댁뾿??臾대즺?닿퀬 臾댁뾿???좊즺?멸?
+
+- 湲곗??? 2026-08-24
+- 紐⑹쟻: MovesEye ?대씪?곕뱶(AWS) 紐⑤땲?곕쭅???몄텧?섎뒗 API蹂?怨쇨툑 ?щ?瑜????μ쑝濡??뺤젙?쒕떎. "臾닿낵湲?紐⑤뱶"??洹쇨굅 臾몄꽌.
+- 肄붾뱶 ?뺣낯: `moveseye-be-spring/src/main/java/com/dmove/moveseye/aws/client/AwsReadOnlyGateway.java` ??**AWS SDK ?몄텧? ???대옒?ㅼ뿉留?議댁옱**?섎?濡? ??臾몄꽌???쒖? 寃뚯씠?몄썾??硫붿꽌??紐⑸줉??怨??쒗뭹??怨쇨툑 ?몄텧 ?꾨???
+- 愿??怨꾩빟: `_workspace/contract_aws-zero-cost.md`
+
+---
+
+## 1. 吏湲??쒗뭹???몄텧?섎뒗 API ???꾨? 臾대즺 ??
+EC2 API ?붿껌 ?먯껜?먮뒗 ?붽툑???녿떎(怨쇨툑? 由ъ냼???ъ슜?됱뿉留?遺숇뒗??. CloudTrail **Event history**(理쒓렐 90?? 議고쉶??臾대즺??
+
+| API | ?쒕퉬??| ?곕━ ?ъ슜泥?| 怨쇨툑 |
+|---|---|---|---|
+| `ec2:DescribeRegions` | EC2 | 由ъ쟾 紐⑸줉, ?곌껐 ?뚯뒪??`POST /cloud-infras/test-connection`) | 臾대즺 |
+| `ec2:DescribeInstances` | EC2 | ?몄뒪?댁뒪 紐⑸줉쨌?곸꽭쨌overview | 臾대즺 |
+| `ec2:DescribeInstanceStatus` | EC2 | Status Check(?꾪뿕 ?먯젙) | 臾대즺 |
+| `ec2:DescribeVpcs` | EC2 | VPC 紐⑸줉쨌?곸꽭 | 臾대즺 |
+| `ec2:DescribeSubnets` | EC2 | VPC ?곸꽭(?쒕툕?? | 臾대즺 |
+| `ec2:DescribeRouteTables` | EC2 | VPC ?곸꽭(?쇱슦?? | 臾대즺 |
+| `ec2:DescribeInternetGateways` | EC2 | VPC ?곸꽭(IGW쨌?몄텧 吏꾨떒) | 臾대즺 |
+| `ec2:DescribeNatGateways` | EC2 | VPC ?곸꽭 | 臾대즺 |
+| `ec2:DescribeSecurityGroups` | EC2 | VPC ?곸꽭(蹂댁븞 吏꾨떒, 0.0.0.0/0 寃?? | 臾대즺 |
+| `ec2:DescribeVolumes` | EC2 | EC2 ?곸꽭(蹂쇰ⅷ) | 臾대즺 |
+| `cloudtrail:LookupEvents` | CloudTrail | ?대깽???대젰 ?붾㈃(90??Event history) | 臾대즺 (rate limit 2 TPS 二쇱쓽) |
+
+> ?좑툘 CloudTrail??臾대즺??寃껋? **Event history(90?? 議고쉶**源뚯??? ?몃젅??Trail) ?앹꽦쨌S3 ?곸옱쨌CloudTrail Lake???좊즺 ???곕━?????대떎.
+
+## 2. 議곌굔遺 臾대즺 ???ㅼ쓬 ?④퀎(李⑦듃 蹂듭썝)?먯꽌 ??寃??윞
+
+| ??ぉ | 臾대즺 踰붿쐞 | 珥덇낵 ??| 鍮꾧퀬 |
+|---|---|---|---|
+| `cloudwatch:GetMetricStatistics` | **??100留?API ?붿껌** (Always Free) | $0.01 / 1,000 ?붿껌 | ?꾨━?곗뼱 ?쒖쇅 紐⑸줉(GetMetricData쨌GetInsightRuleReport쨌GetMetricWidgetImage)??**?놁쓬** = ?ы븿. 肄?1嫄?= 吏??1媛?횞 ?몄뒪?댁뒪 1媛? ?몄텧???곗씠?고룷?명듃 理쒕? 1,440媛?|
+| EC2 湲곕낯 紐⑤땲?곕쭅 吏??| 臾대즺 (5遺?二쇨린) | ??| CPU쨌Network쨌Disk쨌StatusCheck. **硫붾え由?룸뵒?ㅽ겕 ?ъ슜瑜좎? ?놁쓬**(CloudWatch Agent ?꾩슂 = 而ㅼ뒪? 吏???좊즺) |
+| `cloudwatch:ListMetrics` ??湲고? CW 議고쉶 | ??100留??붿껌 ????ы븿 | $0.01 / 1,000 | |
+
+**?덉궛 媛먭컖**: ?몄뒪?댁뒪 20? 횞 吏??4媛?횞 5遺??대쭅 ????69留?肄??쒕룄 ??. "?붾㈃ ???뚮쭔 議고쉶" 諛⑹떇?대㈃ ???섏쿇 肄? ?대뒓 履쎌씠??**???몄텧 移댁슫??+ ?곹븳 媛???꾩닔** ??怨좉컼???몄뒪?댁뒪 ?섎뒗 ?곕━媛 ?듭젣 紐??쒕떎.
+
+## 3. ?좊즺 ???쒗뭹?먯꽌 湲덉? ?뵶
+
+`AwsReadOnlyGateway`????API?ㅼ쓽 硫붿꽌?쒕? 留뚮뱾吏 ?딅뒗 寃껋쑝濡?媛뺤젣?쒕떎. (2026-08-24 湲곗? 肄붾뱶???붿〈 0嫄???SDK ?섏〈?깆뿉??`cloudwatch` ?쒓굅, `cloudtrail`留?異붽?)
+
+| ??ぉ | ?붽툑 | 怨쇨굅 ?ъ슜 ?щ? |
+|---|---|---|
+| `cloudwatch:GetMetricData` | $0.01 / 1,000 **吏??*(?꾨━?곗뼱 ?쒖쇅, 泥?肄쒕???怨쇨툑) | ??援?EC2 ?곸꽭 李⑦듃媛 ?ъ슜 ??**?쒓굅??* (?덇굅??`GET /cloud-infras/ec2`??鍮?諛곗뿴 + `ZERO_COST_MODE` 諛섑솚) |
+| `cloudwatch:GetMetricWidgetImage` | ?꾨━?곗뼱 ?쒖쇅, 蹂꾨룄 怨쇨툑 | 誘몄궗??|
+| `cloudwatch:GetInsightRuleReport` | ?꾨━?곗뼱 ?쒖쇅, 蹂꾨룄 怨쇨툑 | 誘몄궗??|
+| CloudWatch ?곸꽭 紐⑤땲?곕쭅(1遺?二쇨린) | 而ㅼ뒪? 吏???④?濡??몄뒪?댁뒪????~$2 ?섏? | 誘몄궗??(?쒖꽦?????? |
+| CloudWatch ?뚮엺쨌??쒕낫?쑣텹ogs | ?뚮엺 媛쒕떦쨌??쒕낫??媛쒕떦쨌GB??怨쇨툑 | 誘몄궗??(overview??`alarms`??`disabled: ZERO_COST_MODE`) |
+| Cost Explorer API (`ce:*`) | **?붿껌??$0.01** (?섏씠吏?ㅼ씠???붿껌留덈떎) | 誘몄궗?? 由ъ냼???⑥쐞 議고쉶??14???쒖빟???덉쓬 |
+| CloudWatch Agent 而ㅼ뒪? 吏??硫붾え由??? | 吏?쒕떦 ??$0.30~ | 誘몄궗????硫붾え由?룸뵒?ㅽ겕 ?ъ슜瑜좎? Zabbix agent 寃쎈줈濡??닿껐 ?덉젙 |
+
+## 4. ?댁쁺 ?먯튃
+
+1. **SDK ?몄텧? `AwsReadOnlyGateway` ?⑥씪 李쎄뎄.** ??AWS 湲곕뒫 異붽? ????臾몄꽌??짠1쨌짠2???덈뒗 API留?寃뚯씠?몄썾?댁뿉 異붽??????덈떎. 짠3??API瑜?異붽??섎젮硫?怨쇨툑 ?뺤콉 寃곗젙(?ъ슜???뱀씤)???좏뻾?쇱빞 ?쒕떎.
+2. 寃뚯씠?몄썾??媛?硫붿꽌??Javadoc??AWS 怨듭떇 API Reference URL??異쒖쿂濡??④릿??怨꾩빟 洹쒖튃).
+3. `GetMetricStatistics` ?꾩엯 ?? ??移댁슫??+ ?곹븳 媛???쒕룄 ?묎렐 ??議고쉶 以묐떒쨌`collection.state` 媛뺣벑) ?놁씠??諛고룷?섏? ?딅뒗??
+4. ?곹깭 ?먯젙(`GET /cloud-infras/status`)? AWS瑜??몄텧?섏? ?딅뒗????鍮꾩슜쨌吏???묒そ ?댁쑀. ???몄텧 ?뺤씤? ?곌껐 ?뚯뒪??踰꾪듉留?
+
+## 5. 異쒖쿂 (怨듭떇 臾몄꽌)
+
+- [Amazon CloudWatch Pricing](https://aws.amazon.com/cloudwatch/pricing/) ??Free Tier: "1 Million API requests (not including GetMetricData, GetInsightRuleReport and GetMetricWidgetImage)"
+- [GetMetricStatistics ??CloudWatch API Reference](https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricStatistics.html) ???뚮씪誘명꽣쨌1,440 ?ъ씤???쒗븳쨌retention 洹쒖튃
+- [AWS CloudTrail Pricing](https://aws.amazon.com/cloudtrail/pricing/) ??Event history(90?? 議고쉶 臾대즺
+- [LookupEvents ??CloudTrail API Reference](https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_LookupEvents.html) ??2 TPS
+- [Amazon EC2 API Reference](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html) ??API ?붿껌 臾닿낵湲?由ъ냼???ъ슜?됰쭔 怨쇨툑)
+- [AWS Cost Explorer Pricing](https://aws.amazon.com/aws-cost-management/aws-cost-explorer/pricing/) ??API ?붿껌??$0.01
+
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "rg --files src/main/java/com/dmove/moveseye/aws engine-api/src/main/java | rg \"(CloudMetricsService|CloudSnapshotService|InventoryPort|MetricPort|Host|Metric)\\.java"'$"; rg -n -S "class CloudMetricsService|class CloudSnapshotService|interface InventoryPort|interface MetricPort|metrics'"\\(\" src/main/java/com/dmove/moveseye/aws engine-api/src/main/java" in C:\solutions\moveseye-be-spring
+ succeeded in 675ms:
+src/main/java/com/dmove/moveseye/aws\client\AwsReadOnlyGateway.java:283:                    .metrics("UnblendedCost")
+src/main/java/com/dmove/moveseye/aws\CloudCostSyncService.java:66:                var metric = group.metrics().get("UnblendedCost");
+src/main/java/com/dmove/moveseye/aws\CloudMetricsService.java:35:public class CloudMetricsService {
+src/main/java/com/dmove/moveseye/aws\CloudMetricsService.java:64:    public Map<String, Object> metrics(String instanceId, String region, long fromEpoch, long toEpoch) {
+src/main/java/com/dmove/moveseye/aws\CloudInfraController.java:215:        return new ApiResult<Map<String, Object>>().success(cloudMetricsService.metrics(
+src/main/java/com/dmove/moveseye/aws\CloudSnapshotService.java:42:public class CloudSnapshotService {
+engine-api/src/main/java\com\dmove\moveseye\engine\port\InventoryPort.java:24:public interface InventoryPort {
+engine-api/src/main/java\com\dmove\moveseye\engine\port\MetricPort.java:28:public interface MetricPort {
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw src/main/java/com/dmove/moveseye/aws/CloudMetricsService.java; Get-Content -Raw src/main/java/com/dmove/moveseye/aws/CloudSnapshotService.java; Get-Content -Raw src/main/java/com/dmove/moveseye/aws/CloudInfraController.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/port/InventoryPort.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/port/MetricPort.java; Get-Content -Raw C:\\solutions\\COLLAB.md" in C:\solutions\moveseye-be-spring
+ succeeded in 360ms:
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.aws.client.AwsReadOnlyGateway;
+import com.dmove.moveseye.aws.repository.CloudApiBudgetRepository;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.services.cloudwatch.model.Datapoint;
+import software.amazon.awssdk.services.cloudwatch.model.Statistic;
+
+/**
+ * EC2 ?깅뒫 ?쒓퀎???щ즺 A) ??{@code GetMetricStatistics} ?꾨━?곗뼱 ??議고쉶.
+ *
+ * <p>?뵶 <b>?좏깮??媛뺥솕??D4).</b> CloudWatch 沅뚰븳???녿뒗(???곕뒗) 怨좉컼? <b>?뺤긽 ?곹깭</b> ?? * ?먮윭 ?묐떟???꾨땲??200 + 鍮?series + {@code collection.state}濡?媛뺣벑???뚮┛?? ?곹깭 諛대뱶쨌CloudTrail
+ * 留덉빱(?щ즺 B쨌C)?????쒕퉬?ㅼ? 臾닿??섍쾶 ?숈옉?쒕떎.
+ *
+ * <p>?뵶 <b>???덉궛 媛???놁씠?????쒕퉬?ㅻ? 諛고룷?섏? ?딅뒗??</b> ?꾨━?곗뼱(??100留???怨좉컼 怨꾩젙
+ * ?꾩껜 怨듭쑀???곕━ 紐??곹븳(湲곕낯 50留? D3)??DB 移댁슫?곕줈 吏?⑤떎. ?곹븳 ?꾨떖 ???몄텧 以묐떒.
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CloudMetricsService {
+
+    /** 吏???뺤쓽 ??EC2 湲곕낯 紐⑤땲?곕쭅(5遺? 臾대즺)??議댁옱?섎뒗 寃껊쭔. 硫붾え由?룸뵒?ㅽ겕 ?ъ슜瑜좎? Agent(?좊즺) ?꾩슂???놁쓬. */
+    private static final List<MetricSpec> METRICS = List.of(
+            new MetricSpec("cpu", "CPUUtilization", Statistic.AVERAGE),
+            new MetricSpec("networkIn", "NetworkIn", Statistic.AVERAGE),
+            new MetricSpec("networkOut", "NetworkOut", Statistic.AVERAGE),
+            new MetricSpec("diskReadBytes", "DiskReadBytes", Statistic.AVERAGE),
+            new MetricSpec("diskWriteBytes", "DiskWriteBytes", Statistic.AVERAGE));
+
+    private static final String NAMESPACE = "AWS/EC2";
+    private static final int MAX_DATAPOINTS = 1440;
+    /** 沅뚰븳 嫄곕? ???ъ떆???듭젣 ?쒓컙 ??留?議고쉶媛 嫄곕??뱁븯硫?濡쒓렇瑜?梨꾩슦??寃껋쓣 留됰뒗?? */
+    private static final Duration DENIED_TTL = Duration.ofMinutes(10);
+
+    private final AwsReadOnlyGateway aws;
+    private final CloudApiBudgetRepository budgetRepository;
+
+    /** ?곕━ 紐????곹븳(D3: ?꾨━?곗뼱???덈컲). 怨좉컼??CloudWatch瑜??ㅻⅨ ?꾧뎄濡쒕룄 ??紐レ쓣 ?④릿?? */
+    @Value("${app.cloud.metrics-monthly-call-cap:500000}")
+    private long monthlyCallCap;
+
+    /** 沅뚰븳 嫄곕? 罹먯떆(?ш린?숈씠硫?由ъ뀑 ???꾨줈釉?1?뚮줈 ?ㅼ떆 ?뺤씤?섎뒗 寃껋씠 留욌떎). */
+    private final AtomicReference<Instant> deniedUntil = new AtomicReference<>();
+
+    /**
+     * ?몄뒪?댁뒪 1????깅뒫 ?쒓퀎?? from/to??epoch seconds, 0?대㈃ 理쒓렐 24?쒓컙.
+     * ?ㅽ뙣 紐⑤뱶???꾨? 200 + 鍮?series?????듯빀 ??꾨씪?몄뿉???깅뒫 異뺣쭔 議곗슜??鍮좎쭊??
+     */
+    public Map<String, Object> metrics(String instanceId, String region, long fromEpoch, long toEpoch) {
+        Instant now = Instant.now();
+        Instant to = toEpoch > 0 ? Instant.ofEpochSecond(toEpoch) : now;
+        Instant from = fromEpoch > 0 ? Instant.ofEpochSecond(fromEpoch) : to.minus(Duration.ofDays(1));
+
+        Instant denied = deniedUntil.get();
+        if (denied != null && now.isBefore(denied)) {
+            return degraded("unavailable", "CLOUDWATCH_ACCESS_DENIED");
+        }
+        String month = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        long used = budgetRepository.findById(month).map(b -> b.getCalls()).orElse(0L);
+        if (used + METRICS.size() > monthlyCallCap) {
+            log.warn("cloud metrics budget exhausted: used={} cap={}", used, monthlyCallCap);
+            return degraded("disabled", "BUDGET_EXHAUSTED");
+        }
+
+        int period = resolvePeriodSeconds(from, to, now);
+        Map<String, Object> series = new LinkedHashMap<>();
+        int calls = 0;
+        try {
+            for (MetricSpec metric : METRICS) {
+                calls++;
+                List<Datapoint> points = aws.getMetricStatistics(region, NAMESPACE, metric.metricName(),
+                        "InstanceId", instanceId, from, to, period, metric.statistic());
+                series.put(metric.key(), points.stream()
+                        // 臾몄꽌 紐낆떆: ?곗씠?고룷?명듃???쒓컙?쒖씠 ?꾨땲?????ш린???뺣젹??FE 遺?댁쓣 ?놁븻??
+                        .sorted(Comparator.comparing(Datapoint::timestamp))
+                        .map(p -> Map.of("time", p.timestamp().toString(), "value", statisticValue(p, metric.statistic())))
+                        .toList());
+            }
+        } catch (AwsServiceException e) {
+            recordCalls(month, calls);
+            if (isAccessDenied(e)) {
+                // ???곕뒗 怨좉컼? ?뺤긽 ?곹깭(?쒖빟 2) ??TTL ?숈븞 ?ъ떆?꾨? 硫덉텛怨?議곗슜??媛뺣벑?쒕떎.
+                deniedUntil.set(now.plus(DENIED_TTL));
+                log.info("CloudWatch access denied in {} ??metrics degraded for {}: {}",
+                        region, DENIED_TTL, e.getMessage());
+                return degraded("unavailable", "CLOUDWATCH_ACCESS_DENIED");
+            }
+            log.warn("CloudWatch metrics unavailable in {}: {}", region, e.getMessage());
+            return degraded("unavailable", "CLOUDWATCH_UNAVAILABLE");
+        }
+        recordCalls(month, calls);
+        Map<String, Object> collection = new LinkedHashMap<>();
+        collection.put("state", "ok");
+        collection.put("reason", null);
+        collection.put("periodSeconds", period);
+        collection.put("budget", Map.of("used", used + calls, "cap", monthlyCallCap));
+        return Map.of("items", series, "collection", collection);
+    }
+
+    /**
+     * Period ?곗젙 ??議고쉶 湲곌컙怨?CloudWatch retention 洹쒖튃???④퍡 留뚯”?쒗궓??
+     * 洹쒖튃(怨듭떇 臾몄꽌): ?쒖옉??15???댁쟾?대㈃ 300s 諛곗닔, 63???댁쟾?대㈃ 3600s 諛곗닔. ?ш린??     * "?몄텧??理쒕? 1,440 ?ъ씤??瑜?base 諛곗닔 ?뺣?濡?吏?⑤떎.
+     */
+    static int resolvePeriodSeconds(Instant from, Instant to, Instant now) {
+        int base = from.isAfter(now.minus(Duration.ofDays(63))) ? 300 : 3600;
+        long rangeSeconds = Math.max(1, Duration.between(from, to).getSeconds());
+        long minPeriod = (long) Math.ceil(rangeSeconds / (double) MAX_DATAPOINTS);
+        long multiples = Math.max(1, (long) Math.ceil(minPeriod / (double) base));
+        return (int) (multiples * base);
+    }
+
+    private void recordCalls(String month, int calls) {
+        if (calls > 0) {
+            budgetRepository.addCalls(month, calls);
+        }
+    }
+
+    private static boolean isAccessDenied(AwsServiceException e) {
+        String code = e.awsErrorDetails() == null ? null : e.awsErrorDetails().errorCode();
+        return e.statusCode() == 403
+                || "AccessDenied".equals(code) || "AccessDeniedException".equals(code)
+                || "UnauthorizedOperation".equals(code);
+    }
+
+    private static double statisticValue(Datapoint p, Statistic statistic) {
+        Double value = statistic == Statistic.AVERAGE ? p.average()
+                : statistic == Statistic.MAXIMUM ? p.maximum()
+                        : statistic == Statistic.MINIMUM ? p.minimum() : p.sum();
+        return value == null ? 0d : value;
+    }
+
+    /** 媛뺣벑 ?묐떟 ??紐⑤뱺 吏???ㅻ? 鍮?諛곗뿴濡??좎???FE媛 ??議댁옱 ?щ?濡?遺꾧린?섏? ?딄쾶 ?쒕떎. */
+    private static Map<String, Object> degraded(String state, String reason) {
+        Map<String, Object> series = new LinkedHashMap<>();
+        for (MetricSpec metric : METRICS) {
+            series.put(metric.key(), List.of());
+        }
+        Map<String, Object> collection = new LinkedHashMap<>();
+        collection.put("state", state);
+        collection.put("reason", reason);
+        return Map.of("items", series, "collection", collection);
+    }
+
+    private record MetricSpec(String key, String metricName, Statistic statistic) {
+    }
+}
+
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.aws.client.AwsReadOnlyGateway;
+import com.dmove.moveseye.aws.domain.CloudInstanceSnapshot;
+import com.dmove.moveseye.aws.domain.CloudVpcSnapshot;
+import com.dmove.moveseye.aws.repository.CloudInstanceSnapshotRepository;
+import com.dmove.moveseye.aws.repository.CloudVpcSnapshotRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.ec2.model.Instance;
+import software.amazon.awssdk.services.ec2.model.InstanceStatus;
+import software.amazon.awssdk.services.ec2.model.RouteTable;
+import software.amazon.awssdk.services.ec2.model.SecurityGroup;
+import software.amazon.awssdk.services.ec2.model.Subnet;
+import software.amazon.awssdk.services.ec2.model.Tag;
+import software.amazon.awssdk.services.ec2.model.Vpc;
+
+/**
+ * ?대씪?곕뱶 ?곹깭 ?ㅻ깄???섏쭛 ??"?꾩옱"瑜?留??뚯감 DB???곸옱???쒓컙 異뺤쓣 留뚮뱺??
+ * (devdesign_aws-status-timeline.md Phase 1, ?щ즺 B).
+ *
+ * <p>?뵶 <b>怨쇨툑 0 媛뺤젣</b>: 臾대즺 {@code Describe*}留??대떎({@link AwsReadOnlyGateway} 寃쎌쑀).
+ * CloudWatch??遺瑜댁? ?딅뒗???????곕뒗 怨좉컼???덈떎??寃껋씠 ???ㅺ퀎???꾩젣??
+ *
+ * <p>?먯젙 洹쒖튃? overview? 怨듭쑀?쒕떎({@link Ec2StatusRules}쨌{@link NetworkExposureScanner}) ??
+ * ?ㅼ떆媛??붾㈃怨??대젰 李⑦듃媛 媛숈? ?ш굔???ㅻⅤ寃?留먰븯硫????쒕떎.
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CloudSnapshotService {
+
+    /** overview(16)蹂대떎 蹂댁닔?곸쑝濡???諛곗튂??吏?곗씠 湲됲븯吏 ?딄퀬, 怨좉컼 怨꾩젙??API rate瑜??꾨??? */
+    private static final int MAX_PARALLELISM = 8;
+
+    private final AwsReadOnlyGateway aws;
+    private final CloudCredentialsResolver credentials;
+    private final CloudInstanceSnapshotRepository instanceRepository;
+    private final CloudVpcSnapshotRepository vpcRepository;
+
+    /**
+     * ?섏쭛 1?? 由ъ쟾 ?ъ븘?????몄뒪?댁뒪쨌VPC ?ㅻ깄???곸옱.
+     *
+     * @return ?ㅽ뻾 濡쒓렇 ?붿빟. ?먭꺽利앸챸???놁쑝硫?<b>?덉쇅媛 ?꾨땲??skip</b> ???대씪?곕뱶瑜????곕뒗
+     *     ?ㅼ튂蹂몄뿉????諛곗튂媛 留?5遺?"?ㅽ뙣"濡?李랁엳硫????쒕떎(?뺤긽 ?곹깭??.
+     */
+    public String collect() {
+        if (credentials.source() == CloudCredentialsResolver.CredentialSource.NONE) {
+            return "skipped: unconfigured";
+        }
+        LocalDateTime runAt = LocalDateTime.now();
+        // ?뵶 ?쒖꽦 由ъ쟾留???allRegions??誘몄샃?몄씤 由ъ쟾源뚯? 以??ъ븘???덈컲???몄쬆 ?ㅽ뙣濡??쏅룉???ㅼ륫).
+        List<String> regions = aws.enabledRegionNames();
+
+        List<Callable<RegionSnapshot>> tasks = regions.stream()
+                .map(region -> (Callable<RegionSnapshot>) () -> collectRegion(runAt, region)).toList();
+        List<RegionSnapshot> parts = runParallel(tasks);
+
+        List<CloudInstanceSnapshot> instanceRows = new ArrayList<>();
+        List<CloudVpcSnapshot> vpcRows = new ArrayList<>();
+        int failed = 0;
+        for (RegionSnapshot part : parts) {
+            if (part == null) {
+                failed++;
+                continue;
+            }
+            instanceRows.addAll(part.instances());
+            vpcRows.addAll(part.vpcs());
+        }
+        // ??由ъ쟾 ?ㅽ뙣???ㅽ뙣???먭꺽利앸챸 ?먭린쨌?ㅽ듃?뚰겕 ?⑥젅 ?? ??SchedulerJob 洹쒖튃?濡??섏졇???대젰???④릿??
+        if (!regions.isEmpty() && failed == regions.size()) {
+            throw new IllegalStateException("cloud snapshot failed in all " + failed + " regions");
+        }
+        instanceRepository.saveAll(instanceRows);
+        vpcRepository.saveAll(vpcRows);
+        return String.format("regions=%d instances=%d vpcs=%d failed=%d",
+                regions.size(), instanceRows.size(), vpcRows.size(), failed);
+    }
+
+    /** 蹂댁〈 湲곌컙 諛??ㅻ깄????젣. cleanup 諛곗튂媛 留ㅼ씪 ?몄텧?쒕떎. */
+    @Transactional
+    public String cleanup(int retentionDays) {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(retentionDays);
+        int instances = instanceRepository.deleteByRunAtBefore(cutoff);
+        int vpcs = vpcRepository.deleteByRunAtBefore(cutoff);
+        return String.format("deleted instances=%d vpcs=%d (retention=%dd)", instances, vpcs, retentionDays);
+    }
+
+    private RegionSnapshot collectRegion(LocalDateTime runAt, String region) {
+        List<Instance> instances = aws.describeInstances(region);
+
+        Map<String, String> statuses = new LinkedHashMap<>();
+        List<String> ids = instances.stream().map(Instance::instanceId).toList();
+        if (!ids.isEmpty()) {
+            for (InstanceStatus s : aws.describeInstanceStatuses(region, ids)) {
+                statuses.put(s.instanceId(), Ec2StatusRules.overallStatus(s));
+            }
+        }
+
+        List<CloudInstanceSnapshot> instanceRows = new ArrayList<>();
+        for (Instance i : instances) {
+            String state = i.state() == null ? "unknown" : i.state().nameAsString();
+            String check = statuses.get(i.instanceId());
+            instanceRows.add(CloudInstanceSnapshot.builder()
+                    .runAt(runAt).region(region)
+                    .instanceId(i.instanceId()).name(nameTag(i.tags()))
+                    .state(state).statusCheck(check)
+                    .severity(Ec2StatusRules.classify(state, check))
+                    .build());
+        }
+
+        List<CloudVpcSnapshot> vpcRows = new ArrayList<>();
+        for (Vpc vpc : aws.describeVpcs(region)) {
+            List<Subnet> subnets = aws.describeSubnetsByVpc(region, vpc.vpcId());
+            List<RouteTable> routeTables = aws.describeRouteTablesByVpc(region, vpc.vpcId());
+            List<SecurityGroup> groups = aws.describeSecurityGroupsByVpc(region, vpc.vpcId());
+            List<Map<String, Object>> findings = NetworkExposureScanner.findings(subnets, routeTables, groups);
+            long critical = findings.stream().filter(f -> "critical".equals(f.get("severity"))).count();
+            // ?몄뒪?댁뒪 ?뚯냽? ?대? 諛쏆븘 ??由ъ쟾 紐⑸줉?먯꽌 ?몃㈃ ?쒕떎 ??describeInstancesByVpc ?ы샇異쒖? ??퉬.
+            long inVpc = instances.stream().filter(i -> vpc.vpcId().equals(i.vpcId())).count();
+            vpcRows.add(CloudVpcSnapshot.builder()
+                    .runAt(runAt).region(region)
+                    .vpcId(vpc.vpcId()).name(nameTag(vpc.tags()))
+                    .subnetCount(subnets.size()).instanceCount((int) inVpc)
+                    .criticalCount((int) critical).warningCount(findings.size() - (int) critical)
+                    .findings(findings)
+                    .build());
+        }
+        return new RegionSnapshot(instanceRows, vpcRows);
+    }
+
+    private String nameTag(List<Tag> tags) {
+        return tags.stream().filter(t -> "Name".equals(t.key())).map(Tag::value).findFirst().orElse(null);
+    }
+
+    /** 由ъ쟾蹂?蹂묐젹 ?섏쭛. ?ㅽ뙣??由ъ쟾? null ???몄텧遺媛 failed濡??쇰떎. */
+    private <T> List<T> runParallel(List<? extends Callable<T>> tasks) {
+        if (tasks.isEmpty()) {
+            return List.of();
+        }
+        ExecutorService pool = Executors.newFixedThreadPool(Math.min(tasks.size(), MAX_PARALLELISM));
+        try {
+            List<Future<T>> futures = tasks.stream().map(pool::submit).toList();
+            List<T> results = new ArrayList<>(futures.size());
+            for (Future<T> future : futures) {
+                try {
+                    results.add(future.get());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    results.add(null);
+                } catch (Exception e) {
+                    log.warn("cloud snapshot region task failed: {}", e.getMessage());
+                    results.add(null);
+                }
+            }
+            return results;
+        } finally {
+            pool.shutdown();
+        }
+    }
+
+    private record RegionSnapshot(List<CloudInstanceSnapshot> instances, List<CloudVpcSnapshot> vpcs) {
+    }
+}
+
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.auth.dto.TokenUserInfo;
+import com.dmove.moveseye.auth.security.AdminAccessChecker;
+import com.dmove.moveseye.auth.security.CurrentUser;
+import com.dmove.moveseye.auth.security.DmovePermissionChecker;
+import com.dmove.moveseye.auth.security.VisitorIdCheck;
+import com.dmove.moveseye.aws.dto.CloudConnectionTestDto;
+import com.dmove.moveseye.aws.dto.CloudStatusDto;
+import com.dmove.moveseye.aws.dto.CloudOverviewQueryDto;
+import com.dmove.moveseye.aws.dto.Ec2DashboardDto;
+import com.dmove.moveseye.aws.dto.Ec2Dto;
+import com.dmove.moveseye.aws.dto.GetEc2Dto;
+import com.dmove.moveseye.aws.dto.GetVpcsDto;
+import com.dmove.moveseye.aws.dto.VpcDetailDto;
+import com.dmove.moveseye.aws.dto.CloudTrailEventsDto;
+import com.dmove.moveseye.common.response.ApiResult;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * NestJS src/aws/aws.controller.ts (CloudInfraController) ?ы똿.
+ *
+ * <p>?뵶 <b>?먯썝 議고쉶 ?붾뱶?ъ씤?몃뒗 ?꾨? {@code requireConfigured()}濡??쒖옉?쒕떎</b>(2026-08-24).
+ * ?먭꺽利앸챸???놁쑝硫?AWS SDK媛 {@code Unable to load credentials}瑜??섏졇 <b>500</b>???섍컮?붾뜲,
+ * 洹멸굔 ?μ븷媛 ?꾨땲??"?꾩쭅 ?ㅻ? ???ｌ뿀???대떎. {@code CLOUD_NOT_CONFIGURED}濡??듯빐???붾㈃??
+ * ?ㅼ젙?쇰줈 ?덈궡?????덈떎. {@code /status}????媛?쒖쓽 ??곸씠 ?꾨땲????洹멸쾬??怨??곹깭瑜??뚮━??李쎄뎄??
+ */
+@RestController
+@RequestMapping("/cloud-infras")
+@Tag(name = "Cloud infra")
+@SecurityRequirement(name = "bearer")
+@VisitorIdCheck
+@RequiredArgsConstructor
+public class CloudInfraController {
+
+    private final AwsService awsService;
+    private final CloudCredentialsResolver credentials;
+    private final CloudStatusService cloudStatusService;
+    private final DmovePermissionChecker dmovePermissionChecker;
+    private final CloudSnapshotQueryService cloudSnapshotQueryService;
+    private final CloudMetricsService cloudMetricsService;
+    private final CloudCostQueryService cloudCostQueryService;
+    private final CloudCostEstimateService cloudCostEstimateService;
+
+    /**
+     * ?대씪?곕뱶 湲곕뒫??耳????덈뒗 ?곹깭?몄? ???ъ씠?쒕컮 硫붾돱? ?붾㈃ 吏꾩엯 媛?쒓? ???섎굹瑜?蹂몃떎.
+     *
+     * <p>?뵶 <b>愿由ъ옄濡?醫곹엳吏 ?딅뒗??</b> 硫붾돱 寃뚯씠?낆? <b>紐⑤뱺 ?ъ슜??/b>?먭쾶 ?꾩슂?섎떎. ?ш린瑜?
+     * 愿由ъ옄 ?꾩슜?쇰줈 ?먮㈃ ?쇰컲 ?ъ슜?먮뒗 ?곹깭瑜?紐?諛쏆븘 硫붾돱媛 ?곸쁺 ?좉린嫄곕굹(?먮뒗 濡쒕뵫 以?痍④툒?섏뼱)
+     * 鍮??붾㈃?쇰줈 ?ㅼ뼱媛寃??쒕떎. 鍮꾨?媛믪? ?묐떟???녾퀬 "耳쒖죱?붽?"留??섍컙??
+     */
+    @GetMapping("/status")
+    public ApiResult<CloudStatusDto> getStatus(@CurrentUser TokenUserInfo currentUser) {
+        requireAwsResourcesView(currentUser);
+        return new ApiResult<CloudStatusDto>().success(cloudStatusService.status());
+    }
+
+    /**
+     * ??λ맂 ?먭꺽利앸챸?쇰줈 AWS瑜??ㅼ젣 ?몄텧??蹂몃떎(愿由ъ옄 ?꾩슜 ???ㅼ젙 ?붾㈃??"?곌껐 ?뚯뒪?? 踰꾪듉).
+     *
+     * <p>?ㅽ뙣?대룄 200?대떎. ?ъ쑀??諛붾뵒??{@code reason}???닿릿??{@link CloudConnectionTestDto} 李멸퀬).
+     */
+    @PostMapping("/test-connection")
+    public ApiResult<CloudConnectionTestDto> testConnection(@CurrentUser TokenUserInfo currentUser) {
+        AdminAccessChecker.requireAdmin(currentUser);
+        return new ApiResult<CloudConnectionTestDto>().success(cloudStatusService.testConnection());
+    }
+
+    @GetMapping("/vpcs")
+    public ApiResult<Map<String, Object>> getVpcs(
+            @CurrentUser TokenUserInfo currentUser, @ModelAttribute GetVpcsDto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        Map<String, Object> vpcs = awsService.getVpcs(params.getEscapedKeyword(), params.getRegionList());
+        return new ApiResult<Map<String, Object>>().success(vpcs);
+    }
+
+    @GetMapping("/regions")
+    public ApiResult<Map<String, Object>> getRegions(@CurrentUser TokenUserInfo currentUser) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        List<String> regions = awsService.getRegions();
+        return new ApiResult<Map<String, Object>>().success(Map.of("items", regions));
+    }
+
+    @GetMapping("/ec2s")
+    public ApiResult<Map<String, Object>> getEc2s(
+            @CurrentUser TokenUserInfo currentUser, @ModelAttribute GetEc2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        Map<String, Object> instances = awsService.listInstancesDetailed(params.getRegionList(), params.getVpcIdList());
+        return new ApiResult<Map<String, Object>>().success(instances);
+    }
+
+    @GetMapping("/ec2-dashboard")
+    public ApiResult<Map<String, Object>> getEc2Dashboard(
+            @CurrentUser TokenUserInfo currentUser, @ModelAttribute Ec2DashboardDto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        Map<String, Object> items = awsService.summaryInstances(params.getRegionList());
+        return new ApiResult<Map<String, Object>>().success(items);
+    }
+
+    @GetMapping("/ec2")
+    public ApiResult<Map<String, Object>> getEc2(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute Ec2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        Map<String, Object> items = awsService.getEc2(
+                params.getInstanceId(), params.getRegion(), params.getFrom(), params.getTo());
+        return new ApiResult<Map<String, Object>>().success(items);
+    }
+
+    @GetMapping("/ec2/detail")
+    public ApiResult<Map<String, Object>> getEc2Detail(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute Ec2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(
+                awsService.getEc2OperationalDetail(params.getInstanceId(), params.getRegion()));
+    }
+
+    @GetMapping("/vpcs/detail")
+    public ApiResult<Map<String, Object>> getVpcDetail(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute VpcDetailDto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(awsService.getVpcDetail(params.getVpcId(), params.getRegion()));
+    }
+
+    /**
+     * ?대씪?곕뱶 ?ㅼ껌援ъ븸 ?붿빟 ??<b>DB留??쎈뒗??/b>(CE ?몄텧? ??諛곗튂 ?꾩슜). ?듯듃??
+     * (paidFeatures.costExplorer) 爰쇱쭚?대㈃ 200 + state='disabled', reason='PAID_FEATURE_OFF' ??
+     * FE???좉툑 移대뱶("?ㅼ젙?먯꽌 耳쒖꽭??)瑜?洹몃┛??
+     */
+    @GetMapping("/costs")
+    public ApiResult<Map<String, Object>> getCosts(@CurrentUser TokenUserInfo currentUser) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudCostQueryService.summary());
+    }
+
+    /**
+     * 異붿젙 鍮꾩슜(臾대즺 寃쎈줈) ???④?(Price List, 臾대즺)횞媛?숈떆媛??먯껜 ?ㅻ깄??+EBS, ??퉬 吏꾨떒 3醫?
+     * ?뵶 ?⑤뵒留⑤뱶 湲곗? 異붿젙(summary.basis) ???ㅼ껌援ъ븸???꾨땲?? ?듯듃?맞텰loudWatch? 臾닿??섍쾶 ?숈옉.
+     */
+    @GetMapping("/cost-estimate")
+    public ApiResult<Map<String, Object>> getCostEstimate(@CurrentUser TokenUserInfo currentUser) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudCostEstimateService.estimate());
+    }
+
+    /** VPC 吏꾨떒 異붿씠(?ㅻ깄??湲곕컲) ??"???몄텧???몄젣 ?앷꼈??. AWS ?몄텧 0. */
+    @GetMapping("/vpcs/history")
+    public ApiResult<Map<String, Object>> getVpcHistory(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute VpcDetailDto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudSnapshotQueryService.vpcHistory(
+                params.getVpcId(), params.getRegion(), params.getFrom(), params.getTo()));
+    }
+
+    @GetMapping("/cloudtrail/events")
+    public ApiResult<Map<String, Object>> getCloudTrailEvents(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute CloudTrailEventsDto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(awsService.getCloudTrailEvents(
+                params.getRegion(), params.getResourceId(), params.getEventName(), params.getResolvedMaxResults()));
+    }
+
+    @GetMapping("/overview")
+    public ApiResult<Map<String, Object>> getOverview(
+            @CurrentUser TokenUserInfo currentUser, @ModelAttribute CloudOverviewQueryDto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(
+                awsService.overview(params.getRegionList(), params.resolveTimeRange(java.time.Instant.now())));
+    }
+
+    /**
+     * ?몄뒪?댁뒪 ?곹깭 ?대젰(?곹깭 諛대뱶) ???ㅻ깄??DB留??쎈뒗?? AWS ?몄텧 0, CloudWatch 臾닿?.
+     * ?듯빀 ??꾨씪??devdesign_aws-status-timeline.md)??湲곕낯?좎씠???먭꺽利앸챸 寃뚯씠?몃쭔 嫄멸퀬
+     * CloudWatch 媛?⑹꽦怨쇰뒗 ?낅┰?대떎.
+     */
+    @GetMapping("/ec2/state-history")
+    public ApiResult<Map<String, Object>> getEc2StateHistory(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute Ec2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudSnapshotQueryService.stateHistory(
+                params.getInstanceId(), params.getRegion(), params.getFrom(), params.getTo()));
+    }
+
+    /**
+     * ?몄뒪?댁뒪 ?깅뒫 ?쒓퀎????{@code GetMetricStatistics}(?꾨━?곗뼱 ??. CloudWatch 沅뚰븳???녾굅??
+     * ???덉궛 ?뚯쭊?대㈃ <b>200 + 鍮?series + collection.state</b>濡?媛뺣벑?쒕떎(?먮윭 ?꾨떂).
+     */
+    @GetMapping("/ec2/metrics")
+    public ApiResult<Map<String, Object>> getEc2Metrics(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute Ec2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudMetricsService.metrics(
+                params.getInstanceId(), params.getRegion(), params.getFrom(), params.getTo()));
+    }
+
+    private void requireAwsResourcesView(TokenUserInfo currentUser) {
+        dmovePermissionChecker.requireView(currentUser, "cloudInfraMonitoring", "awsResources");
+    }
+}
+
+package com.dmove.moveseye.engine.port;
+
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.inventory.HostQuery;
+import com.dmove.moveseye.engine.model.inventory.GroupQuery;
+import com.dmove.moveseye.engine.model.inventory.InventoryGroup;
+import com.dmove.moveseye.engine.model.inventory.InventoryHost;
+import com.dmove.moveseye.engine.model.SourceRef;
+
+import java.util.List;
+
+/**
+ * ?몃깽?좊━ ?쎄린 ?ы듃(?몄뒪???명꽣?섏씠??議고쉶). devdesign 짠D2/짠4.6.
+ *
+ * <p>?꾨찓??B(?몃깽?좊━) 以??몄뒪?맞룹씤?고럹?댁뒪 議고쉶瑜??뚯뒪 以묐┰?뷀븳?? {@link MetricPort}? ?숈씪 ?먯튃:
+ * ?좏겙? ?쒓렇?덉쿂???녾퀬 {@link CallerContext}留?諛쏅뒗??짠D3). 紐⑤뱺 ?덉쇅??
+ * {@link com.dmove.moveseye.engine.error.EngineException} ?⑥씪 怨꾩링.
+ *
+ * <p><b>?ㅼ퐫???ㅽ뀦 4a)</b>: ?뚯씪??LiveCheckService)???ㅼ젣 ?곕뒗 {@link #listHosts} ?섎굹留??뺤젙?쒕떎.
+ * ?ㅼ?移?짠D2)??getEntity/listGroups/listInterfaces/checkAvailability???ㅼ냼鍮꾩옄 ?붽뎄瑜?蹂닿퀬 4b?먯꽌
+ * 利앸텇 異붽??쒕떎(짠5 ?ㅽ뀦 4b 怨꾪쉷). ?뱁엳 {@code checkAvailability}(boolean 諛섑솚)???뚯씪?우씠 ping ???IP?
+ * agent ?명꽣?섏씠??遺꾪빐源뚯? ?붽뎄??{@code listHosts}(由ъ튂 諛섑솚)濡??泥댄뻽??짠4.6 ?ㅼ?移??鍮?李⑥씠 湲곕줉).
+ */
+public interface InventoryPort {
+
+    /**
+     * ?몄뒪??紐⑸줉??議고쉶?쒕떎(媛??몄뒪?몄쓽 ?대쫫 + ?ㅽ듃?뚰겕 ?명꽣?섏씠???ы븿).
+     * {@code query.entities()}媛 ?뱀젙 ?뷀떚?곕? 吏?뺥븯硫?洹멸쾬留? 鍮꾨㈃ 媛??踰붿쐞 ?꾩껜.
+     * 寃곌낵 ?쒖꽌???뚯뒪 諛섑솚 ?쒖꽌瑜??곕Ⅸ?? 留ㅼ묶 ?놁쑝硫?鍮?由ъ뒪??NOT_FOUND ?먮떒? ?뚮퉬??紐???
+     * ?먮낯 LiveCheck??{@code HOST_NOT_FOUND} 怨꾩빟 蹂댁〈).
+     */
+    List<InventoryHost> listHosts(SourceRef src, CallerContext ctx, HostQuery query);
+
+    /**
+     * ?꾪꽣??遺?⑺븯??洹몃９ 紐⑸줉??諛섑솚?쒕떎(Zabbix hostgroup.get). 遺????ぉ???놁쑝硫?鍮?由ъ뒪??
+     * {@link GroupQuery#includeHosts()}瑜?耳쒕㈃ 媛?洹몃９???뚯냽 ?몄뒪??李몄“源뚯? 梨꾩슫??4c-4b).
+     */
+    List<InventoryGroup> listGroups(SourceRef src, CallerContext ctx, GroupQuery query);
+}
+
+package com.dmove.moveseye.engine.port;
+
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.metric.DimensionValue;
+import com.dmove.moveseye.engine.model.EntityRef;
+import com.dmove.moveseye.engine.model.metric.LatestQuery;
+import com.dmove.moveseye.engine.model.metric.LatestValue;
+import com.dmove.moveseye.engine.model.metric.MetricDomain;
+import com.dmove.moveseye.engine.model.metric.MetricRef;
+import com.dmove.moveseye.engine.model.metric.Series;
+import com.dmove.moveseye.engine.model.metric.SeriesQuery;
+import com.dmove.moveseye.engine.model.SourceRef;
+import com.dmove.moveseye.engine.model.metric.TextSample;
+import com.dmove.moveseye.engine.model.TimeRange;
+import com.dmove.moveseye.engine.model.metric.TrendSeries;
+
+import java.util.List;
+
+/**
+ * 硫뷀듃由??쎄린 ?ы듃(罹먮끂?덉뺄 硫뷀듃由?移댄깉濡쒓렇 湲곕컲 ?쒓퀎??理쒖떊媛?. devdesign 짠D2/짠4.
+ *
+ * <p>?꾨찓??A(硫뷀듃由??쎄린)瑜??뚯뒪 以묐┰?뷀븳?? ?좏겙? ?쒓렇?덉쿂???녿떎 ??{@link CallerContext}留?諛쏄퀬,
+ * ?대뙌???대? ?몄뀡 ?꾨줈諛붿씠?붽? ?먭꺽利앸챸???댁꽍?쒕떎(짠D3). 紐⑤뱺 ?덉쇅??
+ * {@link com.dmove.moveseye.engine.error.EngineException} ?⑥씪 怨꾩링?쇰줈 ?섏쭊??
+ *
+ * <p>?ㅽ뀦 1? ???ы듃留??뺤젙?쒕떎. InventoryPort/AlertPort???ㅼ냼鍮꾩옄 ?붽뎄瑜?蹂대뒗 ?ㅽ뀦 4濡??곌린(짠4 媛곸＜).
+ */
+public interface MetricPort {
+
+    /**
+     * ?뷀떚??횞 硫뷀듃由?쓽 ?쒓퀎?댁쓣 議고쉶?쒕떎.
+     * {@code rollup=RAW}???먯떆 ?섑뵆, {@code HOURLY_TREND}???쒓컙 吏묎퀎(avg)濡??댁꽍?쒕떎.
+     * ?댁꽍 遺덇???MetricRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<Series> querySeries(SourceRef src, CallerContext ctx, SeriesQuery query);
+
+    /** ?뷀떚??횞 硫뷀듃由?쓽 理쒖떊媛?lastvalue)??議고쉶?쒕떎. */
+    List<LatestValue> queryLatest(SourceRef src, CallerContext ctx, LatestQuery query);
+
+    /**
+     * ?뷀떚??횞 硫뷀듃由?쓽 ?몃젋???쒓컙 吏묎퀎) ?쒓퀎?댁쓣 踰꾪궥??min/max/avg濡?議고쉶?쒕떎.
+     * {@link #querySeries}??{@code HOURLY_TREND}媛 avg留??ｋ뒗 寃껉낵 ?щ━ ???듦퀎瑜?紐⑤몢 諛섑솚?쒕떎
+     * (min/max瑜??붽뎄?섎뒗 ?뚮퉬?먯슜 ??devdesign 짠D4/?ㅽ뀦 2 ?뚯씪??. {@code query.rollup()}? 臾댁떆?쒕떎.
+     * ?댁꽍 遺덇???MetricRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<TrendSeries> queryTrend(SourceRef src, CallerContext ctx, SeriesQuery query);
+
+    /**
+     * ?띿뒪??JSON lastvalue(?? ?붿뒪???곸꽭 dependent[,data])瑜??먮Ц 臾몄옄?대줈 議고쉶?쒕떎 ???놁쑝硫?null.
+     * ?듭?濡??쒓퀎?댁뿉 ?곌꺼?ｌ? ?딅뒗??짠D4).
+     */
+    String queryLatestText(SourceRef src, CallerContext ctx, EntityRef entity, MetricRef metric);
+
+    /**
+     * ??硫뷀듃由?<b>怨꾩뿴</b>(?ъ쟾??李⑥썝 媛믪쓣 ?????녿뒗 ?ㅼ감???꾩씠??吏묓빀)??紐⑤뱺 ?꾩씠??理쒖떊媛믪쓣
+     * 怨꾩뿴???뚯뒪 1肄쒕줈 議고쉶?쒕떎(留덉슫?맞룹씤?고럹?댁뒪쨌?붿뒪?щ챸 ??. devdesign 짠5 ?ㅽ뀦 3a(諛곗튂 議고쉶).
+     *
+     * <p>{@link #queryLatest}媛 (?뷀떚?걘쀫찓?몃┃) 援먯감怨깆쓽 <b>?뺥솗 ??/b>瑜?議고쉶?섎뒗 寃껉낵 ?щ━, ??硫붿꽌?쒕뒗
+     * {@code familyRef}媛 移댄깉濡쒓렇??<b>SEARCH ?꾨━?쎌뒪(?먮뒗 ?대갚 泥댁씤)</b>濡??댁꽍?섏뼱 怨꾩뿴 ?꾩껜瑜???踰덉뿉
+     * 諛쏅뒗???먮낯 ?쒕퉬?ㅻ뱾??family search + 濡쒖뺄 留ㅼ묶怨??숈씪???⑥쑉 ??N+1 諛⑹?). ?붿뒪???곸꽭/?붿빟泥섎읆
+     * 留덉슫???섎쭔??媛쒕퀎 議고쉶?섎㈃ 肄쒖씠 ??쬆?섎뒗 寃쎈줈瑜??꾪븳 寃껋씠??
+     *
+     * <p>媛?寃곌낵??{@code entity}???꾩씠?쒖쓽 ?뚯뒪 ?몄뒪?? {@code metric.dims()}?먮뒗 ?대뙌?곌? ?먯떆 ?ㅼ뿉??
+     * ?뚯떛??李⑥썝(?? {@code {partition:"/data", sub:"used"}})?? {@code raw}?먮뒗 ?먮Ц lastvalue(JSON ?ы븿)媛
+     * ?ㅻ┛?? ?щ윭 ?뷀떚?곕? ??踰덉뿉 ?섍린硫?寃곌낵??{@code entity}濡?援щ텇?쒕떎(洹몃９ 議고쉶 = 怨꾩뿴??1肄?.
+     * 怨꾩뿴 ?대갚 泥댁씤???덉쑝硫?1李?怨꾩뿴??<b>???뷀떚?곗뿉??/b> 鍮꾩뿀???뚮쭔 2李?怨꾩뿴濡??섏뼱媛꾨떎.
+     * ?댁꽍 遺덇???familyRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<LatestValue> queryLatestFamily(SourceRef src, CallerContext ctx, List<EntityRef> entities,
+                                        MetricRef familyRef);
+
+    /**
+     * ??硫뷀듃由?<b>怨꾩뿴</b>??紐⑤뱺 ?꾩씠??<b>?몃젋??/b>(?쒓컙 吏묎퀎)瑜?怨꾩뿴???뚯뒪 1肄쒕줈 議고쉶?쒕떎.
+     * devdesign 짠D4 / ?ㅽ뀦 4c-4k.
+     *
+     * <p>{@link #queryLatestFamily}(理쒖떊媛???<b>?몃젋????묐Ъ</b>?대ŉ, {@link #queryTrend}???李⑥씠媛 ?듭떖?대떎:
+     * {@code queryTrend}??(?뷀떚??횞 硫뷀듃由? ?留덈떎 <b>?꾩씠???섎굹</b>瑜??댁꽍?섎?濡????뷀떚?곌? 媛숈? 怨꾩뿴??
+     * ?꾩씠?쒖쓣 ?щ읉 媛吏?寃쎌슦(留덉슫?몃쭏???섎굹, ?명꽣?섏씠?ㅻ쭏???섎굹) <b>洹??먮━?먯꽌 ?섎㉧吏媛 ?뚯떎?쒕떎</b>.
+     * 洹몃９ ?꾩껜???붿뒪???ъ슜瑜졖룻듃?섑뵿泥섎읆 "?뷀떚?곕떦 ?ㅼ닔 ?꾩씠?쒖쓣 紐⑥븘 吏묎퀎"?섎뒗 ?뚮퉬?먮? ?꾪븳 寃껋씠??
+     *
+     * <p>寃곌낵???꾩씠???섎굹??{@link TrendSeries} ?섎굹?? {@code entity}???꾩씠?쒖쓽 ?뚯뒪 ?뷀떚??
+     * {@code metric.dims()}?먮뒗 ?대뙌?곌? ?먯떆 ?ㅼ뿉???뚯떛??李⑥썝(?? {@code {partition:"/data", sub:"pused"}},
+     * {@code {iface:"eth0"}})???ㅻ┛?????뚮퉬?먮뒗 <b>??李⑥썝?쇰줈 遺媛 吏?쒕? 嫄곕Ⅸ??/b>(?먯떆 ?ㅻ? 蹂댁? ?딅뒗??.
+     * 媛숈? ?뷀떚?곗쓽 ?щ윭 ?쒕━利덈뒗 dims濡?援щ텇?쒕떎.
+     *
+     * <p>?щ윭 ???⑦꽩??媛吏?怨꾩뿴? 移댄깉濡쒓렇 ?ъ뼇???뺥븳 諛⑹떇?쇰줈 ?뚮퉬?쒕떎 ??泥좎옄 ?섎굹瑜?怨좊Ⅴ嫄곕굹(?대갚),
+     * ??泥좎옄瑜??⑹튂嫄곕굹(?⑹쭛??. ?щ윭 ?뷀떚?곕? 媛濡쒖?瑜대뒗 議고쉶??蹂댄넻 ?꾩옄?ъ빞 ?쒕떎(?뷀떚?곕쭏??泥좎옄媛
+     * ?ㅻ? ???덈떎). ?댁꽍 遺덇???familyRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<TrendSeries> queryTrendFamily(SourceRef src, CallerContext ctx, List<EntityRef> entities,
+                                       MetricRef familyRef, TimeRange range);
+
+    /**
+     * ???뷀떚?걔룻븳 硫뷀듃由?쓽 <b>理쒓렐 ?띿뒪???대젰</b>???뚯뒪 諛섑솚 ?쒖꽌(理쒖떊???뺣젹 ?뚰듃)濡?理쒕? {@code limit}媛?
+     * 議고쉶?쒕떎. devdesign 짠D4 / ?ㅽ뀦 3c.
+     *
+     * <p>{@link #queryLatestText}媛 ?⑥씪 理쒖떊 ?띿뒪?몄씤 寃껋쓽 <b>?ㅺ굔(?대젰) ???/b>?대떎. 濡쒓렇 怨꾩뿴
+     * (value_type=LOG/TEXT/CHAR)泥섎읆 ?섏튂 {@link #querySeries}???곌꺼?ｌ쓣 ???녿뒗 ?띿뒪???섑뵆 紐⑸줉?⑹씠??
+     * 媛?{@link TextSample}? epoch쨌?먮Ц ?띿뒪?맞룹냼???먯떆 ?앸퀎??nativeId=itemid)瑜??ｋ뒗?? ?꾩씠??遺?щ㈃ 鍮?由ъ뒪??
+     * ?댁꽍 遺덇???MetricRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<TextSample> queryRecentText(SourceRef src, CallerContext ctx, EntityRef entity, MetricRef metric, int limit);
+
+    /**
+     * ?붿뒪而ㅻ쾭由ъ꽦 李⑥썝(留덉슫??紐⑸줉쨌?명꽣?섏씠??紐⑸줉 ????議고쉶?쒕떎.
+     * 吏?먰븯吏 ?딅뒗 ?꾨찓?몄? 鍮?由ъ뒪??
+     */
+    List<DimensionValue> listDimensions(SourceRef src, CallerContext ctx, EntityRef entity, MetricDomain domain);
+}
+
+# COLLAB.md ??Codex ??Claude ?묒뾽 洹쒖빟
+
+`C:\solutions` 紐⑤끂?덊룷瑜?**Codex(肄붾뜳??CLI)** ? **Claude(Claude Code)** 媛 ?섎닠 留≪쓣 ?뚯쓽 洹쒖튃?대떎.
+???먯씠?꾪듃 紐⑤몢 ?묒뾽 ?쒖옉 ?꾩뿉 ??臾몄꽌瑜??쎈뒗?? (Codex??`AGENTS.md`, Claude??`CLAUDE.md`?먯꽌 ?ш린濡?留곹겕??
+
+---
+
+## ?뵖 ?곹깭 ?ㅼ쐞移?(?ш린 ??以꾩씠 ?꾨?瑜?耳쒓퀬 ?덈떎)
+
+```
+STATUS: SOLO-CLAUDE
+```
+
+- **`ACTIVE`** ???묒뾽 紐⑤뱶. ??臾몄꽌??紐⑤뱺 洹쒖튃???곸슜?쒕떎.
+- **`SOLO-CLAUDE`** ??Claude ?⑤룆. **짠1 ?뚯쑀沅뚭낵 짠6 ?섎꽕???쒖빟???꾨? 臾댄슚**媛 ?섍퀬, Claude媛 BE쨌FE ?묒そ????留〓뒗???먮옒 ?섎꽕?ㅻ?濡?.
+- **`SOLO-CODEX`** ??Codex ?⑤룆. ?뚯쑀沅??쒖빟 臾댄슚, Codex媛 ?묒そ????留〓뒗??
+
+**?ㅻⅨ ?뚯씪??諛곕꼫쨌?쒖빟? ?꾨? "??以꾩씠 `ACTIVE`???뚮쭔" ?곸슜?쒕떎.** 紐⑤뱶瑜?諛붽씀?ㅻ㈃ ????以꾨쭔 怨좎튂硫??섍퀬, ?ㅻⅨ ?뚯씪? ?먮?吏 ?딅뒗??
+?댁젣쨌蹂듦? ?덉감??짠7 李몄“.
+
+**?묒뾽 紐⑤뱶 梨꾪깮??** 2026-08-02 쨌 **遺꾨떞 異?** BE/FE ?섏쭅 遺꾪븷 쨌 **異⑸룎 諛⑹?:** ??釉뚮옖移??좎? + ?곸뿭 諛고?
+
+---
+
+## 1. ?뚯쑀沅?(Ownership)
+
+| ?곸뿭 | ?뚯쑀??| ?곷???沅뚰븳 |
+|------|--------|------------|
+| `moveseye-be-spring/` (BE ?뺣낯, Spring) | **Codex** | ?쎄린留?|
+| `moveseye-engine/` (?섏쭛 ?붿쭊 ?묒뾽臾? | **Codex** | ?쎄린留?|
+| `moveseyee_fe/` (FE, React) | **Claude** | ?쎄린留?|
+| `moveseye-be/` (援?NestJS) | ??| **?묒そ 紐⑤몢 ?쎄린 ?꾩슜** (湲곗〈 洹쒖튃 ?좎?) |
+| `vault/` (?쒗겕由? | ?ъ슜??| ?묒そ ???섏젙 湲덉? |
+
+**?듭떖 洹쒖튃: ?뚯쑀?섏? ?딆? ?덊룷???곌린(?앹꽦쨌?섏젙쨌??젣쨌而ㅻ컠)瑜??섏? ?딅뒗?? ?쎄린???먯쑀??**
+
+?곷? ?곸뿭???섏젙???꾩슂?섎㈃ **吏곸젒 怨좎튂吏 留먭퀬** 짠3???묒젏(怨꾩빟???대굹 ?ъ슜?먮? ?듯빐 ?붿껌?쒕떎.
+"??以꾩씠硫??섎땲源?, "鍮뚮뱶媛 源⑥졇??湲됲빐?????덉쇅媛 ?꾨땲?????곷?媛 媛숈? ?뚯씪???몄쭛 以묒씠硫?洹??몄쭛???듭㎏濡??щ씪吏꾨떎.
+
+> **遺?몄뒪?몃옪 ?덉쇅(1??:** 2026-08-02 ?묒뾽 紐⑤뱶 ?꾩엯 ??Claude媛 媛??덊룷??洹쒖빟 ?뚯씪 ?곷떒???뚯쑀沅?諛곕꼫瑜??쎌엯?덈떎
+> (`moveseye-be-spring/{AGENTS,CLAUDE}.md`, `moveseyee_fe/{AGENTS,CLAUDE}.md`). 肄붾뱶??嫄대뱶由ъ? ?딆븯??
+> ?댄썑 ?곷? ?덊룷??洹쒖빟 ?뚯씪 蹂寃쎈룄 짠4??"?ъ슜???뱀씤 ?? 洹쒖튃???곕Ⅸ??
+
+---
+
+## 2. 釉뚮옖移샕룹빱諛?
+- ???덊룷 紐⑤몢 **??釉뚮옖移?`ZM-87`)?먯꽌 洹몃?濡??묒뾽**?쒕떎. ?묒뾽??蹂꾨룄 釉뚮옖移섎? ?뚯? ?딅뒗??
+- ?덊룷媛 臾쇰━?곸쑝濡?遺꾨━???덉쑝誘濡? 짠1??吏?ㅻ뒗 ??而ㅻ컠 異⑸룎? 諛쒖깮?섏? ?딅뒗??
+- **媛곸옄 ?먭린 ?뚯쑀 ?덊룷留?而ㅻ컠**?쒕떎. ?곷? ?덊룷?먯꽌 `git add`/`commit`/`checkout`/`stash`/`reset`???ㅽ뻾?섏? ?딅뒗??
+- 而ㅻ컠 硫붿떆吏??`Co-Authored-By:` ?몃젅?쇰윭瑜??ｌ? ?딅뒗??(湲곗〈 洹쒖튃).
+- ?몄떆???ъ슜??吏?쒓? ?덉쓣 ?뚮쭔.
+
+---
+
+## 3. ?묒젏 ??API 怨꾩빟???섎굹
+
+BE? FE??**?좎씪??怨듭떇 ?묒젏? `_workspace/contract_{feature}.md`** ??
+
+```
+Codex ??> moveseye-be-spring/     (而⑦듃濡ㅻ윭쨌?쒕퉬?ㅒ텱TO쨌Flyway쨌?뚯뒪??
+             ??             ?붴? _workspace/contract_{feature}.md   ???⑥씪 吏꾩떎 ?먯쿇(SSOT)
+             ??Claude ??> moveseyee_fe/          (services/*.api.ts 쨌 types 쨌 hooks 쨌 而댄룷?뚰듃)
+```
+
+### 吏꾪뻾 ?쒖꽌 (BE ?좏뻾)
+
+1. **Codex**: BE ?붾뱶?ъ씤??援ы쁽 ??鍮뚮뱶쨌?뚯뒪???듦낵 ?뺤씤 ??`_workspace/contract_{feature}.md` ?묒꽦/媛깆떊 ???ъ슜?먯뿉寃?"怨꾩빟 ?곗텧 ?꾨즺" 蹂닿퀬.
+2. **Claude**: 怨꾩빟?쒕? ?쎄퀬 FE ?곕룞(types ??api ??hook ???붾㈃). 怨꾩빟?쒖뿉 ?녿뒗 ?꾨뱶瑜?**異붿륫?댁꽌 留뚮뱾吏 ?딅뒗??*.
+3. **Claude**: FE ?꾨즺 ??寃쎄퀎硫는룸윴???寃利???寃곌낵瑜?`_workspace/qa_{feature}.md` / `e2e_{feature}.md`??湲곕줉.
+
+### 怨꾩빟???묒꽦 洹쒖튃 (Codex)
+
+- ?뺤떇? 湲곗〈 怨꾩빟?쒕? 洹몃?濡??곕Ⅸ??(?? `_workspace/contract_host-livecheck.md`).
+- 諛섎뱶???ы븿: 硫붿꽌?쑣룰꼍濡쑣룹씤利?沅뚰븳쨌?붿껌 ?뚮씪誘명꽣쨌**?묐떟 payload shape(二쇱꽍????끒톘ullable쨌?앸왂 ?щ?)**쨌?먮윭 耳?댁뒪쨌?곹깭肄붾뱶.
+- FE??`useDmoveQuery`媛 **2寃??몃옪**?섏뿬 `data` payload瑜?吏곸젒 ?섏떊?쒕떎. 怨꾩빟?쒖쓽 shape? **?몃옪 ??payload 湲곗?**?쇰줈 ?곷뒗??
+- ?먮윭??HTTP 肄붾뱶媛 ?꾨땲??**200 + 諛붾뵒 `code`** 濡??쒗쁽?섎뒗 湲곗〈 怨꾩빟???곕Ⅸ??
+
+### 怨꾩빟 蹂寃쎌씠 ?꾩슂????(Claude ??Codex)
+
+FE ?곕룞 以?怨꾩빟????멸굅??遺議깊븯硫? 吏곸젒 BE瑜?怨좎튂吏 留먭퀬 怨꾩빟???섎떒??**`## ?봽 FE ?붿껌?ы빆`** ?뱀뀡??異붽??쒕떎:
+
+```markdown
+## ?봽 FE ?붿껌?ы빆
+- [ ] (2026-08-02, Claude) `hostname` ?꾨뱶媛 ?묐떟???놁쓬 ??紐⑸줉 ?붾㈃???꾩슂. 異붽? ?붿껌.
+- [x] (2026-08-02, Codex) 諛섏쁺 ?꾨즺 ??v2 shape 李몄“.
+```
+
+洹몃━怨??ъ슜?먯뿉寃?"肄붾뜳??履??묒뾽 ?꾩슂" ?쇨퀬 蹂닿퀬?쒕떎. Codex???묒뾽 ?쒖옉 ???대떦 怨꾩빟?쒖쓽 ???뱀뀡??癒쇱? ?뺤씤?쒕떎.
+
+---
+
+## 4. 怨듭쑀 ?먯썝 洹쒖튃
+
+| ?먯썝 | 洹쒖튃 |
+|------|------|
+| `_workspace/` | `contract_*`??**Codex媛 ?곌린 二쇱껜**(FE ?붿껌?ы빆 ?뱀뀡留?Claude 異붽?). `qa_*`쨌`e2e_*`??寃利앺븳 履쎌씠 ?대떎. ?ㅺ퀎??`devdesign_*`???묒꽦??紐낆떆 ???⑤룆 ?몄쭛. **?대뜑 ?꾩껜 ?대룞쨌??젣 湲덉?**(?꾩쟻 蹂댁〈). |
+| 猷⑦듃 `AGENTS.md` / `CLAUDE.md` / `COLLAB.md` | ?섏? 誘몃윭 臾몄꽌?? **?쒖そ留?怨좎튂硫?drift媛 ?앷린誘濡???긽 ?④퍡 媛깆떊**?섍퀬, 媛깆떊? ?ъ슜???뱀씤 ?꾩뿉留??쒕떎. |
+| Obsidian Vault (`C:\Users\DMOVE\claude-experiences\`) | ?묒そ ??湲곕줉?쒕떎. ??**媛숈? ?명듃瑜??숈떆???몄쭛?섏? ?딅뒗??* ????寃쏀뿕? ???명듃濡?留뚮뱾怨?`INDEX.md`????以꾨쭔 異붽?. |
+| dev DB (?꾩빱 5433) | ?ㅽ궎留덈? 諛붽씀??Flyway 留덉씠洹몃젅?댁뀡? **Codex留?* 異붽?. Claude??議고쉶留? |
+
+---
+
+## 5. ?고????쒕쾭 湲곕룞) 洹쒖튃
+
+FE 寃利앹뿉??BE(:3000)媛 ?꾩슂?섎?濡?湲곕룞 沅뚰븳??寃뱀튇??
+
+- **BE(:3000) 湲곕룞/?ш린???щ퉴?쒕뒗 Codex ?대떦.** Claude??**?대? ???덈뒗 BE瑜??ъ슜**?쒕떎.
+- BE媛 ?????덉뼱??FE 寃利앹씠 留됲엳硫? Claude??**?쎄린 ?꾩슜?쇰줈 湲곕룞留?* ?????덈떎(肄붾뱶 ?섏젙쨌鍮뚮뱶 ?곗텧臾?蹂寃??놁씠 `bootRun`). ??寃쎌슦 ?먭린媛 ?꾩슫 ?꾨줈?몄뒪???먭린媛 ?대┛??
+- **BE瑜??щ퉴?쒗빐???섎뒗 ?곹솴?대㈃ Claude??硫덉텛怨??ъ슜?먯뿉寃?蹂닿퀬**?쒕떎 ??Codex媛 ?몄쭛 以묒씤 ?뚯뒪瑜?鍮뚮뱶?섎㈃ 諛섏そ吏쒕━ 諛붿씠?덈━媛 ?щ떎.
+- FE(:5173, ?ы듃 auto-increment 二쇱쓽) 湲곕룞? Claude ?대떦.
+- 湲곕룞 ?꾩젣(JDK17 留ㅻ쾲 吏?? dev ?꾨줈??5433 ?꾩빱 DB, API ?몄텧 ??`x-visitor-id` ?ㅻ뜑 ?꾩닔)??湲곗〈 洹쒖빟???곕Ⅸ??
+
+---
+
+## 6. Claude 痢??섎꽕???곕룞
+
+湲곗〈 ?섎꽕??`fullstack-feature` ????BE쨌FE瑜????몄뀡?먯꽌 泥섎━?섎룄濡??ㅺ퀎?먮떎. ?묒뾽 紐⑤뱶?먯꽌???ㅼ쓬???곗꽑?쒕떎:
+
+- **`be-engineer` ?먯씠?꾪듃瑜??ㅽ룿??BE???곌린 ?묒뾽???쒗궎吏 ?딅뒗??** BE??Codex 紐レ씠??
+- `fullstack-feature` ?ㅽ뻾 ??BE ?④퀎??**"怨꾩빟???湲?** 濡??泥댄븳????怨꾩빟?쒓? ?덉쑝硫?FE遺?? ?놁쑝硫?"肄붾뜳?ㅼ뿉 BE ?좏뻾 ?꾩슂" 濡?蹂닿퀬?섍퀬 硫덉텣??
+- `be-engineer`??**?쎄린 ?꾩슜 議곗궗**(BE 肄붾뱶 ?뺤씤, 怨꾩빟 ?댁꽍) ?⑸룄濡쒕쭔 ?????덈떎.
+- `integration-qa` / `functional-qa` ??洹몃?濡??ъ슜?쒕떎(寃利앹? ?쎄린+?ㅽ뻾?대씪 ?뚯쑀沅뚯쓣 移⑤쾾?섏? ?딆쓬). ??寃고븿??BE???덉쑝硫?**怨좎튂吏 留먭퀬 짠3??FE ?붿껌?ы빆?쇰줈 ?섍릿??*.
+
+---
+
+## 7. 紐⑤뱶 ?꾪솚 (?댁젣쨌蹂듦?)
+
+> ?? "肄붾뜳???좏겙???⑥뼱?몄꽌 Claude ?쇱옄 媛???쒕떎" ??**`SOLO-CLAUDE`濡??꾪솚**.
+
+?ъ슜?먭? **"?댁젣 ???쇱옄 ??, "肄붾뜳?????대떎", "?⑤룆?쇰줈 媛??, "?묒뾽 紐⑤뱶 ?꾩옄"** 媛숈? 吏?쒕? ?섎㈃ ?꾨옒瑜??섑뻾?쒕떎.
+?뚯씪???섎룎由ш굅??諛곕꼫瑜?吏?곗? ?딅뒗????**?ㅼ쐞移???以꾨쭔 諛붽씔??**
+
+### ?꾪솚 ?덉감 (SOLO-CLAUDE)
+
+1. **?몄닔?멸퀎 ?뺤씤 癒쇱?.** ?곷?媛 ?묒뾽?섎떎 留?寃껋씠 ?⑥븘 ?덉쓣 ???덈떎:
+   ```bash
+   git -C C:/solutions/moveseye-be-spring status --porcelain
+   git -C C:/solutions/moveseye-be-spring log --oneline -5
+   ```
+   - 誘몄빱諛?蹂寃쎌씠 ?덉쑝硫?**吏?곌굅??由ъ뀑?섏? 留먭퀬** 臾댁뾿???⑥븯?붿? ?ъ슜?먯뿉寃?癒쇱? 蹂닿퀬?쒕떎(以묐떒 吏?먯씪 ???덉쓬).
+   - `_workspace/contract_*.md`??`## ?봽 FE ?붿껌?ы빆` 以?誘몄쿂由?`[ ]`) ??ぉ???⑥븯?붿? ?뺤씤 ??洹멸쾶 怨??멸퀎諛쏆쓣 ?붿뿬 ?묒뾽?대떎.
+2. **?ㅼ쐞移?蹂寃?** 짠0??`STATUS: ACTIVE` ??`STATUS: SOLO-CLAUDE`. ?꾨옒 ?꾪솚 ?대젰????以?異붽?.
+3. **洹?利됱떆 ?대젃寃?諛붾먮떎** (?ㅻⅨ ?뚯씪 ?섏젙 遺덊븘??:
+   - BE ?덊룷 ?곌린 湲덉? ?댁젣 ??Claude媛 BE쨌FE ?묒そ ???섏젙쨌而ㅻ컠 媛??
+   - `be-engineer` ?뺤긽 ?ㅽ룿 媛???쎄린 ?꾩슜 ?쒗븳 ?댁젣), `fullstack-feature`??Phase -1??嫄대꼫?곌퀬 ?먮옒 ?뚯씠?꾨씪??BE 援ы쁽 ??怨꾩빟 ??FE ??QA)?쇰줈 ?ㅽ뻾.
+   - BE(:3000) 湲곕룞쨌?щ퉴??沅뚰븳 ?뚯닔.
+   - 怨꾩빟??`contract_*.md`)??**怨꾩냽 ?대떎** ???묒뾽?⑹씠湲??댁쟾???섎꽕?ㅼ쓽 SSOT??
+
+### 蹂듦? ?덉감 (?ㅼ떆 ACTIVE)
+
+1. ?먭린 ?뚯쑀媛 ?꾨땶 ?덊룷??**?⑤룆 湲곌컙 以?留뚮뱺 蹂寃쎌씠 誘몄빱諛뗭쑝濡??⑥븘 ?덉? ?딆?吏** ?뺤씤?섍퀬, ?덉쑝硫?而ㅻ컠?섍굅???ъ슜?먯뿉寃?蹂닿퀬?쒕떎(洹몃?濡??먮㈃ ?곷?媛 洹??꾩뿉 ?묒뾽?섎떎 異⑸룎).
+2. 洹?湲곌컙??諛붾?BE ?붾뱶?ъ씤?멸? 怨꾩빟?쒖뿉 諛섏쁺?먮뒗吏 ?뺤씤 ???⑤룆 ?묒뾽 以묒뿏 怨꾩빟?쒕? 嫄대꼫?곌린 ?쎈떎.
+3. ?ㅼ쐞移섎? `ACTIVE`濡??섎룎由ш퀬 ?꾪솚 ?대젰??湲곕줉.
+
+---
+
+## 8. 寃??紐⑤뱶 (`SOLO-CLAUDE` 湲곌컙??Codex ??븷)
+
+2026-08-03遺??Codex??**?곸뿭 ?뚯쑀?먭? ?꾨땲??寃?섏옄**?? 援ы쁽? Claude媛 BE쨌FE 紐⑤몢 留〓뒗??
+
+| | ?대떦 |
+|---|---|
+| 援ы쁽(BE쨌FE쨌留덉씠洹몃젅?댁뀡쨌?뚯뒪?? | **Claude** |
+| 寃???ㅺ퀎 ?곹빀?굿룻쉶洹 ?꾪뿕쨌怨꾩빟 ?뺥빀쨌?볦튇 耳?댁뒪) | **Codex** |
+
+### 寃???붿껌 諛⑸쾿
+
+Claude??湲곕뒫 ?⑥쐞媛 ?앸굹硫?**`_workspace/review_{feature}.md`** 瑜?留뚮뱾???꾨옒瑜??곷뒗??
+
+- **踰붿쐞**: 臾댁뾿??諛붽엥??湲곕뒫 ??以?+ 蹂寃??뚯씪 紐⑸줉)
+- **?섎룄**: ???대젃寃??덈굹(?좏깮???ㅺ퀎? 踰꾨┛ ???
+- **以묒젏 ?뺤씤 ?붿껌**: ?ㅼ뒪濡?遺덉븞??吏?????ш린瑜?鍮꾩슦吏 留?寃? 寃?섏쓽 媛믪뼱移섎뒗 ?遺遺??ш린???섏삩??- **寃利??꾪솴**: ?듦낵??寃?鍮뚮뱶쨌?뚯뒪?맞룸윴???怨?**寃利?紐???寃?*???섎닠 ?곷뒗??
+Codex??媛숈? ?뚯씪 ?섎떒 `## 寃??寃곌낵`??湲곕줉?쒕떎. 寃고븿? ?ш컖???뵶/?윞/?윟)? 洹쇨굅瑜?遺숈씤??
+Claude媛 諛섏쁺??????ぉ??`[x]`濡??ル뒗??
+
+### ?먯튃
+
+- **?먭린 肄붾뱶???먭린媛 寃?섑븯吏 ?딅뒗??** Claude媛 援ы쁽??寃껋쓣 Claude媛 由щ럭???듦낵?쒗궎吏 ?딅뒗??
+- 寃??吏?곸? **怨꾩빟???붿껌怨?媛숈? 臾닿쾶**濡??ㅻ，????諛섏쁺?섍굅?? 諛섏쁺?섏? ?딅뒗 ?댁쑀瑜??뚯씪???곷뒗??
+- ?좑툘 **寃???몃━嫄곕뒗 ?섎룞?대떎**(?ъ슜?먭? Codex ?몄뀡???곕떎). ?묒뾽 紐⑤뱶?먯꽌 ?붿껌???섎（ 臾듭뿀??寃껉낵 媛숈? 蹂묐ぉ?대?濡?
+  Claude??寃???붿껌??留뚮뱺 利됱떆 **?ъ슜?먯뿉寃?"寃???섍만 寃??덉쓬"??蹂닿퀬**?쒕떎. ?볦븘?먯? ?딅뒗??
+
+---
+
+### ?꾪솚 ?대젰
+
+| ?좎쭨 | ?꾪솚 | ?ъ쑀 | ?몄닔?멸퀎 硫붾え |
+|------|------|------|--------------|
+| 2026-08-24 | ??`SOLO-CODEX` | ?ъ슜??吏?????쇱씠?좎뒪 諛깆뿏???⑦궎吏 ?ы렪怨?濡쒓렇 ?뺤콉 ?뺣━瑜?Codex媛 ?꾨떞 | ?꾪솚 ??BE ?묒뾽 ?몃━? 誘몄쿂由?`contract_*` ?붿껌???뺤씤?덈떎. ?쇱씠?좎뒪 湲곕뒫 踰붿쐞留?蹂寃쏀븯硫? 湲곗〈 蹂寃쎌? 蹂댁〈?쒕떎. |
+| 2026-08-24 | ??`SOLO-CLAUDE` | ?ъ슜??吏?????대씪?곕뱶(AWS) 紐⑤땲?곕쭅???ㅼ젙 媛믪쑝濡??쒖꽦?뷀븯??寃뚯씠???묒뾽??Claude媛 BE쨌FE ?묒そ 援ы쁽 | ?좑툘 ?몄닔?멸퀎: **?묒そ ?덊룷??Codex 誘몄빱諛?蹂寃쎌씠 ?⑥븘 ?덇퀬 ?ъ슜?먭? "肄붾뜳?ㅻ뒗 硫덉톬??怨??뺤씤??洹몃?濡?蹂댁〈??梨??뱀뼱???묒뾽?쒕떎.** BE `ZM-79` 7?뚯씪 ?섏젙+3?뚯씪 ?좉퇋(?몄뒪??紐⑤땲?곕쭅 而ㅻ쾭由ъ? API), FE `master` 17?뚯씪 ?섏젙+9嫄??좉퇋(?대퉬 媛쒗렪쨌KPI ?ㅽ듃由승룰?濡쒕쾶 寃??. ?뵶 寃뱀튂???뚯씪 = FE `SideNav.tsx`쨌`locales/{en,kr}.json`쨌`constants/queryKey.ts` ??湲곗〈 蹂寃쎌쓣 ??? 留먭퀬 ?댁뼱 遺숈씪 寃? 釉뚮옖移섍? BE `ZM-79` / FE `master`濡?媛덈씪???덉쓬 |
+| 2026-08-21 | ??`SOLO-CODEX` | ?ъ슜???뱀씤?쇰줈 AI ?뚮엺 ?명뀛由ъ쟾??蹂꾨룄 ?섏씠吏瑜?Codex媛 援ы쁽 | 援ы쁽 ???뺤씤: FE??湲곗〈 誘몄빱諛?蹂寃?2嫄닿낵 AI ?쒕쾭??湲곗〈 誘몄빱諛?蹂寃?6嫄댁? ?대쾲 ?묒뾽?먯꽌 蹂댁〈?쒕떎. |
+| 2026-08-02 | ??`ACTIVE` | ?묒뾽 紐⑤뱶 ?꾩엯 | ??|
+| 2026-08-03 | ??`SOLO-CLAUDE` | BE/FE ?섏쭅 遺꾪븷??鍮꾪슚?????ㅼ궗??留됰뒗 ??ぉ??BE ?湲곕줈 硫덉땄(?붿껌 6嫄?. **援ы쁽? Claude ?⑥씪, Codex??寃???대떦**?쇰줈 ?ы렪 | ?몄닔?멸퀎 ?꾨즺: Codex媛 R-1~R-5쨌A-1 **6嫄??꾨? 泥섎━ ??而ㅻ컠**(`e946f7c`, 08-03 15:07). BE 誘몄빱諛??붿뿬 ?놁쓬(?묒뾽 諛곕꼫 `AGENTS.md`留?. ?뵶 **`V18`? `cost_bulk_upload_job`???좎젏** ??M2 ?덉궛? `V19`, Cloud??`V20`?쇰줈 諛由?|
+| 2026-08-06 | ??`SOLO-CODEX` | ?ъ슜???뱀씤?쇰줈 BE쨌FE 誘몄빱諛?蹂寃쎌쓣 Codex媛 ?뺣━쨌寃利씲룹빱諛떷룻뫖??| BE `ZM-79`, FE `ZM-87` ?꾩옱 釉뚮옖移섎? ?좎? |
+| 2026-08-10 | ??`SOLO-CLAUDE` | ?ъ슜??吏?쒕줈 ?쇱씠?좎뒪 0?④퀎(T3 寃利???T4~T10)瑜?Claude媛 ?댁뼱諛쏆쓬 | ?몄닔?멸퀎 ?뺤씤 ?꾨즺: BE쨌FE쨌諛쒓툒湲?**???덊룷 紐⑤몢 誘몄빱諛??붿뿬 0쨌誘명뫖??0**(BE쨌FE??`master` 泥댄겕?꾩썐). `contract_*.md`??誘몄쿂由?`FE ?붿껌?ы빆` 0嫄? Codex??짠8 寃???대떦?쇰줈 蹂듦? |
+| 2026-08-10 | ??`SOLO-CODEX` | ?ъ슜???뱀씤?쇰줈 吏由щ㏊ 留곹겕 ?몄쭛 湲곕뒫??Codex媛 援ы쁽 | FE `master` 誘몄빱諛??붿뿬 0 ?뺤씤. BE `ZM-79`???쇱씠?좎뒪 ?묒뾽 誘몄빱諛?蹂寃쎌? 蹂댁〈?섍퀬 ?대쾲 ?묒뾽?먯꽌 嫄대뱶由ъ? ?딆쓬 |
+| 2026-08-11 | ??`SOLO-CLAUDE` | ?ъ슜??吏????**"媛쒕컻? Claude, 寃?섎쭔 Codex"**(짠8). ?ㅼ쐞移섍? ?섎（ ?ъ씠 ??踰??ㅼ쭛? ?ㅼ젣 ?댁쁺怨?臾몄꽌媛 怨꾩냽 ?닿툔?щ떎 | ???덊룷 紐⑤몢 誘몄빱諛?0. FE ?쇱씠?좎뒪 ?붾㈃? Codex媛 `3fa60fb`濡?而ㅻ컠 ?꾨즺 ???뵶 **寃뚯씠??errorCode 4醫?泥섎━媛 鍮좎졇 ?덉뼱** Claude媛 ?댁뼱??梨꾩슫??|
+| 2026-08-10 | ??`SOLO-CLAUDE` | ?ъ슜??吏????**援ы쁽? Claude ?⑤룆(BE쨌FE 紐⑤몢), Codex??寃利앸쭔**(짠8 寃??紐⑤뱶) | BE `ZM-79` ?쇱씠?좎뒪 T3 寃利씲톂4 而ㅻ컠 ?꾨즺(`8cb1944`쨌`eb86507`), 誘몄빱諛??붿뿬 0. ?좑툘 **Codex媛 FE 吏由щ㏊ 留곹겕 ?몄쭛???묒뾽 以묒씠?덈떎** ??FE???먮?湲??꾩뿉 洹몄そ 寃곌낵媛 而ㅻ컠?먮뒗吏 癒쇱? ?뺤씤??寃?|
+| 2026-08-10 | ??`SOLO-CODEX` | ?ъ슜???뱀씤?쇰줈 ?ㅽ듃?뚰겕 留??룹옄 留곹겕 爰얠엫 媛꾧꺽 議곗젅 湲곕뒫??Codex媛 援ы쁽 | FE `master` 誘몄빱諛??붿뿬 0 諛?吏由щ㏊ 留곹겕 ?몄쭛 而ㅻ컠 `554ae60` ?뺤씤. BE `ZM-79` ?쇱씠?좎뒪 誘몄빱諛?蹂寃쎌? 蹂댁〈?섍퀬 嫄대뱶由ъ? ?딆쓬 |
+
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/port/InventoryPort.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/port/MetricPort.java; Get-Content -Raw src/main/java/com/dmove/moveseye/aws/AwsService.java; Get-Content -Raw src/main/java/com/dmove/moveseye/aws/dto/Ec2Dto.java; Get-Content -Raw src/main/java/com/dmove/moveseye/aws/dto/GetEc2Dto.java; rg -n -S \"listHosts\\(|queryTrend\\(|memoryUsage|diskUsage|host.*interface|interfaces\" engine-api/src/main/java engine-zabbix/src/main/java src/main/java/com/dmove/moveseye -g \"*.java\"" in C:\solutions\moveseye-be-spring
+ succeeded in 1860ms:
+package com.dmove.moveseye.engine.port;
+
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.inventory.HostQuery;
+import com.dmove.moveseye.engine.model.inventory.GroupQuery;
+import com.dmove.moveseye.engine.model.inventory.InventoryGroup;
+import com.dmove.moveseye.engine.model.inventory.InventoryHost;
+import com.dmove.moveseye.engine.model.SourceRef;
+
+import java.util.List;
+
+/**
+ * ?몃깽?좊━ ?쎄린 ?ы듃(?몄뒪???명꽣?섏씠??議고쉶). devdesign 짠D2/짠4.6.
+ *
+ * <p>?꾨찓??B(?몃깽?좊━) 以??몄뒪?맞룹씤?고럹?댁뒪 議고쉶瑜??뚯뒪 以묐┰?뷀븳?? {@link MetricPort}? ?숈씪 ?먯튃:
+ * ?좏겙? ?쒓렇?덉쿂???녾퀬 {@link CallerContext}留?諛쏅뒗??짠D3). 紐⑤뱺 ?덉쇅??
+ * {@link com.dmove.moveseye.engine.error.EngineException} ?⑥씪 怨꾩링.
+ *
+ * <p><b>?ㅼ퐫???ㅽ뀦 4a)</b>: ?뚯씪??LiveCheckService)???ㅼ젣 ?곕뒗 {@link #listHosts} ?섎굹留??뺤젙?쒕떎.
+ * ?ㅼ?移?짠D2)??getEntity/listGroups/listInterfaces/checkAvailability???ㅼ냼鍮꾩옄 ?붽뎄瑜?蹂닿퀬 4b?먯꽌
+ * 利앸텇 異붽??쒕떎(짠5 ?ㅽ뀦 4b 怨꾪쉷). ?뱁엳 {@code checkAvailability}(boolean 諛섑솚)???뚯씪?우씠 ping ???IP?
+ * agent ?명꽣?섏씠??遺꾪빐源뚯? ?붽뎄??{@code listHosts}(由ъ튂 諛섑솚)濡??泥댄뻽??짠4.6 ?ㅼ?移??鍮?李⑥씠 湲곕줉).
+ */
+public interface InventoryPort {
+
+    /**
+     * ?몄뒪??紐⑸줉??議고쉶?쒕떎(媛??몄뒪?몄쓽 ?대쫫 + ?ㅽ듃?뚰겕 ?명꽣?섏씠???ы븿).
+     * {@code query.entities()}媛 ?뱀젙 ?뷀떚?곕? 吏?뺥븯硫?洹멸쾬留? 鍮꾨㈃ 媛??踰붿쐞 ?꾩껜.
+     * 寃곌낵 ?쒖꽌???뚯뒪 諛섑솚 ?쒖꽌瑜??곕Ⅸ?? 留ㅼ묶 ?놁쑝硫?鍮?由ъ뒪??NOT_FOUND ?먮떒? ?뚮퉬??紐???
+     * ?먮낯 LiveCheck??{@code HOST_NOT_FOUND} 怨꾩빟 蹂댁〈).
+     */
+    List<InventoryHost> listHosts(SourceRef src, CallerContext ctx, HostQuery query);
+
+    /**
+     * ?꾪꽣??遺?⑺븯??洹몃９ 紐⑸줉??諛섑솚?쒕떎(Zabbix hostgroup.get). 遺????ぉ???놁쑝硫?鍮?由ъ뒪??
+     * {@link GroupQuery#includeHosts()}瑜?耳쒕㈃ 媛?洹몃９???뚯냽 ?몄뒪??李몄“源뚯? 梨꾩슫??4c-4b).
+     */
+    List<InventoryGroup> listGroups(SourceRef src, CallerContext ctx, GroupQuery query);
+}
+
+package com.dmove.moveseye.engine.port;
+
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.metric.DimensionValue;
+import com.dmove.moveseye.engine.model.EntityRef;
+import com.dmove.moveseye.engine.model.metric.LatestQuery;
+import com.dmove.moveseye.engine.model.metric.LatestValue;
+import com.dmove.moveseye.engine.model.metric.MetricDomain;
+import com.dmove.moveseye.engine.model.metric.MetricRef;
+import com.dmove.moveseye.engine.model.metric.Series;
+import com.dmove.moveseye.engine.model.metric.SeriesQuery;
+import com.dmove.moveseye.engine.model.SourceRef;
+import com.dmove.moveseye.engine.model.metric.TextSample;
+import com.dmove.moveseye.engine.model.TimeRange;
+import com.dmove.moveseye.engine.model.metric.TrendSeries;
+
+import java.util.List;
+
+/**
+ * 硫뷀듃由??쎄린 ?ы듃(罹먮끂?덉뺄 硫뷀듃由?移댄깉濡쒓렇 湲곕컲 ?쒓퀎??理쒖떊媛?. devdesign 짠D2/짠4.
+ *
+ * <p>?꾨찓??A(硫뷀듃由??쎄린)瑜??뚯뒪 以묐┰?뷀븳?? ?좏겙? ?쒓렇?덉쿂???녿떎 ??{@link CallerContext}留?諛쏄퀬,
+ * ?대뙌???대? ?몄뀡 ?꾨줈諛붿씠?붽? ?먭꺽利앸챸???댁꽍?쒕떎(짠D3). 紐⑤뱺 ?덉쇅??
+ * {@link com.dmove.moveseye.engine.error.EngineException} ?⑥씪 怨꾩링?쇰줈 ?섏쭊??
+ *
+ * <p>?ㅽ뀦 1? ???ы듃留??뺤젙?쒕떎. InventoryPort/AlertPort???ㅼ냼鍮꾩옄 ?붽뎄瑜?蹂대뒗 ?ㅽ뀦 4濡??곌린(짠4 媛곸＜).
+ */
+public interface MetricPort {
+
+    /**
+     * ?뷀떚??횞 硫뷀듃由?쓽 ?쒓퀎?댁쓣 議고쉶?쒕떎.
+     * {@code rollup=RAW}???먯떆 ?섑뵆, {@code HOURLY_TREND}???쒓컙 吏묎퀎(avg)濡??댁꽍?쒕떎.
+     * ?댁꽍 遺덇???MetricRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<Series> querySeries(SourceRef src, CallerContext ctx, SeriesQuery query);
+
+    /** ?뷀떚??횞 硫뷀듃由?쓽 理쒖떊媛?lastvalue)??議고쉶?쒕떎. */
+    List<LatestValue> queryLatest(SourceRef src, CallerContext ctx, LatestQuery query);
+
+    /**
+     * ?뷀떚??횞 硫뷀듃由?쓽 ?몃젋???쒓컙 吏묎퀎) ?쒓퀎?댁쓣 踰꾪궥??min/max/avg濡?議고쉶?쒕떎.
+     * {@link #querySeries}??{@code HOURLY_TREND}媛 avg留??ｋ뒗 寃껉낵 ?щ━ ???듦퀎瑜?紐⑤몢 諛섑솚?쒕떎
+     * (min/max瑜??붽뎄?섎뒗 ?뚮퉬?먯슜 ??devdesign 짠D4/?ㅽ뀦 2 ?뚯씪??. {@code query.rollup()}? 臾댁떆?쒕떎.
+     * ?댁꽍 遺덇???MetricRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<TrendSeries> queryTrend(SourceRef src, CallerContext ctx, SeriesQuery query);
+
+    /**
+     * ?띿뒪??JSON lastvalue(?? ?붿뒪???곸꽭 dependent[,data])瑜??먮Ц 臾몄옄?대줈 議고쉶?쒕떎 ???놁쑝硫?null.
+     * ?듭?濡??쒓퀎?댁뿉 ?곌꺼?ｌ? ?딅뒗??짠D4).
+     */
+    String queryLatestText(SourceRef src, CallerContext ctx, EntityRef entity, MetricRef metric);
+
+    /**
+     * ??硫뷀듃由?<b>怨꾩뿴</b>(?ъ쟾??李⑥썝 媛믪쓣 ?????녿뒗 ?ㅼ감???꾩씠??吏묓빀)??紐⑤뱺 ?꾩씠??理쒖떊媛믪쓣
+     * 怨꾩뿴???뚯뒪 1肄쒕줈 議고쉶?쒕떎(留덉슫?맞룹씤?고럹?댁뒪쨌?붿뒪?щ챸 ??. devdesign 짠5 ?ㅽ뀦 3a(諛곗튂 議고쉶).
+     *
+     * <p>{@link #queryLatest}媛 (?뷀떚?걘쀫찓?몃┃) 援먯감怨깆쓽 <b>?뺥솗 ??/b>瑜?議고쉶?섎뒗 寃껉낵 ?щ━, ??硫붿꽌?쒕뒗
+     * {@code familyRef}媛 移댄깉濡쒓렇??<b>SEARCH ?꾨━?쎌뒪(?먮뒗 ?대갚 泥댁씤)</b>濡??댁꽍?섏뼱 怨꾩뿴 ?꾩껜瑜???踰덉뿉
+     * 諛쏅뒗???먮낯 ?쒕퉬?ㅻ뱾??family search + 濡쒖뺄 留ㅼ묶怨??숈씪???⑥쑉 ??N+1 諛⑹?). ?붿뒪???곸꽭/?붿빟泥섎읆
+     * 留덉슫???섎쭔??媛쒕퀎 議고쉶?섎㈃ 肄쒖씠 ??쬆?섎뒗 寃쎈줈瑜??꾪븳 寃껋씠??
+     *
+     * <p>媛?寃곌낵??{@code entity}???꾩씠?쒖쓽 ?뚯뒪 ?몄뒪?? {@code metric.dims()}?먮뒗 ?대뙌?곌? ?먯떆 ?ㅼ뿉??
+     * ?뚯떛??李⑥썝(?? {@code {partition:"/data", sub:"used"}})?? {@code raw}?먮뒗 ?먮Ц lastvalue(JSON ?ы븿)媛
+     * ?ㅻ┛?? ?щ윭 ?뷀떚?곕? ??踰덉뿉 ?섍린硫?寃곌낵??{@code entity}濡?援щ텇?쒕떎(洹몃９ 議고쉶 = 怨꾩뿴??1肄?.
+     * 怨꾩뿴 ?대갚 泥댁씤???덉쑝硫?1李?怨꾩뿴??<b>???뷀떚?곗뿉??/b> 鍮꾩뿀???뚮쭔 2李?怨꾩뿴濡??섏뼱媛꾨떎.
+     * ?댁꽍 遺덇???familyRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<LatestValue> queryLatestFamily(SourceRef src, CallerContext ctx, List<EntityRef> entities,
+                                        MetricRef familyRef);
+
+    /**
+     * ??硫뷀듃由?<b>怨꾩뿴</b>??紐⑤뱺 ?꾩씠??<b>?몃젋??/b>(?쒓컙 吏묎퀎)瑜?怨꾩뿴???뚯뒪 1肄쒕줈 議고쉶?쒕떎.
+     * devdesign 짠D4 / ?ㅽ뀦 4c-4k.
+     *
+     * <p>{@link #queryLatestFamily}(理쒖떊媛???<b>?몃젋????묐Ъ</b>?대ŉ, {@link #queryTrend}???李⑥씠媛 ?듭떖?대떎:
+     * {@code queryTrend}??(?뷀떚??횞 硫뷀듃由? ?留덈떎 <b>?꾩씠???섎굹</b>瑜??댁꽍?섎?濡????뷀떚?곌? 媛숈? 怨꾩뿴??
+     * ?꾩씠?쒖쓣 ?щ읉 媛吏?寃쎌슦(留덉슫?몃쭏???섎굹, ?명꽣?섏씠?ㅻ쭏???섎굹) <b>洹??먮━?먯꽌 ?섎㉧吏媛 ?뚯떎?쒕떎</b>.
+     * 洹몃９ ?꾩껜???붿뒪???ъ슜瑜졖룻듃?섑뵿泥섎읆 "?뷀떚?곕떦 ?ㅼ닔 ?꾩씠?쒖쓣 紐⑥븘 吏묎퀎"?섎뒗 ?뚮퉬?먮? ?꾪븳 寃껋씠??
+     *
+     * <p>寃곌낵???꾩씠???섎굹??{@link TrendSeries} ?섎굹?? {@code entity}???꾩씠?쒖쓽 ?뚯뒪 ?뷀떚??
+     * {@code metric.dims()}?먮뒗 ?대뙌?곌? ?먯떆 ?ㅼ뿉???뚯떛??李⑥썝(?? {@code {partition:"/data", sub:"pused"}},
+     * {@code {iface:"eth0"}})???ㅻ┛?????뚮퉬?먮뒗 <b>??李⑥썝?쇰줈 遺媛 吏?쒕? 嫄곕Ⅸ??/b>(?먯떆 ?ㅻ? 蹂댁? ?딅뒗??.
+     * 媛숈? ?뷀떚?곗쓽 ?щ윭 ?쒕━利덈뒗 dims濡?援щ텇?쒕떎.
+     *
+     * <p>?щ윭 ???⑦꽩??媛吏?怨꾩뿴? 移댄깉濡쒓렇 ?ъ뼇???뺥븳 諛⑹떇?쇰줈 ?뚮퉬?쒕떎 ??泥좎옄 ?섎굹瑜?怨좊Ⅴ嫄곕굹(?대갚),
+     * ??泥좎옄瑜??⑹튂嫄곕굹(?⑹쭛??. ?щ윭 ?뷀떚?곕? 媛濡쒖?瑜대뒗 議고쉶??蹂댄넻 ?꾩옄?ъ빞 ?쒕떎(?뷀떚?곕쭏??泥좎옄媛
+     * ?ㅻ? ???덈떎). ?댁꽍 遺덇???familyRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<TrendSeries> queryTrendFamily(SourceRef src, CallerContext ctx, List<EntityRef> entities,
+                                       MetricRef familyRef, TimeRange range);
+
+    /**
+     * ???뷀떚?걔룻븳 硫뷀듃由?쓽 <b>理쒓렐 ?띿뒪???대젰</b>???뚯뒪 諛섑솚 ?쒖꽌(理쒖떊???뺣젹 ?뚰듃)濡?理쒕? {@code limit}媛?
+     * 議고쉶?쒕떎. devdesign 짠D4 / ?ㅽ뀦 3c.
+     *
+     * <p>{@link #queryLatestText}媛 ?⑥씪 理쒖떊 ?띿뒪?몄씤 寃껋쓽 <b>?ㅺ굔(?대젰) ???/b>?대떎. 濡쒓렇 怨꾩뿴
+     * (value_type=LOG/TEXT/CHAR)泥섎읆 ?섏튂 {@link #querySeries}???곌꺼?ｌ쓣 ???녿뒗 ?띿뒪???섑뵆 紐⑸줉?⑹씠??
+     * 媛?{@link TextSample}? epoch쨌?먮Ц ?띿뒪?맞룹냼???먯떆 ?앸퀎??nativeId=itemid)瑜??ｋ뒗?? ?꾩씠??遺?щ㈃ 鍮?由ъ뒪??
+     * ?댁꽍 遺덇???MetricRef??{@code EngineException(BAD_QUERY)}.
+     */
+    List<TextSample> queryRecentText(SourceRef src, CallerContext ctx, EntityRef entity, MetricRef metric, int limit);
+
+    /**
+     * ?붿뒪而ㅻ쾭由ъ꽦 李⑥썝(留덉슫??紐⑸줉쨌?명꽣?섏씠??紐⑸줉 ????議고쉶?쒕떎.
+     * 吏?먰븯吏 ?딅뒗 ?꾨찓?몄? 鍮?由ъ뒪??
+     */
+    List<DimensionValue> listDimensions(SourceRef src, CallerContext ctx, EntityRef entity, MetricDomain domain);
+}
+
+package com.dmove.moveseye.aws;
+
+import java.util.List;
+import java.util.Map;
+import com.dmove.moveseye.aws.dto.CloudOverviewQueryDto.TimeRange;
+
+/**
+ * NestJS src/aws/aws.service.ts ?ы똿 怨꾩빟.
+ * EC2쨌CloudWatch ?먭꺽利앸챸? ?섏씠釉뚮━?? DB Setting(CLOUD)???덉쑝硫??곗꽑 ?ъ슜, ?놁쑝硫?AWS ?쒖? ?먭꺽利앸챸 泥댁씤
+ * (.env AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY, IAM ??븷쨌?꾨줈?뚯씪 ?????먮룞 ?몄떇?쒕떎.
+ * (?먮낯 Nest??EC2=Setting / CloudWatch=env濡??댁썝?뷀뻽?쇰굹 ?섏씠釉뚮━???⑥씪 ?먮쫫?쇰줈 ?듭씪.)
+ */
+public interface AwsService {
+
+    /** host recently-viewed(EC2S)?????꾩껜 ?몄뒪?댁뒪瑜?{instanceId, instanceName, region}濡??⑥닚?? */
+    InstanceList listInstances();
+
+    /** GET /cloud-infras/regions */
+    List<String> getRegions();
+
+    /** GET /cloud-infras/vpcs */
+    Map<String, Object> getVpcs(String keyword, List<String> regions);
+
+    /** GET /cloud-infras/ec2s */
+    Map<String, Object> listInstancesDetailed(List<String> regions, List<String> vpcIds);
+
+    /** GET /cloud-infras/ec2-dashboard */
+    Map<String, Object> summaryInstances(List<String> regions);
+
+    /** ?댁쁺 愿?쒖슜 ?붿빟. 由ъ쟾/CloudWatch ?⑥쐞 ?ㅽ뙣??collection??蹂댁〈?쒕떎. */
+    Map<String, Object> overview(List<String> regions, TimeRange timeRange);
+
+    /** GET /cloud-infras/ec2 */
+    Map<String, Object> getEc2(String instanceId, String region, long fromEpoch, long toEpoch);
+
+    /** CloudWatch ?놁씠 EC2 援ъ꽦쨌?곹깭쨌蹂쇰ⅷ쨌?덉젙 ?대깽?몃? 議고쉶?쒕떎. */
+    Map<String, Object> getEc2OperationalDetail(String instanceId, String region);
+
+    /** VPC???곌껐 由ъ냼?ㅼ? ?명꽣???몄텧 吏꾨떒??議고쉶?쒕떎. */
+    Map<String, Object> getVpcDetail(String vpcId, String region);
+
+    /** CloudTrail Event history??理쒓렐 90??愿由??대깽?몃쭔 議고쉶?쒕떎. */
+    Map<String, Object> getCloudTrailEvents(String region, String resourceId, String eventName, int maxResults);
+
+    record InstanceList(List<InstanceRef> items, long total) {
+    }
+
+    /** host recently-viewed(EC2S)???⑥닚 ?몄뒪?댁뒪 李몄“. (AWS SDK??Instance? ?대쫫 異⑸룎 ?뚰뵾) */
+    record InstanceRef(String instanceId, String instanceName, String region) {
+    }
+}
+
+package com.dmove.moveseye.aws.dto;
+
+import com.dmove.moveseye.common.response.DateRangeFilterDto;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+
+/** NestJS EC2Dto ??DateRange + instanceId/region. */
+@Getter
+@Setter
+public class Ec2Dto extends DateRangeFilterDto {
+
+    @NotBlank(message = "instanceId should not be empty")
+    private String instanceId;
+
+    @NotBlank(message = "region should not be empty")
+    private String region;
+}
+
+package com.dmove.moveseye.aws.dto;
+
+import java.util.Arrays;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+
+/** NestJS GetEc2Dto ??GetVpcsDto + vpcIds. */
+@Getter
+@Setter
+public class GetEc2Dto extends GetVpcsDto {
+
+    private String vpcIds;
+
+    public List<String> getVpcIdList() {
+        if (vpcIds == null || vpcIds.isBlank()) {
+            return null;
+        }
+        return Arrays.stream(vpcIds.split(",")).map(String::trim).toList();
+    }
+}
+
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixHostServiceImpl.java:143:                    mapInterfaces(node.get("interfaces")),
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixHostServiceImpl.java:149:    private List<ZabbixHostInterface> mapInterfaces(JsonNode interfaces) {
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixHostServiceImpl.java:151:        if (interfaces != null && interfaces.isArray()) {
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixHostServiceImpl.java:152:            interfaces.forEach(iface -> list.add(new ZabbixHostInterface(iface.path("ip").asText(null))));
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixInventoryAdapter.java:82:    public List<InventoryHost> listHosts(SourceRef src, CallerContext ctx, HostQuery query) {
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixInventoryAdapter.java:167:        List<Map<String, Object>> rawInterfaces = host.get("interfaces") instanceof List
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixInventoryAdapter.java:168:                ? (List<Map<String, Object>>) host.get("interfaces") : List.of();
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixInventoryAdapter.java:169:        List<HostNetworkInterface> interfaces = new ArrayList<>(rawInterfaces.size());
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixInventoryAdapter.java:171:            interfaces.add(new HostNetworkInterface(
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixInventoryAdapter.java:179:        return new InventoryHost(ref, name, interfaces,
+engine-api/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixHostService.java:37:     * host.create — params는 Zabbix host.create 파라미터(host/name/groups/interfaces/templates/
+engine-api/src/main/java\com\dmove\moveseye\zabbix\host\ZabbixHostService.java:47:     * host.massadd — 여러 호스트에 templates/groups/interfaces 등을 <b>추가</b>(기존 항목 유지)한다.
+engine-api/src/main/java\com\dmove\moveseye\zabbix\host\model\ZabbixHost.java:10:        List<ZabbixHostInterface> interfaces,
+engine-api/src/main/java\com\dmove\moveseye\engine\port\MetricPort.java:46:    List<TrendSeries> queryTrend(SourceRef src, CallerContext ctx, SeriesQuery query);
+engine-api/src/main/java\com\dmove\moveseye\engine\port\InventoryPort.java:32:    List<InventoryHost> listHosts(SourceRef src, CallerContext ctx, HostQuery query);
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\metric\ZabbixMetricAdapter.java:201:    public List<TrendSeries> queryTrend(SourceRef src, CallerContext ctx, SeriesQuery query) {
+engine-zabbix/src/main/java\com\dmove\moveseye\zabbix\metric\ZabbixMetricCatalog.java:179:        //    서버 목록의 diskUsage가 원본에서 정확 키만 봤다. 체인을 쓰면 dependent 계열만 가진 호스트에서
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:14: *   <li>{@code interfaces} — 네트워크 인터페이스 목록(가용성/주소/종류). 항상 채워진다.</li>
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:31: * <p>스코프 절제(§D2): 필드는 실소비자가 생길 때 증분 추가한다 — 4a는 ref/name/interfaces(LiveCheck),
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:39:        List<HostNetworkInterface> interfaces,
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:47:    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces,
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:49:        this(ref, name, interfaces, groups, lastCheckEpoch, tags, enabled, null);
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:53:    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces) {
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:54:        this(ref, name, interfaces, List.of(), null, List.of(), null, null);
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:58:    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces,
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:60:        this(ref, name, interfaces, groups, lastCheckEpoch, List.of(), null, null);
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:64:    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces,
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\InventoryHost.java:66:        this(ref, name, interfaces, groups, lastCheckEpoch, tags, null, null);
+engine-api/src/main/java\com\dmove\moveseye\engine\model\inventory\HostQuery.java:16: *       (ref·name·interfaces). 비용이 드는 서브조회를 소비자가 명시적으로 켜는 장치다(4c-2 신설).</li>
+src/main/java/com/dmove/moveseye\common\live\HostLiveAggregator.java:74:            List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\common\live\HostLiveAggregator.java:77:                map.put(host.ref().nativeId(), resolveAvailable(host.interfaces()));
+src/main/java/com/dmove/moveseye\common\live\HostLiveAggregator.java:153:    public static String availabilityOf(List<HostNetworkInterface> interfaces) {
+src/main/java/com/dmove/moveseye\common\live\HostLiveAggregator.java:154:        return resolveAvailable(interfaces);
+src/main/java/com/dmove/moveseye\common\live\HostLiveAggregator.java:157:    private static String resolveAvailable(List<HostNetworkInterface> interfaces) {
+src/main/java/com/dmove/moveseye\common\live\HostLiveAggregator.java:160:        for (HostNetworkInterface i : interfaces) {
+src/main/java/com/dmove/moveseye\auth\AuthService.java:28:import com.auth0.jwt.interfaces.DecodedJWT;
+src/main/java/com/dmove/moveseye\common\metric\ResourceTrendQuery.java:75:            case cpu -> metricPort.queryTrend(SRC, ctx, new SeriesQuery(entities,
+src/main/java/com/dmove/moveseye\common\metric\ResourceTrendQuery.java:80:            case memory -> metricPort.queryTrend(SRC, ctx, new SeriesQuery(entities,
+src/main/java/com/dmove/moveseye\asset\AssetSyncService.java:240:        List<AssetZabbixData.Interface> interfaces = asList(host.get("interfaces")).stream()
+src/main/java/com/dmove/moveseye\asset\AssetSyncService.java:254:                interfaces,
+src/main/java/com/dmove/moveseye\asset\AssetService.java:431:            List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\asset\AssetService.java:440:                available = HostLiveAggregator.availabilityOf(host.interfaces());
+src/main/java/com/dmove/moveseye\auth\security\JwtTokenProvider.java:8:import com.auth0.jwt.interfaces.DecodedJWT;
+src/main/java/com/dmove/moveseye\auth\security\McpAccessInterceptor.java:27:            "/hosts", "/host", "/event", "/zabbix-manage", "/assets", "/interface",
+src/main/java/com/dmove/moveseye\event\EventService.java:231:        for (InventoryHost host : inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\event\EventService.java:676:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx, HostQuery.ofEntity(hostRef));
+src/main/java/com/dmove/moveseye\event\host\HostEventService.java:89:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixItemManageService.java:353:        return asList(hosts.get(0).get("interfaces")).stream()
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixItemManageService.java:357:                .orElseGet(() -> asList(hosts.get(0).get("interfaces")).stream()
+src/main/java/com/dmove/moveseye\asset\domain\AssetZabbixData.java:22:        List<Interface> interfaces,
+src/main/java/com/dmove/moveseye\asset\domain\AssetZabbixData.java:47:    public List<Interface> interfaces() {
+src/main/java/com/dmove/moveseye\asset\domain\AssetZabbixData.java:48:        return interfaces != null ? interfaces : List.of();
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixLldPrototypeManageService.java:300:        if (req.getCustomInterfaces() != null) params.put("custom_interfaces", req.getCustomInterfaces());
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixLldPrototypeManageService.java:301:        if (req.getInterfaces() != null) params.put("interfaces", interfaces(req.getInterfaces()));
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixLldPrototypeManageService.java:345:    /** 호스트 프로토타입 interfaces — get의 available/error/errors_from/disable_until/interfaceid/hostid 제거(실측 필드). */
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixLldPrototypeManageService.java:346:    static List<Map<String, Object>> interfaces(List<Map<String, Object>> in) {
+src/main/java/com/dmove/moveseye\zabbixadmin\ZabbixLldPrototypeManageService.java:490:        List<Map<String, Object>> ifs = asList(hosts.get(0).get("interfaces"));
+src/main/java/com/dmove/moveseye\license\integration\LicenseGuardedInventoryPort.java:40:    public List<InventoryHost> listHosts(SourceRef src, CallerContext ctx, HostQuery query) {
+src/main/java/com/dmove/moveseye\license\integration\LicenseGuardedInventoryPort.java:42:        return delegate.listHosts(src, ctx, query);
+src/main/java/com/dmove/moveseye\license\integration\LicenseGuardedMetricPort.java:72:    public List<TrendSeries> queryTrend(SourceRef src, CallerContext ctx, SeriesQuery query) {
+src/main/java/com/dmove/moveseye\license\integration\LicenseGuardedMetricPort.java:74:        return delegate.queryTrend(src, ctx, query);
+src/main/java/com/dmove/moveseye\report\ReportService.java:236:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\user\UserController.java:294:    public ApiResult<PagedListDto<HostResponseDto>> listHosts(
+src/main/java/com/dmove/moveseye\user\UserController.java:297:        PagedListDto<HostResponseDto> result = hostGroupService.listHosts(dto, currentUser.getAuthToken());
+src/main/java/com/dmove/moveseye\license\crypto\LicenseKeyVerifier.java:7:import com.auth0.jwt.interfaces.DecodedJWT;
+src/main/java/com/dmove/moveseye\license\crypto\LicenseKeyVerifier.java:13:import java.security.interfaces.RSAPublicKey;
+src/main/java/com/dmove/moveseye\user\dto\response\HostResponseDto.java:23:        this.ip = hostData.interfaces() != null && !hostData.interfaces().isEmpty()
+src/main/java/com/dmove/moveseye\user\dto\response\HostResponseDto.java:24:                ? hostData.interfaces().get(0).ip()
+src/main/java/com/dmove/moveseye\user\HostGroupService.java:140:    public PagedListDto<HostResponseDto> listHosts(GetHostsDto dto, String authToken) {
+src/main/java/com/dmove/moveseye\host\HostService.java:182:        List<Map<String, Object>> interfaces = (List<Map<String, Object>>) host.getOrDefault("interfaces", List.of());
+src/main/java/com/dmove/moveseye\host\HostService.java:189:        String ip = !interfaces.isEmpty() ? str(interfaces.get(0).get("ip")) : null;
+src/main/java/com/dmove/moveseye\host\HostService.java:203:                .interfaces(interfaces)
+src/main/java/com/dmove/moveseye\host\HostService.java:265:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:308:    // GET /hosts/interfaces/{hostid}/graph/{interfaceid}
+src/main/java/com/dmove/moveseye\host\HostService.java:314:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, CallerContexts.from(currentUser),
+src/main/java/com/dmove/moveseye\host\HostService.java:319:        boolean exists = hosts.get(0).interfaces().stream()
+src/main/java/com/dmove/moveseye\host\HostService.java:549:            List<Map<String, Object>> ifaces = h.get("interfaces") instanceof List
+src/main/java/com/dmove/moveseye\host\HostService.java:550:                    ? (List<Map<String, Object>>) h.get("interfaces") : List.of();
+src/main/java/com/dmove/moveseye\host\HostService.java:678:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:743:        if (host.interfaces().isEmpty()) {
+src/main/java/com/dmove/moveseye\host\HostService.java:746:        return host.interfaces().stream()
+src/main/java/com/dmove/moveseye\host\HostService.java:800:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx, new HostQuery(null, null));
+src/main/java/com/dmove/moveseye\host\HostService.java:828:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:896:        List<com.dmove.moveseye.engine.model.inventory.HostNetworkInterface> matched = host.interfaces().stream()
+src/main/java/com/dmove/moveseye\host\HostService.java:1022:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:1212:        List<InventoryHost> filteredHosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:1227:        // interfaces 개수: 인터페이스별 인바운드 아이템(net.if.in[…) 건수 — 4c-4j 포트 전환.
+src/main/java/com/dmove/moveseye\host\HostService.java:1250:                    .ip(host.interfaces().isEmpty() ? null : host.interfaces().get(0).address())
+src/main/java/com/dmove/moveseye\host\HostService.java:1253:                    .memoryUsage(blankToNull(m.get("memoryUsage")))
+src/main/java/com/dmove/moveseye\host\HostService.java:1257:                    .interfaces(cnt != null ? cnt.intValue() : null)
+src/main/java/com/dmove/moveseye\host\HostService.java:1338:        metrics.put("memoryUsage", MetricRef.of(MetricDomain.MEMORY, "hw.pused"));
+src/main/java/com/dmove/moveseye\host\HostService.java:1386:            allHosts = inventoryPort.listHosts(SRC, ctx, new HostQuery(null, allGroupIds,
+src/main/java/com/dmove/moveseye\host\HostService.java:1508:        long numberOfHosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:1593:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx, new HostQuery(
+src/main/java/com/dmove/moveseye\host\HostService.java:1715:            case "memoryUsage" -> Comparator.comparingDouble(
+src/main/java/com/dmove/moveseye\host\HostService.java:1717:            case "diskUsage" -> Comparator.comparingDouble(
+src/main/java/com/dmove/moveseye\host\HostService.java:1735:                .hostIp(host.interfaces().isEmpty() ? null : host.interfaces().get(0).address())
+src/main/java/com/dmove/moveseye\host\HostService.java:1739:                .memoryUsage(usage.memory())
+src/main/java/com/dmove/moveseye\host\HostService.java:1740:                .diskUsage(usage.disk())
+src/main/java/com/dmove/moveseye\host\HostService.java:1769:        List<InventoryHost> matched = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:1773:                        || h.interfaces().stream().anyMatch(i -> i.address() != null && i.address().contains(kw)))
+src/main/java/com/dmove/moveseye\host\HostService.java:1780:                        h.interfaces().isEmpty() ? null : h.interfaces().get(0).address(),
+src/main/java/com/dmove/moveseye\host\HostService.java:1800:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\HostService.java:1831:        int availableInterfaces = (int) host.interfaces().stream()
+src/main/java/com/dmove/moveseye\host\HostService.java:1840:                .memoryUsage(usage.memory())
+src/main/java/com/dmove/moveseye\host\HostService.java:1841:                .diskUsage(usage.disk())
+src/main/java/com/dmove/moveseye\host\HostService.java:1849:                .interfaceCount(host.interfaces().size())
+src/main/java/com/dmove/moveseye\host\HostService.java:1855:    // GET /hosts/interfaces/{hostid}
+src/main/java/com/dmove/moveseye\host\HostService.java:1866:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, CallerContexts.from(currentUser),
+src/main/java/com/dmove/moveseye\host\HostService.java:1871:        List<com.dmove.moveseye.engine.model.inventory.HostNetworkInterface> interfaces = hosts.get(0).interfaces();
+src/main/java/com/dmove/moveseye\host\HostService.java:1872:        if (interfaces.isEmpty()) {
+src/main/java/com/dmove/moveseye\host\HostService.java:1918:        for (com.dmove.moveseye.engine.model.inventory.HostNetworkInterface intf : interfaces) {
+src/main/java/com/dmove/moveseye\host\HostService.java:2048:     * <p>diskUsage는 {@code vfs.fs.size[/,pused]} 우선, 없으면 {@code vfs.fs.dependent.size[/,pused]} 폴백이다
+src/main/java/com/dmove/moveseye\host\HostController.java:225:    @GetMapping("/interfaces/{hostid}")
+src/main/java/com/dmove/moveseye\host\HostController.java:236:    @GetMapping("/interfaces/{hostid}/graph/{interfaceid}")
+src/main/java/com/dmove/moveseye\host\HostController.java:243:                hostService.getInterfaceGraphData(currentUser, hostid, interfaceid, query);
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceService.java:1:package com.dmove.moveseye.host.hostinterface;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceService.java:17:import com.dmove.moveseye.host.hostinterface.dto.InterfaceStatusChartType;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceService.java:18:import com.dmove.moveseye.host.hostinterface.dto.InterfaceStatusDto;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceService.java:19:import com.dmove.moveseye.host.hostinterface.dto.InterfaceStatusMetricsLineChartResDto;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceService.java:31: * NestJS src/host/interface/interface.service.ts 포팅 → 수집 엔진 {@link MetricPort} 소비자(스텝 3b A군 확산).
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceController.java:1:package com.dmove.moveseye.host.hostinterface;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceController.java:9:import com.dmove.moveseye.host.hostinterface.dto.InterfaceStatusDto;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceController.java:10:import com.dmove.moveseye.host.hostinterface.dto.InterfaceStatusMetricsLineChartResDto;
+src/main/java/com/dmove/moveseye\host\hostinterface\InterfaceController.java:21:/** NestJS src/host/interface/interface.controller.ts 포팅. 원본 경로 @Controller('interface') 그대로. */
+src/main/java/com/dmove/moveseye\host\hostinterface\dto\InterfaceStatusMetricsLineChartResDto.java:1:package com.dmove.moveseye.host.hostinterface.dto;
+src/main/java/com/dmove/moveseye\host\hostinterface\dto\InterfaceStatusDto.java:1:package com.dmove.moveseye.host.hostinterface.dto;
+src/main/java/com/dmove/moveseye\host\hostinterface\dto\InterfaceStatusChartType.java:1:package com.dmove.moveseye.host.hostinterface.dto;
+src/main/java/com/dmove/moveseye\zabbixadmin\dto\HostPrototypeUpsertReqDto.java:33:    @Schema(description = "0=부모 호스트 인터페이스 상속 1=직접 지정(interfaces)")
+src/main/java/com/dmove/moveseye\zabbixadmin\dto\HostPrototypeUpsertReqDto.java:36:    private List<Map<String, Object>> interfaces;
+src/main/java/com/dmove/moveseye\zabbixadmin\dto\HostPrototypeUpsertReqDto.java:37:    @Schema(description = "그 외 hostprototype 필드(custom_interfaces/interfaces …) 원본 그대로")
+src/main/java/com/dmove/moveseye\host\coverage\MonitoringCoverageService.java:106:        return maps(host.get("interfaces")).stream().anyMatch(i -> "1".equals(text(i.get("type"))));
+src/main/java/com/dmove/moveseye\host\coverage\MonitoringCoverageService.java:110:        return maps(host.get("interfaces")).stream()
+src/main/java/com/dmove/moveseye\host\cpu\CpuService.java:133:        List<TrendSeries> series = metricPort.queryTrend(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\disk\DiskService.java:122:        List<com.dmove.moveseye.engine.model.inventory.InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\disk\DiskService.java:308:            List<com.dmove.moveseye.engine.model.inventory.InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:36: * <p>스텝 4a(파일럿): host.get 원시 조회를 {@link InventoryPort#listHosts}로 전환했다 — Zabbix interface
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:53:        List<InventoryHost> hosts = inventoryPort.listHosts(SRC, ctx,
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:59:        List<HostNetworkInterface> interfaces = host.interfaces();
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:61:        String ip = resolveTargetIp(interfaces);
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:62:        HealthState agentState = resolveAgentState(interfaces);
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:75:    private String resolveTargetIp(List<HostNetworkInterface> interfaces) {
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:76:        String agentIp = interfaces.stream()
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:84:        String mainIp = interfaces.stream()
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:92:        return interfaces.stream()
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:103:    private HealthState resolveAgentState(List<HostNetworkInterface> interfaces) {
+src/main/java/com/dmove/moveseye\host\livecheck\LiveCheckService.java:104:        List<HostNetworkInterface> agents = interfaces.stream()
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:622:        params.put("interfaces", List.of(agentInterface(iface, null)));
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:632:        params.put("interfaces", List.of(agentInterface(iface, existingId)));
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:639:     * {@code -32602 "IP and DNS cannot be empty for host interface."}가 난다.
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:727:        List<HostInterfaceDto> interfaces = asList(h.get("interfaces")).stream()
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:748:                agentAvailable(interfaces),
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:750:                interfaces,
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:785:    private String agentAvailable(List<HostInterfaceDto> interfaces) {
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:786:        HostInterfaceDto agent = interfaces.stream()
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:789:                .orElseGet(() -> interfaces.stream()
+src/main/java/com/dmove/moveseye\host\manage\HostManageService.java:797:        return asList(current.get("interfaces")).stream()
+src/main/java/com/dmove/moveseye\host\manage\HostManageController.java:88:            description = "관리자 전용. host.get 단건(목록과 동일 shape, interfaces 포함). 없으면 code:HOST_NOT_FOUND. "
+src/main/java/com/dmove/moveseye\host\dto\HostGroupDetailDto.java:52:            double cpuUsage, double memoryUsage, double diskUsage) {
+src/main/java/com/dmove/moveseye\setting\classification\DeviceClassificationService.java:251:            return (int) inventoryPort.listHosts(
+src/main/java/com/dmove/moveseye\host\dto\HostNetworksResDto.java:6:/** NestJS getHostNetwork 항목. 메트릭 값은 Zabbix lastvalue(문자열) 그대로, interfaces는 개수. */
+src/main/java/com/dmove/moveseye\host\dto\HostNetworksResDto.java:18:    private final String memoryUsage;
+src/main/java/com/dmove/moveseye\host\dto\HostNetworksResDto.java:22:    private final Integer interfaces;
+src/main/java/com/dmove/moveseye\host\dto\HostServerDetailResDto.java:8:/** NestJS HostServerDetailResDto. interfaces/groups는 Zabbix raw 구조 그대로. */
+src/main/java/com/dmove/moveseye\host\dto\HostServerDetailResDto.java:23:    private final List<Map<String, Object>> interfaces;
+src/main/java/com/dmove/moveseye\host\dto\HostSummaryResDto.java:24:    private final double memoryUsage;
+src/main/java/com/dmove/moveseye\host\dto\HostSummaryResDto.java:25:    private final double diskUsage;
+src/main/java/com/dmove/moveseye\host\dto\ServerMonitoringDto.java:18:    private final double memoryUsage;
+src/main/java/com/dmove/moveseye\host\dto\ServerMonitoringDto.java:19:    private final double diskUsage;
+src/main/java/com/dmove/moveseye\host\manage\dto\ManagedHostDto.java:21:        @Schema(description = "인터페이스") List<HostInterfaceDto> interfaces,
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/model/inventory/InventoryHost.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/model/inventory/HostNetworkInterface.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/model/inventory/HostQuery.java; Get-Content -Raw engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixInventoryAdapter.java; rg -n -S "class AwsServiceImpl|listInstancesDetailed|privateIp|publicIp|privateDns|networkInterfaces" src/main/java/com/dmove/moveseye/aws -g "*.java"' in C:\solutions\moveseye-be-spring
+ succeeded in 420ms:
+package com.dmove.moveseye.engine.model.inventory;
+
+import com.dmove.moveseye.engine.model.HostGroupRef;
+import com.dmove.moveseye.engine.model.EntityRef;
+import java.util.List;
+
+/**
+ * ?몃깽?좊━ ?몄뒪???뷀떚?????뚯뒪 以묐┰. devdesign 짠4.6(InventoryPort as-built).
+ *
+ * <p>{@link com.dmove.moveseye.engine.port.InventoryPort#listHosts} 寃곌낵.
+ * <ul>
+ *   <li>{@code ref} ???뷀떚??李몄“(sourceId + nativeId=hostid).</li>
+ *   <li>{@code name} ???쒖떆紐?Zabbix host name). nullable.</li>
+ *   <li>{@code interfaces} ???ㅽ듃?뚰겕 ?명꽣?섏씠??紐⑸줉(媛?⑹꽦/二쇱냼/醫낅쪟). ??긽 梨꾩썙吏꾨떎.</li>
+ *   <li>{@code groups} ???뚯냽 洹몃９. {@link HostInclude#GROUPS}瑜??붿껌?덉쓣 ?뚮쭔 梨꾩썙吏怨? ?꾨땲硫?鍮?由ъ뒪??4c-2).</li>
+ *   <li>{@code lastCheckEpoch} ??留덉?留??섏쭛 ?쒓컖(epoch 珥?. {@link HostInclude#LAST_CHECK} ?붿껌 ?쒖뿉留?
+ *       洹몃━怨??섏쭛 ?대젰???덉쓣 ?뚮쭔 梨꾩썙吏꾨떎. 洹???null(4c-2).</li>
+ *   <li>{@code tags} ???쒓렇. {@link HostInclude#TAGS} ?붿껌 ?쒖뿉留?梨꾩썙吏怨? ?꾨땲硫?鍮?由ъ뒪??4c-4a).</li>
+ *   <li>{@code enabled} ??紐⑤땲?곕쭅 <b>?쒖꽦</b> ?곹깭?몄?(4c-5e). Zabbix {@code status=0}(媛먯떆 以???true,
+ *       {@code 1}(媛먯떆 ??????false. ?뚯뒪媛 媛쒕뀗???놁쑝硫?null.
+ *       <b>{@link Availability}? ?ㅻⅤ??/b>: ?댁そ? "媛먯떆?섎룄濡??ㅼ젙???덈뒗媛"(?댁쁺?먯쓽 ?섎룄)?닿퀬, 媛?⑹꽦?
+ *       "吏湲??묐떟?섎뒗媛"(愿痢〓맂 ?ъ떎)?? 鍮꾪솢???몄뒪?몃뒗 媛?⑹꽦??UNKNOWN?쇰줈 ?⑤뒗??</li>
+ *   <li>{@code osName} ???댁쁺泥댁젣 ?쒖떆紐?4c-4f). {@link HostInclude#OS} ?붿껌 ?쒖뿉留?梨꾩썙吏怨? ?꾨땲硫?null.</li>
+ * </ul>
+ *
+ * <p>?뵶 <b>{@code osName}怨?짠D9??寃쎄퀎</b>: D9??"Zabbix {@code inventory}瑜?<b>?듭㎏濡?/b> ?ㅻ깄???⑤뒗 寃???
+ * 異붿긽????곸뿉???쒖쇅?덈떎(?뚯뒪 怨좎쑀 ?ㅽ궎留?60???꾨뱶 + jsonb ?곸냽 ?щ㎎). {@code osName}? 洹??꾩껜媛 ?꾨땲??
+ * <b>?ㅼ냼鍮꾩옄媛 ?쎈뒗 ???꾨뱶</b>?대ŉ, "???λ퉬??OS媛 臾댁뾿?멸?"???대뒓 ?뚯뒪?먮굹 ?덈뒗 吏덈Ц?대떎(Prometheus??
+ * node_exporter ?쇰꺼, Datadog? ?몄뒪??硫뷀?). 짠D2???ㅼ퐫???덉젣?濡?<b>?꾨뱶 ?⑥쐞濡?利앸텇 異붽?</b>?쒕떎 ??
+ * D9??"inventory?쇰뒗 ?대쫫??遺숈? 寃껋? ?꾨? 湲덉?"媛 ?꾨땲??"洹?Map???듭㎏濡?怨꾩빟???ｌ? 留먮씪"???먯젙?대떎.
+ * <p>?ㅼ퐫???덉젣(짠D2): ?꾨뱶???ㅼ냼鍮꾩옄媛 ?앷만 ??利앸텇 異붽??쒕떎 ??4a??ref/name/interfaces(LiveCheck),
+ * 4c-2媛 groups/lastCheckEpoch(?먯궛 ?쇱씠釉??뺣낫), 4c-4a媛 tags(湲곌린遺꾨쪟 吏묎퀎), 4c-5e媛 enabled(?뚮엺 ?곸꽭),
+ * 4c-4f媛 osName(?쒕쾭 紐⑸줉)???뷀뻽??
+ * proto: {@code message InventoryHost}.
+ */
+public record InventoryHost(
+        EntityRef ref,
+        String name,
+        List<HostNetworkInterface> interfaces,
+        List<HostGroupRef> groups,
+        Long lastCheckEpoch,
+        List<HostTag> tags,
+        Boolean enabled,
+        String osName) {
+
+    /** ?쒖꽦 ?곹깭源뚯? 梨꾩슦???앹꽦??4c-5e ?좊? ?좎? ??OS ?놁쓬). */
+    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces,
+            List<HostGroupRef> groups, Long lastCheckEpoch, List<HostTag> tags, Boolean enabled) {
+        this(ref, name, interfaces, groups, lastCheckEpoch, tags, enabled, null);
+    }
+
+    /** ?좏깮 ??ぉ ?놁씠 留뚮뱶???앹꽦??4a/4c-1 ?좊? ?좎? ??groups쨌tags 鍮?由ъ뒪?? lastCheck ?놁쓬). */
+    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces) {
+        this(ref, name, interfaces, List.of(), null, List.of(), null, null);
+    }
+
+    /** groups쨌lastCheck源뚯? 梨꾩슦???앹꽦??4c-2 ?좊? ?좎? ??tags 鍮?由ъ뒪??. */
+    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces,
+            List<HostGroupRef> groups, Long lastCheckEpoch) {
+        this(ref, name, interfaces, groups, lastCheckEpoch, List.of(), null, null);
+    }
+
+    /** tags源뚯? 梨꾩슦???앹꽦??4c-4a ?좊? ?좎? ???쒖꽦 ?곹깭 ?놁쓬). */
+    public InventoryHost(EntityRef ref, String name, List<HostNetworkInterface> interfaces,
+            List<HostGroupRef> groups, Long lastCheckEpoch, List<HostTag> tags) {
+        this(ref, name, interfaces, groups, lastCheckEpoch, tags, null, null);
+    }
+
+    /** 紐⑤땲?곕쭅??爰쇱졇 ?덈뒗吏 ???뚯뒪媛 媛쒕뀗??紐⑤Ⅴ硫?null) false濡?痍④툒. */
+    public boolean isDisabled() {
+        return Boolean.FALSE.equals(enabled);
+    }
+
+    /** ?뱀젙 ?쒓렇??媛믩뱾(媛숈? ?대쫫???쒓렇媛 ?щ읉?????덈떎 ??湲곌린遺꾨쪟??'?뺥솗??1媛?瑜??좏슚濡?蹂몃떎). */
+    public List<String> tagValues(String tagName) {
+        return tags == null ? List.of()
+                : tags.stream().filter(t -> tagName.equals(t.name())).map(HostTag::value).toList();
+    }
+}
+
+package com.dmove.moveseye.engine.model.inventory;
+
+/**
+ * ?몄뒪?몄쓽 ???ㅽ듃?뚰겕 ?명꽣?섏씠?????뚯뒪 以묐┰. devdesign 짠4.6(InventoryPort as-built).
+ *
+ * <p>{@link InventoryHost}??援ъ꽦 ?붿냼. LiveCheck ?뚯씪?우씠 ?붽뎄?섎뒗 ?ㅼ궗???꾨뱶???⑹쭛?⑹씠???ㅽ뀦 4a 議곗궗):
+ * <ul>
+ *   <li>{@code kind} ??紐⑤땲?곕쭅 醫낅쪟(Agent/SNMP/??. ping ???agent ?곹깭 ?먮퀎??</li>
+ *   <li>{@code availability} ??媛?⑹꽦 ?곹깭(available/unavailable/unknown).</li>
+ *   <li>{@code address} ???묒냽 二쇱냼(Phase 1 Zabbix: ip). nullable.</li>
+ *   <li>{@code primary} ??????명꽣?섏씠???щ?(Zabbix main=1).</li>
+ *   <li>{@code nativeId} ???뚯뒪 ?먯떆 ?명꽣?섏씠???앸퀎??Zabbix interfaceid). ?명꽣?섏씠???⑥쐞濡?吏?쒕?
+ *       議고쉶쨌寃利앺븯???뚮퉬???명꽣?섏씠??洹몃옒???곸꽭)媛 ?대떎. ?앸퀎??媛쒕뀗???녿뒗 ?뚯뒪??null(4c-4e).</li>
+ * </ul>
+ * proto: {@code message HostNetworkInterface}.
+ */
+public record HostNetworkInterface(
+        InterfaceKind kind,
+        Availability availability,
+        String address,
+        boolean primary,
+        String nativeId) {
+
+    /** ?앸퀎???놁씠 留뚮뱶???앹꽦??4a~4c-4d ?좊? ?좎?). */
+    public HostNetworkInterface(InterfaceKind kind, Availability availability,
+            String address, boolean primary) {
+        this(kind, availability, address, primary, null);
+    }
+}
+
+package com.dmove.moveseye.engine.model.inventory;
+
+import com.dmove.moveseye.engine.model.EntityRef;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * ?몃깽?좊━ ?몄뒪??議고쉶 ?꾪꽣 ???뚯뒪 以묐┰. devdesign 짠4.6(InventoryPort as-built).
+ *
+ * <p>{@link com.dmove.moveseye.engine.port.InventoryPort#listHosts} ?낅젰. 紐⑤뱺 ?꾨뱶 nullable(null=?쒖빟 ?놁쓬).
+ * <ul>
+ *   <li>{@code entities} ???뱀젙 ?뷀떚???몄뒪??濡??쒖젙. null/鍮?由ъ뒪?몃㈃ 媛??踰붿쐞 ?꾩껜. ?뚯씪??LiveCheck)?
+ *       ?⑥씪 hostid瑜??댁븘 ?섍릿??寃곌낵 鍮?由ъ뒪?몃㈃ ?뚮퉬?먭? NOT_FOUND 泥섎━).</li>
+ *   <li>{@code groupIds} ???몄뒪?멸렇猷??쒖젙(Zabbix groupids).</li>
+ *   <li>{@code include} ??異붽?濡?梨꾩슱 ?좏깮 ??ぉ({@link HostInclude}). null/鍮?吏묓빀?대㈃ 湲곕낯 ?꾨뱶留?
+ *       (ref쨌name쨌interfaces). 鍮꾩슜???쒕뒗 ?쒕툕議고쉶瑜??뚮퉬?먭? 紐낆떆?곸쑝濡?耳쒕뒗 ?μ튂??4c-2 ?좎꽕).</li>
+ * </ul>
+ * proto: {@code message HostQuery}.
+ */
+public record HostQuery(
+        List<EntityRef> entities,
+        List<String> groupIds,
+        Set<HostInclude> include) {
+
+    /** ?좏깮 ??ぉ ?놁씠 議고쉶?섎뒗 2-?몄옄 ?앹꽦??4a/4c-1 ?좊? ?좎?). */
+    public HostQuery(List<EntityRef> entities, List<String> groupIds) {
+        this(entities, groupIds, Set.of());
+    }
+
+    /** ?⑥씪 ?뷀떚???몄뒪?? 議고쉶 ?몄쓽 ?앹꽦??LiveCheck ?좊?). */
+    public static HostQuery ofEntity(EntityRef entity) {
+        return new HostQuery(List.of(entity), null, Set.of());
+    }
+
+    /** ?⑥씪 ?뷀떚??+ ?좏깮 ??ぉ 議고쉶(?먯궛 ?쇱씠釉??뺣낫 ?좊?). */
+    public static HostQuery ofEntity(EntityRef entity, Set<HostInclude> include) {
+        return new HostQuery(List.of(entity), null, include);
+    }
+
+    /** null-safe ?묎렐?????몄텧遺媛 null 寃?щ? 諛섎났?섏? ?딅룄濡? */
+    public boolean wants(HostInclude item) {
+        return include != null && include.contains(item);
+    }
+}
+
+package com.dmove.moveseye.zabbix.host;
+
+import com.dmove.moveseye.common.exception.ApiError;
+import com.dmove.moveseye.common.exception.HttpError;
+import com.dmove.moveseye.common.exception.UnauthorizedError;
+import com.dmove.moveseye.engine.error.EngineException;
+import com.dmove.moveseye.engine.error.ErrorKind;
+import com.dmove.moveseye.engine.model.inventory.Availability;
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.EntityRef;
+import com.dmove.moveseye.engine.model.HostGroupRef;
+import com.dmove.moveseye.engine.model.inventory.HostInclude;
+import com.dmove.moveseye.engine.model.inventory.HostNetworkInterface;
+import com.dmove.moveseye.engine.model.inventory.HostQuery;
+import com.dmove.moveseye.engine.model.inventory.HostTag;
+import com.dmove.moveseye.engine.model.inventory.InterfaceKind;
+import com.dmove.moveseye.engine.model.inventory.GroupQuery;
+import com.dmove.moveseye.engine.model.inventory.InventoryGroup;
+import com.dmove.moveseye.engine.model.inventory.InventoryHost;
+import com.dmove.moveseye.engine.model.NamedEntity;
+import com.dmove.moveseye.engine.model.SourceRef;
+import com.dmove.moveseye.engine.port.InventoryPort;
+import com.dmove.moveseye.zabbix.session.ZabbixSessionProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * {@link InventoryPort}??Zabbix 援ы쁽. devdesign 짠4.6/?ㅽ뀦 4a.
+ *
+ * <p>{@link ZabbixHostService#getRaw}(host.get)瑜??대? ?ъ궗?⑺빐 ?몄뒪???명꽣?섏씠?ㅻ? 議고쉶?섍퀬, Zabbix ?먯떆
+ * 肄붾뱶(interface type/available/main)瑜??뚯뒪 以묐┰ enum({@link InterfaceKind}/{@link Availability})?쇰줈 ?뺢퇋?뷀븳??
+ * ?좏겙? {@link ZabbixSessionProvider}媛 {@link CallerContext}濡??댁꽍?쒕떎(?ы듃 ?쒓렇?덉쿂???좏겙 ?놁쓬, 짠D3).
+ * ?덇굅???덉쇅({@code UnauthorizedError}/{@code ApiError}/{@code HttpError})瑜?{@link EngineException}?쇰줈 踰덉뿭?쒕떎
+ * (MetricAdapter ?좊?? ?숈씪 留ㅽ븨).
+ *
+ * <p>?대뙌??遺꾨━ ?먮떒(?ъ쑀 湲곕줉): ?몃깽?좊━(host.get)? ?뚮엺(problem.get)? ?ъ궗?⑺븯???덇굅???쒕퉬?ㅼ? 愿?ъ궗媛
+ * ?щ씪 MetricAdapter泥섎읆 <b>?ы듃蹂??대뙌??/b>濡??붾떎({@code ZabbixAlertAdapter}? 遺꾨━). ?몄뀡/?덉쇅踰덉뿭留?怨듯넻?대씪
+ * 吏湲덉? 媛??대뙌?곗뿉 ?ъ씤 蹂듭젣(怨듭슜 踰덉뿭 ?좏떥 異붿텧? 3?대뙌?곌? 紐⑥씤 ?ㅽ뀦 5 ?뺣━ ???ы룊媛).
+ */
+@Service
+@RequiredArgsConstructor
+public class ZabbixInventoryAdapter implements InventoryPort {
+
+    /** host.get output ??hostid + name(?쒖떆紐? + status(紐⑤땲?곕쭅 ?쒖꽦 ?щ?, 4c-5e). */
+    private static final List<String> HOST_OUTPUT = List.of("hostid", "name", "status");
+    /** Zabbix host status 肄붾뱶 ??0=媛먯떆 以? 1=媛먯떆 ???? */
+    private static final String HOST_STATUS_MONITORED = "0";
+    /** selectInterfaces ?꾨뱶 ???뚯씪??LiveCheck) ?ㅼ궗???⑹쭛??interfaceid/type/available/ip/main). */
+    private static final List<String> INTERFACE_FIELDS =
+            List.of("interfaceid", "type", "available", "ip", "main");
+    /** selectGroups ?꾨뱶 ??{@link HostInclude#GROUPS} ?붿껌 ?? */
+    private static final List<String> GROUP_FIELDS = List.of("groupid", "name");
+    /** selectItems ?꾨뱶 ??{@link HostInclude#LAST_CHECK} ?붿껌 ?? lastclock 理쒕?媛믩쭔 ?곕?濡?理쒖냼 ?꾨뱶. */
+    private static final List<String> ITEM_LASTCLOCK_FIELDS = List.of("lastclock");
+    /** selectTags 媛???{@link HostInclude#TAGS} ?붿껌 ??Zabbix??"extend"濡?tag/value ?꾩껜瑜?以??. */
+    private static final String TAGS_EXTEND = "extend";
+    /** selectInventory ?꾨뱶 ??{@link HostInclude#OS} ?붿껌 ?? <b>inventory ?꾩껜媛 ?꾨땲??os留?/b>(짠D9 寃쎄퀎). */
+    private static final List<String> INVENTORY_OS_FIELDS = List.of("os");
+    /** selectHosts ?꾨뱶 ??{@link GroupQuery#includeHosts()} ?붿껌 ?? ?앸퀎??+ ?쒖떆紐?4c-4m). */
+    private static final List<String> GROUP_MEMBER_FIELDS = List.of("hostid", "name");
+
+    /** Zabbix interface type 肄붾뱶 ??以묐┰ 醫낅쪟. */
+    private static final String TYPE_AGENT = "1";
+    private static final String TYPE_SNMP = "2";
+    private static final String TYPE_IPMI = "3";
+    private static final String TYPE_JMX = "4";
+    /** Zabbix interface available 肄붾뱶. */
+    private static final String AVAILABLE_OK = "1";
+    private static final String AVAILABLE_NO = "2";
+    /** Zabbix main 肄붾뱶(????명꽣?섏씠??. */
+    private static final String MAIN_PRIMARY = "1";
+
+    private final ZabbixHostService hostService;
+    private final ZabbixSessionProvider sessionProvider;
+
+    @Override
+    public List<InventoryHost> listHosts(SourceRef src, CallerContext ctx, HostQuery query) {
+        String token = sessionProvider.resolve(ctx);
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
+            params.put("output", HOST_OUTPUT);
+            params.put("selectInterfaces", INTERFACE_FIELDS);
+            if (query.entities() != null && !query.entities().isEmpty()) {
+                params.put("hostids", query.entities().stream().map(EntityRef::nativeId).toList());
+            }
+            if (query.groupIds() != null && !query.groupIds().isEmpty()) {
+                params.put("groupids", query.groupIds());
+            }
+            // ?좏깮 ??ぉ(짠HostInclude) ??鍮꾩슜 ?덈뒗 ?쒕툕議고쉶???붿껌?덉쓣 ?뚮쭔 嫄대떎.
+            if (query.wants(HostInclude.GROUPS)) {
+                params.put("selectGroups", GROUP_FIELDS);
+            }
+            if (query.wants(HostInclude.LAST_CHECK)) {
+                params.put("selectItems", ITEM_LASTCLOCK_FIELDS);
+            }
+            if (query.wants(HostInclude.TAGS)) {
+                params.put("selectTags", TAGS_EXTEND);
+            }
+            if (query.wants(HostInclude.OS)) {
+                params.put("selectInventory", INVENTORY_OS_FIELDS);
+            }
+
+            List<Map<String, Object>> hosts = hostService.getRaw(token, params);
+            List<InventoryHost> out = new ArrayList<>(hosts.size());
+            for (Map<String, Object> host : hosts) {
+                out.add(toInventoryHost(host));
+            }
+            return out;
+        } catch (RuntimeException e) {
+            throw translate(e);
+        }
+    }
+
+    @Override
+    public List<InventoryGroup> listGroups(SourceRef src, CallerContext ctx, GroupQuery query) {
+        String token = sessionProvider.resolve(ctx);
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
+            if (query.groupIds() != null && !query.groupIds().isEmpty()) {
+                params.put("groupids", query.groupIds());
+            }
+            if (query.includeHosts()) {
+                params.put("selectHosts", GROUP_MEMBER_FIELDS);
+            }
+
+            List<Map<String, Object>> groups = hostService.getHostGroupsRaw(token, params);
+            List<InventoryGroup> out = new ArrayList<>(groups.size());
+            for (Map<String, Object> group : groups) {
+                out.add(new InventoryGroup(
+                        EntityRef.ofDefault(str(group.get("groupid"))),
+                        str(group.get("name")),
+                        toHostRefs(group.get("hosts"))));
+            }
+            return out;
+        } catch (RuntimeException e) {
+            throw translate(e);
+        }
+    }
+
+    /** selectHosts 寃곌낵 ??硫ㅻ쾭 ?몄뒪???앸퀎??+ ?쒖떆紐?. 誘몄슂泥?遺?щ㈃ 鍮?由ъ뒪?? */
+    @SuppressWarnings("unchecked")
+    private static List<NamedEntity> toHostRefs(Object rawHosts) {
+        if (!(rawHosts instanceof List)) {
+            return List.of();
+        }
+        List<NamedEntity> out = new ArrayList<>();
+        for (Object o : (List<Object>) rawHosts) {
+            if (o instanceof Map<?, ?> h) {
+                String id = str(h.get("hostid"));
+                if (id != null) {
+                    out.add(new NamedEntity(EntityRef.ofDefault(id), str(h.get("name"))));
+                }
+            }
+        }
+        return out;
+    }
+
+    @SuppressWarnings("unchecked")
+    private InventoryHost toInventoryHost(Map<String, Object> host) {
+        EntityRef ref = EntityRef.ofDefault(str(host.get("hostid")));
+        String name = str(host.get("name"));
+        List<Map<String, Object>> rawInterfaces = host.get("interfaces") instanceof List
+                ? (List<Map<String, Object>>) host.get("interfaces") : List.of();
+        List<HostNetworkInterface> interfaces = new ArrayList<>(rawInterfaces.size());
+        for (Map<String, Object> iface : rawInterfaces) {
+            interfaces.add(new HostNetworkInterface(
+                    interfaceKind(str(iface.get("type"))),
+                    availability(str(iface.get("available"))),
+                    str(iface.get("ip")),
+                    MAIN_PRIMARY.equals(str(iface.get("main"))),
+                    str(iface.get("interfaceid"))));
+        }
+        String status = str(host.get("status"));
+        return new InventoryHost(ref, name, interfaces,
+                toGroups(host.get("groups")), toLastCheckEpoch(host.get("items")),
+                toTags(host.get("tags")),
+                status == null ? null : HOST_STATUS_MONITORED.equals(status),
+                toOsName(host.get("inventory")));
+    }
+
+    /**
+     * selectInventory 寃곌낵?먯꽌 OS留?戮묐뒗??4c-4f). 誘몄슂泥?遺?щ㈃ null.
+     *
+     * <p>?좑툘 Zabbix???몃깽?좊━ 紐⑤뱶媛 爰쇱쭊 ?몄뒪?몄뿉 {@code inventory}瑜?<b>鍮?諛곗뿴</b>濡?以??Map???꾨땲??.
+     * 洹몃옒?????寃?ш? ?꾩닔?? 鍮?臾몄옄?대룄 "媛??놁쓬"?쇰줈 蹂몃떎 ???몃깽?좊━ ?꾨뱶??誘몄엯????鍮?臾몄옄?댁씠??
+     */
+    @SuppressWarnings("unchecked")
+    private static String toOsName(Object rawInventory) {
+        if (!(rawInventory instanceof Map)) {
+            return null;
+        }
+        String os = str(((Map<String, Object>) rawInventory).get("os"));
+        return os == null || os.isBlank() ? null : os;
+    }
+
+    /** selectTags 寃곌낵 ??以묐┰ ?쒓렇. 誘몄슂泥?遺?щ㈃ 鍮?由ъ뒪?? */
+    @SuppressWarnings("unchecked")
+    private static List<HostTag> toTags(Object rawTags) {
+        if (!(rawTags instanceof List)) {
+            return List.of();
+        }
+        List<HostTag> out = new ArrayList<>();
+        for (Object o : (List<Object>) rawTags) {
+            if (o instanceof Map<?, ?> t) {
+                out.add(new HostTag(str(t.get("tag")), str(t.get("value"))));
+            }
+        }
+        return out;
+    }
+
+    /** selectGroups 寃곌낵 ??以묐┰ 洹몃９ 李몄“. 誘몄슂泥?遺?щ㈃ 鍮?由ъ뒪?? */
+    @SuppressWarnings("unchecked")
+    private static List<HostGroupRef> toGroups(Object rawGroups) {
+        if (!(rawGroups instanceof List)) {
+            return List.of();
+        }
+        List<HostGroupRef> out = new ArrayList<>();
+        for (Object o : (List<Object>) rawGroups) {
+            if (o instanceof Map<?, ?> g) {
+                out.add(new HostGroupRef(str(g.get("groupid")), str(g.get("name"))));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * selectItems 寃곌낵 ??留덉?留??섏쭛 ?쒓컖(?꾩씠??{@code lastclock} 理쒕?媛? epoch 珥?.
+     * 誘몄슂泥?遺???꾨? 0?대㈃ null(= ?섏쭛 ?대젰 ?놁쓬).
+     */
+    @SuppressWarnings("unchecked")
+    private static Long toLastCheckEpoch(Object rawItems) {
+        if (!(rawItems instanceof List)) {
+            return null;
+        }
+        long max = 0;
+        for (Object o : (List<Object>) rawItems) {
+            if (o instanceof Map<?, ?> item) {
+                Object lastclock = item.get("lastclock");
+                if (lastclock != null) {
+                    try {
+                        max = Math.max(max, Long.parseLong(lastclock.toString()));
+                    } catch (NumberFormatException ignored) {
+                        // 鍮꾩젙??lastclock 臾댁떆(?먮낯怨??숈씪)
+                    }
+                }
+            }
+        }
+        return max > 0 ? max : null;
+    }
+
+    private static InterfaceKind interfaceKind(String type) {
+        if (type == null) {
+            return InterfaceKind.OTHER;
+        }
+        return switch (type) {
+            case TYPE_AGENT -> InterfaceKind.AGENT;
+            case TYPE_SNMP -> InterfaceKind.SNMP;
+            case TYPE_IPMI -> InterfaceKind.IPMI;
+            case TYPE_JMX -> InterfaceKind.JMX;
+            default -> InterfaceKind.OTHER;
+        };
+    }
+
+    private static Availability availability(String available) {
+        if (AVAILABLE_OK.equals(available)) {
+            return Availability.AVAILABLE;
+        }
+        if (AVAILABLE_NO.equals(available)) {
+            return Availability.UNAVAILABLE;
+        }
+        return Availability.UNKNOWN;
+    }
+
+    private static String str(Object o) {
+        return o != null ? o.toString() : null;
+    }
+
+    /** ?덇굅???덉쇅 ??EngineException 踰덉뿭(MetricAdapter? ?숈씪 留ㅽ븨, 짠D8). */
+    private EngineException translate(RuntimeException e) {
+        if (e instanceof EngineException ee) {
+            return ee;
+        }
+        if (e instanceof UnauthorizedError) {
+            return new EngineException(ErrorKind.UNAUTHORIZED, SourceRef.DEFAULT_SOURCE_ID, e.getMessage(), false, e);
+        }
+        if (e instanceof ApiError || e instanceof HttpError) {
+            return new EngineException(ErrorKind.SOURCE_UNAVAILABLE, SourceRef.DEFAULT_SOURCE_ID, e.getMessage(), true, e);
+        }
+        return new EngineException(ErrorKind.INTERNAL, SourceRef.DEFAULT_SOURCE_ID, e.getMessage(), false, e);
+    }
+}
+
+src/main/java/com/dmove/moveseye/aws\AwsService.java:25:    Map<String, Object> listInstancesDetailed(List<String> regions, List<String> vpcIds);
+src/main/java/com/dmove/moveseye/aws\AwsServiceImpl.java:36:public class AwsServiceImpl implements AwsService {
+src/main/java/com/dmove/moveseye/aws\AwsServiceImpl.java:165:    public Map<String, Object> listInstancesDetailed(List<String> regions, List<String> vpcIds) {
+src/main/java/com/dmove/moveseye/aws\AwsServiceImpl.java:230:        Map<String, Object> detailed = listInstancesDetailed(null, null);
+src/main/java/com/dmove/moveseye/aws\AwsServiceImpl.java:499:        x.put("subnetId", i.subnetId()); x.put("privateIp", i.privateIpAddress()); x.put("publicIp", i.publicIpAddress());
+src/main/java/com/dmove/moveseye/aws\CloudCostEstimateService.java:105:                    wasteRows.add(waste("UNUSED_EIP", address.publicIp(), part.region(), "Elastic IP",
+src/main/java/com/dmove/moveseye/aws\CloudInfraController.java:101:        Map<String, Object> instances = awsService.listInstancesDetailed(params.getRegionList(), params.getVpcIdList());
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Get-Content src/main/java/com/dmove/moveseye/aws/AwsServiceImpl.java | Select-Object -Skip 150 -First 110; Get-Content src/main/java/com/dmove/moveseye/aws/AwsServiceImpl.java | Select-Object -Skip 470 -First 55; Get-Content src/main/java/com/dmove/moveseye/aws/CloudInfraController.java | Select-Object -Skip 195 -First 42; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/model/metric/MetricRef.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/model/metric/MetricDomain.java; Get-Content -Raw engine-api/src/main/java/com/dmove/moveseye/engine/model/metric/SeriesQuery.java' in C:\solutions\moveseye-be-spring
+ succeeded in 342ms:
+                item.put("ipv4Cidr", vpc.cidrBlock());
+                item.put("ipv6Cidr", vpc.ipv6CidrBlockAssociationSet().stream()
+                        .map(x -> x.ipv6CidrBlock()).toList());
+                item.put("tenancy", vpc.instanceTenancyAsString());
+                item.put("blockPublicAccess", blockPublicAccess);
+                vpcs.add(item);
+            }
+        } catch (Exception e) {
+            log.error("Error get VPC on region {}: {}", region, e.getMessage());
+        }
+        return vpcs;
+    }
+
+    @Override
+    public Map<String, Object> listInstancesDetailed(List<String> regions, List<String> vpcIds) {
+        List<String> listRegion = regions != null ? regions : getRegions();
+        List<Callable<List<Map<String, Object>>>> tasks = new ArrayList<>();
+        for (String region : listRegion) {
+            tasks.add(() -> instancesForRegion(region, vpcIds));
+        }
+        List<Map<String, Object>> ec2s = new ArrayList<>();
+        for (List<Map<String, Object>> part : runParallel(tasks)) {
+            if (part != null) {
+                ec2s.addAll(part);
+            }
+        }
+        return Map.of("items", ec2s);
+    }
+
+    /** ?⑥씪 由ъ쟾??EC2 ?곸꽭 紐⑸줉. */
+    private List<Map<String, Object>> instancesForRegion(String region, List<String> vpcIds) {
+        List<Map<String, Object>> ec2s = new ArrayList<>();
+        try {
+            List<Instance> instances = aws.describeInstances(region);
+            if (instances.isEmpty()) {
+                return ec2s;
+            }
+            List<String> instanceIds = instances.stream().map(Instance::instanceId)
+                    .filter(java.util.Objects::nonNull).toList();
+            Set<String> vpcIdSet = new LinkedHashSet<>();
+            instances.forEach(i -> {
+                if (i.vpcId() != null) {
+                    vpcIdSet.add(i.vpcId());
+                }
+            });
+
+            Map<String, String> statusMap = instanceStatuses(region, instanceIds);
+            Map<String, String> vpcNameMap = vpcNameMap(region, new ArrayList<>(vpcIdSet));
+
+            for (Instance inst : instances) {
+                if (vpcIds != null && (inst.vpcId() == null || !vpcIds.contains(inst.vpcId()))) {
+                    continue;
+                }
+                String vpcId = inst.vpcId() != null ? inst.vpcId() : "-";
+                String name = inst.tags().stream().filter(t -> "Name".equals(t.key()))
+                        .map(t -> t.value()).findFirst().orElse("-");
+
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("instanceName", name);
+                item.put("instanceId", inst.instanceId());
+                item.put("instanceState", inst.state() != null ? inst.state().nameAsString() : "-");
+                item.put("instanceType", inst.instanceTypeAsString() != null ? inst.instanceTypeAsString() : "-");
+                item.put("statusCheck", statusMap.getOrDefault(inst.instanceId(), "-"));
+                item.put("region", region);
+                item.put("availabilityZone", inst.placement() != null ? inst.placement().availabilityZone() : "-");
+                item.put("vpcName", vpcNameMap.getOrDefault(vpcId, vpcId));
+                item.put("vpcId", vpcId);
+                item.put("securityGroupName", inst.securityGroups().stream()
+                        .map(g -> g.groupName()).reduce((a, b) -> a + ", " + b).orElse("-"));
+                ec2s.add(item);
+            }
+        } catch (Exception e) {
+            log.error("Error get EC2 on region {}: {}", region, e.getMessage());
+        }
+        return ec2s;
+    }
+
+    @Override
+    public InstanceList listInstances() {
+        Map<String, Object> detailed = listInstancesDetailed(null, null);
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> items = (List<Map<String, Object>>) detailed.get("items");
+        // host recently-viewed??instanceId/instanceName/region留??ъ슜
+        List<AwsService.InstanceRef> list = items.stream()
+                .map(i -> new AwsService.InstanceRef(str(i.get("instanceId")), str(i.get("instanceName")),
+                        str(i.get("region"))))
+                .toList();
+        return new InstanceList(list, list.size());
+    }
+
+    /** 蹂묐젹 ?ъ븘?껋슜: ?⑥씪 由ъ쟾???몄뒪?댁뒪 + ?곹깭留? ?몄뒪?댁뒪 ?녾굅???ㅽ뙣 ??null. */
+    private record RegionInstances(String region, List<Instance> instances, Map<String, String> statusMap) {
+    }
+
+    private RegionInstances instancesWithStatus(String region) {
+        try {
+            List<Instance> instances = aws.describeInstances(region);
+            if (instances.isEmpty()) {
+                return null;
+            }
+            List<String> instanceIds = instances.stream().map(Instance::instanceId)
+                    .filter(java.util.Objects::nonNull).toList();
+            return new RegionInstances(region, instances, instanceStatuses(region, instanceIds));
+        } catch (Exception e) {
+            log.error("Error get EC2 on region {}: {}", region, e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+                        ? ErrorCode.VPC_NOT_FOUND : null;
+    }
+
+    @Override
+    public Map<String, Object> getCloudTrailEvents(String region, String resourceId, String eventName, int maxResults) {
+        try {
+            Instant end = Instant.now();
+            List<Map<String, Object>> items = aws.lookupEvents(region, resourceId, eventName, maxResults,
+                    end.minus(java.time.Duration.ofDays(90)), end).stream().map(event -> {
+                Map<String, Object> x = new LinkedHashMap<>(); x.put("eventId", event.eventId()); x.put("eventName", event.eventName());
+                x.put("eventTime", event.eventTime() == null ? null : event.eventTime().toString()); x.put("username", event.username());
+                x.put("resources", event.resources().stream().map(resource -> Map.of("type", resource.resourceType(), "name", resource.resourceName())).toList());
+                x.put("readOnly", event.readOnly()); x.put("source", event.eventSource()); return x;
+            }).toList();
+            return Map.of("items", items, "collection", Map.of("state", "ok", "region", region,
+                    "retentionDays", 90, "nextTokenAvailable", false));
+        } catch (Exception e) {
+            log.warn("CloudTrail event history unavailable in {}: {}", region, e.getMessage());
+            return Map.of("items", List.of(), "collection", Map.of("state", "unavailable", "region", region,
+                    "reason", "CLOUDTRAIL_EVENT_HISTORY_UNAVAILABLE", "retentionDays", 90));
+        }
+    }
+
+    private Map<String, Object> instanceDetail(Instance i) {
+        Map<String, Object> x = new LinkedHashMap<>(); x.put("instanceId", i.instanceId());
+        x.put("name", i.tags().stream().filter(t -> "Name".equals(t.key())).map(t -> t.value()).findFirst().orElse("-"));
+        x.put("state", i.state() == null ? null : i.state().nameAsString()); x.put("instanceType", i.instanceTypeAsString());
+        x.put("availabilityZone", i.placement() == null ? null : i.placement().availabilityZone()); x.put("vpcId", i.vpcId());
+        x.put("subnetId", i.subnetId()); x.put("privateIp", i.privateIpAddress()); x.put("publicIp", i.publicIpAddress());
+        return x;
+    }
+
+    private Map<String, Object> statusChecks(InstanceStatus status) {
+        Map<String, Object> x = new LinkedHashMap<>(); x.put("overall", status == null ? "unobserved" : instanceStatusesFrom(status));
+        x.put("system", status == null || status.systemStatus() == null ? "unobserved" : status.systemStatus().statusAsString());
+        x.put("instance", status == null || status.instanceStatus() == null ? "unobserved" : status.instanceStatus().statusAsString()); return x;
+    }
+
+    private String instanceStatusesFrom(InstanceStatus s) {
+        return Ec2StatusRules.overallStatus(s);
+    }
+
+    private List<Map<String, Object>> scheduledEvents(InstanceStatus status) {
+        if (status == null) return List.of();
+        return status.events().stream().map(e -> { Map<String, Object> x = new LinkedHashMap<>(); x.put("code", e.codeAsString());
+            x.put("description", e.description()); x.put("notBefore", e.notBefore() == null ? null : e.notBefore().toString());
+            x.put("notAfter", e.notAfter() == null ? null : e.notAfter().toString()); return x; }).toList();
+    }
+
+    private Map<String, Object> volumeDetail(Volume v) { Map<String, Object> x = new LinkedHashMap<>(); x.put("volumeId", v.volumeId()); x.put("state", v.stateAsString()); x.put("sizeGiB", v.size()); x.put("encrypted", v.encrypted()); x.put("volumeType", v.volumeTypeAsString()); x.put("attachments", v.attachments().stream().map(a -> Map.of("device", a.device(), "state", a.stateAsString(), "deleteOnTermination", a.deleteOnTermination())).toList()); return x; }
+    private Map<String, Object> securityGroupReference(software.amazon.awssdk.services.ec2.model.GroupIdentifier g) { return Map.of("groupId", g.groupId(), "name", g.groupName()); }
+    private Map<String, Object> vpcDetail(Vpc v, String region) { Map<String, Object> x=new LinkedHashMap<>(); x.put("vpcId",v.vpcId());x.put("region",region);x.put("state",v.stateAsString());x.put("ipv4Cidr",v.cidrBlock());x.put("ownerId",v.ownerId());x.put("tenancy",v.instanceTenancyAsString());x.put("name",v.tags().stream().filter(t->"Name".equals(t.key())).map(t->t.value()).findFirst().orElse("-"));return x; }
+    private Map<String, Object> subnetDetail(Subnet s) { return Map.of("subnetId",s.subnetId(),"availabilityZone",s.availabilityZone(),"cidr",s.cidrBlock(),"state",s.stateAsString(),"mapPublicIpOnLaunch",s.mapPublicIpOnLaunch(),"availableIpAddressCount",s.availableIpAddressCount()); }
+    private Map<String, Object> routeTableDetail(RouteTable r) { Map<String,Object> x=new LinkedHashMap<>();x.put("routeTableId",r.routeTableId());x.put("associations",r.associations().stream().map(a->Map.of("subnetId",a.subnetId()==null?"main":a.subnetId(),"main",a.main())).toList());x.put("routes",r.routes().stream().map(this::routeDetail).toList());return x; }
+    private Map<String, Object> routeDetail(Route r) { Map<String,Object> x=new LinkedHashMap<>();x.put("destination",r.destinationCidrBlock()!=null?r.destinationCidrBlock():r.destinationIpv6CidrBlock());x.put("gatewayId",r.gatewayId());x.put("natGatewayId",r.natGatewayId());x.put("state",r.stateAsString());return x; }
+     */
+    @GetMapping("/ec2/state-history")
+    public ApiResult<Map<String, Object>> getEc2StateHistory(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute Ec2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudSnapshotQueryService.stateHistory(
+                params.getInstanceId(), params.getRegion(), params.getFrom(), params.getTo()));
+    }
+
+    /**
+     * ?몄뒪?댁뒪 ?깅뒫 ?쒓퀎????{@code GetMetricStatistics}(?꾨━?곗뼱 ??. CloudWatch 沅뚰븳???녾굅??
+     * ???덉궛 ?뚯쭊?대㈃ <b>200 + 鍮?series + collection.state</b>濡?媛뺣벑?쒕떎(?먮윭 ?꾨떂).
+     */
+    @GetMapping("/ec2/metrics")
+    public ApiResult<Map<String, Object>> getEc2Metrics(
+            @CurrentUser TokenUserInfo currentUser, @Valid @ModelAttribute Ec2Dto params) {
+        requireAwsResourcesView(currentUser);
+        credentials.requireConfigured();
+        return new ApiResult<Map<String, Object>>().success(cloudMetricsService.metrics(
+                params.getInstanceId(), params.getRegion(), params.getFrom(), params.getTo()));
+    }
+
+    private void requireAwsResourcesView(TokenUserInfo currentUser) {
+        dmovePermissionChecker.requireView(currentUser, "cloudInfraMonitoring", "awsResources");
+    }
+}
+package com.dmove.moveseye.engine.model.metric;
+
+import java.util.Map;
+
+/**
+ * 罹먮끂?덉뺄 硫뷀듃由?李몄“: ?꾨찓??+ ?쇰━ ?대쫫 + 李⑥썝(dimensions). devdesign 짠D4.
+ *
+ * <p>?? {@code (DISK, "fs.pused", {mount:"/data"})}, {@code (NETWORK, "if.in.bps", {iface:"eth0"})}.
+ * {@code dims}???대뙌?곌? ?뚯뒪 ?ㅼ쓽 ?뚮씪誘명꽣 移섑솚(?? {@code vfs.fs.size[{mount},pused]})???ъ슜?쒕떎.
+ * proto: {@code message MetricRef { MetricDomain domain = 1; string name = 2; map<string,string> dims = 3; }}.
+ *
+ * <p>遺덈?: {@code dims}??諛⑹뼱?곸쑝濡?蹂듭궗?쒕떎(null ??鍮?留?.
+ */
+public record MetricRef(MetricDomain domain, String name, Map<String, String> dims) {
+
+    public MetricRef {
+        if (domain == null) {
+            throw new IllegalArgumentException("domain must not be null");
+        }
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("name must not be blank");
+        }
+        dims = dims == null ? Map.of() : Map.copyOf(dims);
+    }
+
+    /** 李⑥썝 ?녿뒗 硫뷀듃由?李몄“. */
+    public static MetricRef of(MetricDomain domain, String name) {
+        return new MetricRef(domain, name, Map.of());
+    }
+
+    /** ?⑥씪 李⑥썝 硫뷀듃由?李몄“. */
+    public static MetricRef of(MetricDomain domain, String name, String dimKey, String dimValue) {
+        return new MetricRef(domain, name, Map.of(dimKey, dimValue));
+    }
+
+    /** 李⑥썝 媛?議고쉶(?놁쑝硫?null). */
+    public String dim(String key) {
+        return dims.get(key);
+    }
+}
+
+package com.dmove.moveseye.engine.model.metric;
+
+/**
+ * 罹먮끂?덉뺄 硫뷀듃由??꾨찓?? devdesign 짠D4.
+ *
+ * <p>?붾㈃???붽뎄?섎뒗 硫뷀듃由?援곗쭛???뚯뒪 以묐┰ ?댄쐶濡?怨좎젙?쒕떎. ?뚯뒪蹂??꾩씠????Zabbix)쨌PromQL ?깆쑝濡쒖쓽
+ * 踰덉뿭? ?꾩쟻?쇰줈 ?대뙌??engine-zabbix {@code ZabbixMetricCatalog}) 梨낆엫?대떎.
+ * proto: {@code enum MetricDomain { ... }}.
+ */
+public enum MetricDomain {
+    CPU,
+    MEMORY,
+    SWAP,
+    DISK,
+    NETWORK,
+    INTERFACE,
+    PING,
+    SYSTEM
+}
+
+package com.dmove.moveseye.engine.model.metric;
+
+import com.dmove.moveseye.engine.model.TimeRange;
+import com.dmove.moveseye.engine.model.EntityRef;
+import java.util.List;
+
+/**
+ * ?쒓퀎??議고쉶 荑쇰━. devdesign 짠4.
+ *
+ * <p>?뷀떚??횞 硫뷀듃由?쓽 援먯감怨깆쓣 {@code range}쨌{@code rollup}?쇰줈 議고쉶?쒕떎(Phase 1 ?뚮퉬?먮뒗 蹂댄넻
+ * ?⑥씪 ?뷀떚??+ ?뚯닔 硫뷀듃由?. proto: {@code message SeriesQuery { repeated EntityRef entities = 1;
+ * repeated MetricRef metrics = 2; TimeRange range = 3; Rollup rollup = 4; }}.
+ */
+public record SeriesQuery(List<EntityRef> entities, List<MetricRef> metrics, TimeRange range, Rollup rollup) {
+
+    public SeriesQuery {
+        entities = entities == null ? List.of() : List.copyOf(entities);
+        metrics = metrics == null ? List.of() : List.copyOf(metrics);
+        if (rollup == null) {
+            rollup = Rollup.RAW;
+        }
+    }
+
+    /** ?⑥씪 ?뷀떚?걔룸떒??硫뷀듃由??몄쓽 ?앹꽦?? */
+    public static SeriesQuery of(EntityRef entity, MetricRef metric, TimeRange range, Rollup rollup) {
+        return new SeriesQuery(List.of(entity), List.of(metric), range, rollup);
+    }
+}
+
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+codex
+문서의 방향성은 “무료 기본 동작을 유지하면서 agent가 있는 곳만 깊게 본다”는 점에서 타당합니다. 다만 현재 `InventoryPort`는 사용자별 `CallerContext`로 Zabbix 세션을 해석하고, EC2 목록 응답에는 매칭용 IP가 아직 노출되지 않아 캐시·권한·주소 정규화 규칙을 설계에 명시해야 안전합니다.
+codex
+## 1. 소스 우선순위와 Q2
+
+`zabbix-agent > cloudwatch > 밴드만`에는 동의합니다. 메모리·파일시스템 사용률은 기본 EC2 CloudWatch만으로 얻을 수 없고, 이미 보유한 Zabbix 데이터가 더 풍부하며 AWS 호출도 줄입니다.
+
+다만 “agent에 매칭되면 CloudWatch를 절대 조회하지 않음”은 다음 경우에 관측 공백을 만들 수 있습니다.
+
+- Zabbix agent는 연결돼 있지만 필요한 item(CPU/메모리/disk)이 없거나 최신 값이 오래된 경우
+- Zabbix 장애·권한 문제·수집 지연이 발생한 경우
+- CPU 의미가 서로 다른 경우(Zabbix guest/system CPU vs CloudWatch `CPUUtilization`)를 사후 비교해야 하는 경우
+
+권장안은 평상시 병행 조회는 하지 않되, 매칭된 agent의 필수 지표와 freshness를 먼저 판정하는 것입니다. 모두 충족하면 CW를 끊고, Zabbix가 `SOURCE_UNAVAILABLE` 또는 stale일 때만 CW를 명시적 fallback으로 허용하는 편이 안전합니다. 이때 응답에는 `source`, `fallbackUsed`, `observedAt`를 남겨야 원인을 설명할 수 있습니다. 단순히 “Zabbix host와 매칭됨”은 충분한 조건이 아닙니다.
+
+## 2. IP 매칭
+
+“다중 매칭이면 연결하지 않음”은 반드시 필요한 안전장치지만, 단독 IP 일치만으로 오연결을 완전히 막지는 못합니다.
+
+특히 보완이 필요합니다.
+
+- EC2는 primary IP 외에 secondary private IP, 여러 ENI, ENI별 public/EIP를 가질 수 있습니다. 현재 상세 조립 로직은 `privateIp`·`publicIp` 중심이므로 ENI의 모든 주소를 후보에 넣어야 합니다.
+- Zabbix interface는 agent뿐 아니라 SNMP/IPMI/JMX일 수 있습니다. `zabbix-agent` 소스로 채택하려면 적어도 `InterfaceKind.AGENT` 후보인지 확인해야 합니다.
+- `useip=0`인 Zabbix host는 IP 대신 DNS로 접속할 수 있는데, 현재 `InventoryPort` 모델은 `ip`만 전달합니다. 이런 호스트는 매칭 누락으로 처리될 수 있습니다.
+- 서로 다른 VPC·계정·온프레미스에 같은 RFC1918 IP가 존재할 수 있습니다. Zabbix proxy 뒤 호스트도 그 자체로 문제는 아니지만, 프록시 IP가 아니라 agent interface의 실제 대상 IP인지 확인해야 합니다.
+- `Name` 태그 = Zabbix host name은 보조 신호로는 약합니다. 이름은 중복·변경이 흔합니다. instance ID 정확 일치나 Zabbix tag의 `aws.instanceId`, `aws.region`, `aws.accountId` 같은 명시적 식별자가 훨씬 안전합니다.
+
+따라서 자동 연결 조건은 “양쪽 후보가 각각 하나”에 더해, 주소 정규화와 `AGENT` 인터페이스 제한을 적용하고, 매칭 근거를 `IP_EXACT`, `INSTANCE_ID_EXACT`, `NAME_EXACT`처럼 보존하는 것이 좋습니다. `NAME_EXACT`만으로 자동 연결하는 것은 권하지 않습니다.
+
+## 3. 요청 시점 판정 vs 스냅샷 배치 저장
+
+1차 구현은 **요청 시점 판정 + 5분 공유 캐시**가 더 적합합니다.
+
+스냅샷 배치의 목적은 AWS 상태 이력 보존이고, Zabbix–EC2 연결은 바뀔 수 있는 운영 메타데이터입니다. 이를 스냅샷에 저장하면 과거 스냅샷의 연결 의미, 변경 시 재계산, 수동 연결 도입 시 정합성 문제가 생깁니다.
+
+다만 `/ec2s` 목록의 커버리지 집계까지 고려하면, 단순한 “상세 요청마다 매칭”이 아니라 캐시에 다음을 보관하는 구조가 좋습니다.
+
+- EC2 주소 → 후보 instance 목록
+- Zabbix agent 주소 → 후보 host 목록
+- 매칭 결과와 근거·판정 시각
+
+중요한 빠진 점은 `InventoryPort`가 `CallerContext`로 Zabbix 세션을 해석한다는 것입니다. 사용자별 권한이나 토큰이 다른데 전역 캐시에 결과를 섞으면 권한 누출 또는 잘못된 결과가 날 수 있습니다. 캐시 키를 권한 범위별로 분리하거나, 이 기능 전용의 서비스 계정/시스템 컨텍스트를 명시적으로 설계해야 합니다. 배치에서 미리 계산하려면 후자가 사실상 필수입니다.
+
+## 4. 커버리지와 P3 우선순위
+
+개요 카드와 목록 컬럼을 함께 두는 판단에 동의합니다. 목록에 있어야 사용자가 “왜 이 인스턴스는 메모리·디스크가 없는가”를 즉시 이해하고 agent 설치 유도도 가능합니다.
+
+표시값은 단순 세 종류보다 약간 더 구분하는 편이 좋습니다.
+
+- `zabbix-agent`: 필수 지표가 있고 fresh함
+- `cloudwatch`: CW 조회 가능
+- `unavailable`: 권한 거부·예산 소진·수집 실패
+- `unmonitored`: 어느 소스에도 실질 성능 지표가 없음
+
+P3 `GetMetricData`의 우선순위 하향도 합리적입니다. agent 커버리지가 높으면 유료 fleet metric의 제품 가치는 낮아집니다. 다만 완전히 폐기하지 말고, 실제 “CW-only 인스턴스 수”, 상세 차트 요청량, fleet 비교 요구를 수집한 뒤 재평가하는 것이 좋습니다. P3의 가치는 단순 성능 차트가 아니라 다수 인스턴스 비교·집계 효율에 있습니다.
+
+## 5. 추가 위험 및 단순화 제안
+
+현재 `CloudMetricsService`는 CloudWatch 지표를 5개씩 요청하고, 접근 거부 캐시도 전역입니다. 새 설계에서는 최소한 접근 가능 여부와 매칭 캐시를 account/region 단위로 분리하는 편이 맞습니다. 한 리전의 권한 실패가 다른 리전의 정상 조회를 막으면 안 됩니다.
+
+더 단순한 1차안은 다음입니다.
+
+1. IP 정확 일치 + 유일 후보 + `AGENT` 인터페이스만 자동 매칭
+2. Zabbix 필수 지표 존재·freshness 확인
+3. 만족 시 agent 사용, 불만족 시 CW fallback
+4. 이름 매칭·수동 연결·영속 `linked_hostid`는 2차
+5. 목록/개요는 같은 매처 캐시를 사용
+
+또한 source를 인스턴스 단위 하나로 고정하면 디스크·메모리만 agent, CPU·network만 CW인 상황을 표현하기 어렵습니다. 1차에서 단일 source 정책을 유지하더라도, API 내부 모델에는 지표별 source를 확장할 여지를 남기는 것이 좋습니다.
+
+## 총평
+
+**보완 필요, 그러나 위 조건을 반영하면 진행 가능**입니다.
+
+핵심 방향은 좋습니다. 다만 Q2는 “매칭되면 무조건 CW 중단”이 아니라 “agent 지표 품질이 확인되면 CW 중단”으로 바꾸고, IP 매칭에는 ENI 전체 주소·agent 인터페이스 제한·권한 안전 캐시를 추가해야 운영 중 관측 공백과 오연결을 피할 수 있습니다.
+hook: Stop
+hook: Stop
+hook: Stop Completed
+hook: Stop Failed
+tokens used
+88,283
+## 1. 소스 우선순위와 Q2
+
+`zabbix-agent > cloudwatch > 밴드만`에는 동의합니다. 메모리·파일시스템 사용률은 기본 EC2 CloudWatch만으로 얻을 수 없고, 이미 보유한 Zabbix 데이터가 더 풍부하며 AWS 호출도 줄입니다.
+
+다만 “agent에 매칭되면 CloudWatch를 절대 조회하지 않음”은 다음 경우에 관측 공백을 만들 수 있습니다.
+
+- Zabbix agent는 연결돼 있지만 필요한 item(CPU/메모리/disk)이 없거나 최신 값이 오래된 경우
+- Zabbix 장애·권한 문제·수집 지연이 발생한 경우
+- CPU 의미가 서로 다른 경우(Zabbix guest/system CPU vs CloudWatch `CPUUtilization`)를 사후 비교해야 하는 경우
+
+권장안은 평상시 병행 조회는 하지 않되, 매칭된 agent의 필수 지표와 freshness를 먼저 판정하는 것입니다. 모두 충족하면 CW를 끊고, Zabbix가 `SOURCE_UNAVAILABLE` 또는 stale일 때만 CW를 명시적 fallback으로 허용하는 편이 안전합니다. 이때 응답에는 `source`, `fallbackUsed`, `observedAt`를 남겨야 원인을 설명할 수 있습니다. 단순히 “Zabbix host와 매칭됨”은 충분한 조건이 아닙니다.
+
+## 2. IP 매칭
+
+“다중 매칭이면 연결하지 않음”은 반드시 필요한 안전장치지만, 단독 IP 일치만으로 오연결을 완전히 막지는 못합니다.
+
+특히 보완이 필요합니다.
+
+- EC2는 primary IP 외에 secondary private IP, 여러 ENI, ENI별 public/EIP를 가질 수 있습니다. 현재 상세 조립 로직은 `privateIp`·`publicIp` 중심이므로 ENI의 모든 주소를 후보에 넣어야 합니다.
+- Zabbix interface는 agent뿐 아니라 SNMP/IPMI/JMX일 수 있습니다. `zabbix-agent` 소스로 채택하려면 적어도 `InterfaceKind.AGENT` 후보인지 확인해야 합니다.
+- `useip=0`인 Zabbix host는 IP 대신 DNS로 접속할 수 있는데, 현재 `InventoryPort` 모델은 `ip`만 전달합니다. 이런 호스트는 매칭 누락으로 처리될 수 있습니다.
+- 서로 다른 VPC·계정·온프레미스에 같은 RFC1918 IP가 존재할 수 있습니다. Zabbix proxy 뒤 호스트도 그 자체로 문제는 아니지만, 프록시 IP가 아니라 agent interface의 실제 대상 IP인지 확인해야 합니다.
+- `Name` 태그 = Zabbix host name은 보조 신호로는 약합니다. 이름은 중복·변경이 흔합니다. instance ID 정확 일치나 Zabbix tag의 `aws.instanceId`, `aws.region`, `aws.accountId` 같은 명시적 식별자가 훨씬 안전합니다.
+
+따라서 자동 연결 조건은 “양쪽 후보가 각각 하나”에 더해, 주소 정규화와 `AGENT` 인터페이스 제한을 적용하고, 매칭 근거를 `IP_EXACT`, `INSTANCE_ID_EXACT`, `NAME_EXACT`처럼 보존하는 것이 좋습니다. `NAME_EXACT`만으로 자동 연결하는 것은 권하지 않습니다.
+
+## 3. 요청 시점 판정 vs 스냅샷 배치 저장
+
+1차 구현은 **요청 시점 판정 + 5분 공유 캐시**가 더 적합합니다.
+
+스냅샷 배치의 목적은 AWS 상태 이력 보존이고, Zabbix–EC2 연결은 바뀔 수 있는 운영 메타데이터입니다. 이를 스냅샷에 저장하면 과거 스냅샷의 연결 의미, 변경 시 재계산, 수동 연결 도입 시 정합성 문제가 생깁니다.
+
+다만 `/ec2s` 목록의 커버리지 집계까지 고려하면, 단순한 “상세 요청마다 매칭”이 아니라 캐시에 다음을 보관하는 구조가 좋습니다.
+
+- EC2 주소 → 후보 instance 목록
+- Zabbix agent 주소 → 후보 host 목록
+- 매칭 결과와 근거·판정 시각
+
+중요한 빠진 점은 `InventoryPort`가 `CallerContext`로 Zabbix 세션을 해석한다는 것입니다. 사용자별 권한이나 토큰이 다른데 전역 캐시에 결과를 섞으면 권한 누출 또는 잘못된 결과가 날 수 있습니다. 캐시 키를 권한 범위별로 분리하거나, 이 기능 전용의 서비스 계정/시스템 컨텍스트를 명시적으로 설계해야 합니다. 배치에서 미리 계산하려면 후자가 사실상 필수입니다.
+
+## 4. 커버리지와 P3 우선순위
+
+개요 카드와 목록 컬럼을 함께 두는 판단에 동의합니다. 목록에 있어야 사용자가 “왜 이 인스턴스는 메모리·디스크가 없는가”를 즉시 이해하고 agent 설치 유도도 가능합니다.
+
+표시값은 단순 세 종류보다 약간 더 구분하는 편이 좋습니다.
+
+- `zabbix-agent`: 필수 지표가 있고 fresh함
+- `cloudwatch`: CW 조회 가능
+- `unavailable`: 권한 거부·예산 소진·수집 실패
+- `unmonitored`: 어느 소스에도 실질 성능 지표가 없음
+
+P3 `GetMetricData`의 우선순위 하향도 합리적입니다. agent 커버리지가 높으면 유료 fleet metric의 제품 가치는 낮아집니다. 다만 완전히 폐기하지 말고, 실제 “CW-only 인스턴스 수”, 상세 차트 요청량, fleet 비교 요구를 수집한 뒤 재평가하는 것이 좋습니다. P3의 가치는 단순 성능 차트가 아니라 다수 인스턴스 비교·집계 효율에 있습니다.
+
+## 5. 추가 위험 및 단순화 제안
+
+현재 `CloudMetricsService`는 CloudWatch 지표를 5개씩 요청하고, 접근 거부 캐시도 전역입니다. 새 설계에서는 최소한 접근 가능 여부와 매칭 캐시를 account/region 단위로 분리하는 편이 맞습니다. 한 리전의 권한 실패가 다른 리전의 정상 조회를 막으면 안 됩니다.
+
+더 단순한 1차안은 다음입니다.
+
+1. IP 정확 일치 + 유일 후보 + `AGENT` 인터페이스만 자동 매칭
+2. Zabbix 필수 지표 존재·freshness 확인
+3. 만족 시 agent 사용, 불만족 시 CW fallback
+4. 이름 매칭·수동 연결·영속 `linked_hostid`는 2차
+5. 목록/개요는 같은 매처 캐시를 사용
+
+또한 source를 인스턴스 단위 하나로 고정하면 디스크·메모리만 agent, CPU·network만 CW인 상황을 표현하기 어렵습니다. 1차에서 단일 source 정책을 유지하더라도, API 내부 모델에는 지표별 source를 확장할 여지를 남기는 것이 좋습니다.
+
+## 총평
+
+**보완 필요, 그러나 위 조건을 반영하면 진행 가능**입니다.
+
+핵심 방향은 좋습니다. 다만 Q2는 “매칭되면 무조건 CW 중단”이 아니라 “agent 지표 품질이 확인되면 CW 중단”으로 바꾸고, IP 매칭에는 ENI 전체 주소·agent 인터페이스 제한·권한 안전 캐시를 추가해야 운영 중 관측 공백과 오연결을 피할 수 있습니다.

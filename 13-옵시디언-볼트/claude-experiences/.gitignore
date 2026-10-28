@@ -1,0 +1,25 @@
+# ── Python 런타임 (docx 변환용, 재생성 가능) ──
+.docx_runtime/
+runtime_docx/
+__pycache__/
+*.pyc
+*.pyd
+
+# ── 개인정보: 이력서 원본/QA 산출물 ──
+/*.docx
+*이력서*
+_qa/
+
+# ── 실행 중 발급된 토큰 등 런타임 산출물 ──
+projects/moveseye/_pc-migration-2026-10-28/workspace/features/apm/deep-diagnostics/runtime/
+
+# ── 저작물 PDF (전자책) ──
+topics/books/*.pdf
+
+# ── Obsidian 개인 UI 상태 ──
+.obsidian/workspace.json
+.obsidian/graph.json
+
+# ── OS ──
+Thumbs.db
+.DS_Store

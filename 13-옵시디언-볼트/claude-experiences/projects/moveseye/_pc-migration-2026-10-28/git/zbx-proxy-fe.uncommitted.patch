@@ -1,0 +1,2477 @@
+diff --git a/src/__tests__/ProxyManagement.test.tsx b/src/__tests__/ProxyManagement.test.tsx
+new file mode 100644
+index 0000000..5288397
+--- /dev/null
++++ b/src/__tests__/ProxyManagement.test.tsx
+@@ -0,0 +1,318 @@
++import { fireEvent, render, screen, waitFor } from "@testing-library/react";
++import { MemoryRouter } from "react-router-dom";
++import ProxyFormDrawer, {
++  carryTlsAcrossModes,
++  detailToValues,
++  valuesToRequest,
++} from "@/pages/zabbix-management/proxy/ProxyFormDrawer";
++import ProxyGroupTab from "@/pages/zabbix-management/proxy/ProxyGroupTab";
++import ProxyTab, { tlsLabels } from "@/pages/zabbix-management/proxy/ProxyTab";
++import { proxyErrorMessage } from "@/pages/zabbix-management/proxy/proxyErrors";
++import { ZabbixManageApiError } from "@/services/zabbix-proxy.api";
++import { TManagedProxy, TManagedProxyDetail, TManagedProxyGroup } from "@/types/zabbix-proxy";
++
++jest.mock("@/services/axiosInstance", () => ({
++  __esModule: true,
++  default: { get: jest.fn(), post: jest.fn(), put: jest.fn(), delete: jest.fn() },
++}));
++jest.mock("react-i18next", () => ({
++  useTranslation: () => ({ t: (key: string) => key }),
++  initReactI18next: { type: "3rdParty", init: jest.fn() },
++}));
++const listMock = jest.fn();
++const groupListMock = jest.fn();
++const detailMock = jest.fn();
++const optionsMock = jest.fn();
++const createMutate = jest.fn();
++const updateMutate = jest.fn();
++const deleteMutate = jest.fn();
++jest.mock("@/hooks/useZabbixProxy", () => ({
++  __esModule: true,
++  useProxyList: () => listMock(),
++  useProxyGroupList: () => groupListMock(),
++  useProxyDetail: (id?: string) => detailMock(id),
++  useProxyOptions: () => optionsMock(),
++  useProxyGroupDetail: () => ({ data: undefined, isLoading: false }),
++  useCreateProxy: () => ({ mutate: createMutate, isPending: false }),
++  useUpdateProxy: () => ({ mutate: updateMutate, isPending: false }),
++  useDeleteProxies: () => ({ mutate: deleteMutate, isPending: false }),
++  useCreateProxyGroup: () => ({ mutate: jest.fn(), isPending: false }),
++  useUpdateProxyGroup: () => ({ mutate: jest.fn(), isPending: false }),
++  useDeleteProxyGroups: () => ({ mutate: jest.fn(), isPending: false }),
++}));
++jest.mock("antd", () => {
++  const actual = jest.requireActual("antd");
++  return { ...actual, message: { success: jest.fn(), error: jest.fn() } };
++});
++
++const GLOBAL = {
++  zabbix_agent: "3s", simple_check: "3s", snmp_agent: "3s", external_check: "3s", db_monitor: "3s",
++  http_agent: "10s", ssh_agent: "3s", telnet_agent: "3s", script: "3s", browser: "60s",
++};
++
++const row = (over: Partial<TManagedProxy>): TManagedProxy => ({
++  proxyid: "1", name: "proxy-a", operatingMode: 0, proxyGroup: null, address: "127.0.0.1", port: "10051",
++  allowedAddresses: "10.0.0.5", localAddress: "", localPort: "10051", description: "", state: "ONLINE",
++  lastAccess: 1761530000, version: "7.0.13", compatibility: "CURRENT", hostCount: 0, assignedHostCount: 0,
++  tlsConnect: 1, tlsAccept: 1, pskConfigured: false, customTimeouts: false, ...over,
++});
++
++const detailOf = (summary: TManagedProxy, over: Partial<TManagedProxyDetail> = {}): TManagedProxyDetail => ({
++  summary, tlsIssuer: "", tlsSubject: "", timeouts: {}, hosts: [], assignedHosts: [], hostsTruncated: false,
++  discoveryRules: [], ...over,
++});
++
++const group = (over: Partial<TManagedProxyGroup>): TManagedProxyGroup => ({
++  proxyGroupId: "1", name: "Seoul", failoverDelay: "1m", minOnline: "1", description: "", state: "ONLINE",
++  proxyCount: 0, onlineProxyCount: 0, hostCount: 0, proxies: [], ...over,
++});
++
++describe("proxyErrorMessage", () => {
++  const t = ((k: string, o?: { detail?: string }) => (o?.detail ? `${k}|${o.detail}` : k)) as never;
++
++  it("maps errorCode with detail; 403 is permission; unknown shows Zabbix text", () => {
++    expect(proxyErrorMessage(new ZabbixManageApiError({ code: 400, status: "error", errorCode: "PROXY_IN_USE", message: "p ← 호스트 2개(a, b)" }), t))
++      .toBe("proxy_management.errors.PROXY_IN_USE|p ← 호스트 2개(a, b)");
++    expect(proxyErrorMessage(new ZabbixManageApiError({ code: 400, status: "error", errorCode: "PROXY_TLS_REQUIRED", message: "PROXY_TLS_REQUIRED" }), t))
++      .toBe("proxy_management.errors.PROXY_TLS_REQUIRED");
++    expect(proxyErrorMessage(new ZabbixManageApiError({ code: 403, status: "error", message: "Forbidden" }), t))
++      .toBe("proxy_management.permission_denied");
++    expect(proxyErrorMessage(new ZabbixManageApiError({ code: 400, status: "error", message: "Proxy \"a\" already exists." }), t))
++      .toBe("Proxy \"a\" already exists.");
++  });
++});
++
++describe("form mapping", () => {
++  it("never prefills PSK and turns accept bits into a list", () => {
++    const v = detailToValues(detailOf(row({ tlsAccept: 3, pskConfigured: true })));
++    expect(v.tls_accept).toEqual([1, 2]);
++    expect(v.tls_psk_identity).toBe("");
++    expect(v.tls_psk).toBe("");
++  });
++
++  it("active request sends only the active side; PSK only when typed; no group → no local fields", () => {
++    const v = detailToValues(detailOf(row({ tlsAccept: 2, pskConfigured: true })));
++    const body = valuesToRequest({ ...v, address: "10.0.0.9", local_address: "10.0.0.1" });
++    expect(body).toMatchObject({ operating_mode: 0, tls_accept: 2, allowed_addresses: "10.0.0.5", proxy_groupid: "0", custom_timeouts: 0 });
++    expect(body).not.toHaveProperty("tls_connect");
++    expect(body).not.toHaveProperty("address");
++    expect(body).not.toHaveProperty("local_address");
++    expect(body).not.toHaveProperty("tls_psk");
++    expect(body).not.toHaveProperty("timeouts");
++
++    const typed = valuesToRequest({ ...v, tls_psk_identity: "id", tls_psk: " abcd " });
++    expect(typed).toMatchObject({ tls_psk_identity: "id", tls_psk: "abcd" });
++  });
++
++  it("passive request sends the passive side; group sends local address; custom timeouts sends the ten values", () => {
++    const v = detailToValues(detailOf(row({ operatingMode: 1, tlsConnect: 4, address: "10.0.0.9", proxyGroup: { id: "1", name: "Seoul" }, localAddress: "10.0.0.1", customTimeouts: true }),
++      { timeouts: GLOBAL }));
++    const body = valuesToRequest(v);
++    expect(body).toMatchObject({ operating_mode: 1, tls_connect: 4, address: "10.0.0.9", port: "10051", proxy_groupid: "1", local_address: "10.0.0.1", custom_timeouts: 1 });
++    expect(body).not.toHaveProperty("tls_accept");
++    expect(body).not.toHaveProperty("allowed_addresses");
++    expect(Object.keys(body.timeouts ?? {})).toHaveLength(10);
++  });
++
++  it("carries encryption across a mode switch instead of dropping to none", () => {
++    expect(carryTlsAcrossModes(0, 2, [1])).toEqual({ tls_accept: [2] });
++    expect(carryTlsAcrossModes(1, 1, [1, 4])).toEqual({ tls_connect: 4 });
++    expect(carryTlsAcrossModes(1, 1, [1, 2, 4])).toEqual({ tls_connect: 2 });
++    expect(carryTlsAcrossModes(1, 1, [1])).toEqual({ tls_connect: 1 });
++  });
++
++  it("tlsLabels shows accepted bits for active and the single method for passive", () => {
++    expect(tlsLabels({ operatingMode: 0, tlsConnect: 1, tlsAccept: 6 })).toEqual(["psk", "cert"]);
++    expect(tlsLabels({ operatingMode: 1, tlsConnect: 2, tlsAccept: 1 })).toEqual(["psk"]);
++  });
++});
++
++describe("ProxyTab", () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    groupListMock.mockReturnValue({ data: [group({})], isLoading: false });
++    detailMock.mockReturnValue({ data: undefined, isLoading: false });
++    optionsMock.mockReturnValue({ data: { proxyGroups: [{ id: "1", name: "Seoul" }], globalTimeouts: GLOBAL } });
++  });
++
++  it("filters on the screen by mode, state, group and keyword from the URL", () => {
++    listMock.mockReturnValue({ data: [
++      row({}),
++      row({ proxyid: "2", name: "proxy-b", operatingMode: 1, state: "OFFLINE" }),
++      row({ proxyid: "3", name: "proxy-c", operatingMode: 1, state: "OFFLINE", proxyGroup: { id: "1", name: "Seoul" }, address: "10.9.9.9" }),
++    ], isLoading: false });
++    render(
++      <MemoryRouter initialEntries={["/zabbix-management/proxy-management?proxyMode=1&status=OFFLINE&proxyGroupId=1&keyword=10.9"]}>
++        <ProxyTab />
++      </MemoryRouter>
++    );
++    expect(screen.queryByText("proxy-a")).toBeNull();
++    expect(screen.queryByText("proxy-b")).toBeNull();
++    expect(screen.getByText("proxy-c")).toBeTruthy();
++  });
++
++  it("blocks delete on proxies that still monitor hosts and shows outdated version badge", () => {
++    listMock.mockReturnValue({ data: [
++      row({}),
++      row({ proxyid: "2", name: "proxy-b", hostCount: 3, compatibility: "OUTDATED", version: "6.4.0" }),
++    ], isLoading: false });
++    render(<MemoryRouter><ProxyTab /></MemoryRouter>);
++    const deletes = screen.getAllByText("proxy_management.delete").map((el) => el.closest("button") as HTMLButtonElement);
++    expect(deletes.map((b) => b.disabled)).toEqual([false, true]);
++    expect(screen.getByText("proxy_management.compatibility.OUTDATED")).toBeTruthy();
++  });
++
++  it("delete confirms then calls the API with the id", () => {
++    listMock.mockReturnValue({ data: [row({})], isLoading: false });
++    render(<MemoryRouter><ProxyTab /></MemoryRouter>);
++    fireEvent.click(screen.getByText("proxy_management.delete"));
++    const buttons = screen.getAllByText("proxy_management.delete").map((el) => el.closest("button") as HTMLButtonElement);
++    fireEvent.click(buttons[buttons.length - 1]);
++    expect(deleteMutate.mock.calls[0][0]).toEqual(["1"]);
++  });
++
++  it("shows the list error instead of an empty table", () => {
++    listMock.mockReturnValue({ data: undefined, isLoading: false, isError: true, error: Object.assign(new Error("Zabbix unreachable"), { code: 500 }) });
++    render(<MemoryRouter><ProxyTab /></MemoryRouter>);
++    expect(screen.getByText("Zabbix unreachable")).toBeTruthy();
++  });
++});
++
++describe("ProxyGroupTab", () => {
++  beforeEach(() => jest.clearAllMocks());
++
++  it("blocks delete when the group has proxies or hosts and shows online/total", () => {
++    groupListMock.mockReturnValue({ data: [
++      group({}),
++      group({ proxyGroupId: "2", name: "Busan", proxyCount: 2, onlineProxyCount: 1,
++        proxies: [{ proxyid: "1", name: "p-a", state: "ONLINE" }, { proxyid: "2", name: "p-b", state: "OFFLINE" }] }),
++      group({ proxyGroupId: "3", name: "Daegu", hostCount: 4 }),
++    ], isLoading: false });
++    render(<MemoryRouter><ProxyGroupTab /></MemoryRouter>);
++    const deletes = screen.getAllByText("proxy_management.delete").map((el) => el.closest("button") as HTMLButtonElement);
++    expect(deletes.map((b) => b.disabled)).toEqual([false, true, true]);
++    expect(screen.getByText("p-b")).toBeTruthy();
++  });
++});
++
++describe("ProxyFormDrawer", () => {
++  beforeEach(() => {
++    jest.clearAllMocks();
++    optionsMock.mockReturnValue({ data: { proxyGroups: [{ id: "1", name: "Seoul" }], globalTimeouts: GLOBAL } });
++  });
++
++  it("does not prefill or save when the loaded detail belongs to another proxy", () => {
++    detailMock.mockReturnValue({ data: detailOf(row({})), isLoading: false });
++    render(<MemoryRouter><ProxyFormDrawer open proxy={row({ proxyid: "99", name: "other" })} onClose={jest.fn()} /></MemoryRouter>);
++    expect(screen.queryByDisplayValue("proxy-a")).toBeNull();
++    expect((screen.getByText("proxy_management.save").closest("button") as HTMLButtonElement).disabled).toBe(true);
++  });
++
++  it("a detail refetch does not overwrite what the user is editing", () => {
++    detailMock.mockReturnValue({ data: detailOf(row({})), isLoading: false });
++    const { rerender } = render(<MemoryRouter><ProxyFormDrawer open proxy={row({})} onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.change(document.querySelector("#name") as HTMLInputElement, { target: { value: "편집 중" } });
++    detailMock.mockReturnValue({ data: detailOf(row({ lastAccess: 1761539999 })), isLoading: false });
++    rerender(<MemoryRouter><ProxyFormDrawer open proxy={row({})} onClose={jest.fn()} /></MemoryRouter>);
++    expect((document.querySelector("#name") as HTMLInputElement).value).toBe("편집 중");
++  });
++
++  it("switching a passive PSK proxy to active keeps PSK and saves without re-entering it", async () => {
++    const passive = row({ operatingMode: 1, tlsConnect: 2, address: "10.0.0.9", pskConfigured: true });
++    detailMock.mockReturnValue({ data: detailOf(passive), isLoading: false });
++    render(<MemoryRouter><ProxyFormDrawer open proxy={passive} onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.click(screen.getByText("proxy_management.mode.0"));
++    expect(screen.getByText("proxy_management.mode_change_warning")).toBeTruthy();
++    fireEvent.click(screen.getByText("proxy_management.save"));
++
++    await waitFor(() => expect(updateMutate).toHaveBeenCalled());
++    const { proxyid, body } = updateMutate.mock.calls[0][0];
++    expect(proxyid).toBe("1");
++    expect(body).toMatchObject({ operating_mode: 0, tls_accept: 2 });
++    expect(body).not.toHaveProperty("tls_psk");
++    expect(body).not.toHaveProperty("tls_psk_identity");
++  });
++
++  it("turning PSK on for a proxy without PSK requires identity and key", async () => {
++    detailMock.mockReturnValue({ data: detailOf(row({})), isLoading: false });
++    render(<MemoryRouter><ProxyFormDrawer open proxy={row({})} onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.click(screen.getByText("proxy_management.tab_tls"));
++    fireEvent.click(screen.getByText("proxy_management.tls.psk"));
++    expect(screen.getByText("proxy_management.psk_required_hint")).toBeTruthy();
++    fireEvent.click(screen.getByText("proxy_management.save"));
++    expect(await screen.findByText("proxy_management.psk_identity_required")).toBeTruthy();
++    expect(updateMutate).not.toHaveBeenCalled();
++  });
++
++  it("waits for this open's fresh detail instead of filling from an old cache, then saves the fresh state", async () => {
++    const old = row({ tlsAccept: 1 });
++    const fresh = row({ tlsAccept: 2, pskConfigured: true });
++    detailMock.mockReturnValue({ data: detailOf(old), isFetching: true, isLoading: false });
++    const { rerender } = render(<MemoryRouter><ProxyFormDrawer open proxy={row({})} onClose={jest.fn()} /></MemoryRouter>);
++    expect((screen.getByText("proxy_management.save").closest("button") as HTMLButtonElement).disabled).toBe(true);
++    detailMock.mockReturnValue({ data: detailOf(fresh), isFetching: false, isLoading: false });
++    rerender(<MemoryRouter><ProxyFormDrawer open proxy={row({})} onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.click(screen.getByText("proxy_management.save"));
++
++    await waitFor(() => expect(updateMutate).toHaveBeenCalled());
++    expect(updateMutate.mock.calls[0][0].body).toMatchObject({ tls_accept: 2 });
++  });
++
++  it("a new create starts empty — nothing from the previous create or edit (no leftover PSK)", async () => {
++    detailMock.mockReturnValue({ data: undefined, isLoading: false });
++    const { rerender } = render(<MemoryRouter><ProxyFormDrawer open onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.change(document.querySelector("#name") as HTMLInputElement, { target: { value: "first" } });
++    fireEvent.change(document.querySelector("#description") as HTMLTextAreaElement, { target: { value: "old note" } });
++    fireEvent.click(screen.getByText("proxy_management.tab_tls"));
++    fireEvent.click(screen.getByText("proxy_management.tls.psk"));
++    fireEvent.change(document.querySelector("#tls_psk_identity") as HTMLInputElement, { target: { value: "old-id" } });
++    rerender(<MemoryRouter><ProxyFormDrawer open={false} onClose={jest.fn()} /></MemoryRouter>);
++    rerender(<MemoryRouter><ProxyFormDrawer open onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.change(document.querySelector("#name") as HTMLInputElement, { target: { value: "second" } });
++    fireEvent.click(screen.getByText("proxy_management.save"));
++
++    await waitFor(() => expect(createMutate).toHaveBeenCalled());
++    const body = createMutate.mock.calls[0][0];
++    expect(body).toMatchObject({ name: "second", description: "", tls_accept: 1 });
++    expect(body).not.toHaveProperty("tls_psk_identity");
++  });
++
++  it("clearing the port on edit sends the empty value instead of silently keeping the old one", async () => {
++    const passive = row({ operatingMode: 1, address: "10.0.0.9", port: "10051" });
++    detailMock.mockReturnValue({ data: detailOf(passive), isLoading: false });
++    render(<MemoryRouter><ProxyFormDrawer open proxy={passive} onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.change(document.querySelector("#port") as HTMLInputElement, { target: { value: "" } });
++    fireEvent.click(screen.getByText("proxy_management.save"));
++
++    await waitFor(() => expect(updateMutate).toHaveBeenCalled());
++    expect(updateMutate.mock.calls[0][0].body).toMatchObject({ port: "" });
++  });
++
++  it("a mode round trip restores the original multi-select instead of the collapsed value", async () => {
++    const active = row({ tlsAccept: 7, pskConfigured: true });
++    detailMock.mockReturnValue({ data: detailOf(active), isLoading: false });
++    render(<MemoryRouter><ProxyFormDrawer open proxy={active} onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.click(screen.getByText("proxy_management.mode.1"));
++    fireEvent.change(document.querySelector("#address") as HTMLInputElement, { target: { value: "10.0.0.9" } });
++    fireEvent.click(screen.getByText("proxy_management.mode.0"));
++    fireEvent.click(screen.getByText("proxy_management.save"));
++
++    await waitFor(() => expect(updateMutate).toHaveBeenCalled());
++    expect(updateMutate.mock.calls[0][0].body).toMatchObject({ operating_mode: 0, tls_accept: 7 });
++  });
++
++  it("turning custom timeouts on fills the empty fields with the global values", async () => {
++    detailMock.mockReturnValue({ data: undefined, isLoading: false });
++    render(<MemoryRouter><ProxyFormDrawer open onClose={jest.fn()} /></MemoryRouter>);
++    fireEvent.change(document.querySelector("#name") as HTMLInputElement, { target: { value: "proxy-new" } });
++    fireEvent.click(screen.getByText("proxy_management.tab_timeouts"));
++    fireEvent.click(screen.getByRole("switch"));
++    expect((document.querySelector("#timeouts_http_agent") as HTMLInputElement).value).toBe("10s");
++    fireEvent.click(screen.getByText("proxy_management.save"));
++
++    await waitFor(() => expect(createMutate).toHaveBeenCalled());
++    const body = createMutate.mock.calls[0][0];
++    expect(body).toMatchObject({ name: "proxy-new", operating_mode: 0, custom_timeouts: 1, proxy_groupid: "0" });
++    expect(body.timeouts).toEqual(GLOBAL);
++  });
++});
+diff --git a/src/constants/breadcrumbSegments.ts b/src/constants/breadcrumbSegments.ts
+index 2c1a2b9..4fc7a8b 100644
+--- a/src/constants/breadcrumbSegments.ts
++++ b/src/constants/breadcrumbSegments.ts
+@@ -17,6 +17,8 @@ import { PATH_APPLICATION_MONITORING, PATH_GPU_MONITORING, PATH_SETTING, PATH_ZA
+ export const BREADCRUMB_SEGMENT_LABEL_KEYS: Record<string, string> = {
+   // Zabbix 관리 › Web 시나리오 — 평면 키 `web_scenario_management`는 화면 네임스페이스(객체)라 override가 필요하다.
+   [PATH_ZABBIX_MANAGEMENT.webScenarioManagement]: "web_scenario_management.title",
++  // Zabbix 관리 › 프록시 — `proxy_management`도 화면 네임스페이스(객체)라 override.
++  [PATH_ZABBIX_MANAGEMENT.proxyManagement]: "proxy_management.title",
+   // APM 13개(설계 devdesign_apm-screens-wbs.md §1.2) — 사이드바 라벨과 같은 키를 쓴다.
+   // 메뉴·검색·브레드크럼이 한 키를 보므로 라벨이 갈릴 수 없다.
+   [PATH_APPLICATION_MONITORING.overview]: "apm.menu.overview",
+diff --git a/src/constants/navSearchEntries.ts b/src/constants/navSearchEntries.ts
+index b7ef97b..65885d8 100644
+--- a/src/constants/navSearchEntries.ts
++++ b/src/constants/navSearchEntries.ts
+@@ -414,6 +414,14 @@ export const NAV_SEARCH_ENTRIES: TNavSearchEntry[] = [
+     adminOnly: true,
+     feature: "WEB_SCENARIO",
+   },
++  {
++    key: "proxy-management",
++    path: PATH_ZABBIX_MANAGEMENT.proxyManagement,
++    labelKey: "proxy_management.title",
++    parentKey: "zabbix_management",
++    guideKey: "zabbix_proxy_management",
++    adminOnly: true,
++  },
+   {
+     key: "alert-management",
+     path: PATH_ZABBIX_MANAGEMENT.alertManagement,
+diff --git a/src/constants/page-guide.ts b/src/constants/page-guide.ts
+index dd1c03e..bc462d4 100644
+--- a/src/constants/page-guide.ts
++++ b/src/constants/page-guide.ts
+@@ -339,6 +339,12 @@ const ENTRIES: PageGuideEntry[] = [
+     descriptionKey: "zabbix_menu_hint.web_scenario_management",
+     terms: ["host", "template", "item", "macro", "proxy"],
+   },
++  {
++    path: PATH_ZABBIX_MANAGEMENT.proxyManagement,
++    key: "zabbix_proxy_management",
++    descriptionKey: "zabbix_menu_hint.proxy_management",
++    terms: ["proxy", "host"],
++  },
+   {
+     path: PATH_ZABBIX_MANAGEMENT.macroManagement,
+     key: "zabbix_macro_management",
+diff --git a/src/constants/queryKey.ts b/src/constants/queryKey.ts
+index 3fb9f75..fbcc4cc 100644
+--- a/src/constants/queryKey.ts
++++ b/src/constants/queryKey.ts
+@@ -151,6 +151,15 @@ export const WEB_SCENARIO_QUERY_KEY = {
+   DETAIL: "ZabbixWebScenarioDetail",
+ };
+ 
++// Zabbix 관리 > 프록시·프록시 그룹(기본 기능). 계약: contract_proxy.md.
++export const PROXY_QUERY_KEY = {
++  LIST: "ZabbixProxyList",
++  DETAIL: "ZabbixProxyDetail",
++  OPTIONS: "ZabbixProxyOptions",
++  GROUP_LIST: "ZabbixProxyGroupList",
++  GROUP_DETAIL: "ZabbixProxyGroupDetail",
++};
++
+ // Zabbix 관리 > 디스커버리(관리자 전용). 계약: contract_discovery.md.
+ // LLD = 호스트/템플릿 상세 > 디스커버리 탭, NETWORK = Zabbix 관리 > 네트워크 디스커버리(최상위 메뉴).
+ // 조회 전용(BE에 쓰기 EP가 없다) — invalidate 대상이 없어 mutation 키도 없다.
+diff --git a/src/constants/routes.ts b/src/constants/routes.ts
+index a0e3e1d..12ab79d 100644
+--- a/src/constants/routes.ts
++++ b/src/constants/routes.ts
+@@ -426,6 +426,8 @@ export const PATH_ZABBIX_MANAGEMENT = {
+   alertManagement: path(ROOTS_ZABBIX_MANAGEMENT, "/alert-management"),
+   // Web 시나리오(유료 WEB_SCENARIO) — httptest 정의·최근 결과. APM 합성 감시와 별개 화면. 계약: contract_web-scenario.md.
+   webScenarioManagement: path(ROOTS_ZABBIX_MANAGEMENT, "/web-scenario-management"),
++  // 프록시·프록시 그룹(기본 기능, ?tab=groups) — Administration › Proxies. 계약: contract_proxy.md.
++  proxyManagement: path(ROOTS_ZABBIX_MANAGEMENT, "/proxy-management"),
+   // 매크로 관리(전역). 호스트/템플릿 매크로는 드릴다운 매크로 탭. 계약: contract_macro.md.
+   macroManagement: path(ROOTS_ZABBIX_MANAGEMENT, "/macro-management"),
+   // 점검 기간(Maintenance) — 점검 중 알림 억제. 계약: contract_maintenance.md.
+diff --git a/src/enums/common.ts b/src/enums/common.ts
+index 78a0143..19ebe6d 100644
+--- a/src/enums/common.ts
++++ b/src/enums/common.ts
+@@ -111,6 +111,9 @@ export enum QueryParamKeys {
+   // 데이터 아카이브 목록(ZM-156) — 데이터셋 필터와 "삭제된 항목 표시" 토글(BE 쿼리 이름과 1:1).
+   DATASET = "dataset",
+   INCLUDE_DELETED = "includeDeleted",
++  // 프록시 관리 — 액티브(0)·패시브(1) 필터, 소속 프록시 그룹 필터(화면 거름).
++  PROXY_MODE = "proxyMode",
++  PROXY_GROUP_ID = "proxyGroupId",
+   // 아이템·템플릿 관리 > 아이템 탭 전용 — 선택 템플릿을 URL로 승격(리마운트 생존). 다른 탭과 미간섭.
+   TEMPLATE_ID = "templateId",
+   TEMPLATE_NAME = "templateName",
+diff --git a/src/hooks/useZabbixProxy.ts b/src/hooks/useZabbixProxy.ts
+new file mode 100644
+index 0000000..e63fff0
+--- /dev/null
++++ b/src/hooks/useZabbixProxy.ts
+@@ -0,0 +1,114 @@
++import { useMutation, useQueryClient } from "@tanstack/react-query";
++
++import { HOST_MANAGE_QUERY_KEY, PROXY_QUERY_KEY } from "@/constants/queryKey";
++import ZabbixProxyService from "@/services/zabbix-proxy.api";
++import {
++  TManagedProxy,
++  TManagedProxyDetail,
++  TManagedProxyGroup,
++  TManagedProxyGroupDetail,
++  TProxyGroupUpsertReq,
++  TProxyOptions,
++  TProxyUpsertReq,
++} from "@/types/zabbix-proxy";
++import useDmoveQuery from "./useDmoveQuery";
++
++// Zabbix 관리 > 프록시·프록시 그룹 react-query 훅. 언랩 깊이는 Web 시나리오 훅과 같다(조회 data = payload).
++// 🔴 프록시와 그룹은 서로의 화면에 이름·개수로 보인다(프록시 행의 그룹, 그룹 행의 소속 프록시) — 어느 쪽을 바꾸든 둘 다 무효화한다.
++
++export const useProxyList = () =>
++  useDmoveQuery<TManagedProxy[]>({
++    queryKey: [PROXY_QUERY_KEY.LIST],
++    queryFn: () => ZabbixProxyService.getProxyList(),
++  });
++
++export const useProxyOptions = (enabled: boolean) =>
++  useDmoveQuery<TProxyOptions>({
++    queryKey: [PROXY_QUERY_KEY.OPTIONS],
++    queryFn: () => ZabbixProxyService.getProxyOptions(),
++    enabled,
++  });
++
++/**
++ * 🔴 상세는 폼을 열 때마다 새로 받는다(staleTime 0 + refetchOnMount always) — 폼은 열 때 한 번만 채우므로,
++ * 1분 캐시(전역 staleTime)로 채우면 그 사이 바뀐 암호화·PSK 상태를 옛 값으로 되돌려 저장할 수 있다. 폼은 받는 중에는 채우지 않는다.
++ */
++export const useProxyDetail = (proxyid: string | undefined) =>
++  useDmoveQuery<TManagedProxyDetail>({
++    queryKey: [PROXY_QUERY_KEY.DETAIL, proxyid],
++    queryFn: () => ZabbixProxyService.getProxyDetail(proxyid as string),
++    enabled: !!proxyid,
++    staleTime: 0,
++    refetchOnMount: "always",
++  });
++
++export const useProxyGroupList = () =>
++  useDmoveQuery<TManagedProxyGroup[]>({
++    queryKey: [PROXY_QUERY_KEY.GROUP_LIST],
++    queryFn: () => ZabbixProxyService.getProxyGroupList(),
++  });
++
++/** 프록시 상세와 같은 이유로 열 때마다 새로 받는다. */
++export const useProxyGroupDetail = (proxyGroupId: string | undefined) =>
++  useDmoveQuery<TManagedProxyGroupDetail>({
++    queryKey: [PROXY_QUERY_KEY.GROUP_DETAIL, proxyGroupId],
++    queryFn: () => ZabbixProxyService.getProxyGroupDetail(proxyGroupId as string),
++    enabled: !!proxyGroupId,
++    staleTime: 0,
++    refetchOnMount: "always",
++  });
++
++const invalidateProxies = (queryClient: ReturnType<typeof useQueryClient>) => {
++  Object.values(PROXY_QUERY_KEY).forEach((key) => queryClient.invalidateQueries({ queryKey: [key] }));
++  // 호스트 등록 폼의 프록시 선택지도 같은 목록이다.
++  queryClient.invalidateQueries({ queryKey: [HOST_MANAGE_QUERY_KEY.PROXIES] });
++};
++
++export const useCreateProxy = () => {
++  const queryClient = useQueryClient();
++  return useMutation({
++    mutationFn: (body: TProxyUpsertReq) => ZabbixProxyService.createProxy(body),
++    onSuccess: () => invalidateProxies(queryClient),
++  });
++};
++
++export const useUpdateProxy = () => {
++  const queryClient = useQueryClient();
++  return useMutation({
++    mutationFn: ({ proxyid, body }: { proxyid: string; body: TProxyUpsertReq }) => ZabbixProxyService.updateProxy(proxyid, body),
++    onSuccess: () => invalidateProxies(queryClient),
++  });
++};
++
++export const useDeleteProxies = () => {
++  const queryClient = useQueryClient();
++  return useMutation({
++    mutationFn: (ids: string[]) => ZabbixProxyService.deleteProxies(ids),
++    onSuccess: () => invalidateProxies(queryClient),
++  });
++};
++
++export const useCreateProxyGroup = () => {
++  const queryClient = useQueryClient();
++  return useMutation({
++    mutationFn: (body: TProxyGroupUpsertReq) => ZabbixProxyService.createProxyGroup(body),
++    onSuccess: () => invalidateProxies(queryClient),
++  });
++};
++
++export const useUpdateProxyGroup = () => {
++  const queryClient = useQueryClient();
++  return useMutation({
++    mutationFn: ({ proxyGroupId, body }: { proxyGroupId: string; body: TProxyGroupUpsertReq }) =>
++      ZabbixProxyService.updateProxyGroup(proxyGroupId, body),
++    onSuccess: () => invalidateProxies(queryClient),
++  });
++};
++
++export const useDeleteProxyGroups = () => {
++  const queryClient = useQueryClient();
++  return useMutation({
++    mutationFn: (ids: string[]) => ZabbixProxyService.deleteProxyGroups(ids),
++    onSuccess: () => invalidateProxies(queryClient),
++  });
++};
+diff --git a/src/layouts/app/MobileSideNav.tsx b/src/layouts/app/MobileSideNav.tsx
+index 24d1e07..497de83 100644
+--- a/src/layouts/app/MobileSideNav.tsx
++++ b/src/layouts/app/MobileSideNav.tsx
+@@ -6,6 +6,7 @@ import {
+   AlertOutlined,
+   ApiOutlined,
+   BellOutlined,
++  ClusterOutlined,
+   CodeOutlined,
+   CloseOutlined,
+   CloudOutlined,
+@@ -449,6 +450,16 @@ const MobileSideNav = ({ ...others }: MobileSideNavProps) => {
+             key: "macro-management",
+             icon: <CodeOutlined />,
+           }),
++          // 프록시·프록시 그룹 — 데스크톱 SideNav와 동일 구성.
++          getItem({
++            label: (
++              <Link to={PATH_ZABBIX_MANAGEMENT.proxyManagement}>
++                {t("proxy_management.title")}
++              </Link>
++            ),
++            key: "proxy-management",
++            icon: <ClusterOutlined />,
++          }),
+           ] } as MenuItem,
+           // 사용자 관리 — 데스크톱 SideNav와 동일하게 Zabbix 관리 하위로 이동(탭 통합)
+           getItem({
+diff --git a/src/layouts/app/SideNav.tsx b/src/layouts/app/SideNav.tsx
+index e8376c5..6a44099 100644
+--- a/src/layouts/app/SideNav.tsx
++++ b/src/layouts/app/SideNav.tsx
+@@ -10,6 +10,7 @@ import {
+   AppstoreOutlined,
+   BellOutlined,
+   CloudOutlined,
++  ClusterOutlined,
+   CodeOutlined,
+   DashboardOutlined,
+   DatabaseOutlined,
+@@ -642,6 +643,16 @@ const SideNav = ({ ...others }: SideNavProps) => {
+                 key: "macro-management",
+                 icon: <CodeOutlined />,
+               }),
++              // 프록시·프록시 그룹 — Administration › Proxies. 두 사이드바가 같은 구성이어야 한다.
++              getItem({
++                label: (
++                  <Link to={PATH_ZABBIX_MANAGEMENT.proxyManagement}>
++                    {t("proxy_management.title")}
++                  </Link>
++                ),
++                key: "proxy-management",
++                icon: <ClusterOutlined />,
++              }),
+             ],
+           } as MenuItem,
+         ],
+diff --git a/src/locales/en.json b/src/locales/en.json
+index 2bb31d5..36f4242 100644
+--- a/src/locales/en.json
++++ b/src/locales/en.json
+@@ -6774,6 +6774,184 @@
+     "filter_target": "Target",
+     "filter_target_placeholder": "All hosts — pick one host, template or group"
+   },
++  "proxy_management": {
++    "title": "Proxies",
++    "tab_proxies": "Proxies",
++    "tab_groups": "Proxy groups",
++    "desc": "A proxy monitors hosts in a remote segment on behalf of the Zabbix server and forwards the data. Which proxy monitors which host is set in Host management.",
++    "group_desc": "A proxy group spreads hosts across several proxies and moves them to the remaining proxies when one stops. Add a proxy to a group from the proxy's edit panel.",
++    "search_placeholder": "Search name, address, description",
++    "group_search_placeholder": "Search name, description",
++    "filter_mode": "Mode",
++    "filter_state": "State",
++    "filter_group": "Proxy group",
++    "create": "Add proxy",
++    "group_create": "Add proxy group",
++    "edit": "Edit",
++    "delete": "Delete",
++    "save": "Save",
++    "cancel": "Cancel",
++    "col_name": "Name",
++    "col_mode": "Mode",
++    "col_state": "State",
++    "col_version": "Version",
++    "col_group": "Proxy group",
++    "col_address": "Address",
++    "col_hosts": "Hosts",
++    "col_encryption": "Encryption",
++    "col_actions": "Actions",
++    "col_proxies": "Proxies",
++    "col_min_online": "Minimum online",
++    "col_failover_delay": "Failover delay",
++    "mode": {
++      "0": "Active",
++      "1": "Passive"
++    },
++    "mode_hint": {
++      "0": "The proxy connects to the server to fetch its configuration and send data. Only proxy → server (10051) needs to be open.",
++      "1": "The server connects to the proxy to push configuration and pull data. Server → proxy (10051) must be open."
++    },
++    "mode_change_warning": "After changing the mode, change ProxyMode in the proxy configuration file too, or it will not connect. The encryption setting was carried over to the new mode — check the Encryption tab.",
++    "state": {
++      "ONLINE": "Online",
++      "OFFLINE": "Offline",
++      "UNKNOWN": "Unknown"
++    },
++    "group_state": {
++      "ONLINE": "Online",
++      "DEGRADING": "Degrading",
++      "RECOVERING": "Recovering",
++      "OFFLINE": "Offline",
++      "UNKNOWN": "Unknown"
++    },
++    "group_state_hint": {
++      "ONLINE": "At least the minimum number of proxies are online.",
++      "DEGRADING": "Online proxies are dropping. Hosts may be moving to the remaining proxies.",
++      "RECOVERING": "The number of online proxies is recovering.",
++      "OFFLINE": "Fewer proxies than the minimum are online, so the group is not monitoring its hosts.",
++      "UNKNOWN": "State not determined yet (no proxies, or the server just started)."
++    },
++    "compatibility": {
++      "UNDEFINED": "Unknown",
++      "CURRENT": "Current",
++      "OUTDATED": "Outdated",
++      "UNSUPPORTED": "Unsupported"
++    },
++    "compatibility_hint": {
++      "OUTDATED": "Older than the server. Data collection works but some features such as remote commands are limited. Upgrade the proxy to the server version.",
++      "UNSUPPORTED": "Not compatible with this server, so its data is rejected. Upgrade the proxy to the server version."
++    },
++    "tls": {
++      "none": "None",
++      "psk": "PSK",
++      "cert": "Certificate"
++    },
++    "last_access": "Last seen {{time}}",
++    "never_connected": "Never connected",
++    "any_address": "Any",
++    "no_group": "No group",
++    "allowed_addresses_hint": "Addresses allowed to connect as this proxy (comma-separated). Leave empty to accept any.",
++    "host_count_hint": "Directly assigned {{direct}} · Assigned through the group {{assigned}}",
++    "delete_blocked_hosts": "This proxy monitors {{count}} hosts and cannot be deleted. Move them to another proxy or the server in Host management first.",
++    "delete_title": "Delete proxy",
++    "delete_warning": "Delete {{count}} proxies. The proxy software itself stays installed but can no longer connect to the server.",
++    "delete_success": "Deleted.",
++    "create_title": "Add proxy",
++    "edit_title": "Edit proxy",
++    "create_success": "Proxy added.",
++    "update_success": "Saved.",
++    "tab_basic": "General",
++    "tab_tls": "Encryption",
++    "tab_timeouts": "Timeouts",
++    "tab_usage": "Used by",
++    "name": "Name",
++    "name_hint": "Must match Hostname in the proxy configuration file.",
++    "name_required": "Enter a name.",
++    "allowed_addresses": "Allowed addresses",
++    "address": "Address",
++    "address_required": "Enter an address.",
++    "port": "Port",
++    "proxy_group": "Proxy group",
++    "proxy_group_hint": "Proxies in a group share its hosts.",
++    "local_address": "Address for active agents",
++    "local_address_hint": "The address other proxies in the group and agents use to reach this proxy.",
++    "local_address_required": "An address is required to join a proxy group.",
++    "description": "Description",
++    "tls_accept": "Connections from proxy",
++    "tls_accept_hint": "Methods accepted when the proxy connects to the server. With several selected, any one of them is enough.",
++    "tls_accept_required": "Select at least one.",
++    "tls_connect": "Connections to proxy",
++    "tls_connect_hint": "Method the server uses to connect to the proxy.",
++    "psk_identity": "PSK identity",
++    "psk": "PSK",
++    "psk_format_hint": "At least 32 hex digits (e.g. openssl rand -hex 32). Must match the TLSPSKFile of the proxy.",
++    "psk_format_invalid": "Must be at least 32 hex digits.",
++    "psk_identity_required": "Enter the PSK identity.",
++    "psk_required": "Enter the PSK.",
++    "psk_keep_hint": "A PSK is stored. Leave empty to keep it, or enter a new one to replace it (Zabbix never shows the PSK again).",
++    "psk_required_hint": "Turning PSK on requires both the identity and the key.",
++    "psk_set_placeholder": "Stored — enter only to change",
++    "tls_issuer": "Certificate issuer",
++    "tls_subject": "Certificate subject",
++    "tls_cert_field_hint": "Leave empty to skip the check. If set, it must exactly match the proxy certificate.",
++    "custom_timeouts": "Proxy-specific timeouts",
++    "custom_timeouts_hint": "When off, the global timeouts (Administration › General) apply. When on, all 10 values are required; empty ones are filled with the global values.",
++    "timeout_labels": {
++      "zabbix_agent": "Zabbix agent",
++      "simple_check": "Simple check",
++      "snmp_agent": "SNMP agent",
++      "external_check": "External check",
++      "db_monitor": "Database monitor",
++      "http_agent": "HTTP agent",
++      "ssh_agent": "SSH agent",
++      "telnet_agent": "TELNET agent",
++      "script": "Script",
++      "browser": "Browser"
++    },
++    "timeout_required": "Enter a value (1–600 s).",
++    "global_timeouts_in_use": "Using global timeouts.",
++    "usage_hint": "Where this proxy is used. Host assignment is changed in Host management.",
++    "hosts_truncated": "Showing the first 500 hosts by name. Counts include all hosts.",
++    "direct_hosts": "Directly assigned hosts: {{count}}",
++    "assigned_hosts": "Hosts assigned through the group: {{count}}",
++    "assigned_hosts_hint": "Hosts given to this proxy by its group. They move to another proxy in the group if this one stops.",
++    "discovery_rules": "Network discovery rules: {{count}}",
++    "no_discovery_rules": "No discovery rules run on this proxy.",
++    "no_hosts": "No hosts",
++    "no_proxies": "No proxies",
++    "online_of_total": "{{online}} / {{total}} online",
++    "group_delete_blocked_proxies": "The group has {{count}} proxies and cannot be deleted. Remove them from the group in the proxy edit panel first.",
++    "group_delete_blocked_hosts": "{{count}} hosts are assigned to this group and it cannot be deleted. Move them in Host management first.",
++    "group_delete_title": "Delete proxy group",
++    "group_delete_success": "Deleted.",
++    "group_create_title": "Add proxy group",
++    "group_edit_title": "Edit proxy group",
++    "group_create_success": "Proxy group added.",
++    "group_update_success": "Saved.",
++    "failover_delay_hint": "How long to wait before moving hosts off an unresponsive proxy (10s–15m, e.g. 1m).",
++    "min_online_hint": "Minimum number of online proxies for the group to be online (1–1000).",
++    "group_members_hint": "Member proxies and assigned hosts. Add or remove proxies from the proxy edit panel; assign hosts in Host management.",
++    "group_proxies": "Member proxies: {{count}}",
++    "group_hosts": "Assigned hosts: {{count}}",
++    "permission_denied": "Administrators only.",
++    "action_failed": "The request could not be completed.",
++    "errors": {
++      "PROXY_NOT_FOUND": "Proxy not found. It may have been deleted.",
++      "PROXY_NAME_REQUIRED": "Enter a name.",
++      "PROXY_MODE_INVALID": "Select a mode (active or passive).",
++      "PROXY_TLS_REQUIRED": "When changing the mode, set the encryption for the new mode (leaving it out would turn encryption off).",
++      "PROXY_PSK_REQUIRED": "Turning PSK on requires both the identity and the key.",
++      "PROXY_LOCAL_ADDRESS_REQUIRED": "An address is required to join a proxy group.",
++      "PROXY_CREATE_FAILED": "Could not create the proxy.",
++      "PROXY_IDS_REQUIRED": "Select proxies to delete.",
++      "PROXY_IN_USE": "Nothing was deleted because it is in use — {{detail}}",
++      "PROXY_GROUP_NOT_FOUND": "Proxy group not found. It may have been deleted.",
++      "PROXY_GROUP_NAME_REQUIRED": "Enter a name.",
++      "PROXY_GROUP_CREATE_FAILED": "Could not create the proxy group.",
++      "PROXY_GROUP_IDS_REQUIRED": "Select proxy groups to delete.",
++      "PROXY_GROUP_IN_USE": "Nothing was deleted because it is in use — {{detail}}"
++    }
++  },
+   "trigger_management": {
+     "title": "Triggers",
+     "scope_host": "Host",
+@@ -9073,6 +9251,7 @@
+     "trigger_lens": "Find and manage triggers (alarm conditions) across every host and template.",
+     "network_discovery": "Periodically scan IP ranges to discover devices and automate host registration with actions. Zabbix: Data collection › Discovery.",
+     "web_scenario_management": "Manage web scenarios that call URLs step by step and check response time, status codes and required strings (paid). Zabbix Data collection › Web.",
++    "proxy_management": "Manage proxies that monitor remote hosts on behalf of the server, and proxy groups that take over from each other. Zabbix Administration › Proxies.",
+     "alert_management": "Decide who gets notified (actions), how (media types) and when not to (maintenance). Zabbix: Alerts › Actions/Media types + Data collection › Maintenance.",
+     "macro_management": "Global macros ({$NAME}) — shared settings (thresholds, credentials) used by every host and template. Zabbix: Administration › Macros.",
+     "user_management": "Manage Zabbix users, roles and user groups. Zabbix: Users.",
+@@ -9509,6 +9688,10 @@
+       "summary": "Call a web service step by step like a user would, and see which step failed and why.",
+       "detail": "A scenario belongs to a host or template and is run by the Zabbix server or proxy monitoring that host\nEach step sets a URL, required status codes and a required string\nThe last result is the latest value of the result items Zabbix creates for each scenario\nDeleting a scenario also deletes its result history — to pause, turn off 'Enabled'"
+     },
++    "zabbix_proxy_management": {
++      "summary": "Manage proxies that monitor hosts in remote segments and forward the data to the server.",
++      "detail": "An active proxy connects to the server; the server connects to a passive proxy\nThe proxy name must match Hostname in the proxy configuration file\nIn a proxy group, proxies share hosts and take over when one stops\nWhich proxy monitors which host is set in Host management\nA proxy that still monitors hosts cannot be deleted"
++    },
+     "zabbix_alert_management": {
+       "summary": "Decide who gets told about a problem and how — and when nobody should be told.",
+       "detail": "Actions — what to do under which conditions (send a message, run a command, auto-register)\nMedia types — the channel a message travels on (mail, SMS, webhook)\nMaintenance — suppress alerts during planned work\nScripts — commands registered in advance to run on hosts\nThe recipient's actual address is set in user management"
+diff --git a/src/locales/kr.json b/src/locales/kr.json
+index 21cbe50..b8ba38a 100644
+--- a/src/locales/kr.json
++++ b/src/locales/kr.json
+@@ -6780,6 +6780,184 @@
+     "filter_target": "대상",
+     "filter_target_placeholder": "전체 호스트 — 호스트·템플릿·그룹 중 하나 선택"
+   },
++  "proxy_management": {
++    "title": "프록시",
++    "tab_proxies": "프록시",
++    "tab_groups": "프록시 그룹",
++    "desc": "프록시는 원격 구간의 호스트를 대신 감시해 Zabbix 서버로 모아 보냅니다. 어느 호스트를 어느 프록시가 감시할지는 호스트 관리에서 정합니다.",
++    "group_desc": "프록시 그룹은 여러 프록시가 호스트를 나눠 맡게 하고, 하나가 멈추면 남은 프록시로 자동으로 넘깁니다. 그룹에 넣는 것은 프록시 편집에서 합니다.",
++    "search_placeholder": "이름·주소·설명 검색",
++    "group_search_placeholder": "이름·설명 검색",
++    "filter_mode": "모드",
++    "filter_state": "상태",
++    "filter_group": "프록시 그룹",
++    "create": "프록시 추가",
++    "group_create": "프록시 그룹 추가",
++    "edit": "편집",
++    "delete": "삭제",
++    "save": "저장",
++    "cancel": "취소",
++    "col_name": "이름",
++    "col_mode": "모드",
++    "col_state": "상태",
++    "col_version": "버전",
++    "col_group": "프록시 그룹",
++    "col_address": "주소",
++    "col_hosts": "호스트",
++    "col_encryption": "암호화",
++    "col_actions": "작업",
++    "col_proxies": "프록시",
++    "col_min_online": "최소 온라인",
++    "col_failover_delay": "장애 조치 지연",
++    "mode": {
++      "0": "액티브",
++      "1": "패시브"
++    },
++    "mode_hint": {
++      "0": "프록시가 서버에 먼저 접속해 설정을 받아 가고 데이터를 보냅니다. 방화벽에서 프록시 → 서버(10051)만 열면 됩니다.",
++      "1": "서버가 프록시에 접속해 설정을 내려 주고 데이터를 가져옵니다. 서버 → 프록시(10051) 접속이 열려 있어야 합니다."
++    },
++    "mode_change_warning": "모드를 바꾸면 프록시 설정 파일의 ProxyMode도 같이 바꿔야 접속됩니다. 암호화 방식은 새 모드 쪽으로 옮겨 두었으니 암호화 탭에서 확인하세요.",
++    "state": {
++      "ONLINE": "온라인",
++      "OFFLINE": "오프라인",
++      "UNKNOWN": "알 수 없음"
++    },
++    "group_state": {
++      "ONLINE": "온라인",
++      "DEGRADING": "성능 저하",
++      "RECOVERING": "복구 중",
++      "OFFLINE": "오프라인",
++      "UNKNOWN": "알 수 없음"
++    },
++    "group_state_hint": {
++      "ONLINE": "온라인 프록시가 최소 온라인 수 이상입니다.",
++      "DEGRADING": "온라인 프록시가 줄고 있습니다. 남은 프록시로 호스트를 넘기는 중일 수 있습니다.",
++      "RECOVERING": "온라인 프록시 수가 회복되는 중입니다.",
++      "OFFLINE": "온라인 프록시가 최소 온라인 수보다 적어 그룹이 호스트를 감시하지 못합니다.",
++      "UNKNOWN": "아직 상태를 판정하지 않았습니다(프록시가 없거나 서버가 막 시작됨)."
++    },
++    "compatibility": {
++      "UNDEFINED": "알 수 없음",
++      "CURRENT": "호환",
++      "OUTDATED": "구버전",
++      "UNSUPPORTED": "미지원"
++    },
++    "compatibility_hint": {
++      "OUTDATED": "서버보다 낮은 버전입니다. 데이터 수집은 되지만 원격 명령 등 일부 기능이 제한됩니다. 프록시를 서버 버전으로 올리세요.",
++      "UNSUPPORTED": "이 서버와 호환되지 않는 버전이라 데이터를 받지 않습니다. 프록시를 서버 버전으로 올리세요."
++    },
++    "tls": {
++      "none": "없음",
++      "psk": "PSK",
++      "cert": "인증서"
++    },
++    "last_access": "마지막 접속 {{time}}",
++    "never_connected": "접속한 적 없음",
++    "any_address": "제한 없음",
++    "no_group": "그룹 없음",
++    "allowed_addresses_hint": "이 프록시로 접속을 허용할 주소(쉼표로 구분). 비우면 어디서든 받습니다.",
++    "host_count_hint": "직접 배정 {{direct}}대 · 그룹을 통해 맡은 호스트 {{assigned}}대",
++    "delete_blocked_hosts": "이 프록시가 감시하는 호스트가 {{count}}대 있어 삭제할 수 없습니다. 호스트 관리에서 다른 프록시나 서버로 옮긴 뒤 삭제하세요.",
++    "delete_title": "프록시 삭제",
++    "delete_warning": "프록시 {{count}}개를 삭제합니다. 프록시 쪽 프로그램은 그대로 남지만 더 이상 서버에 접속할 수 없습니다.",
++    "delete_success": "삭제했습니다.",
++    "create_title": "프록시 추가",
++    "edit_title": "프록시 편집",
++    "create_success": "프록시를 추가했습니다.",
++    "update_success": "저장했습니다.",
++    "tab_basic": "기본",
++    "tab_tls": "암호화",
++    "tab_timeouts": "타임아웃",
++    "tab_usage": "사용처",
++    "name": "이름",
++    "name_hint": "프록시 설정 파일의 Hostname과 똑같아야 접속됩니다.",
++    "name_required": "이름을 입력하세요.",
++    "allowed_addresses": "허용 주소",
++    "address": "주소",
++    "address_required": "주소를 입력하세요.",
++    "port": "포트",
++    "proxy_group": "프록시 그룹",
++    "proxy_group_hint": "그룹에 넣으면 그룹 안 프록시들이 호스트를 나눠 맡습니다.",
++    "local_address": "그룹 내 주소",
++    "local_address_hint": "그룹 안의 다른 프록시와 에이전트가 이 프록시를 찾아올 주소입니다.",
++    "local_address_required": "그룹에 넣으려면 그룹 내 주소가 필요합니다.",
++    "description": "설명",
++    "tls_accept": "받을 연결 방식",
++    "tls_accept_hint": "프록시가 서버에 접속할 때 허용할 방식입니다. 여러 개를 고르면 그중 하나로 접속하면 됩니다.",
++    "tls_accept_required": "하나 이상 고르세요.",
++    "tls_connect": "서버 → 프록시 연결 방식",
++    "tls_connect_hint": "서버가 프록시에 접속할 때 쓸 방식입니다.",
++    "psk_identity": "PSK 식별자",
++    "psk": "PSK",
++    "psk_format_hint": "16진수 32자 이상(예: openssl rand -hex 32). 프록시 설정 파일의 TLSPSKFile 내용과 같아야 합니다.",
++    "psk_format_invalid": "16진수 32자 이상이어야 합니다.",
++    "psk_identity_required": "PSK 식별자를 입력하세요.",
++    "psk_required": "PSK를 입력하세요.",
++    "psk_keep_hint": "저장된 PSK가 있습니다. 비워 두면 그대로 유지하고, 입력하면 바꿉니다(Zabbix는 PSK 값을 다시 보여 주지 않습니다).",
++    "psk_required_hint": "PSK를 새로 켜려면 식별자와 값을 모두 입력해야 합니다.",
++    "psk_set_placeholder": "저장됨 — 바꿀 때만 입력",
++    "tls_issuer": "인증서 발급자",
++    "tls_subject": "인증서 주체",
++    "tls_cert_field_hint": "비우면 확인하지 않습니다. 넣으면 프록시 인증서의 값과 정확히 같아야 합니다.",
++    "custom_timeouts": "프록시 전용 타임아웃",
++    "custom_timeouts_hint": "끄면 전역 설정(관리 › 일반)의 타임아웃을 씁니다. 켜면 10개 항목을 모두 정해야 하며, 비어 있던 칸은 전역 값으로 채웁니다.",
++    "timeout_labels": {
++      "zabbix_agent": "Zabbix 에이전트",
++      "simple_check": "단순 체크",
++      "snmp_agent": "SNMP 에이전트",
++      "external_check": "외부 체크",
++      "db_monitor": "DB 모니터",
++      "http_agent": "HTTP 에이전트",
++      "ssh_agent": "SSH 에이전트",
++      "telnet_agent": "Telnet 에이전트",
++      "script": "스크립트",
++      "browser": "브라우저"
++    },
++    "timeout_required": "값을 입력하세요(1~600초).",
++    "global_timeouts_in_use": "전역 타임아웃을 사용 중입니다.",
++    "usage_hint": "이 프록시를 쓰는 곳입니다. 호스트 배정은 호스트 관리에서 바꿉니다.",
++    "hosts_truncated": "호스트가 많아 이름순으로 500대까지만 보여 줍니다. 개수는 전체 기준입니다.",
++    "direct_hosts": "직접 배정된 호스트 {{count}}대",
++    "assigned_hosts": "그룹을 통해 맡은 호스트 {{count}}대",
++    "assigned_hosts_hint": "프록시 그룹이 나눠 준 호스트입니다. 이 프록시가 멈추면 그룹의 다른 프록시로 넘어갑니다.",
++    "discovery_rules": "네트워크 디스커버리 규칙 {{count}}개",
++    "no_discovery_rules": "이 프록시로 도는 디스커버리 규칙이 없습니다.",
++    "no_hosts": "호스트 없음",
++    "no_proxies": "소속 프록시 없음",
++    "online_of_total": "온라인 {{online}} / {{total}}",
++    "group_delete_blocked_proxies": "소속 프록시가 {{count}}개 있어 삭제할 수 없습니다. 프록시 편집에서 그룹을 먼저 빼세요.",
++    "group_delete_blocked_hosts": "이 그룹에 배정된 호스트가 {{count}}대 있어 삭제할 수 없습니다. 호스트 관리에서 먼저 옮기세요.",
++    "group_delete_title": "프록시 그룹 삭제",
++    "group_delete_success": "삭제했습니다.",
++    "group_create_title": "프록시 그룹 추가",
++    "group_edit_title": "프록시 그룹 편집",
++    "group_create_success": "프록시 그룹을 추가했습니다.",
++    "group_update_success": "저장했습니다.",
++    "failover_delay_hint": "프록시가 응답하지 않을 때 다른 프록시로 넘기기까지 기다리는 시간(10초~15분, 예: 1m).",
++    "min_online_hint": "그룹이 온라인으로 판정되려면 필요한 최소 온라인 프록시 수(1~1000).",
++    "group_members_hint": "소속 프록시와 배정 호스트입니다. 프록시를 넣고 빼는 것은 프록시 편집에서, 호스트 배정은 호스트 관리에서 합니다.",
++    "group_proxies": "소속 프록시 {{count}}개",
++    "group_hosts": "배정 호스트 {{count}}대",
++    "permission_denied": "관리자만 사용할 수 있습니다.",
++    "action_failed": "요청을 처리하지 못했습니다.",
++    "errors": {
++      "PROXY_NOT_FOUND": "프록시를 찾을 수 없습니다. 이미 삭제됐을 수 있습니다.",
++      "PROXY_NAME_REQUIRED": "이름을 입력하세요.",
++      "PROXY_MODE_INVALID": "모드(액티브·패시브)를 고르세요.",
++      "PROXY_TLS_REQUIRED": "모드를 바꿀 때는 새 모드의 암호화 방식을 정해야 합니다(정하지 않으면 암호화가 꺼집니다).",
++      "PROXY_PSK_REQUIRED": "PSK를 새로 켜려면 식별자와 값을 모두 입력해야 합니다.",
++      "PROXY_LOCAL_ADDRESS_REQUIRED": "프록시 그룹에 넣으려면 그룹 내 주소가 필요합니다.",
++      "PROXY_CREATE_FAILED": "프록시를 만들지 못했습니다.",
++      "PROXY_IDS_REQUIRED": "삭제할 프록시를 고르세요.",
++      "PROXY_IN_USE": "사용 중이라 삭제하지 않았습니다 — {{detail}}",
++      "PROXY_GROUP_NOT_FOUND": "프록시 그룹을 찾을 수 없습니다. 이미 삭제됐을 수 있습니다.",
++      "PROXY_GROUP_NAME_REQUIRED": "이름을 입력하세요.",
++      "PROXY_GROUP_CREATE_FAILED": "프록시 그룹을 만들지 못했습니다.",
++      "PROXY_GROUP_IDS_REQUIRED": "삭제할 프록시 그룹을 고르세요.",
++      "PROXY_GROUP_IN_USE": "사용 중이라 삭제하지 않았습니다 — {{detail}}"
++    }
++  },
+   "trigger_management": {
+     "title": "트리거 관리",
+     "scope_host": "호스트",
+@@ -9068,6 +9246,7 @@
+     "trigger_lens": "모든 호스트·템플릿의 트리거(알람 조건)를 한 번에 찾고 관리합니다.",
+     "network_discovery": "IP 대역을 주기적으로 스캔해 장비를 자동 발견하고, 액션으로 호스트 등록까지 자동화합니다. Zabbix의 Data collection › Discovery.",
+     "web_scenario_management": "URL을 단계별로 호출해 응답 시간·상태 코드·필수 문자열을 확인하는 Web 시나리오를 관리합니다(유료). Zabbix의 Data collection › Web.",
++    "proxy_management": "원격 구간의 호스트를 대신 감시하는 프록시와, 장애 시 서로 넘겨받는 프록시 그룹을 관리합니다. Zabbix의 Administration › Proxies.",
+     "alert_management": "알림을 누구에게(액션)·어떻게(미디어 타입) 보낼지, 언제는 보내지 말지(점검 기간)를 정합니다. Zabbix의 Alerts › Actions/Media types + Data collection › Maintenance.",
+     "macro_management": "전역 매크로({$NAME}) — 모든 호스트·템플릿에서 쓰는 공용 설정값(임계치·접속 정보). Zabbix의 Administration › Macros.",
+     "user_management": "Zabbix 사용자·역할·사용자 그룹을 관리합니다. Zabbix의 Users.",
+@@ -9504,6 +9683,10 @@
+       "summary": "웹 서비스를 사용자처럼 단계별로 호출해 보고, 실패하면 어느 단계에서 왜 실패했는지 확인합니다.",
+       "detail": "시나리오는 호스트나 템플릿에 붙고, 그 호스트를 감시하는 Zabbix 서버·프록시가 실행합니다\n단계마다 URL·기대 응답 코드·응답에 있어야 할 문자열을 정합니다\n최근 결과는 Zabbix가 시나리오마다 만드는 결과 아이템의 마지막 값입니다\n삭제하면 결과 이력도 함께 사라지므로, 잠시 멈출 때는 '사용'을 끄세요"
+     },
++    "zabbix_proxy_management": {
++      "summary": "멀리 떨어진 구간의 호스트를 대신 감시해 서버로 모아 보내는 프록시를 관리합니다.",
++      "detail": "액티브 프록시는 서버로 먼저 접속하고, 패시브 프록시는 서버가 접속해 옵니다\n프록시 이름은 프록시 설정 파일의 Hostname과 같아야 합니다\n프록시 그룹에 넣으면 여러 프록시가 호스트를 나눠 맡고, 하나가 멈추면 남은 프록시로 넘깁니다\n어느 호스트를 어느 프록시가 감시할지는 호스트 관리에서 정합니다\n감시 중인 호스트가 있는 프록시는 지울 수 없습니다"
++    },
+     "zabbix_alert_management": {
+       "summary": "문제가 생겼을 때 누구에게 어떻게 알릴지, 그리고 언제 알리지 않을지를 정합니다.",
+       "detail": "액션 — 어떤 조건일 때 무엇을 할지(알림 전송·명령 실행·자동 등록)\n미디어 타입 — 알림을 실어 보내는 수단(메일·SMS·웹훅)\n점검 기간 — 계획된 작업 중에는 알림을 억제합니다\n스크립트 — 호스트에서 실행할 명령을 미리 등록해 둡니다\n받는 사람의 주소는 사용자 관리의 알림 수신처에서 정합니다"
+diff --git a/src/pages/zabbix-management/proxy/ProxyFormDrawer.tsx b/src/pages/zabbix-management/proxy/ProxyFormDrawer.tsx
+new file mode 100644
+index 0000000..600e2a2
+--- /dev/null
++++ b/src/pages/zabbix-management/proxy/ProxyFormDrawer.tsx
+@@ -0,0 +1,493 @@
++import ResizableDrawer from "@/components/Drawer/ResizableDrawer";
++import { PATH_ZABBIX_MANAGEMENT } from "@/constants/routes";
++import { useCreateProxy, useProxyDetail, useProxyOptions, useUpdateProxy } from "@/hooks/useZabbixProxy";
++import {
++  PROXY_TIMEOUT_KEYS,
++  TManagedProxy,
++  TManagedProxyDetail,
++  TProxyHostRef,
++  TProxyMode,
++  TProxyTimeouts,
++  TProxyUpsertReq,
++} from "@/types/zabbix-proxy";
++import { Alert, Button, Checkbox, Empty, Flex, Form, Input, List, Radio, Select, Switch, Tabs, Typography, message } from "antd";
++import { useEffect, useRef, useState } from "react";
++import { useTranslation } from "react-i18next";
++import { Link } from "react-router-dom";
++import { proxyErrorMessage } from "./proxyErrors";
++
++const { Text } = Typography;
++
++const MODE_ACTIVE: TProxyMode = 0;
++const MODE_PASSIVE: TProxyMode = 1;
++const TLS_NONE = 1;
++const TLS_PSK = 2;
++const TLS_CERT = 4;
++const NO_GROUP = "0";
++const TAB = { BASIC: "basic", TLS: "tls", TIMEOUTS: "timeouts", USAGE: "usage" } as const;
++const TLS_FIELDS = new Set(["tls_connect", "tls_accept", "tls_psk_identity", "tls_psk", "tls_issuer", "tls_subject"]);
++
++type FormValues = {
++  name: string;
++  operating_mode: TProxyMode;
++  description?: string;
++  proxy_groupid?: string;
++  local_address?: string;
++  local_port?: string;
++  allowed_addresses?: string;
++  address?: string;
++  port?: string;
++  tls_connect: number;
++  /** 액티브 수락 방식 — 비트를 체크 상자 배열로. */
++  tls_accept: number[];
++  tls_psk_identity?: string;
++  tls_psk?: string;
++  tls_issuer?: string;
++  tls_subject?: string;
++  custom_timeouts: boolean;
++  timeouts: TProxyTimeouts;
++};
++
++const CREATE_DEFAULTS: FormValues = {
++  name: "",
++  operating_mode: MODE_ACTIVE,
++  proxy_groupid: undefined,
++  local_port: "10051",
++  address: "127.0.0.1",
++  port: "10051",
++  tls_connect: TLS_NONE,
++  tls_accept: [TLS_NONE],
++  custom_timeouts: false,
++  timeouts: {},
++};
++
++const bitsToList = (bits: number) => [TLS_NONE, TLS_PSK, TLS_CERT].filter((b) => (bits & b) !== 0);
++const listToBits = (list: number[] | undefined) => (list ?? []).reduce((acc, b) => acc | b, 0);
++
++export const detailToValues = (d: TManagedProxyDetail): FormValues => {
++  const s = d.summary;
++  return {
++    name: s.name,
++    operating_mode: s.operatingMode,
++    description: s.description,
++    proxy_groupid: s.proxyGroup?.id,
++    local_address: s.localAddress,
++    local_port: s.localPort || "10051",
++    allowed_addresses: s.allowedAddresses,
++    address: s.address || "127.0.0.1",
++    port: s.port || "10051",
++    tls_connect: s.tlsConnect || TLS_NONE,
++    tls_accept: bitsToList(s.tlsAccept || TLS_NONE),
++    tls_psk_identity: "",
++    tls_psk: "",
++    tls_issuer: d.tlsIssuer,
++    tls_subject: d.tlsSubject,
++    custom_timeouts: s.customTimeouts,
++    timeouts: { ...d.timeouts },
++  };
++};
++
++/**
++ * 모드를 바꿀 때 암호화 방식을 새 모드 쪽으로 옮긴다 — 🔴 그대로 두면 새 모드 쪽 값(기본 "없음")으로 저장돼 암호화가 조용히 꺼진다.
++ * 패시브→액티브: 연결 방식 하나를 받을 방식으로. 액티브→패시브: 받을 방식 중 PSK > 인증서 > 없음 순으로 하나.
++ */
++export const carryTlsAcrossModes = (to: TProxyMode, connect: number, accept: number[]) =>
++  to === MODE_ACTIVE
++    ? { tls_accept: [connect || TLS_NONE] }
++    : { tls_connect: accept.includes(TLS_PSK) ? TLS_PSK : accept.includes(TLS_CERT) ? TLS_CERT : TLS_NONE };
++
++/** 결과 TLS가 PSK를 쓰는가 — 액티브는 수락 비트, 패시브는 연결 방식. */
++const usesPsk = (mode: TProxyMode, connect: number, accept: number[]) =>
++  mode === MODE_ACTIVE ? accept.includes(TLS_PSK) : connect === TLS_PSK;
++const usesCert = (mode: TProxyMode, connect: number, accept: number[]) =>
++  mode === MODE_ACTIVE ? accept.includes(TLS_CERT) : connect === TLS_CERT;
++
++/**
++ * 폼 → 요청. 🔴 모드에 맞는 쪽만 보낸다(BE도 정규화하지만 보내는 값이 화면과 같게).
++ * PSK 식별자·값은 비우면 보내지 않는다(= 유지). 타임아웃은 사용자 지정일 때만.
++ * 🔴 포트는 생성이면 비울 때 생략(Zabbix 기본값), 수정이면 빈 값을 그대로 보낸다 — 화면에서 비웠는데 옛 값이 남지 않게(BE·Zabbix가 거부).
++ */
++export const valuesToRequest = (v: FormValues, isEdit = false): TProxyUpsertReq => {
++  const optional = (value: string | undefined) => {
++    const trimmed = (value ?? "").trim();
++    return isEdit ? trimmed : trimmed || undefined;
++  };
++  const active = v.operating_mode === MODE_ACTIVE;
++  const group = v.proxy_groupid && v.proxy_groupid !== NO_GROUP ? v.proxy_groupid : NO_GROUP;
++  const body: TProxyUpsertReq = {
++    name: v.name.trim(),
++    operating_mode: v.operating_mode,
++    description: v.description ?? "",
++    proxy_groupid: group,
++    tls_issuer: v.tls_issuer ?? "",
++    tls_subject: v.tls_subject ?? "",
++    custom_timeouts: v.custom_timeouts ? 1 : 0,
++  };
++  if (group !== NO_GROUP) {
++    body.local_address = (v.local_address ?? "").trim();
++    body.local_port = optional(v.local_port);
++  }
++  if (active) {
++    body.allowed_addresses = (v.allowed_addresses ?? "").trim();
++    body.tls_accept = listToBits(v.tls_accept) || TLS_NONE;
++  } else {
++    body.address = optional(v.address);
++    body.port = optional(v.port);
++    body.tls_connect = v.tls_connect || TLS_NONE;
++  }
++  if (v.tls_psk_identity) body.tls_psk_identity = v.tls_psk_identity;
++  if (v.tls_psk) body.tls_psk = v.tls_psk.trim();
++  if (v.custom_timeouts) {
++    const timeouts: TProxyTimeouts = {};
++    PROXY_TIMEOUT_KEYS.forEach((k) => {
++      const value = (v.timeouts?.[k] ?? "").trim();
++      if (value) timeouts[k] = value;
++    });
++    body.timeouts = timeouts;
++  }
++  return body;
++};
++
++type ProxyFormDrawerProps = {
++  open: boolean;
++  /** 수정 대상(목록 행). 없으면 생성. */
++  proxy?: TManagedProxy;
++  onClose: () => void;
++};
++
++// 프록시 생성/수정 패널 — 기본 · 암호화 · 타임아웃 · 사용처(수정만) 탭. 계약 §2~§3.
++// 🔴 PSK는 응답에 없다(Zabbix 쓰기 전용). 지금 PSK를 쓰는 중이면 "비우면 유지"(모드를 바꿔도 결과가 PSK면 Zabbix가 유지),
++//    지금 PSK가 없는데 켜면 식별자·값이 필수다 — 그 구분을 칸 위 안내와 필수 표시로 보여 준다.
++// 🔴 모드를 바꾸면 암호화 방식을 새 모드 쪽으로 옮겨 담는다(carryTlsAcrossModes) — BE도 생략을 PROXY_TLS_REQUIRED로 막는다.
++const ProxyFormDrawer = ({ open, proxy, onClose }: ProxyFormDrawerProps) => {
++  const { t } = useTranslation();
++  const [form] = Form.useForm<FormValues>();
++  const [tab, setTab] = useState<string>(TAB.BASIC);
++  const isEdit = !!proxy;
++  const { data: detail, isFetching: detailFetching, isError: isDetailError, error: detailError } = useProxyDetail(
++    open && isEdit ? proxy?.proxyid : undefined
++  );
++  const { data: options } = useProxyOptions(open);
++  // 🔴 수정은 "이 프록시"의 상세를 이번에 새로 받은 뒤에만 — 다른 프록시의 상세, 받는 중인 옛 캐시로 채우지 않는다.
++  const detailReady = !isEdit || (!!detail && detail.summary.proxyid === proxy?.proxyid && !detailFetching);
++  const { mutate: create, isPending: creating } = useCreateProxy();
++  const { mutate: update, isPending: updating } = useUpdateProxy();
++
++  const mode = (Form.useWatch("operating_mode", form) ?? MODE_ACTIVE) as TProxyMode;
++  const group = Form.useWatch("proxy_groupid", form);
++  const tlsConnect = Form.useWatch("tls_connect", form) ?? TLS_NONE;
++  const tlsAccept = Form.useWatch("tls_accept", form) ?? [TLS_NONE];
++  const customTimeouts = Form.useWatch("custom_timeouts", form) ?? false;
++
++  const inGroup = !!group && group !== NO_GROUP;
++  const wantsPsk = usesPsk(mode, tlsConnect, tlsAccept);
++  const wantsCert = usesCert(mode, tlsConnect, tlsAccept);
++  // 지금 저장된 PSK를 그대로 쓸 수 있는가 — 이미 PSK를 쓰는 중이면(모드를 바꿔도 결과가 PSK인 한 Zabbix가 유지한다).
++  const pskKeepable = isEdit && !!detail?.summary.pskConfigured;
++
++  /**
++   * 폼을 채운 대상 — 🔴 한 번 채운 뒤에는 상세가 다시 조회돼도(창 복귀 등, 상태·마지막 접속만 바뀌어도) 다시 채우지 않는다.
++   * 다시 채우면 편집 중인 값과 PSK 입력이 조용히 사라진다. 닫으면 초기화한다(Web 시나리오 폼과 같은 규칙).
++   */
++  const filledFor = useRef<string | null>(null);
++  /**
++   * 모드별로 마지막에 고른 암호화 방식 — 🔴 액티브 [없음·PSK·인증서] → 패시브(하나로 줄어듦) → 액티브로 돌아올 때
++   * 줄어든 값이 아니라 원래 고른 값을 되돌린다(왕복만 했는데 인증서 허용이 사라지지 않게).
++   */
++  const tlsByMode = useRef<{ accept?: number[]; connect?: number }>({});
++
++  useEffect(() => {
++    if (!open) {
++      filledFor.current = null;
++      tlsByMode.current = {};
++      return;
++    }
++    const key = isEdit ? `edit:${proxy?.proxyid}` : "create";
++    if (filledFor.current === key) return;
++    // 🔴 채우기 전에 항상 비운다 — 폼 인스턴스는 닫아도 남아, 생성에 이전 생성·편집의 설명·허용 주소·PSK가 섞인다.
++    form.resetFields();
++    tlsByMode.current = {};
++    if (!isEdit) {
++      setTab(TAB.BASIC);
++      form.setFieldsValue(CREATE_DEFAULTS);
++      filledFor.current = key;
++      return;
++    }
++    if (!detailReady || !detail) return;
++    setTab(TAB.BASIC);
++    form.setFieldsValue(detailToValues(detail));
++    filledFor.current = key;
++  }, [open, isEdit, proxy?.proxyid, detail, detailReady, form]);
++
++  /** 사용자 지정을 켤 때 빈 칸을 전역 값으로 채운다 — Zabbix는 10개 전부를 요구한다. */
++  const handleCustomToggle = (checked: boolean) => {
++    if (!checked) return;
++    const current = form.getFieldValue("timeouts") as TProxyTimeouts | undefined;
++    const next: TProxyTimeouts = { ...(current ?? {}) };
++    PROXY_TIMEOUT_KEYS.forEach((k) => {
++      if (!next[k]) next[k] = options?.globalTimeouts?.[k] ?? "";
++    });
++    form.setFieldValue("timeouts", next);
++  };
++
++  /** 모드 전환 — 떠나는 모드의 선택을 기억하고, 돌아오면 되돌리고, 처음 가는 모드면 암호화를 옮겨 담는다. */
++  const handleValuesChange = (changed: Partial<FormValues>, all: FormValues) => {
++    if (changed.operating_mode === undefined) return;
++    const to = changed.operating_mode;
++    const accept = all.tls_accept ?? [];
++    if (to === MODE_ACTIVE) {
++      tlsByMode.current.connect = all.tls_connect;
++      const remembered = tlsByMode.current.accept;
++      form.setFieldsValue(remembered ? { tls_accept: remembered } : carryTlsAcrossModes(to, all.tls_connect, accept));
++    } else {
++      tlsByMode.current.accept = accept;
++      const remembered = tlsByMode.current.connect;
++      form.setFieldsValue(remembered !== undefined ? { tls_connect: remembered } : carryTlsAcrossModes(to, all.tls_connect, accept));
++    }
++  };
++
++  const handleSubmit = (v: FormValues) => {
++    if (!detailReady) return;
++    const body = valuesToRequest(v, isEdit);
++    const onError = (err: unknown) => message.error(proxyErrorMessage(err, t), 8);
++    const onSuccess = () => {
++      message.success(isEdit ? t("proxy_management.update_success") : t("proxy_management.create_success"));
++      onClose();
++    };
++    if (isEdit && proxy) update({ proxyid: proxy.proxyid, body }, { onSuccess, onError });
++    else create(body, { onSuccess, onError });
++  };
++
++  // 숨은 탭의 칸에서 검증이 실패하면 그 탭을 연다(탭은 forceRender라 값은 살아 있다).
++  const handleFailed = ({ errorFields }: { errorFields: { name: (string | number)[] }[] }) => {
++    const first = errorFields[0]?.name?.[0];
++    if (first === "timeouts") setTab(TAB.TIMEOUTS);
++    else if (typeof first === "string" && TLS_FIELDS.has(first)) setTab(TAB.TLS);
++    else setTab(TAB.BASIC);
++  };
++
++  const pskRequired = wantsPsk && !pskKeepable;
++  const pskHint = !wantsPsk ? undefined : pskKeepable ? t("proxy_management.psk_keep_hint") : t("proxy_management.psk_required_hint");
++
++  const items = [
++    {
++      key: TAB.BASIC,
++      label: t("proxy_management.tab_basic"),
++      forceRender: true,
++      children: (
++        <>
++          <Form.Item name="name" label={t("proxy_management.name")} tooltip={t("proxy_management.name_hint")}
++            rules={[{ required: true, whitespace: true, message: t("proxy_management.name_required") }]}>
++            <Input maxLength={128} autoComplete="off" />
++          </Form.Item>
++          <Form.Item name="operating_mode" label={t("proxy_management.col_mode")} extra={t(`proxy_management.mode_hint.${mode}`)}>
++            <Radio.Group
++              optionType="button"
++              options={[
++                { value: MODE_ACTIVE, label: t("proxy_management.mode.0") },
++                { value: MODE_PASSIVE, label: t("proxy_management.mode.1") },
++              ]}
++            />
++          </Form.Item>
++          {isEdit && detail && detail.summary.operatingMode !== mode ? (
++            <Alert className="mb-4" type="warning" showIcon message={t("proxy_management.mode_change_warning")} />
++          ) : null}
++          {mode === MODE_ACTIVE ? (
++            <Form.Item name="allowed_addresses" label={t("proxy_management.allowed_addresses")} extra={t("proxy_management.allowed_addresses_hint")}>
++              <Input placeholder="10.0.0.5, proxy.example.com" />
++            </Form.Item>
++          ) : (
++            <Flex gap={12}>
++              <Form.Item name="address" label={t("proxy_management.address")} className="flex-1"
++                rules={[{ required: true, whitespace: true, message: t("proxy_management.address_required") }]}>
++                <Input placeholder="10.0.0.9" />
++              </Form.Item>
++              <Form.Item name="port" label={t("proxy_management.port")} className="w-[120px]">
++                <Input placeholder="10051" />
++              </Form.Item>
++            </Flex>
++          )}
++          <Form.Item name="proxy_groupid" label={t("proxy_management.proxy_group")} extra={t("proxy_management.proxy_group_hint")}>
++            <Select allowClear placeholder={t("proxy_management.no_group")}
++              options={(options?.proxyGroups ?? []).map((g) => ({ value: g.id, label: g.name ?? g.id }))} />
++          </Form.Item>
++          {inGroup ? (
++            <Flex gap={12}>
++              <Form.Item name="local_address" label={t("proxy_management.local_address")} className="flex-1"
++                tooltip={t("proxy_management.local_address_hint")}
++                rules={[{ required: true, whitespace: true, message: t("proxy_management.local_address_required") }]}>
++                <Input placeholder="10.0.0.5" />
++              </Form.Item>
++              <Form.Item name="local_port" label={t("proxy_management.port")} className="w-[120px]">
++                <Input placeholder="10051" />
++              </Form.Item>
++            </Flex>
++          ) : null}
++          <Form.Item name="description" label={t("proxy_management.description")}>
++            <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
++          </Form.Item>
++        </>
++      ),
++    },
++    {
++      key: TAB.TLS,
++      label: t("proxy_management.tab_tls"),
++      forceRender: true,
++      children: (
++        <>
++          {mode === MODE_ACTIVE ? (
++            <Form.Item name="tls_accept" label={t("proxy_management.tls_accept")} extra={t("proxy_management.tls_accept_hint")}
++              rules={[{ required: true, type: "array", min: 1, message: t("proxy_management.tls_accept_required") }]}>
++              <Checkbox.Group
++                options={[
++                  { value: TLS_NONE, label: t("proxy_management.tls.none") },
++                  { value: TLS_PSK, label: t("proxy_management.tls.psk") },
++                  { value: TLS_CERT, label: t("proxy_management.tls.cert") },
++                ]}
++              />
++            </Form.Item>
++          ) : (
++            <Form.Item name="tls_connect" label={t("proxy_management.tls_connect")} extra={t("proxy_management.tls_connect_hint")}>
++              <Radio.Group
++                options={[
++                  { value: TLS_NONE, label: t("proxy_management.tls.none") },
++                  { value: TLS_PSK, label: t("proxy_management.tls.psk") },
++                  { value: TLS_CERT, label: t("proxy_management.tls.cert") },
++                ]}
++              />
++            </Form.Item>
++          )}
++          {wantsPsk ? (
++            <>
++              {pskHint ? <Alert className="mb-4" type={pskRequired ? "warning" : "info"} showIcon message={pskHint} /> : null}
++              <Form.Item name="tls_psk_identity" label={t("proxy_management.psk_identity")}
++                rules={pskRequired ? [{ required: true, message: t("proxy_management.psk_identity_required") }] : []}>
++                <Input autoComplete="off" placeholder={pskKeepable ? t("proxy_management.psk_set_placeholder") : undefined} />
++              </Form.Item>
++              <Form.Item name="tls_psk" label={t("proxy_management.psk")} extra={t("proxy_management.psk_format_hint")}
++                rules={[
++                  ...(pskRequired ? [{ required: true, message: t("proxy_management.psk_required") }] : []),
++                  { pattern: /^([0-9a-fA-F]{32,})?$/, message: t("proxy_management.psk_format_invalid") },
++                ]}>
++                <Input.Password autoComplete="new-password" placeholder={pskKeepable ? t("proxy_management.psk_set_placeholder") : undefined} />
++              </Form.Item>
++            </>
++          ) : null}
++          {wantsCert ? (
++            <>
++              <Form.Item name="tls_issuer" label={t("proxy_management.tls_issuer")} tooltip={t("proxy_management.tls_cert_field_hint")}>
++                <Input placeholder="CN=Root CA,O=Example" />
++              </Form.Item>
++              <Form.Item name="tls_subject" label={t("proxy_management.tls_subject")} tooltip={t("proxy_management.tls_cert_field_hint")}>
++                <Input placeholder="CN=proxy-seoul,O=Example" />
++              </Form.Item>
++            </>
++          ) : null}
++        </>
++      ),
++    },
++    {
++      key: TAB.TIMEOUTS,
++      label: t("proxy_management.tab_timeouts"),
++      forceRender: true,
++      children: (
++        <>
++          <Form.Item name="custom_timeouts" label={t("proxy_management.custom_timeouts")} valuePropName="checked"
++            extra={t("proxy_management.custom_timeouts_hint")}>
++            <Switch onChange={handleCustomToggle} />
++          </Form.Item>
++          {customTimeouts ? (
++            <Flex gap={12} wrap>
++              {PROXY_TIMEOUT_KEYS.map((k) => (
++                <Form.Item key={k} name={["timeouts", k]} label={t(`proxy_management.timeout_labels.${k}`)} className="w-[180px]"
++                  rules={[{ required: true, whitespace: true, message: t("proxy_management.timeout_required") }]}>
++                  <Input placeholder={options?.globalTimeouts?.[k] ?? "3s"} />
++                </Form.Item>
++              ))}
++            </Flex>
++          ) : (
++            <Text type="secondary">{t("proxy_management.global_timeouts_in_use")}</Text>
++          )}
++        </>
++      ),
++    },
++    ...(isEdit
++      ? [{ key: TAB.USAGE, label: t("proxy_management.tab_usage"), children: detail ? <UsageTab detail={detail} /> : null }]
++      : []),
++  ];
++
++  return (
++    <ResizableDrawer
++      title={isEdit ? t("proxy_management.edit_title") : t("proxy_management.create_title")}
++      open={open}
++      onClose={onClose}
++      storageKey="zabbix-proxy-form"
++      defaultWidth={720}
++      destroyOnClose
++      footer={
++        <Flex justify="end" gap={8}>
++          <Button onClick={onClose}>{t("proxy_management.cancel")}</Button>
++          <Button type="primary" loading={creating || updating} disabled={!detailReady} onClick={() => form.submit()}>
++            {t("proxy_management.save")}
++          </Button>
++        </Flex>
++      }
++    >
++      {isEdit && isDetailError ? <Alert className="mb-3" type="error" showIcon message={proxyErrorMessage(detailError, t)} /> : null}
++      <Form form={form} layout="vertical" onFinish={handleSubmit} onFinishFailed={handleFailed} onValuesChange={handleValuesChange}
++        disabled={!detailReady}>
++        <Tabs activeKey={tab} onChange={setTab} items={items} />
++      </Form>
++    </ResizableDrawer>
++  );
++};
++
++const HostList = ({ hosts }: { hosts: TProxyHostRef[] }) => {
++  const { t } = useTranslation();
++  if (hosts.length === 0) return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t("proxy_management.no_hosts")} />;
++  return (
++    <List
++      size="small"
++      bordered
++      className="max-h-[280px] overflow-auto"
++      dataSource={hosts}
++      renderItem={(h) => (
++        <List.Item>
++          <Link to={PATH_ZABBIX_MANAGEMENT.hostManagementDetail.replace(":hostid", h.hostid)}>{h.name}</Link>
++        </List.Item>
++      )}
++    />
++  );
++};
++
++/** 사용처 — 읽기 전용(배정은 호스트 관리에서). 개수는 summary가 정본이고 목록은 500건까지. */
++const UsageTab = ({ detail }: { detail: TManagedProxyDetail }) => {
++  const { t } = useTranslation();
++  return (
++    <Flex vertical gap={16}>
++      <Text type="secondary">{t("proxy_management.usage_hint")}</Text>
++      {detail.hostsTruncated ? <Alert type="info" showIcon message={t("proxy_management.hosts_truncated")} /> : null}
++      <Flex vertical gap={6}>
++        <Text strong>{t("proxy_management.direct_hosts", { count: detail.summary.hostCount })}</Text>
++        <HostList hosts={detail.hosts} />
++      </Flex>
++      {detail.summary.proxyGroup ? (
++        <Flex vertical gap={6}>
++          <Text strong>{t("proxy_management.assigned_hosts", { count: detail.summary.assignedHostCount })}</Text>
++          <Text type="secondary" className="text-xs">{t("proxy_management.assigned_hosts_hint")}</Text>
++          <HostList hosts={detail.assignedHosts} />
++        </Flex>
++      ) : null}
++      <Flex vertical gap={6}>
++        <Text strong>{t("proxy_management.discovery_rules", { count: detail.discoveryRules.length })}</Text>
++        {detail.discoveryRules.length === 0 ? (
++          <Text type="secondary">{t("proxy_management.no_discovery_rules")}</Text>
++        ) : (
++          <List size="small" bordered dataSource={detail.discoveryRules} renderItem={(r) => <List.Item>{r.name ?? r.id}</List.Item>} />
++        )}
++      </Flex>
++    </Flex>
++  );
++};
++
++export default ProxyFormDrawer;
+diff --git a/src/pages/zabbix-management/proxy/ProxyGroupFormDrawer.tsx b/src/pages/zabbix-management/proxy/ProxyGroupFormDrawer.tsx
+new file mode 100644
+index 0000000..32502fb
+--- /dev/null
++++ b/src/pages/zabbix-management/proxy/ProxyGroupFormDrawer.tsx
+@@ -0,0 +1,154 @@
++import ResizableDrawer from "@/components/Drawer/ResizableDrawer";
++import { PATH_ZABBIX_MANAGEMENT } from "@/constants/routes";
++import { useCreateProxyGroup, useProxyGroupDetail, useUpdateProxyGroup } from "@/hooks/useZabbixProxy";
++import { TManagedProxyGroup, TProxyGroupUpsertReq } from "@/types/zabbix-proxy";
++import { Alert, Button, Divider, Empty, Flex, Form, Input, List, Tag, Typography, message } from "antd";
++import { useEffect, useRef } from "react";
++import { useTranslation } from "react-i18next";
++import { Link } from "react-router-dom";
++import { proxyErrorMessage } from "./proxyErrors";
++import { PROXY_STATE_COLORS } from "./ProxyTab";
++
++const { Text } = Typography;
++
++type FormValues = { name: string; failover_delay?: string; min_online?: string; description?: string };
++
++const CREATE_DEFAULTS: FormValues = { name: "", failover_delay: "1m", min_online: "1", description: "" };
++
++type ProxyGroupFormDrawerProps = {
++  open: boolean;
++  /** 수정 대상(목록 행). 없으면 생성. */
++  group?: TManagedProxyGroup;
++  onClose: () => void;
++};
++
++// 프록시 그룹 생성/수정 패널 — 이름·장애 조치 지연·최소 온라인·설명 + 소속 프록시·배정 호스트(읽기 전용). 계약 §6.
++// 범위(지연 10초~15분, 최소 온라인 1~1000)는 Zabbix가 원문으로 알려 준다 — 여기서는 비었는지만 본다.
++const ProxyGroupFormDrawer = ({ open, group, onClose }: ProxyGroupFormDrawerProps) => {
++  const { t } = useTranslation();
++  const [form] = Form.useForm<FormValues>();
++  const isEdit = !!group;
++  const { data: detail, isFetching, isError, error } = useProxyGroupDetail(open && isEdit ? group?.proxyGroupId : undefined);
++  // 🔴 이번에 새로 받은 "이 그룹"의 상세로만 채운다(옛 캐시로 채우면 최신 설정을 옛 값으로 덮는다).
++  const detailReady = !isEdit || (!!detail && detail.summary.proxyGroupId === group?.proxyGroupId && !isFetching);
++  const { mutate: create, isPending: creating } = useCreateProxyGroup();
++  const { mutate: update, isPending: updating } = useUpdateProxyGroup();
++  /** 🔴 한 번 채운 뒤에는 상세가 다시 조회돼도 다시 채우지 않는다(편집 중 값 보호). 닫으면 초기화. */
++  const filledFor = useRef<string | null>(null);
++
++  useEffect(() => {
++    if (!open) {
++      filledFor.current = null;
++      return;
++    }
++    const key = isEdit ? `edit:${group?.proxyGroupId}` : "create";
++    if (filledFor.current === key) return;
++    form.resetFields(); // 폼 인스턴스는 닫아도 남는다 — 이전 값이 섞이지 않게 항상 비우고 채운다.
++    if (!isEdit) {
++      form.setFieldsValue(CREATE_DEFAULTS);
++      filledFor.current = key;
++      return;
++    }
++    if (!detailReady || !detail) return;
++    const s = detail.summary;
++    form.setFieldsValue({ name: s.name, failover_delay: s.failoverDelay, min_online: s.minOnline, description: s.description });
++    filledFor.current = key;
++  }, [open, isEdit, group?.proxyGroupId, detail, detailReady, form]);
++
++  const handleSubmit = (v: FormValues) => {
++    if (!detailReady) return;
++    // 생성은 빈 값 생략(Zabbix 기본값), 수정은 빈 값을 그대로 — 비웠는데 옛 값이 남지 않게(Zabbix가 거부).
++    const optional = (value: string | undefined) => {
++      const trimmed = (value ?? "").trim();
++      return isEdit ? trimmed : trimmed || undefined;
++    };
++    const body: TProxyGroupUpsertReq = {
++      name: v.name.trim(),
++      failover_delay: optional(v.failover_delay),
++      min_online: optional(v.min_online),
++      description: v.description ?? "",
++    };
++    const onError = (err: unknown) => message.error(proxyErrorMessage(err, t), 8);
++    const onSuccess = () => {
++      message.success(isEdit ? t("proxy_management.group_update_success") : t("proxy_management.group_create_success"));
++      onClose();
++    };
++    if (isEdit && group) update({ proxyGroupId: group.proxyGroupId, body }, { onSuccess, onError });
++    else create(body, { onSuccess, onError });
++  };
++
++  return (
++    <ResizableDrawer
++      title={isEdit ? t("proxy_management.group_edit_title") : t("proxy_management.group_create_title")}
++      open={open}
++      onClose={onClose}
++      storageKey="zabbix-proxy-group-form"
++      defaultWidth={560}
++      destroyOnClose
++      footer={
++        <Flex justify="end" gap={8}>
++          <Button onClick={onClose}>{t("proxy_management.cancel")}</Button>
++          <Button type="primary" loading={creating || updating} disabled={!detailReady} onClick={() => form.submit()}>
++            {t("proxy_management.save")}
++          </Button>
++        </Flex>
++      }
++    >
++      {isEdit && isError ? <Alert className="mb-3" type="error" showIcon message={proxyErrorMessage(error, t)} /> : null}
++      <Form form={form} layout="vertical" onFinish={handleSubmit} disabled={!detailReady}>
++        <Form.Item name="name" label={t("proxy_management.name")}
++          rules={[{ required: true, whitespace: true, message: t("proxy_management.name_required") }]}>
++          <Input maxLength={255} autoComplete="off" />
++        </Form.Item>
++        <Flex gap={12}>
++          <Form.Item name="failover_delay" label={t("proxy_management.col_failover_delay")} tooltip={t("proxy_management.failover_delay_hint")} className="flex-1">
++            <Input placeholder="1m" />
++          </Form.Item>
++          <Form.Item name="min_online" label={t("proxy_management.col_min_online")} tooltip={t("proxy_management.min_online_hint")} className="flex-1">
++            <Input placeholder="1" />
++          </Form.Item>
++        </Flex>
++        <Form.Item name="description" label={t("proxy_management.description")}>
++          <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} />
++        </Form.Item>
++      </Form>
++
++      {isEdit && detail ? (
++        <>
++          <Divider />
++          <Flex vertical gap={12}>
++            <Text type="secondary">{t("proxy_management.group_members_hint")}</Text>
++            <Text strong>{t("proxy_management.group_proxies", { count: detail.summary.proxyCount })}</Text>
++            {detail.summary.proxies.length === 0 ? (
++              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t("proxy_management.no_proxies")} />
++            ) : (
++              <List size="small" bordered dataSource={detail.summary.proxies}
++                renderItem={(p) => (
++                  <List.Item>
++                    <Flex justify="space-between" className="w-full">
++                      <Text>{p.name}</Text>
++                      <Tag color={PROXY_STATE_COLORS[p.state]}>{t(`proxy_management.state.${p.state}`)}</Tag>
++                    </Flex>
++                  </List.Item>
++                )} />
++            )}
++            <Text strong>{t("proxy_management.group_hosts", { count: detail.summary.hostCount })}</Text>
++            {detail.hostsTruncated ? <Alert type="info" showIcon message={t("proxy_management.hosts_truncated")} /> : null}
++            {detail.hosts.length === 0 ? (
++              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t("proxy_management.no_hosts")} />
++            ) : (
++              <List size="small" bordered className="max-h-[280px] overflow-auto" dataSource={detail.hosts}
++                renderItem={(h) => (
++                  <List.Item>
++                    <Link to={PATH_ZABBIX_MANAGEMENT.hostManagementDetail.replace(":hostid", h.hostid)}>{h.name}</Link>
++                  </List.Item>
++                )} />
++            )}
++          </Flex>
++        </>
++      ) : null}
++    </ResizableDrawer>
++  );
++};
++
++export default ProxyGroupFormDrawer;
+diff --git a/src/pages/zabbix-management/proxy/ProxyGroupTab.tsx b/src/pages/zabbix-management/proxy/ProxyGroupTab.tsx
+new file mode 100644
+index 0000000..6d8353c
+--- /dev/null
++++ b/src/pages/zabbix-management/proxy/ProxyGroupTab.tsx
+@@ -0,0 +1,189 @@
++import DmoveTable from "@/components/Table/DmoveTable";
++import DmoveTableFilter from "@/components/Table/DmoveTableFilter";
++import { QueryParamKeys } from "@/enums/common";
++import { useQueryParams } from "@/hooks/useQueryParams";
++import useTableColumns from "@/hooks/useTableColumns";
++import { useDeleteProxyGroups, useProxyGroupList } from "@/hooks/useZabbixProxy";
++import { SelectFilter } from "@/types/commons";
++import { TManagedProxyGroup, TProxyGroupState } from "@/types/zabbix-proxy";
++import { Alert, Button, Flex, List, Modal, Space, Tag, Tooltip, Typography, message } from "antd";
++import { useMemo, useState } from "react";
++import { useTranslation } from "react-i18next";
++import ProxyGroupFormDrawer from "./ProxyGroupFormDrawer";
++import { proxyErrorMessage } from "./proxyErrors";
++import { PROXY_STATE_COLORS } from "./ProxyTab";
++
++const { Text } = Typography;
++
++const GROUP_STATE_COLORS: Record<TProxyGroupState, string> = {
++  ONLINE: "success",
++  DEGRADING: "warning",
++  RECOVERING: "processing",
++  OFFLINE: "error",
++  UNKNOWN: "default",
++};
++const GROUP_STATES: TProxyGroupState[] = ["ONLINE", "DEGRADING", "RECOVERING", "OFFLINE", "UNKNOWN"];
++
++// 프록시 그룹 탭 — 목록(화면 거름)·생성·수정·삭제. 계약 §6.
++// 소속 프록시는 프록시 폼의 그룹 선택으로 바꾼다(Zabbix도 그렇다). 프록시나 배정 호스트가 있으면 삭제를 막는다.
++const ProxyGroupTab = () => {
++  const { t } = useTranslation();
++  const { params } = useQueryParams();
++  const keyword = (params.keyword ?? "").toLowerCase();
++  const stateFilter = params[QueryParamKeys.STATUS];
++
++  const { data, isLoading, isError, error } = useProxyGroupList();
++  const { mutate: deleteGroups, isPending: deleting } = useDeleteProxyGroups();
++  const [drawerOpen, setDrawerOpen] = useState(false);
++  const [editTarget, setEditTarget] = useState<TManagedProxyGroup | undefined>();
++  const [deleteTarget, setDeleteTarget] = useState<TManagedProxyGroup | undefined>();
++
++  const rows = useMemo(() => {
++    let all = data ?? [];
++    if (stateFilter) all = all.filter((g) => g.state === stateFilter);
++    if (keyword) all = all.filter((g) => g.name.toLowerCase().includes(keyword) || (g.description ?? "").toLowerCase().includes(keyword));
++    return all;
++  }, [data, keyword, stateFilter]);
++
++  const filter: SelectFilter[] = [
++    {
++      name: t("proxy_management.filter_state"),
++      key: QueryParamKeys.STATUS,
++      options: GROUP_STATES.map((s) => ({ label: t(`proxy_management.group_state.${s}`), value: s })),
++    },
++  ];
++
++  const openEdit = (g?: TManagedProxyGroup) => {
++    setEditTarget(g);
++    setDrawerOpen(true);
++  };
++
++  const confirmDelete = () => {
++    if (!deleteTarget) return;
++    deleteGroups([deleteTarget.proxyGroupId], {
++      onSuccess: () => {
++        message.success(t("proxy_management.group_delete_success"));
++        setDeleteTarget(undefined);
++      },
++      onError: (err: unknown) => message.error(proxyErrorMessage(err, t), 8),
++    });
++  };
++
++  const blockedReason = (g: TManagedProxyGroup) => {
++    if (g.proxyCount > 0) return t("proxy_management.group_delete_blocked_proxies", { count: g.proxyCount });
++    if (g.hostCount > 0) return t("proxy_management.group_delete_blocked_hosts", { count: g.hostCount });
++    return undefined;
++  };
++
++  const { columns } = useTableColumns<TManagedProxyGroup>([
++    {
++      key: "col_pg_name",
++      title: "proxy_management.col_name",
++      dataIndex: "name",
++      sorter: false,
++      render: (_: unknown, g: TManagedProxyGroup) => (
++        <Flex vertical>
++          <Text strong>{g.name}</Text>
++          {g.description ? <Text type="secondary" className="text-xs" ellipsis={{ tooltip: g.description }}>{g.description}</Text> : null}
++        </Flex>
++      ),
++    },
++    {
++      key: "col_pg_state",
++      title: "proxy_management.col_state",
++      sorter: false,
++      width: 130,
++      render: (_: unknown, g: TManagedProxyGroup) => (
++        <Tooltip title={t(`proxy_management.group_state_hint.${g.state}`)}>
++          <Tag color={GROUP_STATE_COLORS[g.state]}>{t(`proxy_management.group_state.${g.state}`)}</Tag>
++        </Tooltip>
++      ),
++    },
++    {
++      key: "col_pg_proxies",
++      title: "proxy_management.col_proxies",
++      sorter: false,
++      render: (_: unknown, g: TManagedProxyGroup) => (
++        <Flex vertical gap={4}>
++          <Text>{t("proxy_management.online_of_total", { online: g.onlineProxyCount, total: g.proxyCount })}</Text>
++          <Space size={2} wrap>
++            {g.proxies.map((p) => (
++              <Tag key={p.proxyid} color={PROXY_STATE_COLORS[p.state]}>{p.name}</Tag>
++            ))}
++          </Space>
++        </Flex>
++      ),
++    },
++    {
++      key: "col_pg_min_online",
++      title: "proxy_management.col_min_online",
++      sorter: false,
++      width: 110,
++      render: (_: unknown, g: TManagedProxyGroup) => g.minOnline,
++    },
++    {
++      key: "col_pg_failover",
++      title: "proxy_management.col_failover_delay",
++      sorter: false,
++      width: 130,
++      render: (_: unknown, g: TManagedProxyGroup) => g.failoverDelay,
++    },
++    {
++      key: "col_pg_hosts",
++      title: "proxy_management.col_hosts",
++      sorter: false,
++      width: 100,
++      render: (_: unknown, g: TManagedProxyGroup) => g.hostCount,
++    },
++    {
++      key: "col_pg_actions",
++      title: "proxy_management.col_actions",
++      sorter: false,
++      width: 130,
++      render: (_: unknown, g: TManagedProxyGroup) => {
++        const reason = blockedReason(g);
++        const del = (
++          <Button size="small" danger disabled={!!reason} onClick={() => setDeleteTarget(g)}>
++            {t("proxy_management.delete")}
++          </Button>
++        );
++        return (
++          <Space size={4}>
++            <Button size="small" onClick={() => openEdit(g)}>{t("proxy_management.edit")}</Button>
++            {reason ? <Tooltip title={reason}>{del}</Tooltip> : del}
++          </Space>
++        );
++      },
++    },
++  ]);
++
++  return (
++    <Flex vertical gap={12}>
++      <Alert type="info" showIcon message={t("proxy_management.group_desc")} />
++      <DmoveTableFilter
++        filter={filter}
++        placeholder={t("proxy_management.group_search_placeholder")}
++        button={<Button type="primary" onClick={() => openEdit(undefined)}>{t("proxy_management.group_create")}</Button>}
++      />
++      {isError ? <Alert type="error" showIcon message={proxyErrorMessage(error, t)} /> : null}
++      <DmoveTable loading={isLoading} columns={columns} dataSource={rows} rowKey="proxyGroupId" showPagination={false} tableId="zabbix-proxy-groups" />
++
++      <ProxyGroupFormDrawer open={drawerOpen} group={editTarget} onClose={() => setDrawerOpen(false)} />
++
++      <Modal
++        title={t("proxy_management.group_delete_title")}
++        open={!!deleteTarget}
++        onCancel={() => setDeleteTarget(undefined)}
++        onOk={confirmDelete}
++        okText={t("proxy_management.delete")}
++        okButtonProps={{ danger: true, loading: deleting }}
++        cancelText={t("proxy_management.cancel")}
++        destroyOnHidden
++      >
++        <List size="small" bordered dataSource={deleteTarget ? [deleteTarget] : []} renderItem={(g) => <List.Item>{g.name}</List.Item>} />
++      </Modal>
++    </Flex>
++  );
++};
++
++export default ProxyGroupTab;
+diff --git a/src/pages/zabbix-management/proxy/ProxyManagementPage.tsx b/src/pages/zabbix-management/proxy/ProxyManagementPage.tsx
+new file mode 100644
+index 0000000..297e54b
+--- /dev/null
++++ b/src/pages/zabbix-management/proxy/ProxyManagementPage.tsx
+@@ -0,0 +1,44 @@
++import { QueryParamKeys } from "@/enums/common";
++import { useQueryParams } from "@/hooks/useQueryParams";
++import { Flex, Tabs } from "antd";
++import { useTranslation } from "react-i18next";
++import ProxyGroupTab from "./ProxyGroupTab";
++import ProxyTab from "./ProxyTab";
++
++export const PROXY_TABS = { PROXIES: "proxies", GROUPS: "groups" } as const;
++
++// Zabbix 관리 > 프록시 — 프록시 / 프록시 그룹 두 탭(Zabbix Administration › Proxies·Proxy groups). 계약 contract_proxy.md.
++// 탭·필터는 URL 쿼리(navigate마다 리마운트 — fe-page-remount-on-navigate). 페이지 제목은 브레드크럼이 그린다.
++// 감시 호스트 배정은 이 화면에서 바꾸지 않는다(보기만 — 배정은 호스트 관리).
++const ProxyManagementPage = () => {
++  const { t } = useTranslation();
++  const { params, updateParams } = useQueryParams();
++  const activeKey = params[QueryParamKeys.TAB] === PROXY_TABS.GROUPS ? PROXY_TABS.GROUPS : PROXY_TABS.PROXIES;
++
++  const handleTabChange = (key: string) => {
++    updateParams([
++      { key: QueryParamKeys.TAB, value: key === PROXY_TABS.PROXIES ? null : key },
++      // 탭 전환 시 목록 필터 리셋(알림 관리와 같은 원칙).
++      { key: QueryParamKeys.KEYWORD, value: null },
++      { key: QueryParamKeys.STATUS, value: null },
++      { key: QueryParamKeys.PROXY_MODE, value: null },
++      { key: QueryParamKeys.PROXY_GROUP_ID, value: null },
++    ]);
++  };
++
++  return (
++    <Flex vertical gap={16} className="p-4">
++      <Tabs
++        activeKey={activeKey}
++        onChange={handleTabChange}
++        destroyInactiveTabPane
++        items={[
++          { key: PROXY_TABS.PROXIES, label: t("proxy_management.tab_proxies"), children: <ProxyTab /> },
++          { key: PROXY_TABS.GROUPS, label: t("proxy_management.tab_groups"), children: <ProxyGroupTab /> },
++        ]}
++      />
++    </Flex>
++  );
++};
++
++export default ProxyManagementPage;
+diff --git a/src/pages/zabbix-management/proxy/ProxyTab.tsx b/src/pages/zabbix-management/proxy/ProxyTab.tsx
+new file mode 100644
+index 0000000..7857981
+--- /dev/null
++++ b/src/pages/zabbix-management/proxy/ProxyTab.tsx
+@@ -0,0 +1,277 @@
++import DmoveTable from "@/components/Table/DmoveTable";
++import DmoveTableFilter from "@/components/Table/DmoveTableFilter";
++import { DATE_TIME_FORMATS, QueryParamKeys } from "@/enums/common";
++import { useQueryParams } from "@/hooks/useQueryParams";
++import useTableColumns from "@/hooks/useTableColumns";
++import { useDeleteProxies, useProxyGroupList, useProxyList } from "@/hooks/useZabbixProxy";
++import { SelectFilter } from "@/types/commons";
++import { TManagedProxy, TProxyState } from "@/types/zabbix-proxy";
++import { Alert, Button, Flex, List, Modal, Space, Tag, Tooltip, Typography, message } from "antd";
++import dayjs from "dayjs";
++import { useMemo, useState } from "react";
++import { useTranslation } from "react-i18next";
++import ProxyFormDrawer from "./ProxyFormDrawer";
++import { proxyErrorMessage } from "./proxyErrors";
++
++const { Text } = Typography;
++
++export const PROXY_STATE_COLORS: Record<TProxyState, string> = { ONLINE: "success", OFFLINE: "error", UNKNOWN: "default" };
++const STATES: TProxyState[] = ["ONLINE", "OFFLINE", "UNKNOWN"];
++const TLS_PSK = 2;
++const TLS_CERT = 4;
++
++/** 암호화 표시 — 액티브는 받는 방식(비트), 패시브는 연결 방식 하나. */
++export const tlsLabels = (p: Pick<TManagedProxy, "operatingMode" | "tlsConnect" | "tlsAccept">): ("none" | "psk" | "cert")[] => {
++  if (p.operatingMode === 1) {
++    return [p.tlsConnect === TLS_PSK ? "psk" : p.tlsConnect === TLS_CERT ? "cert" : "none"];
++  }
++  const out: ("none" | "psk" | "cert")[] = [];
++  if (p.tlsAccept & 1) out.push("none");
++  if (p.tlsAccept & TLS_PSK) out.push("psk");
++  if (p.tlsAccept & TLS_CERT) out.push("cert");
++  return out.length > 0 ? out : ["none"];
++};
++
++// 프록시 탭 — 목록(화면 거름)·생성·수정·삭제. 계약 §1~§4.
++// 삭제는 직접 감시 호스트·디스커버리 규칙이 있으면 BE가 하나도 지우지 않고 PROXY_IN_USE로 이름을 알려 준다 —
++// 화면도 호스트가 있는 행은 미리 막고 이유를 툴팁으로 보여 준다(규칙은 상세에서만 보이므로 BE 판정이 정본).
++const ProxyTab = () => {
++  const { t } = useTranslation();
++  const { params } = useQueryParams();
++  const keyword = (params.keyword ?? "").toLowerCase();
++  const stateFilter = params[QueryParamKeys.STATUS];
++  const modeFilter = params[QueryParamKeys.PROXY_MODE];
++  const groupFilter = params[QueryParamKeys.PROXY_GROUP_ID];
++
++  const { data, isLoading, isError, error } = useProxyList();
++  const { data: groups } = useProxyGroupList();
++  const { mutate: deleteProxies, isPending: deleting } = useDeleteProxies();
++  const [drawerOpen, setDrawerOpen] = useState(false);
++  const [editTarget, setEditTarget] = useState<TManagedProxy | undefined>();
++  const [deleteTargets, setDeleteTargets] = useState<TManagedProxy[]>([]);
++
++  const rows = useMemo(() => {
++    let all = data ?? [];
++    if (stateFilter) all = all.filter((p) => p.state === stateFilter);
++    if (modeFilter === "0" || modeFilter === "1") all = all.filter((p) => String(p.operatingMode) === modeFilter);
++    if (groupFilter) all = all.filter((p) => (groupFilter === "0" ? !p.proxyGroup : p.proxyGroup?.id === groupFilter));
++    if (keyword) {
++      all = all.filter((p) =>
++        [p.name, p.address, p.allowedAddresses, p.localAddress, p.description].some((v) => (v ?? "").toLowerCase().includes(keyword))
++      );
++    }
++    return all;
++  }, [data, keyword, stateFilter, modeFilter, groupFilter]);
++
++  const filter: SelectFilter[] = [
++    {
++      name: t("proxy_management.filter_mode"),
++      key: QueryParamKeys.PROXY_MODE,
++      options: [
++        { label: t("proxy_management.mode.0"), value: "0" },
++        { label: t("proxy_management.mode.1"), value: "1" },
++      ],
++    },
++    {
++      name: t("proxy_management.filter_state"),
++      key: QueryParamKeys.STATUS,
++      options: STATES.map((s) => ({ label: t(`proxy_management.state.${s}`), value: s })),
++    },
++    {
++      name: t("proxy_management.filter_group"),
++      key: QueryParamKeys.PROXY_GROUP_ID,
++      options: [
++        { label: t("proxy_management.no_group"), value: "0" },
++        ...(groups ?? []).map((g) => ({ label: g.name, value: g.proxyGroupId })),
++      ],
++    },
++  ];
++
++  const openEdit = (p?: TManagedProxy) => {
++    setEditTarget(p);
++    setDrawerOpen(true);
++  };
++
++  const confirmDelete = () => {
++    if (deleteTargets.length === 0) return;
++    deleteProxies(
++      deleteTargets.map((p) => p.proxyid),
++      {
++        onSuccess: () => {
++          message.success(t("proxy_management.delete_success"));
++          setDeleteTargets([]);
++        },
++        onError: (err: unknown) => message.error(proxyErrorMessage(err, t), 8),
++      }
++    );
++  };
++
++  const handleBatchDelete = (ids: React.Key[]) => {
++    const idSet = new Set(ids.map(String));
++    setDeleteTargets(rows.filter((p) => idSet.has(p.proxyid) && p.hostCount === 0));
++  };
++
++  const { columns } = useTableColumns<TManagedProxy>([
++    {
++      key: "col_px_name",
++      title: "proxy_management.col_name",
++      dataIndex: "name",
++      sorter: false,
++      render: (_: unknown, p: TManagedProxy) => (
++        <Flex vertical>
++          <Text strong>{p.name}</Text>
++          {p.description ? <Text type="secondary" className="text-xs" ellipsis={{ tooltip: p.description }}>{p.description}</Text> : null}
++        </Flex>
++      ),
++    },
++    {
++      key: "col_px_mode",
++      title: "proxy_management.col_mode",
++      sorter: false,
++      width: 100,
++      render: (_: unknown, p: TManagedProxy) => <Tag>{t(`proxy_management.mode.${p.operatingMode}`)}</Tag>,
++    },
++    {
++      key: "col_px_state",
++      title: "proxy_management.col_state",
++      sorter: false,
++      width: 190,
++      render: (_: unknown, p: TManagedProxy) => (
++        <Flex vertical>
++          <Tag color={PROXY_STATE_COLORS[p.state]} className="self-start">{t(`proxy_management.state.${p.state}`)}</Tag>
++          <Text type="secondary" className="text-xs">
++            {p.lastAccess
++              ? t("proxy_management.last_access", { time: dayjs.unix(p.lastAccess).format(DATE_TIME_FORMATS.FULL) })
++              : t("proxy_management.never_connected")}
++          </Text>
++        </Flex>
++      ),
++    },
++    {
++      key: "col_px_version",
++      title: "proxy_management.col_version",
++      sorter: false,
++      width: 140,
++      render: (_: unknown, p: TManagedProxy) => (
++        <Space size={4} wrap>
++          <Text>{p.version ?? "-"}</Text>
++          {p.compatibility === "OUTDATED" || p.compatibility === "UNSUPPORTED" ? (
++            <Tooltip title={t(`proxy_management.compatibility_hint.${p.compatibility}`)}>
++              <Tag color={p.compatibility === "UNSUPPORTED" ? "error" : "warning"}>{t(`proxy_management.compatibility.${p.compatibility}`)}</Tag>
++            </Tooltip>
++          ) : null}
++        </Space>
++      ),
++    },
++    {
++      key: "col_px_group",
++      title: "proxy_management.col_group",
++      sorter: false,
++      width: 150,
++      render: (_: unknown, p: TManagedProxy) => (p.proxyGroup ? <Text>{p.proxyGroup.name ?? p.proxyGroup.id}</Text> : <Text type="secondary">-</Text>),
++    },
++    {
++      key: "col_px_address",
++      title: "proxy_management.col_address",
++      sorter: false,
++      width: 200,
++      render: (_: unknown, p: TManagedProxy) =>
++        p.operatingMode === 1 ? (
++          <Text className="text-xs">{`${p.address}:${p.port}`}</Text>
++        ) : (
++          <Tooltip title={t("proxy_management.allowed_addresses_hint")}>
++            <Text className="text-xs" type={p.allowedAddresses ? undefined : "secondary"}>
++              {p.allowedAddresses || t("proxy_management.any_address")}
++            </Text>
++          </Tooltip>
++        ),
++    },
++    {
++      key: "col_px_hosts",
++      title: "proxy_management.col_hosts",
++      sorter: false,
++      width: 110,
++      render: (_: unknown, p: TManagedProxy) => (
++        <Tooltip title={t("proxy_management.host_count_hint", { direct: p.hostCount, assigned: p.assignedHostCount })}>
++          <Text>{p.assignedHostCount > 0 ? `${p.hostCount} + ${p.assignedHostCount}` : p.hostCount}</Text>
++        </Tooltip>
++      ),
++    },
++    {
++      key: "col_px_tls",
++      title: "proxy_management.col_encryption",
++      sorter: false,
++      width: 140,
++      render: (_: unknown, p: TManagedProxy) => (
++        <Space size={2} wrap>
++          {tlsLabels(p).map((l) => (
++            <Tag key={l} color={l === "none" ? undefined : "blue"}>{t(`proxy_management.tls.${l}`)}</Tag>
++          ))}
++        </Space>
++      ),
++    },
++    {
++      key: "col_px_actions",
++      title: "proxy_management.col_actions",
++      sorter: false,
++      width: 130,
++      render: (_: unknown, p: TManagedProxy) => {
++        const inUse = p.hostCount > 0;
++        const del = (
++          <Button size="small" danger disabled={inUse} onClick={() => setDeleteTargets([p])}>
++            {t("proxy_management.delete")}
++          </Button>
++        );
++        return (
++          <Space size={4}>
++            <Button size="small" onClick={() => openEdit(p)}>{t("proxy_management.edit")}</Button>
++            {inUse ? <Tooltip title={t("proxy_management.delete_blocked_hosts", { count: p.hostCount })}>{del}</Tooltip> : del}
++          </Space>
++        );
++      },
++    },
++  ]);
++
++  return (
++    <Flex vertical gap={12}>
++      <Alert type="info" showIcon message={t("proxy_management.desc")} />
++      <DmoveTableFilter
++        filter={filter}
++        placeholder={t("proxy_management.search_placeholder")}
++        button={<Button type="primary" onClick={() => openEdit(undefined)}>{t("proxy_management.create")}</Button>}
++      />
++      {isError ? <Alert type="error" showIcon message={proxyErrorMessage(error, t)} /> : null}
++      <DmoveTable
++        loading={isLoading}
++        columns={columns}
++        dataSource={rows}
++        rowKey="proxyid"
++        showPagination={false}
++        tableId="zabbix-proxies"
++        hasCheckboxAction
++        handleDelete={handleBatchDelete}
++        getCheckboxProps={(p) => ({ disabled: p.hostCount > 0 })}
++      />
++
++      <ProxyFormDrawer open={drawerOpen} proxy={editTarget} onClose={() => setDrawerOpen(false)} />
++
++      <Modal
++        title={t("proxy_management.delete_title")}
++        open={deleteTargets.length > 0}
++        onCancel={() => setDeleteTargets([])}
++        onOk={confirmDelete}
++        okText={t("proxy_management.delete")}
++        okButtonProps={{ danger: true, loading: deleting }}
++        cancelText={t("proxy_management.cancel")}
++        destroyOnHidden
++      >
++        <Flex vertical gap={12}>
++          <Text>{t("proxy_management.delete_warning", { count: deleteTargets.length })}</Text>
++          <List size="small" bordered dataSource={deleteTargets} renderItem={(p) => <List.Item>{p.name}</List.Item>} />
++        </Flex>
++      </Modal>
++    </Flex>
++  );
++};
++
++export default ProxyTab;
+diff --git a/src/pages/zabbix-management/proxy/proxyErrors.ts b/src/pages/zabbix-management/proxy/proxyErrors.ts
+new file mode 100644
+index 0000000..73e1b74
+--- /dev/null
++++ b/src/pages/zabbix-management/proxy/proxyErrors.ts
+@@ -0,0 +1,43 @@
++import { HTTP_STATUS } from "@/constants/http";
++import type { TFunction } from "i18next";
++
++/** BE 업무 오류 코드 — envelope.errorCode로 오고 message에는 상세(사용 중인 호스트·규칙 이름)만 남는다(ApiError.getClientMessage). */
++const KNOWN_CODES = [
++  "PROXY_NOT_FOUND",
++  "PROXY_NAME_REQUIRED",
++  "PROXY_MODE_INVALID",
++  "PROXY_TLS_REQUIRED",
++  "PROXY_PSK_REQUIRED",
++  "PROXY_LOCAL_ADDRESS_REQUIRED",
++  "PROXY_CREATE_FAILED",
++  "PROXY_IDS_REQUIRED",
++  "PROXY_IN_USE",
++  "PROXY_GROUP_NOT_FOUND",
++  "PROXY_GROUP_NAME_REQUIRED",
++  "PROXY_GROUP_CREATE_FAILED",
++  "PROXY_GROUP_IDS_REQUIRED",
++  "PROXY_GROUP_IN_USE",
++] as const;
++
++/** envelope 오류의 공통 모양 — 변경은 ZabbixManageApiError, 조회(useDmoveQuery)는 ApiEnvelopeError가 같은 필드를 갖는다. */
++type TEnvelopeErrorLike = { code?: number; errorCode?: string; message?: string };
++
++const asEnvelopeError = (error: unknown): TEnvelopeErrorLike | undefined =>
++  error instanceof Error && ("code" in error || "errorCode" in error) ? (error as TEnvelopeErrorLike) : undefined;
++
++/** 오류 → 안내 문구. 아는 코드는 번역(상세를 {{detail}}로), 모르는 코드·Zabbix 원문은 message 그대로. */
++export const proxyErrorMessage = (error: unknown, t: TFunction): string => {
++  const env = asEnvelopeError(error);
++  if (env) {
++    if (env.code === HTTP_STATUS.FORBIDDEN) {
++      return t("proxy_management.permission_denied");
++    }
++    const code = KNOWN_CODES.find((c) => c === env.errorCode);
++    if (code) {
++      const detail = env.message && env.message !== code ? env.message : "";
++      return t(`proxy_management.errors.${code}`, { detail });
++    }
++  }
++  const raw = error instanceof Error ? error.message : "";
++  return raw || t("proxy_management.action_failed");
++};
+diff --git a/src/routes/routes.tsx b/src/routes/routes.tsx
+index fcebae4..59c480a 100644
+--- a/src/routes/routes.tsx
++++ b/src/routes/routes.tsx
+@@ -103,6 +103,7 @@ import ItemLensPage from "@/pages/zabbix-management/entity-lens/ItemLensPage";
+ import TriggerLensPage from "@/pages/zabbix-management/entity-lens/TriggerLensPage";
+ import NetworkDiscoveryPage from "@/pages/zabbix-management/discovery/NetworkDiscoveryPage";
+ import WebScenarioPage from "@/pages/zabbix-management/web-scenario/WebScenarioPage";
++import ProxyManagementPage from "@/pages/zabbix-management/proxy/ProxyManagementPage";
+ import AlertManagementPage from "@/pages/zabbix-management/alert-management/AlertManagementPage";
+ import GlobalMacroPage from "@/pages/zabbix-management/macro-management/GlobalMacroPage";
+ import UserManagementPage from "@/pages/zabbix-management/user-management/UserManagementPage";
+@@ -1183,6 +1184,11 @@ export const routeConfig: RouteObject[] = [
+           />
+         ),
+       },
++      // 프록시·프록시 그룹(기본 기능) — 계약 contract_proxy.md. 관리자 전용.
++      {
++        path: PATH_ZABBIX_MANAGEMENT.proxyManagement,
++        element: <PageWrapper children={<ProxyManagementPage />} adminOnly />,
++      },
+       // 알림 관리 — 액션 5종 + 미디어 타입(계약 contract_alert-management.md). 관리자 전용.
+       {
+         path: PATH_ZABBIX_MANAGEMENT.alertManagement,
+diff --git a/src/services/zabbix-proxy.api.ts b/src/services/zabbix-proxy.api.ts
+new file mode 100644
+index 0000000..b1fefa5
+--- /dev/null
++++ b/src/services/zabbix-proxy.api.ts
+@@ -0,0 +1,65 @@
++// Zabbix 관리 > 프록시·프록시 그룹(기본 기능, 관리자 전용) — 계약: _workspace/features/zabbix-config/proxy/contract_proxy.md.
++// 조회는 useDmoveQuery가 2겹째 언랩, 변경은 envelope 실패 시 throw(그래프·Web 시나리오와 같은 규약).
++// 업무 오류는 errorCode `PROXY_*`·`PROXY_GROUP_*` + message 상세(예: 사용 중인 호스트 이름), Zabbix 거부는 원문.
++import API from "./axiosInstance";
++import { unwrapEnvelope, ZabbixManageApiError } from "./zabbix-item-template.api";
++import { TZabbixManageEnvelope } from "@/types/zabbix-item-template";
++import {
++  TManagedProxy,
++  TManagedProxyDetail,
++  TManagedProxyGroup,
++  TManagedProxyGroupDetail,
++  TProxyDeleteRes,
++  TProxyGroupUpsertReq,
++  TProxyOptions,
++  TProxyUpsertReq,
++} from "@/types/zabbix-proxy";
++
++const proxiesUrl = "zabbix-manage/proxies";
++const groupsUrl = "zabbix-manage/proxy-groups";
++
++export { ZabbixManageApiError };
++
++const getProxyList = (): Promise<TManagedProxy[]> => API.get(proxiesUrl);
++
++const getProxyOptions = (): Promise<TProxyOptions> => API.get(`${proxiesUrl}/options`);
++
++const getProxyDetail = (proxyid: string): Promise<TManagedProxyDetail> => API.get(`${proxiesUrl}/${proxyid}`);
++
++const createProxy = (body: TProxyUpsertReq): Promise<TManagedProxyDetail> =>
++  API.post<unknown, TZabbixManageEnvelope<TManagedProxyDetail>>(proxiesUrl, body).then(unwrapEnvelope);
++
++const updateProxy = (proxyid: string, body: TProxyUpsertReq): Promise<TManagedProxyDetail> =>
++  API.put<unknown, TZabbixManageEnvelope<TManagedProxyDetail>>(`${proxiesUrl}/${proxyid}`, body).then(unwrapEnvelope);
++
++const deleteProxies = (ids: string[]): Promise<TProxyDeleteRes> =>
++  API.delete<unknown, TZabbixManageEnvelope<TProxyDeleteRes>>(proxiesUrl, { data: { ids } }).then(unwrapEnvelope);
++
++const getProxyGroupList = (): Promise<TManagedProxyGroup[]> => API.get(groupsUrl);
++
++const getProxyGroupDetail = (proxyGroupId: string): Promise<TManagedProxyGroupDetail> => API.get(`${groupsUrl}/${proxyGroupId}`);
++
++const createProxyGroup = (body: TProxyGroupUpsertReq): Promise<TManagedProxyGroupDetail> =>
++  API.post<unknown, TZabbixManageEnvelope<TManagedProxyGroupDetail>>(groupsUrl, body).then(unwrapEnvelope);
++
++const updateProxyGroup = (proxyGroupId: string, body: TProxyGroupUpsertReq): Promise<TManagedProxyGroupDetail> =>
++  API.put<unknown, TZabbixManageEnvelope<TManagedProxyGroupDetail>>(`${groupsUrl}/${proxyGroupId}`, body).then(unwrapEnvelope);
++
++const deleteProxyGroups = (ids: string[]): Promise<TProxyDeleteRes> =>
++  API.delete<unknown, TZabbixManageEnvelope<TProxyDeleteRes>>(groupsUrl, { data: { ids } }).then(unwrapEnvelope);
++
++const ZabbixProxyService = {
++  getProxyList,
++  getProxyOptions,
++  getProxyDetail,
++  createProxy,
++  updateProxy,
++  deleteProxies,
++  getProxyGroupList,
++  getProxyGroupDetail,
++  createProxyGroup,
++  updateProxyGroup,
++  deleteProxyGroups,
++};
++
++export default ZabbixProxyService;
+diff --git a/src/types/zabbix-proxy.ts b/src/types/zabbix-proxy.ts
+new file mode 100644
+index 0000000..62c9ca2
+--- /dev/null
++++ b/src/types/zabbix-proxy.ts
+@@ -0,0 +1,126 @@
++// Zabbix 관리 > 프록시·프록시 그룹(기본 기능, 관리자 전용). 계약: _workspace/features/zabbix-config/proxy/contract_proxy.md.
++// 응답은 camelCase, 요청은 Zabbix 원본 키(snake) — 그래프·Web 시나리오와 같은 관례.
++
++export type TProxyMode = 0 | 1;
++export type TProxyState = "UNKNOWN" | "OFFLINE" | "ONLINE";
++export type TProxyCompatibility = "UNDEFINED" | "CURRENT" | "OUTDATED" | "UNSUPPORTED";
++export type TProxyGroupState = "UNKNOWN" | "OFFLINE" | "RECOVERING" | "ONLINE" | "DEGRADING";
++
++export type TProxyRef = { id: string; name: string | null };
++export type TProxyHostRef = { hostid: string; name: string };
++
++/** 프록시 타임아웃 10종 — 키는 Zabbix 필드에서 `timeout_`을 뗀 이름. */
++export const PROXY_TIMEOUT_KEYS = [
++  "zabbix_agent",
++  "simple_check",
++  "snmp_agent",
++  "external_check",
++  "db_monitor",
++  "http_agent",
++  "ssh_agent",
++  "telnet_agent",
++  "script",
++  "browser",
++] as const;
++export type TProxyTimeoutKey = (typeof PROXY_TIMEOUT_KEYS)[number];
++export type TProxyTimeouts = Partial<Record<TProxyTimeoutKey, string>>;
++
++/** GET /zabbix-manage/proxies 행. */
++export type TManagedProxy = {
++  proxyid: string;
++  name: string;
++  operatingMode: TProxyMode;
++  proxyGroup: TProxyRef | null;
++  address: string;
++  port: string;
++  allowedAddresses: string;
++  localAddress: string;
++  localPort: string;
++  description: string;
++  state: TProxyState;
++  /** epoch 초. 접속한 적 없으면 null. */
++  lastAccess: number | null;
++  version: string | null;
++  compatibility: TProxyCompatibility;
++  /** 직접 배정된 호스트 수(monitored_by=1). */
++  hostCount: number;
++  /** 그룹을 통해 지금 이 프록시가 맡은 호스트 수. */
++  assignedHostCount: number;
++  tlsConnect: number;
++  tlsAccept: number;
++  /** 지금 PSK를 쓰는 중 — 값은 내려오지 않는다(Zabbix 쓰기 전용). */
++  pskConfigured: boolean;
++  customTimeouts: boolean;
++};
++
++/** GET /zabbix-manage/proxies/{proxyid}. */
++export type TManagedProxyDetail = {
++  summary: TManagedProxy;
++  tlsIssuer: string;
++  tlsSubject: string;
++  timeouts: TProxyTimeouts;
++  hosts: TProxyHostRef[];
++  assignedHosts: TProxyHostRef[];
++  hostsTruncated: boolean;
++  discoveryRules: TProxyRef[];
++};
++
++/** GET /zabbix-manage/proxies/options. */
++export type TProxyOptions = {
++  proxyGroups: TProxyRef[];
++  globalTimeouts: TProxyTimeouts;
++};
++
++/** POST·PUT /zabbix-manage/proxies — 수정은 보낸 것만. */
++export type TProxyUpsertReq = {
++  name?: string;
++  operating_mode?: TProxyMode;
++  description?: string;
++  proxy_groupid?: string;
++  local_address?: string;
++  local_port?: string;
++  allowed_addresses?: string;
++  address?: string;
++  port?: string;
++  tls_connect?: number;
++  tls_accept?: number;
++  tls_issuer?: string;
++  tls_subject?: string;
++  /** 비우면 유지. */
++  tls_psk_identity?: string;
++  /** 비우면 유지. */
++  tls_psk?: string;
++  custom_timeouts?: 0 | 1;
++  timeouts?: TProxyTimeouts;
++};
++
++export type TProxyGroupMember = { proxyid: string; name: string; state: TProxyState };
++
++/** GET /zabbix-manage/proxy-groups 행. */
++export type TManagedProxyGroup = {
++  proxyGroupId: string;
++  name: string;
++  failoverDelay: string;
++  minOnline: string;
++  description: string;
++  state: TProxyGroupState;
++  proxyCount: number;
++  onlineProxyCount: number;
++  hostCount: number;
++  proxies: TProxyGroupMember[];
++};
++
++export type TManagedProxyGroupDetail = {
++  summary: TManagedProxyGroup;
++  hosts: TProxyHostRef[];
++  hostsTruncated: boolean;
++};
++
++export type TProxyGroupUpsertReq = {
++  name?: string;
++  failover_delay?: string;
++  min_online?: string;
++  description?: string;
++};
++
++export type TProxyDeleteRes = { ids: string[]; count: number };

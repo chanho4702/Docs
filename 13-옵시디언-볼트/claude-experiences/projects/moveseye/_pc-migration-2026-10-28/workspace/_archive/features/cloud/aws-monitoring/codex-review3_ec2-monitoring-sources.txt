@@ -1,0 +1,2401 @@
+OpenAI Codex v0.149.0
+--------
+workdir: C:\solutions\moveseye-be-spring
+model: gpt-5.6-terra
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a03b8d-a169-78c0-ba15-5ab4938e4bb7
+--------
+user
+3차(최종) 확인 검수 (읽기 전용 — 수정 금지)
+
+2차에서 요구한 2건을 반영했다: C:\solutions\_workspace\review_ec2-monitoring-sources.md 의 "코덱스 2차 검수 반영" 표.
+- 월 경계 예약/반납: CloudWatchAvailability.Reservation 토큰 + CloudMetricsService release(reservation, unused)
+- IP 역방향 유일성: Ec2ZabbixMatcher.indexInstances/reverseUnique (스냅샷 배치 CloudSnapshotService가 공급), 콜드 색인이면 IP 근거 불사용
+
+확인: (1) 두 건이 실제로 해소됐나 (2) 역색인 방식의 새 결함 — 색인 갱신 주기(5분)와 인스턴스 IP 변경 사이의 창, 색인 교체 중 동시 읽기, 콜드 상태 UX (3) 머지 가능 여부.
+출력: 항목별 O/X + 근거 → 신규 결함 → 총평. 간결하게. 한국어.
+
+hook: SessionStart
+hook: SessionStart Completed
+hook: UserPromptSubmit
+hook: UserPromptSubmit
+hook: UserPromptSubmit Completed
+hook: UserPromptSubmit Failed
+codex
+요청대로 읽기 전용 최종 검수만 진행하겠습니다. 먼저 협업 상태·경험 인덱스·2차 반영 문서와 실제 구현을 대조하겠습니다.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content C:\\solutions\\COLLAB.md -TotalCount 8; Get-Content C:\\Users\\DMOVE\\Codex-experiences\\INDEX.md; Get-Content C:\\solutions\\_workspace\\reviews\\review_ec2-monitoring-sources.md" in C:\solutions\moveseye-be-spring
+ succeeded in 307ms:
+# COLLAB.md ??Codex ??Claude ?묒뾽 洹쒖빟
+
+`C:\solutions` 紐⑤끂?덊룷瑜?**Codex(肄붾뜳??CLI)** ? **Claude(Claude Code)** 媛 ?섎닠 留≪쓣 ?뚯쓽 洹쒖튃?대떎.
+???먯씠?꾪듃 紐⑤몢 ?묒뾽 ?쒖옉 ?꾩뿉 ??臾몄꽌瑜??쎈뒗?? (Codex??`AGENTS.md`, Claude??`CLAUDE.md`?먯꽌 ?ш린濡?留곹겕??
+
+---
+
+## ?뵖 ?곹깭 ?ㅼ쐞移?(?ш린 ??以꾩씠 ?꾨?瑜?耳쒓퀬 ?덈떎)
+# Codex Experiences
+
+- [[projects/moves-workforce-documentation-sync-2026-08-20]] Moves Workforce 2026-08-20 ?뚯뒪 湲곗? 臾몄꽌 理쒖떊?? ??쒕낫?쑣룰컙???뺤옣怨?v018~v019 ?ㅽ궎留?諛섏쁺.
+
+- [[projects/confluence-approval-dc-2026-08-20-document-sync]] 怨좉컼 ?꾨떖쨌?명솚?굿룸같??룰?利?臾몄꽌??理쒖떊 ?곹깭 ?숆린?붿? ?낆옄 寃??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-cluster-lock-fail-closed]] Cluster lock ?쒕퉬??誘명솗蹂????뱀씤 ?곹깭 蹂寃쎌쓣 李⑤떒?섎뒗 fail-closed 蹂댁젙怨??⑦궎吏?寃利?
+
+- [[projects/confluence-approval-dc-2026-08-20-marketplace-approval-gap]] Marketplace Data Center ?ъ궗 ?붽굔怨??꾩옱 利앸튃??李⑥씠 遺꾩꽍.
+
+- [[projects/confluence-approval-dc-2026-08-20-production-readiness-audit]] C9/C10怨??ㅼ쨷 node 湲곗????댁쁺 諛고룷 以鍮꾨룄 ?먭? 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-live-expiry-reschedule]] 留뚮즺쨌?뚮┝ scheduler媛 ?ш린???놁씠 二쇨린瑜??щ벑濡앺븯?꾨줉 蹂댁젙??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-direct-approver-selection-repair]] 湲곕낯 ?뱀씤??寃??寃곌낵瑜??좏깮??寃곗옱?좎뿉 異붽??섏? 紐삵븯??click 遺꾧린 蹂듦뎄 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-delegation-date-layout]] ???꾩엫 ?쒖옉?셋룹쥌猷뚯씪????以?湲곌컙 洹몃９?쇰줈 ?뺣젹??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-user-picker-state-invalidation]] ?곸꽭 ?ъ슜??寃??紐⑤떖???レ쓣 ???곹깭? 鍮꾨룞湲??묐떟??臾댄슚?뷀븳 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-inbox-resource-type-column]] ?낅Т???섏씠吏쨌留ㅽ겕濡??뱀씤 ?좏삎???낅┰ 而щ읆?쇰줈 遺꾨━??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-detailed-user-list-default]] ?곸꽭 ?ъ슜??寃???뚯씠釉붿쓽 湲곕낯 紐⑸줉쨌寃??踰붿쐞 ?숈옉 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-picker-and-expiry-scheduler-repair]] ?뱀씤??湲곕낯쨌?곸꽭 寃????븷 遺꾨━? 留뚮즺 scheduler ?щ벑濡??ㅻ쪟 蹂댁젙 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-20-user-picker-modal-repair]] ?뱀씤???곸꽭 寃??紐⑤떖???붿껌 form?먯꽌 遺꾨━???대┝쨌?낅젰쨌?ㅼ쨷 ?좏깮 ?숈옉??蹂댁젙??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-14-build-and-flow-user-picker]] Confluence 9 Java쨌Maven 鍮뚮뱶 議곌굔, SAL OSGi ?ㅼ젙 議고쉶? Flow ?ъ슜??key ?좏깮 UI 湲곕줉.
+
+- [[projects/moves-workforce-dashboard-enhance-m8-2026-08-14]] Moves Workforce ?ы듃?대━???ㅽ럹?댁뒪 ?댁뒋 ?쒕┫?ㅼ슫??沅뚰븳쨌罹먯떆쨌partial fallback 怨꾩빟.
+
+- [[projects/confluence-approval-dc-2026-08-14-plugin-settings-osgi]] Confluence 9 `PluginSettingsFactory`瑜?`ComponentLocator` ???plugin-scoped OSGi service濡?議고쉶???먯씤怨??섏젙 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-14-batch-8e-signature-ui]] Confluence Approval DC 諛곗튂 8e ???쒕챸 寃곗옱? 以묒떖 UI, ?묎렐 媛?ν븳 ?깅줉 ?? servlet text block constant-pool 遺꾪븷 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-13-batch-8c-final]] Confluence Approval DC 諛곗튂 8c signatureResolver ?곌껐怨????쒕챸 ?낅┰ 酉??꾪솚 留덇컧 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-13-batch-8b-cc]] Confluence Approval DC 諛곗튂 8b CC 李몄“??AO, ?뚮┝, ?낅Т??諛깆뿏??援ы쁽 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-13-batch-8a-signature-pin]] Confluence Approval DC 諛곗튂 8a ?꾩옄?쒕챸쨌PIN 諛깆뿏?? AO 諛??쒕쾭痢?寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-batch-7b-ui]] Confluence Approval DC 諛곗튂 7b ?낅Т???쒕쾭 ?곕룞, ???뚯닔, 409 諛?諛섎젮 ?몃씪??UX 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-qa-6b-rework]] Confluence Approval DC 諛곗튂 6b QA 寃고븿 ?ъ옉?낃낵 寃利??섍꼍 ?쒖빟 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-qa-6a-rework]] Confluence Approval DC 諛곗튂 6a QA ?ъ옉?? ?곸뿭 ?ㅼ틦?? ?댁떆 ?대갚, ?ㅼ젙 諛??대찓???명솚 ?섏젙.
+
+- [[projects/confluence-approval-dc-2026-08-12-cancel-region-hash]] Confluence Approval DC 痍⑥냼 ?곹깭, ?붿껌 硫붾え, ?곸뿭 蹂몃Ц ?댁떆 湲곕컲 ?뺣? 留뚮즺 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-reapproval-qa-fixes]] Confluence Approval DC ?ъ듅???④퀎 snapshot 蹂듭썝, 洹몃９ 異쒖쿂 蹂댁〈 諛?QA ?섏젙 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-email-due-soon]] Confluence Approval DC C9 email MailQueue 梨꾨꼸, 留덇컧 ?꾨컯 ?⑹꽦 ???뚮┝, ?ㅼ젙 諛?寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-notification-outbox]] Confluence Approval DC C9 媛먯궗 ?대깽??湲곕컲 in-app ?뚮┝ outbox, ?ъ떆??drain, 沅뚰븳 ?꾪꽣 寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-review-fixes]] Confluence Approval DC C9 ?ㅼ젙 ??κ낵 scheduler lifecycle, macro render-context ?ㅼ젙 cache??由щ럭 ?섎━ 諛?寃利?湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-11-deadline-scheduler]] Confluence Approval DC C9 cluster ?⑥씪 留뚮즺 sweep, ?ㅼ젙 ?щ벑濡? `dueSoon` ?뚯깮 ?묐떟怨?寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-group-approver-snapshot]] Confluence Approval DC C9 洹몃９ ?뱀씤???좏깮, user key snapshot, `VIA_GROUP` 蹂댁〈怨?Flow 寃利??쒖젏 遺꾨━ 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-10-app-settings]] Confluence Approval DC ???꾩뿭 ?ㅼ젙 援ы쁽怨?C9 寃利?李⑤떒 ?먯씤 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-user-key-regression]] Confluence Approval DC ?ъ슜??寃??key瑜?Confluence user key濡?蹂듦뎄?섍퀬 username ????곗씠???쒖떆 fallback??異붽???湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11-formatting]] Confluence Approval DC C9 Java ?뚯씪???뺤텞???щ㎎??湲곕뒫 蹂寃??놁씠 蹂듦뎄?섍퀬 Maven 寃利앹쓣 ?꾨즺??湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-11]] C9 ?뱀씤 ?낅Т??3-tab, ?곸꽭 REST ?묐떟, AO Flow ?곌껐怨??ㅽ뻾 以?target lock 寃利?湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-09]] Confluence 9 REST媛 Jersey HK2濡??앹꽦?섎뒗 ?쒖빟, ActiveObjects??plugin-scoped OSGi 議고쉶, C9/C10 manifest쨌?⑦궎吏?寃利?湲곕줉.
+
+- [[projects/moves-workforce-documentation-2026-08-06-sync]] 2026-08-06 肄붾뱶 湲곗??좉낵 ?쒗뭹 臾몄꽌??鍮꾨룞湲??ъ쭛怨꽷톢017 schema ?쒕━?꾪듃瑜??숆린?뷀븳 湲곕줉.
+
+- [[topics/confluence-dc-ao-table-name]] Confluence Data Center Active Objects entity table-name 30???쒗븳怨?吏㏃? `@Table` 紐낅챸 洹쒖튃.
+
+- [[topics/tanstack-query-cross-domain-invalidation]] ???섎굹???ㅼ젙 蹂寃쎌씠 ?щ윭 ?붾㈃???뚯깮 cache??誘몄튂???곹뼢??query key prefix helper濡?愿由ы븯???⑦꽩.
+- [[projects/moves-workforce-documentation-baseline-sync]] ???댁쁺 諛고룷蹂멸낵 媛쒕컻 湲곗???遺꾨━, ?ㅼ젣 ?곹븳쨌沅뚰븳쨌schema 怨꾩빟??援먯감 寃利앺빐 臾몄꽌瑜??숆린?뷀븯???⑦꽩.
+- [[projects/moveseye-documentation-system]] ??multi-repo ?쒗뭹 臾몄꽌 ?뺣낯쨌?묒뾽 利앷굅쨌Obsidian MOC瑜?遺꾨━?섍퀬 code/OpenAPI/Flyway/route瑜??ъ떎 ?먯쿇?쇰줈 ?곌껐?섎뒗 ?⑦꽩.
+- [[topics/forge-kvs-eventual-consistency-cache]] ??Custom Entity query??eventual consistency媛 mutation 吏곹썑 frontend refetch瑜??댁쟾 媛믪쑝濡??섎룎由????덈뒗 寃쎄퀎? ????⑦꽩.
+- [[topics/confluence-dc-forge-approval-estimation]] ??Confluence Data Center ?뱀씤 ???곗젙?먯꽌 Forge Cloud? Java P2瑜?遺꾨━?섍퀬 macro쨌?대윭?ㅽ꽣쨌Marketplace 鍮꾩슜??怨꾩궛?섎뒗 湲곗?.
+- [[topics/code-splitting-bundle-budget-contract]] ??肄붾뱶 ?ㅽ뵆由ы똿 援ъ“媛 諛붾???initial/async chunk ?덉궛怨?CI gate瑜??④퍡 媛깆떊?섎뒗 ?⑦꽩.
+- [[projects/escore-resume-customization]] ???먯뒪肄붿뼱 Elastic Stack ?ъ??섏슜 ?대젰?쒖쓽 MovesEye쨌Moves Workforce 洹쇨굅, 怨쇱옣 諛⑹? ?먯튃, 7?섏씠吏 Word 寃??湲곗???
+- [[projects/escore-resume-movesai-expansion]] ???붾Т釉?寃쎈젰??MovesEye쨌Moves Workforce쨌Elastic Stack쨌?덉쭏/?댁쁺?쇰줈 理쒕? ?뺤옣?섍퀬 8?섏씠吏 Word ?뚮뜑留곸쓣 寃?섑븳 湲곕줉.
+
+- [[projects/confluence-approval-dc-2026-08-12-batch-7a-tests]] Confluence Approval DC 諛곗튂 7a ?좉퇋 ?⑥쐞 ?뚯뒪?몄? Maven 寃利?湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-12-qa-7a-rework]] Confluence Approval DC QA 7a hydrate쨌snapshot쨌REST ?뚭? ?섏젙怨?寃뚯씠??寃利?湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-13-batch-8c-qa-rework]] Confluence Approval DC 諛곗튂 8c 紐⑤떖 PIN ?곹깭쨌諛섎젮 TypeError쨌?쒕챸 寃利?QA ?ъ옉??湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-13-batch-8d-cc-ui]] Confluence Approval DC 諛곗튂 8d CC picker쨌?곸꽭 李몄“?먃룹뾽臾댄븿 李몄“ view? 8c ?붿뿬 蹂댁젙 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-inbox-pagination-and-header-menu]] ?낅Т?㉱텳low ?ъ슜???쒕쾭 ?섏씠吏뺢낵 Confluence ?꾩뿭 ?ㅻ뜑 ?뱀씤 ?쒕∼?ㅼ슫 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-readme-build-guide]] JDK 21 湲곕컲 鍮뚮뱶쨌諛고룷 README 媛?대뱶 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-directory-pagination-hardening]] ??⑸웾 ?ъ슜??directory ?ㅼ젣 PageRequest 議고쉶? 寃???묐떟 ??쟾 諛⑹? 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-14-header-summary-and-sidebar-toggle]] ?곹깭???꾩뿭 ?ㅻ뜑 ?뱀씤 popover? ?ъ씠?쒕컮 寃쎄퀎 toggle 蹂댁젙 湲곕줉.
+- [[projects/confluence-approval-dc-2026-08-15-header-anchor-and-modal-bounds]] C9 header anchor fallback, request modal field bound, Maven validation record.
+- [[projects/confluence-approval-dc-2026-08-15-inbox-export-and-full-history]] Inbox type badge, safe Excel-compatible export, and full approval audit history.
+- [[projects/confluence-approval-dc-2026-08-15-automatic-macro-id]] Automatic persistent approval-region identity using Confluence macro-id.
+- [[projects/confluence-approval-dc-2026-08-15-space-administration]] ?ㅽ럹?댁뒪 ?곸슜 踰붿쐞? ?꾩엫 愿由ъ옄 ?ㅼ젙, ?쒕쾭 媛뺤젣 寃利?
+- [[projects/confluence-approval-dc-2026-08-15-v1-release-baseline]] 泥??댁쁺 湲곗? 踰꾩쟾 `1.0.0` ?ㅼ젙.
+- [[projects/confluence-approval-dc-2026-08-20-verification-and-doc-sync]] ?꾨찓??寃利??듦낵, ?ㅽ뻾 以?Cargo ?뚯씪 ?좉툑???곕Ⅸ ?대뙌??build 蹂대쪟, 吏??踰붿쐞? 諛고룷 寃利??곹깭 臾몄꽌??
+- [[projects/confluence-approval-dc-2026-08-20-request-user-picker]] ?뱀씤 ?붿껌 ?ъ슜??寃?됱쓽 湲곕낯 紐⑸줉 ?쒓굅, ?곸꽭 寃???ㅼ쨷 ?좏깮 紐⑤떖怨?C9 compile 寃利?
+- [[projects/moves-workforce-gantt-review-2026-08-20]] 媛꾪듃 李⑦듃???꾨줈?앺듃-?댁뒋 踰붿쐞 寃利? WBS?뷀뤃??遺遺??깃났, 濡쒕뵫쨌?깅뒫 ?꾪뿕 吏꾨떒.
+- [[projects/moves-workforce-gantt-reliability-hardening-2026-08-20]] 媛꾪듃 ?덉젙?? ?꾨줈?앺듃-?댁뒋 踰붿쐞 寃利? WBS?믫뤃??蹂댁긽 saga, ?꾩씠肄?fallback 諛??몃━ 媛?대뱶.
+- [[projects/moves-workforce-gantt-hierarchy-presentation-2026-08-20]] 媛꾪듃???ㅼ젣 ?곌껐??蹂댁옣?섏? 紐삵븯??CSS ?몃━ 媛?대뱶 ?쒓굅 寃곗젙.
+# 寃???붿껌 ??EC2 紐⑤땲?곕쭅 ?뚯뒪 留ㅽ듃由?뒪 (Zabbix agent 횞 CloudWatch)
+
+- ?묒꽦: Claude, 2026-08-26 쨌 寃?? Codex 쨌 誘몄빱諛?(BE `ZM-79` ?몃━ + FE `master` ?몃━)
+- ?ㅺ퀎 `devdesign_ec2-monitoring-sources.md` (짠8 = 肄붾뜳??1李??ㅺ퀎 寃??諛섏쁺蹂? 쨌 怨꾩빟 `contract_aws-status-timeline.md` 媛쒖젙 2
+- ?좑툘 ?몃━??蹂묓뻾 ?몄뀡(aimonitor) 誘몄빱諛뗫텇 怨듭〈 ????踰붿쐞??`aws/`쨌cloud-infra FE留? ?뵶 蹂묓뻾 ?몄뀡??`EC2Dashboard.tsx`??"?섏쭛 寃쎄퀬 ?ㅽ깘 ?섏젙"(2026-08-26) hunk瑜??ｌ뼱 ??而ㅻ쾭由ъ? 移대뱶 hunk? 媛숈? ?뚯씪??怨듭〈?쒕떎.
+
+## 踰붿쐞쨌?섎룄
+?ㅺ퀎 짠8(肄붾뜳??寃????議곌굔???꾨? 援ы쁽?덈떎:
+
+**BE**
+- `Ec2ZabbixMatcher`: ?쒖뒪??而⑦뀓?ㅽ듃 + ?꾩뿭 5遺?罹먯떆(沅뚰븳 ?꾩텧 諛⑹?) 쨌 INSTANCE_ID_EXACT(?몄뒪?몃챸/`aws.instanceId` ?쒓렇) > IP_EXACT(ENI ?꾩껜 二쇱냼 ??**AGENT ?명꽣?섏씠?ㅻ쭔**, ?좎씪 ?덊듃留? 쨌 以묐났 二쇱옣쨌?ㅼ쨷 ?덊듃??誘몄뿰寃?쨌 Name ?쒓렇 留ㅼ묶 ?놁쓬 쨌 洹쇨굅쨌?먯젙?쒓컖 蹂댁〈 쨌 freshness??LAST_CHECK ?꾨줉??- `CloudWatchAvailability`: ?묎렐 嫄곕? 罹먯떆 **由ъ쟾 ?⑥쐞**濡?遺꾨━ + ?덉궛 ?먯젙 怨듭슜??- `CloudMetricsService` ?ъ옉?? agent ?덉쭏 寃뚯씠??CPU쨌硫붾え由?議댁옱 + 30遺????ъ씤?? ?듦낵 ??agent ?⑤룆(CW 誘명샇異? / 誘몃떖쨌Zabbix ?μ븷 ??CW **紐낆떆??fallback**(`fallbackUsed`) / ?묐떟 ????6媛?怨좎젙(memoryUsage 異붽?)
+- `AwsServiceImpl`: `/ec2s`??`monitoredBy`(4媛?, overview??`summary.monitoringCoverage`
+- ?뚯뒪?? Ec2ZabbixMatcherTest 7(紐낆떆ID ?곗꽑쨌?쒓렇쨌ENI secondary IP쨌?ㅼ쨷?덊듃 嫄곕?쨌鍮껦GENT 臾댁떆쨌以묐났二쇱옣 ?먭린쨌freshness) 쨌 CloudMetricsServiceTest 6 ?ъ옉??agent ?⑤룆=CW 0肄쑣톝tale ?대갚쨌誘몃ℓ移?吏곹뻾쨌?덉궛쨌由ъ쟾 嫄곕?쨌period)
+
+**FE**
+- ??꾨씪?? ?뚯뒪 諛곗?(agent硫??몄뒪?몃챸 蹂묎린) 쨌 agent硫?CPU+**硫붾え由??ъ슜瑜?* 李⑦듃, CW硫?湲곗〈 3李⑦듃 쨌 ?대갚 寃쎄퀬 Alert
+- EC2 紐⑸줉 "紐⑤땲?곕쭅" 而щ읆(4媛?Tag) 쨌 媛쒖슂 而ㅻ쾭由ъ? 移대뱶 + ?먯씠?꾪듃 ?ㅼ튂 ?덈궡 臾멸뎄 쨌 i18n
+
+## 遺덉븞??吏??(癒쇱? 遊??щ씪)
+1. **?④굔 留ㅼ묶????갑???좎씪??誘멸?利?* ??`matchFor(instance)`??"?몄뒪?댁뒪?믫샇?ㅽ듃 ?좎씪"留?蹂몃떎(?몄뒪?멸? ?ㅻⅨ ?몄뒪?댁뒪???뚮━?붿????꾩껜 紐⑸줉 ?놁씠 ?먯젙 遺덇?). INSTANCE_ID ?곗꽑?쒖쐞濡?蹂댁셿?덈떎怨?遊ㅻ뒗??異⑸텇?쒓?.
+2. **agent ?쒓퀎??議고쉶瑜??쒖뒪??而⑦뀓?ㅽ듃濡?* ???대씪?곕뱶 ?붾㈃??awsResources.view濡?寃뚯씠?몃릺怨??ㅻ깄?룸룄 ?쒖뒪???섏쭛?대씪 ?쇨??쒕떎怨??먮떒. Zabbix ?몄뒪??沅뚰븳???녿뒗 ?ъ슜?먯뿉寃?EC2 ?붾㈃ 寃쎌쑀濡?CPU/硫붾え由ш? 蹂댁씠??寃껋씠 ?뺤콉???덉슜?섎뒗吏 ?뺤씤 諛붾엺.
+3. **?덉쭏 寃뚯씠??30遺?* ??Zabbix ?섏쭛 二쇨린媛 湲??쒗뵆由??? 1h)?대㈃ fresh ?먯젙??怨꾩냽 ?ㅽ뙣??CW濡쒕쭔 媛꾨떎. ?꾧퀎媛믪쓣 ?ㅼ젙?뷀븷吏.
+4. **agent ?뚯뒪???ㅽ듃?뚰겕/?붿뒪???ъ슜瑜?誘몄젣怨?1李?** ???뚰떚?샕룹씤?고럹?댁뒪 ?ㅼ감?먯씠??2李⑤줈 類먮떎. ?붾㈃??agent ?뚯뒪媛 李⑦듃 2媛?CPU쨌硫붾え由?肉먯씤 寃?"??蹂댁씤??濡??쏀옄 ???덉쓬.
+5. **`getRegions()`(湲곗〈)媛 `opt-in-not-required`留??꾪꽣** ??opted-in 由ъ쟾(?? ?쒖슱 ???좉퇋 由ъ쟾)??紐⑸줉/媛쒖슂 湲곕낯 ?ъ븘?껋뿉??鍮좎쭊?? ?닿? 留뚮뱺 `enabledRegionNames()`? 遺덉씪移? ?대쾲 踰붿쐞 諛뽰씠吏留?諛쒓껄 ?ы빆.
+6. useip=0(DNS) Zabbix ?몄뒪??留ㅼ묶 ?꾨씫 ???뚮젮吏??쒓퀎濡?臾몄꽌?붾쭔.
+
+## 寃利?- BE ?꾩껜 green(aws ?ㅼ퐫??49嫄??ы븿) 쨌 FE tsc/eslint 0 쨌 FE jest: (?ㅽ뻾 寃곌낵 蹂꾨룄 湲곗옱)
+- :3001 ?고??? `/ec2s` monitoredBy=cloudwatch 쨌 overview.monitoringCoverage `{cloudwatch:1}` 쨌 `/ec2/metrics` `source=cloudwatch, fallbackUsed=false`, ??6媛?- **誘멸?利?*: agent 寃쎈줈 ?ㅼ륫(dev???먯씠?꾪듃 源붾┛ EC2 ?놁쓬 ???⑥쐞 ?뚯뒪?몃쭔) 쨌 釉뚮씪?곗? ?뚮뜑(諛곗?쨌硫붾え由?李⑦듃쨌而щ읆쨌移대뱶)
+
+---
+
+## 肄붾뜳??肄붾뱶 寃??1李?諛섏쁺 (2026-08-26) ??寃고븿 8嫄??꾨? ?섏젙
+
+?먮Ц: `_workspace/codex-review_ec2-monitoring-sources.txt`. 珥앺룊 "?섏젙 ??癒몄?" ???꾨옒 諛섏쁺.
+
+| # | 吏??| 諛섏쁺 |
+|---|---|---|
+| 1 ?믪쓬 | 留뚮즺 罹먯떆瑜?議고쉶 ?ㅽ뙣 ???ъ궗?????ㅼ뿰寃?| **fail-closed**: ?ㅽ뙣 ??罹먯떆 ?먭린쨌誘몃ℓ移??묬W ?대갚). ?뚯뒪??`fetchFailureDoesNotReuseCache` |
+| 2 ?믪쓬 | useip=0(DNS) ?몄뒪?몄쓽 ip媛 ?곗뿰 ?쇱튂濡?IP_EXACT | ?붿쭊 紐⑤뜽 `HostNetworkInterface.useIp` ?좎꽕(湲곗〈 ?앹꽦??蹂댁〈) + ?대뙌??`useip` ?꾨뱶 ?붿껌쨌?꾨떖 + 留ㅼ쿂媛 `useIp==false` ?쒖쇅. ?뚯뒪??`ignoresDnsAccessedInterfaces` |
+| 3 ?믪쓬 | freshness瑜?max(cpu, memory)濡??⑹퀜 stale CPU ?듦낵 | **吏?쒕퀎** 泥?Series 湲곗? 媛곴컖 30遺??먯젙. ?뚯뒪??`cpuStaleAloneFallsBackEvenIfMemoryFresh` |
+| 4 以묎컙 | stopped蹂대떎 agent freshness瑜?癒쇱? 遊?諛⑷툑 ???몄뒪?댁뒪媛 agent濡?吏묎퀎 | stopped ?곗꽑. ?뚯뒪??`stoppedWinsOverFreshAgent`(?좉퇋 `AwsServiceImplCoverageTest`) |
+| 5 以묎컙 | 而ㅻ쾭由ъ? ?덉궛 湲곗?(1肄? ???곸꽭(5肄? | `CloudWatchAvailability.METRICS_CALLS_PER_REQUEST=5` 怨듭슜 ?곸닔濡??듭씪 |
+| 6 以묎컙 | ?붿뿬 ?뺤씤怨?利앷? 遺꾨━ ???숈떆 ?붿껌???곹븳 珥덇낵 | DB **議곌굔遺 ?먯옄 ?덉빟** `reserve(month,n,cap)`(`calls+n<=cap`???뚮쭔 媛깆떊) ???덉빟 ?ㅽ뙣硫?誘명샇異? 誘몄궗?⑸텇 `release` 諛섎궔 |
+| 7 以묎컙 | 肄쒕뱶 罹먯떆?먯꽌 由ъ쟾 蹂묐젹 ?ㅻ젅?쒓? Zabbix ?꾩껜 議고쉶 N??| `hosts()` synchronized single-flight |
+| 8 ??쓬 | FE ?덈궡媛 "硫붾え由?룸뵒?ㅽ겕"濡?怨쇱옣 | "硫붾え由??ъ슜瑜좉퉴吏 ??(?붿뒪?щ뒗 ?꾩냽 吏??"?쇰줈 ?뺤젙 |
+| 遺덉븞 ??| `getRegions()`媛 opt-in-not-required留?| `enabledRegionNames()`濡??듭씪 ??opted-in 由ъ쟾 紐⑸줉쨌媛쒖슂 ?ы븿 |
+
+**誘몃컲???⑹쓽???쒓퀎, 臾몄꽌??**: ?④굔 留ㅼ묶????갑???좎씪??援ъ“????`aws.instanceId` ?쒓렇 ?댁쁺???꾩닔 沅뚯옣?쇰줈 ?밴꺽) 쨌 freshness 30遺??섎뱶肄붾뵫(?ㅼ젙?붾뒗 ?꾩냽) 쨌 ?숈떆 ?붿껌 cap 珥덇낵 諛⑹???DB ?듯빀 ?뚯뒪??寃쏀빀 IT??蹂꾨룄 怨쇱젣).
+寃利? aws ?ㅼ퐫???뚯뒪??green(?좉퇋 5嫄??ы븿) 쨌 FE tsc 0. BE ?꾩껜쨌FE ?꾩껜???꾨옒??異붽? 湲곗옱.
+
+## 肄붾뜳??2李?寃??諛섏쁺 (2026-08-26) ??8/8 ?댁냼 ?뺤씤 + ?좉퇋 2嫄??섏젙
+
+?먮Ц: `codex-review2_ec2-monitoring-sources.txt`. 1李?8嫄??꾨? "O" ?먯젙. 珥앺룊 "?섏젙 ??癒몄?" ???꾨옒 2嫄??붽뎄.
+
+| 吏??| 諛섏쁺 |
+|---|---|
+| ?믪쓬 ????寃쎄퀎?먯꽌 ?덉빟쨌諛섎궔 ??遺덉씪移?8???덉빟 ??9??諛섎궔 ??8?붾텇 ?붿〈쨌9???뚯닔) | `CloudWatchAvailability.Reservation(month, calls)` ?좏겙 ?꾩엯 ??`reserve()`媛 ?좏겙???뚮젮二쇨퀬 `release(token, unused)`媛 **?덉빟????*濡?諛섎궔. ?뚯뒪??`verify(release(RESERVATION, 4))` |
+| 癒몄? 李⑤떒 ??IP 留ㅼ묶 ??갑???좎씪???ㅻⅨ VPC??EC2媛 媛숈? ?ъ꽕 IP硫?????媛숈? ?몄뒪??吏???섏떊) | EC2 二쇱냼?뭝nstanceId **??깋??*??留ㅼ쿂???먭퀬 ?ㅻ깄??諛곗튂(5遺꽷룹쟾 由ъ쟾)媛 `indexInstances()`濡?梨꾩?. IP_EXACT???좎씤?ㅽ꽩?ㅲ넂?몄뒪???좎씪 ?≫샇?ㅽ듃 二쇱냼瑜??곕뒗 EC2媛 ???몄뒪?댁뒪肉???깋?? ????留뚯”???뚮쭔. **?됱씤??肄쒕뱶硫?IP 洹쇨굅 ?ъ슜 ????fail-closed)**, INSTANCE_ID 洹쇨굅??臾댁쁺?? ?뚯뒪??`refusesIpMatchWhenAddressSharedByOtherInstance`쨌`coldIndexDisablesIpBasisButNotInstanceId` |
+
+肄붾뜳?ㅺ? "李⑤떒 ?꾨떂"?쇰줈 ?먯젙??2嫄?freshness 30遺??섎뱶肄붾뵫쨌DB 寃쏀빀 IT)? ?꾩냽 怨쇱젣濡??좎?.
+?좑툘 ?댁쁺 ?⑥쓽: ?ш린??吏곹썑 泥??ㅻ깄????遺? ?꾧퉴吏??IP 留ㅼ묶??鍮꾪솢????洹몃룞?덉? `aws.instanceId` ?쒓렇 留ㅼ묶留??숈옉. ?ㅺ퀎 ?섎룄(?ㅼ뿰寃?< 誘몄뿰寃?? ?쇱튂.
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$collab = Get-Content C:'"\\solutions\\COLLAB.md -Encoding utf8; "'$collab | Select-String '"'STATUS:'; rg -n -S \"class Ec2ZabbixMatcher|record Reservation|class CloudWatchAvailability|release\\(|reserve\\(|indexInstances|reverseUnique|CloudSnapshotService\" src engine-api engine-zabbix; rg --files C:\\solutions\\_workspace | rg \"contract_.*(aws|ec2)|review_ec2\"" in C:\solutions\moveseye-be-spring
+ succeeded in 1193ms:
+
+STATUS: SOLO-CLAUDE
+2. **스위치 변경.** §0의 `STATUS: ACTIVE` → `STATUS: SOLO-CLAUDE`. 아래 전환 이력에 한 줄 추가.
+src\test\java\com\dmove\moveseye\scheduler\SchedulerManagerTest.java:313:        verify(lease).release("event_sync");
+src\test\java\com\dmove\moveseye\scheduler\SchedulerLeaseServiceIT.java:92:        leaseService.release(JOB);
+src\test\java\com\dmove\moveseye\scheduler\SchedulerLeaseServiceIT.java:124:        leaseService.release(JOB);
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:377:            // 판정 규칙은 스냅샷 수집(CloudSnapshotService)과 공유한다 — 복제 금지.
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotCleanupJob.java:20:    private final CloudSnapshotService cloudSnapshotService;
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:157:                availability.reserve(CloudWatchAvailability.METRICS_CALLS_PER_REQUEST);
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:189:            availability.release(reservation.get(), CloudWatchAvailability.METRICS_CALLS_PER_REQUEST - calls);
+src\main\java\com\dmove\moveseye\scheduler\SchedulerManager.java:173:            leaseService.release(job.jobKey());
+src\main\java\com\dmove\moveseye\aws\CloudWatchAvailability.java:22:public class CloudWatchAvailability {
+src\main\java\com\dmove\moveseye\aws\CloudWatchAvailability.java:68:    public record Reservation(String month, int calls) {
+src\main\java\com\dmove\moveseye\aws\CloudWatchAvailability.java:75:    public java.util.Optional<Reservation> reserve(int calls) {
+src\main\java\com\dmove\moveseye\aws\CloudWatchAvailability.java:77:        return budgetRepository.reserve(month, calls, monthlyCallCap) > 0
+src\main\java\com\dmove\moveseye\aws\CloudWatchAvailability.java:83:    public void release(Reservation reservation, int unusedCalls) {
+src\main\java\com\dmove\moveseye\scheduler\SchedulerLeaseService.java:94:    public void release(String jobKey) {
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotService.java:42:public class CloudSnapshotService {
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotService.java:89:        matcher.indexInstances(parts.stream().filter(p -> p != null)
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:10: * 실패 판정은 {@link CloudSnapshotService#collect()}가 던지는 예외(전 리전 실패)만이다.
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:19:    private final CloudSnapshotService cloudSnapshotService;
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:50:public class Ec2ZabbixMatcher {
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:84:    public void indexInstances(List<Instance> instances) {
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:97:     * ②는 {@link #indexInstances} 역색인으로 판정하며, 색인이 비어 있으면(콜드) IP 근거를 쓰지 않는다.
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:119:            if (reverseUnique(host, instance.instanceId())) {
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:137:    private boolean reverseUnique(AgentHost host, String instanceId) {
+src\main\java\com\dmove\moveseye\aws\repository\CloudApiBudgetRepository.java:33:    int reserve(@Param("month") String month, @Param("n") long n, @Param("cap") long cap);
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:94:        verify(availability, never()).reserve(anyInt());
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:106:        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:116:        verify(availability).release(RESERVATION, 0);
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:131:        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:146:        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:166:        when(availability.reserve(5)).thenReturn(Optional.empty());
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:182:        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:195:        verify(availability).release(RESERVATION, 4);
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotServiceTest.java:37:class CloudSnapshotServiceTest {
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotServiceTest.java:51:    private CloudSnapshotService service;
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotServiceTest.java:98:        verify(matcher).indexInstances(List.of(running, stopped));
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:28:class Ec2ZabbixMatcherTest {
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:74:        matcher.indexInstances(List.of(withEni)); // 역방향 유일성 재료(스냅샷 배치가 채우는 것)
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:120:        matcher.indexInstances(List.of(a, b));
+C:\solutions\_workspace\contract_aws-zero-cost.md
+C:\solutions\_workspace\contract_aws-status-timeline.md
+C:\solutions\_workspace\contract_aws-free-monitoring.md
+C:\solutions\_workspace\codex-review_ec2-monitoring-sources.txt
+C:\solutions\_workspace\review_ec2-monitoring-sources.md
+
+
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content C:\\solutions\\_workspace\\contract_aws-status-timeline.md -Encoding utf8 | Select-String -Pattern '## 🔄 FE 요청사항' -Context 0,50; Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\CloudWatchAvailability.java; Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\CloudMetricsService.java; Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\Ec2ZabbixMatcher.java; Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\CloudSnapshotService.java; Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\CloudSnapshotJob.java; Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\repository\\CloudApiBudgetRepository.java" in C:\solutions\moveseye-be-spring
+ succeeded in 811ms:
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.aws.repository.CloudApiBudgetRepository;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+/**
+ * CloudWatch 媛?⑹꽦 ?먯젙 ??吏??議고쉶({@link CloudMetricsService})? 而ㅻ쾭由ъ? ?쒖떆媛 怨듭쑀?쒕떎.
+ *
+ * <p>?뵶 ?묎렐 嫄곕? 罹먯떆??<b>由ъ쟾 ?⑥쐞</b>??肄붾뜳??寃??諛섏쁺, devdesign_ec2-monitoring-sources.md 짠8) ?? * ??由ъ쟾??沅뚰븳 ?ㅽ뙣媛 ?ㅻⅨ 由ъ쟾???뺤긽 議고쉶瑜?留됱쑝硫????쒕떎. ?ш린????由ъ뀑(?꾨줈釉?1???ы솗?몄씠 留욌떎).
+ */
+@Component
+@RequiredArgsConstructor
+public class CloudWatchAvailability {
+
+    /** 沅뚰븳 嫄곕? ???ъ떆???듭젣 ?쒓컙 ??留?議고쉶媛 嫄곕??뱁븯硫?濡쒓렇瑜?梨꾩슦??寃껋쓣 留됰뒗?? */
+    private static final Duration DENIED_TTL = Duration.ofMinutes(10);
+    /**
+     * ?곸꽭 吏??1??議고쉶媛 ?곕뒗 CW 肄???吏??5媛?횞 肄?1). 而ㅻ쾭由ъ? ?먯젙怨?`/ec2/metrics`媛
+     * <b>媛숈? 湲곗?</b>???⑥빞 ?쒕떎 ??紐⑸줉? cloudwatch???덈뒗???곸꽭媛 BUDGET_EXHAUSTED硫?嫄곗쭞留먯씠??肄붾뜳??짠5).
+     */
+    public static final int METRICS_CALLS_PER_REQUEST = 5;
+
+    private final CloudApiBudgetRepository budgetRepository;
+
+    /** ?곕━ 紐????곹븳(D3: ?꾨━?곗뼱???덈컲). */
+    @Value("${app.cloud.metrics-monthly-call-cap:500000}")
+    private long monthlyCallCap;
+
+    private final Map<String, Instant> deniedUntilByRegion = new ConcurrentHashMap<>();
+
+    public void markDenied(String region) {
+        deniedUntilByRegion.put(region, Instant.now().plus(DENIED_TTL));
+    }
+
+    public boolean isDenied(String region) {
+        Instant until = deniedUntilByRegion.get(region);
+        return until != null && Instant.now().isBefore(until);
+    }
+
+    /** ?대쾲 ???ъ슜??議고쉶(?덉궛 ?쒖떆쨌媛??怨듭슜). */
+    public long usedThisMonth() {
+        String month = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        return budgetRepository.findById(month).map(b -> b.getCalls()).orElse(0L);
+    }
+
+    public long cap() {
+        return monthlyCallCap;
+    }
+
+    /** ?덉궛 ?뚯쭊 ?щ?(?쒖떆?? ??nextCalls留뚰겮 ??遺瑜??ъ쑀媛 ?녿뒗媛. ?ㅼ젣 ?몄텧 ?꾩뿏 {@link #reserve}瑜??대떎. */
+    public boolean budgetExhausted(int nextCalls) {
+        return usedThisMonth() + nextCalls > monthlyCallCap;
+    }
+
+    /**
+     * ?덉빟 ?좏겙 ???뵶 諛섎궔? <b>?덉빟????/b>???댁빞 ?쒕떎. ?붾쭚???덉빟?섍퀬 ?먯젙 ?섏뼱 諛섎궔?섎㈃ 8?붾텇? ?④퀬
+     * 9?붿씠 ?뚯닔媛 ?쒕떎(肄붾뜳??2李?寃???좉퇋 寃고븿). 洹몃옒??month瑜??좏겙??諛뺣뒗??
+     */
+    public record Reservation(String month, int calls) {
+    }
+
+    /**
+     * ?몄텧 ???먯옄 ?덉빟 ???곹븳 ?덉뿉?쒕쭔 n嫄댁쓣 ?좎젏?쒕떎. empty硫??몄텧?섏? ?딅뒗??
+     * ?숈떆 ?붿껌??媛숈? ?붿뿬瑜??쎄퀬 ?꾨? ?듦낵?섎뒗 寃쏀빀??DB 議곌굔遺 媛깆떊?쇰줈 留됰뒗??肄붾뜳??짠6).
+     */
+    public java.util.Optional<Reservation> reserve(int calls) {
+        String month = currentMonth();
+        return budgetRepository.reserve(month, calls, monthlyCallCap) > 0
+                ? java.util.Optional.of(new Reservation(month, calls))
+                : java.util.Optional.empty();
+    }
+
+    /** ?덉빟?덉쑝?????섍컙 肄?諛섎궔(?덉쇅濡?以묐떒??寃쎌슦) ???덉빟???щ줈. ?ㅼ젣 ?섍컙 ?섎쭔 ?⑤뒗?? */
+    public void release(Reservation reservation, int unusedCalls) {
+        if (unusedCalls > 0) {
+            budgetRepository.addCalls(reservation.month(), -unusedCalls);
+        }
+    }
+
+    private String currentMonth() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    }
+
+    /**
+     * 而ㅻ쾭由ъ? ?쒖떆???붿빟 ?먯젙: 'ok' | 'denied' | 'budget'.
+     * ?좑툘 AWS瑜??몄텧?섏? ?딅뒗????罹먯떆쨌移댁슫?곕쭔 蹂몃떎(?곹깭 ?먯젙 臾댄샇異??먯튃怨??숈씪).
+     * ?덉궛 湲곗?? ?곸꽭 議고쉶 1?뚮텇({@link #METRICS_CALLS_PER_REQUEST})怨??숈씪?섍쾶.
+     */
+    public String availability(String region) {
+        if (isDenied(region)) {
+            return "denied";
+        }
+        if (budgetExhausted(METRICS_CALLS_PER_REQUEST)) {
+            return "budget";
+        }
+        return "ok";
+    }
+}
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.aws.client.AwsReadOnlyGateway;
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.EntityRef;
+import com.dmove.moveseye.engine.model.SourceRef;
+import com.dmove.moveseye.engine.model.TimeRange;
+import com.dmove.moveseye.engine.model.metric.MetricDomain;
+import com.dmove.moveseye.engine.model.metric.MetricRef;
+import com.dmove.moveseye.engine.model.metric.Rollup;
+import com.dmove.moveseye.engine.model.metric.Series;
+import com.dmove.moveseye.engine.model.metric.SeriesQuery;
+import com.dmove.moveseye.engine.port.MetricPort;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.services.cloudwatch.model.Datapoint;
+import software.amazon.awssdk.services.cloudwatch.model.Statistic;
+import software.amazon.awssdk.services.ec2.model.Instance;
+
+/**
+ * EC2 ?깅뒫 ?쒓퀎????<b>?뚯뒪 留ㅽ듃由?뒪???좏깮湲?/b> (devdesign_ec2-monitoring-sources.md).
+ *
+ * <p>?곗꽑?쒖쐞(D11 媛쒖젙): <b>zabbix-agent(?덉쭏 ?뺤씤 ?? &gt; cloudwatch &gt; ?놁쓬(諛대뱶留?</b>.
+ * 留ㅼ묶?먮떎怨?CW瑜?臾댁“嫄??딆? ?딅뒗????agent ?꾩닔 吏??CPU쨌硫붾え由?媛 ?덇퀬 ?좎꽑???뚮쭔 agent ?⑤룆,
+ * ?꾨땲硫?CW濡?<b>紐낆떆??fallback</b>(`fallbackUsed`)?쒕떎. 愿痢?怨듬갚 諛⑹?(肄붾뜳??寃??짠8).
+ *
+ * <p>CW 寃쎈줈??{@code GetMetricStatistics} ?꾨━?곗뼱 ??+ ???덉궛 媛??D3). 沅뚰븳 嫄곕???
+ * <b>由ъ쟾 ?⑥쐞</b> 罹먯떆({@link CloudWatchAvailability})濡?媛뺣벑 ???꾨? 200 + 鍮?series???먮윭 ?꾨떂).
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CloudMetricsService {
+
+    /** CW 吏???뺤쓽 ??EC2 湲곕낯 紐⑤땲?곕쭅(5遺? 臾대즺)??議댁옱?섎뒗 寃껊쭔. */
+    private static final List<MetricSpec> CW_METRICS = List.of(
+            new MetricSpec("cpu", "CPUUtilization", Statistic.AVERAGE),
+            new MetricSpec("networkIn", "NetworkIn", Statistic.AVERAGE),
+            new MetricSpec("networkOut", "NetworkOut", Statistic.AVERAGE),
+            new MetricSpec("diskReadBytes", "DiskReadBytes", Statistic.AVERAGE),
+            new MetricSpec("diskWriteBytes", "DiskWriteBytes", Statistic.AVERAGE));
+    /** ?묐떟 series ???꾩껜 ???대뒓 ?뚯뒪?????뗭? 怨좎젙(FE媛 ??議댁옱濡?遺꾧린?섏? ?딄쾶). */
+    private static final List<String> ALL_KEYS =
+            List.of("cpu", "memoryUsage", "networkIn", "networkOut", "diskReadBytes", "diskWriteBytes");
+
+    private static final String NAMESPACE = "AWS/EC2";
+    private static final int MAX_DATAPOINTS = 1440;
+    /** agent ?덉쭏 寃뚯씠????留덉?留??ъ씤?멸? ???덉씠?댁빞 "?좎꽑"?대떎(?섏쭛 吏?걔룹젙吏 媛먯?). */
+    private static final Duration AGENT_FRESHNESS = Duration.ofMinutes(30);
+    private static final SourceRef SRC = SourceRef.DEFAULT;
+
+    private final AwsReadOnlyGateway aws;
+    private final CloudWatchAvailability availability;
+    private final Ec2ZabbixMatcher matcher;
+    private final MetricPort metricPort;
+
+    /**
+     * ?몄뒪?댁뒪 1????깅뒫 ?쒓퀎?? from/to??epoch seconds, 0?대㈃ 理쒓렐 24?쒓컙.
+     * ?ㅽ뙣 紐⑤뱶???꾨? 200 + 鍮?series?????듯빀 ??꾨씪?몄뿉???깅뒫 異뺣쭔 議곗슜??鍮좎쭊??
+     */
+    public Map<String, Object> metrics(String instanceId, String region, long fromEpoch, long toEpoch) {
+        Instant now = Instant.now();
+        Instant to = toEpoch > 0 ? Instant.ofEpochSecond(toEpoch) : now;
+        Instant from = fromEpoch > 0 ? Instant.ofEpochSecond(fromEpoch) : to.minus(Duration.ofDays(1));
+
+        // ?? 1) Zabbix agent 寃쎈줈 ??留ㅼ묶 + ?덉쭏 寃뚯씠???듦낵 ??CW瑜?遺瑜댁? ?딅뒗???꾨━?곗뼱 ?덉빟)
+        Optional<Ec2ZabbixMatcher.Match> match = findMatch(instanceId, region);
+        if (match.isPresent()) {
+            Map<String, Object> agent = tryAgentSeries(match.get(), from, to, now);
+            if (agent != null) {
+                return agent;
+            }
+        }
+
+        // ?? 2) CloudWatch 寃쎈줈(?꾪뻾) ??留ㅼ묶?먮뒗???ш린濡??붾떎硫?紐낆떆??fallback?대떎
+        Map<String, Object> result = cloudWatchSeries(instanceId, region, from, to, now);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> collection = (Map<String, Object>) result.get("collection");
+        collection.put("source", "cloudwatch");
+        collection.put("fallbackUsed", match.isPresent());
+        match.ifPresent(m -> collection.put("matchBasis", m.basis()));
+        return result;
+    }
+
+    private Optional<Ec2ZabbixMatcher.Match> findMatch(String instanceId, String region) {
+        try {
+            Instance instance = aws.findInstance(region, instanceId);
+            return matcher.matchFor(instance);
+        } catch (Exception e) {
+            log.debug("ec2 lookup for matching failed ({}): {}", instanceId, e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * agent ?쒓퀎????CPU util(%)쨌硫붾え由?pused(%). 1李?踰붿쐞: ?⑥씪 ?쒕━利??뺤젙 吏?쒕쭔
+     * (?붿뒪???ъ슜瑜졖룸꽕?몄썙?щ뒗 ?뚰떚???명꽣?섏씠???ㅼ감?먯씠??2李????ㅺ퀎 짠4).
+     *
+     * @return ?덉쭏 寃뚯씠??????議댁옱 + ?좎꽑) 誘몃떖?대㈃ null ???몄텧遺媛 CW fallback.
+     */
+    private Map<String, Object> tryAgentSeries(Ec2ZabbixMatcher.Match match, Instant from, Instant to, Instant now) {
+        try {
+            EntityRef entity = EntityRef.ofDefault(match.hostid());
+            TimeRange range = new TimeRange(from.getEpochSecond(), to.getEpochSecond());
+            // ?뵶 ?쒖뒪??而⑦뀓?ㅽ듃 ???대씪?곕뱶 ?붾㈃? awsResources.view濡?寃뚯씠?몃릺硫? ?ㅻ깄??異뺢낵 ?숈씪?섍쾶
+            //    ?쒖뒪???섏쭛 ?곗씠?곕? ?뚮퉬?쒕떎(?ъ슜?먮퀎 Zabbix ?몄뀡???쒖슦硫?罹먯떆쨌沅뚰븳???쏀엺????짠8).
+            List<Series> cpu = metricPort.querySeries(SRC, CallerContext.system(),
+                    SeriesQuery.of(entity, MetricRef.of(MetricDomain.CPU, "util"), range, Rollup.RAW));
+            List<Series> memory = metricPort.querySeries(SRC, CallerContext.system(),
+                    SeriesQuery.of(entity, MetricRef.of(MetricDomain.MEMORY, "pused"), range, Rollup.RAW));
+
+            // ?뵶 吏?쒕퀎濡?媛곴컖 ?좎꽑?댁빞 ?쒕떎 ??max()濡??⑹튂硫?CPU媛 3?쒓컙 ?꾩씠?대룄 硫붾え由ш? 理쒖떊?대㈃
+            //    ?듦낵??stale CPU瑜?agent ?뚯뒪濡??대낫?몃떎(肄붾뜳??寃??짠3). ?먯젙 ???= ?묐떟 ???泥?Series).
+            if (!fresh(cpu, now) || !fresh(memory, now)) {
+                log.debug("agent series quality gate failed for host {}", match.hostid());
+                return null;
+            }
+            long latestEpoch = Math.min(latestEpoch(cpu), latestEpoch(memory));
+
+            Map<String, Object> series = emptySeries();
+            series.put("cpu", toPoints(cpu));
+            series.put("memoryUsage", toPoints(memory));
+            Map<String, Object> collection = new LinkedHashMap<>();
+            collection.put("state", "ok");
+            collection.put("reason", null);
+            collection.put("source", "zabbix-agent");
+            collection.put("fallbackUsed", false);
+            collection.put("matchBasis", match.basis());
+            collection.put("zabbixHostid", match.hostid());
+            collection.put("zabbixHostName", match.hostName());
+            collection.put("observedAt", Instant.ofEpochSecond(latestEpoch).toString());
+            return Map.of("items", series, "collection", collection);
+        } catch (Exception e) {
+            // Zabbix ?μ븷??CW fallback ?ъ쑀????二쎌? ?딅뒗??
+            log.warn("agent series fetch failed for host {}: {}", match.hostid(), e.getMessage());
+            return null;
+        }
+    }
+
+    private Map<String, Object> cloudWatchSeries(String instanceId, String region, Instant from, Instant to,
+            Instant now) {
+        if (availability.isDenied(region)) {
+            return degraded("unavailable", "CLOUDWATCH_ACCESS_DENIED");
+        }
+        // ?뵶 ?먯옄 ?덉빟 ??"?붿뿬 ?뺤씤 ???몄텧"? ?숈떆 ?붿껌??媛숈? ?붿뿬瑜??쎄퀬 ?꾨? ?듦낵???곹븳???섎뒗??肄붾뜳??짠6).
+        //    ?덉빟遺?以??ㅼ젣濡????섍컙 肄쒖? finally?먯꽌 諛섎궔 ??移댁슫?곗뿏 ?ㅼ젣 諛쒖깮 ?섎쭔 ?⑤뒗??
+        Optional<CloudWatchAvailability.Reservation> reservation =
+                availability.reserve(CloudWatchAvailability.METRICS_CALLS_PER_REQUEST);
+        if (reservation.isEmpty()) {
+            log.warn("cloud metrics budget exhausted: used={} cap={}", availability.usedThisMonth(),
+                    availability.cap());
+            return degraded("disabled", "BUDGET_EXHAUSTED");
+        }
+        int period = resolvePeriodSeconds(from, to, now);
+        Map<String, Object> series = emptySeries();
+        int calls = 0;
+        try {
+            for (MetricSpec metric : CW_METRICS) {
+                calls++;
+                List<Datapoint> points = aws.getMetricStatistics(region, NAMESPACE, metric.metricName(),
+                        "InstanceId", instanceId, from, to, period, metric.statistic());
+                series.put(metric.key(), points.stream()
+                        // 臾몄꽌 紐낆떆: ?곗씠?고룷?명듃???쒓컙?쒖씠 ?꾨땲?????ш린???뺣젹??FE 遺?댁쓣 ?놁븻??
+                        .sorted(Comparator.comparing(Datapoint::timestamp))
+                        .map(p -> Map.of("time", p.timestamp().toString(),
+                                "value", statisticValue(p, metric.statistic())))
+                        .toList());
+            }
+        } catch (AwsServiceException e) {
+            if (isAccessDenied(e)) {
+                // ???곕뒗 怨좉컼? ?뺤긽 ?곹깭 ??由ъ쟾 ?⑥쐞 TTL 罹먯떆濡??ъ떆?꾨? 硫덉텛怨?議곗슜??媛뺣벑?쒕떎.
+                availability.markDenied(region);
+                log.info("CloudWatch access denied in {} ??metrics degraded: {}", region, e.getMessage());
+                return degraded("unavailable", "CLOUDWATCH_ACCESS_DENIED");
+            }
+            log.warn("CloudWatch metrics unavailable in {}: {}", region, e.getMessage());
+            return degraded("unavailable", "CLOUDWATCH_UNAVAILABLE");
+        } finally {
+            // ?덉빟 5 - ?ㅼ젣 ?섍컙 肄?= 諛섎궔. ?ㅽ뙣??肄쒕룄 AWS ?낆옣?먯꽑 ?붿껌?대?濡??ㅼ젣 ?섎뒗 洹몃?濡??④릿??
+            availability.release(reservation.get(), CloudWatchAvailability.METRICS_CALLS_PER_REQUEST - calls);
+        }
+        Map<String, Object> collection = new LinkedHashMap<>();
+        collection.put("state", "ok");
+        collection.put("reason", null);
+        collection.put("periodSeconds", period);
+        collection.put("budget", Map.of("used", availability.usedThisMonth(), "cap", availability.cap()));
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("items", series);
+        result.put("collection", collection);
+        return result;
+    }
+
+    /**
+     * Period ?곗젙 ??議고쉶 湲곌컙怨?CloudWatch retention 洹쒖튃???④퍡 留뚯”?쒗궓??
+     * 洹쒖튃(怨듭떇 臾몄꽌): ?쒖옉??15???댁쟾?대㈃ 300s 諛곗닔, 63???댁쟾?대㈃ 3600s 諛곗닔. ?ш린??
+     * "?몄텧??理쒕? 1,440 ?ъ씤??瑜?base 諛곗닔 ?뺣?濡?吏?⑤떎.
+     */
+    static int resolvePeriodSeconds(Instant from, Instant to, Instant now) {
+        int base = from.isAfter(now.minus(Duration.ofDays(63))) ? 300 : 3600;
+        long rangeSeconds = Math.max(1, Duration.between(from, to).getSeconds());
+        long minPeriod = (long) Math.ceil(rangeSeconds / (double) MAX_DATAPOINTS);
+        long multiples = Math.max(1, (long) Math.ceil(minPeriod / (double) base));
+        return (int) (multiples * base);
+    }
+
+    private static boolean isAccessDenied(AwsServiceException e) {
+        String code = e.awsErrorDetails() == null ? null : e.awsErrorDetails().errorCode();
+        return e.statusCode() == 403
+                || "AccessDenied".equals(code) || "AccessDeniedException".equals(code)
+                || "UnauthorizedOperation".equals(code);
+    }
+
+    private static double statisticValue(Datapoint p, Statistic statistic) {
+        Double value = statistic == Statistic.AVERAGE ? p.average()
+                : statistic == Statistic.MAXIMUM ? p.maximum()
+                        : statistic == Statistic.MINIMUM ? p.minimum() : p.sum();
+        return value == null ? 0d : value;
+    }
+
+    /** 泥?Series(?묐떟???곕뒗 寃? 湲곗? ??鍮꾩뼱 ?덉? ?딄퀬 留덉?留??ъ씤?멸? AGENT_FRESHNESS ?대궡. */
+    private static boolean fresh(List<Series> series, Instant now) {
+        long latest = latestEpoch(series);
+        return latest > 0 && Instant.ofEpochSecond(latest).isAfter(now.minus(AGENT_FRESHNESS));
+    }
+
+    private static long latestEpoch(List<Series> series) {
+        if (series.isEmpty()) {
+            return 0L;
+        }
+        return series.get(0).points().stream().mapToLong(p -> p.epoch()).max().orElse(0L);
+    }
+
+    private static List<Map<String, Object>> toPoints(List<Series> series) {
+        return series.get(0).points().stream()
+                .sorted(Comparator.comparingLong(p -> p.epoch()))
+                .map(p -> Map.<String, Object>of("time", Instant.ofEpochSecond(p.epoch()).toString(),
+                        "value", p.value()))
+                .toList();
+    }
+
+    private static Map<String, Object> emptySeries() {
+        Map<String, Object> series = new LinkedHashMap<>();
+        for (String key : ALL_KEYS) {
+            series.put(key, List.of());
+        }
+        return series;
+    }
+
+    /** 媛뺣벑 ?묐떟 ??紐⑤뱺 吏???ㅻ? 鍮?諛곗뿴濡??좎???FE媛 ??議댁옱 ?щ?濡?遺꾧린?섏? ?딄쾶 ?쒕떎. */
+    private static Map<String, Object> degraded(String state, String reason) {
+        Map<String, Object> collection = new LinkedHashMap<>();
+        collection.put("state", state);
+        collection.put("reason", reason);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("items", emptySeries());
+        result.put("collection", collection);
+        return result;
+    }
+
+    private record MetricSpec(String key, String metricName, Statistic statistic) {
+    }
+}
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.SourceRef;
+import com.dmove.moveseye.engine.model.inventory.HostInclude;
+import com.dmove.moveseye.engine.model.inventory.HostNetworkInterface;
+import com.dmove.moveseye.engine.model.inventory.HostQuery;
+import com.dmove.moveseye.engine.model.inventory.InterfaceKind;
+import com.dmove.moveseye.engine.model.inventory.InventoryHost;
+import com.dmove.moveseye.engine.port.InventoryPort;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.ec2.model.Instance;
+
+/**
+ * "??EC2媛 ?대뒓 Zabbix ?몄뒪?몄씤媛" ???뚯뒪 留ㅽ듃由?뒪??留ㅼ묶 異? * (devdesign_ec2-monitoring-sources.md 짠3, 肄붾뜳??寃??짠8 諛섏쁺).
+ *
+ * <p>留ㅼ묶 洹쒖튃(?먮룞 ?곌껐? 蹂댁닔?곸쑝濡???<b>?ㅼ뿰寃곗씠 誘몄뿰寃곕낫???섏걯??/b>):
+ * <ul>
+ *   <li>1?쒖쐞 {@code INSTANCE_ID_EXACT}: Zabbix ?몄뒪?몃챸 == instanceId, ?먮뒗 ?몄뒪???쒓렇
+ *       {@code aws.instanceId} == instanceId. 紐낆떆 ?앸퀎?먮씪 媛???덉쟾.</li>
+ *   <li>2?쒖쐞 {@code IP_EXACT}: EC2??<b>ENI ?꾩껜 二쇱냼</b>(secondary IP쨌EIP ?ы븿) ??Zabbix
+ *       <b>AGENT ?명꽣?섏씠??/b> 二쇱냼. ?몄뒪?댁뒪媛 ?뺥솗?????몄뒪?몃쭔 ?뚮┫ ?뚮쭔 ?곌껐
+ *       (?ъ꽕 IP??VPC 媛?以묐났 媛??.</li>
+ *   <li>Name ?쒓렇 == ?몄뒪?몃챸 留ㅼ묶? ?섏? ?딅뒗?????대쫫? 以묐났쨌蹂寃쎌씠 ?뷀븯??肄붾뜳??吏??.</li>
+ * </ul>
+ *
+ * <p>?뵶 Zabbix 議고쉶??<b>?쒖뒪??而⑦뀓?ㅽ듃</b>({@link CallerContext#system()}) + ?꾩뿭 5遺?罹먯떆???? * ?ъ슜?먮퀎 ?몄뀡 寃곌낵瑜??꾩뿭 罹먯떆???욎쑝硫?沅뚰븳 ?꾩텧???쒕떎(肄붾뜳?ㅺ? ?≪? 由ъ뒪??. ??留ㅼ묶 寃곌낵?? * awsResources.view 沅뚰븳?쇰줈 寃뚯씠?몃맂 ?대씪?곕뱶 ?붾㈃?먯꽌留??뚮퉬?쒕떎.
+ *
+ * <p>?좑툘 ?뚮젮吏??쒓퀎: useip=0(DNS ?묒냽) Zabbix ?몄뒪?몃뒗 InventoryPort 紐⑤뜽??二쇱냼留?二쇰?濡?留ㅼ묶 ?꾨씫?? * ???덈떎. ?섎룞 ?곌껐(?ㅻ쾭?쇱씠??? ?먯궛 異뺢낵 ?④퍡 2李?
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class Ec2ZabbixMatcher {
+
+    public static final String BASIS_INSTANCE_ID = "INSTANCE_ID_EXACT";
+    public static final String BASIS_IP = "IP_EXACT";
+    /** Zabbix ?몄뒪???쒓렇濡?紐낆떆 ?곌껐?섎뒗 ??沅뚯옣 ?⑤낫????臾몄꽌?????. */
+    static final String TAG_INSTANCE_ID = "aws.instanceId";
+
+    private static final Duration CACHE_TTL = Duration.ofMinutes(5);
+    private static final SourceRef SRC = SourceRef.DEFAULT;
+
+    private final InventoryPort inventoryPort;
+    private final AtomicReference<Snapshot> cache = new AtomicReference<>();
+    /**
+     * EC2 二쇱냼 ??instanceId ??깋????由ъ쟾). IP_EXACT??<b>??갑???좎씪??/b> 寃???щ즺 ??     * "???몄뒪?몄쓽 二쇱냼瑜??곕뒗 EC2媛 ?뺥솗?????몄뒪?댁뒪 ?섎굹"?ъ빞 ?곌껐?쒕떎(肄붾뜳??2李? 癒몄? 李⑤떒 ?ъ쑀).
+     * ?뵶 ?ㅻ깄??諛곗튂(5遺? ??由ъ쟾)媛 梨꾩슫?? 鍮꾩뼱 ?덉쑝硫?肄쒕뱶) IP 洹쇨굅???곗? ?딅뒗????fail-closed.
+     */
+    private final AtomicReference<Map<String, Set<String>>> ec2AddressIndex = new AtomicReference<>(Map.of());
+
+    /** 留ㅼ묶 寃곌낵 ??basis쨌?먯젙 ?쒓컖??蹂댁〈?쒕떎("???곌껐?먮굹"???붾㈃???듯븷 ???덇쾶). */
+    public record Match(String hostid, String hostName, String basis, Long lastCheckEpoch, Instant matchedAt) {
+    }
+
+    /**
+     * agent ?섏쭛???좎꽑?쒓? ??而ㅻ쾭由ъ? ?먯젙??freshness ?꾨줉??LAST_CHECK 湲곕컲, MetricPort ?몄텧 ?놁쓬).
+     */
+    public boolean isFresh(Match match, Duration tolerance) {
+        return match.lastCheckEpoch() != null
+                && Instant.ofEpochSecond(match.lastCheckEpoch()).isAfter(Instant.now().minus(tolerance));
+    }
+
+    /**
+     * EC2 二쇱냼 ??깋??媛깆떊 ???ㅻ깄??諛곗튂媛 ??由ъ쟾 ?몄뒪?댁뒪瑜??섍릿???듭㎏ 援먯껜, ??젣???몄뒪?댁뒪 ?먯뿰 ?뚭굅).
+     */
+    public void indexInstances(List<Instance> instances) {
+        Map<String, Set<String>> index = new HashMap<>();
+        for (Instance instance : instances) {
+            for (String address : instanceAddresses(instance)) {
+                index.computeIfAbsent(address, k -> new HashSet<>()).add(instance.instanceId());
+            }
+        }
+        ec2AddressIndex.set(index);
+    }
+
+    /**
+     * ?⑥씪 ?몄뒪?댁뒪 留ㅼ묶. IP 異뺤? ?묐갑???좎씪?깆쓣 ?붽뎄?쒕떎:
+     * ???몄뒪?댁뒪 二쇱냼?ㅼ씠 ?뺥솗????AGENT ?몄뒪?몃쭔 ?뚮━怨???洹??몄뒪?몄쓽 二쇱냼?ㅼ쓣 ?곕뒗 EC2媛 ???몄뒪?댁뒪肉?
+     * ?〓뒗 {@link #indexInstances} ??깋?몄쑝濡??먯젙?섎ŉ, ?됱씤??鍮꾩뼱 ?덉쑝硫?肄쒕뱶) IP 洹쇨굅瑜??곗? ?딅뒗??
+     */
+    public Optional<Match> matchFor(Instance instance) {
+        Snapshot snapshot = hosts();
+        if (snapshot == null || instance == null) {
+            return Optional.empty();
+        }
+        // 1?쒖쐞: 紐낆떆 ?앸퀎??        AgentHost byId = snapshot.byInstanceId().get(instance.instanceId());
+        if (byId != null) {
+            return Optional.of(match(byId, BASIS_INSTANCE_ID));
+        }
+        // 2?쒖쐞: IP ??ENI ?꾩껜 二쇱냼濡??좎씪 ?몄뒪?몃쭔
+        Set<AgentHost> hits = new LinkedHashSet<>();
+        for (String address : instanceAddresses(instance)) {
+            List<AgentHost> candidates = snapshot.byAddress().get(address);
+            if (candidates != null) {
+                hits.addAll(candidates);
+            }
+        }
+        if (hits.size() == 1) {
+            AgentHost host = hits.iterator().next();
+            if (reverseUnique(host, instance.instanceId())) {
+                return Optional.of(match(host, BASIS_IP));
+            }
+            log.debug("ec2 {} ??host {}: ip shared by other instances or index cold ??not linking",
+                    instance.instanceId(), host.hostid());
+            return Optional.empty();
+        }
+        if (hits.size() > 1) {
+            log.debug("ec2 {} matches {} zabbix hosts by ip ??not linking", instance.instanceId(), hits.size());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * ??갑???좎씪?????몄뒪??二쇱냼瑜??곕뒗 EC2媛 ???몄뒪?댁뒪 ?섎굹肉먯씤媛. ?ㅻⅨ VPC??EC2媛 媛숈? ?ъ꽕 IP瑜?     * ?곕㈃ ????媛숈? ?몄뒪??吏?쒕? 諛쏄쾶 ?섎?濡?肄붾뜳??2李? 洹?寃쎌슦???곌껐?섏? ?딅뒗??
+     * ?됱씤??鍮꾩뿀嫄곕굹(肄쒕뱶) ?몄뒪??二쇱냼媛 ?됱씤???놁쑝硫??먯젙 遺덇? ??false(fail-closed).
+     */
+    private boolean reverseUnique(AgentHost host, String instanceId) {
+        Map<String, Set<String>> index = ec2AddressIndex.get();
+        if (index.isEmpty()) {
+            return false;
+        }
+        Set<String> owners = new HashSet<>();
+        for (String address : host.addresses()) {
+            Set<String> ids = index.get(address);
+            if (ids != null) {
+                owners.addAll(ids);
+            }
+        }
+        return owners.size() == 1 && owners.contains(instanceId);
+    }
+
+    /** EC2??留ㅼ묶 ?꾨낫 二쇱냼 ?꾩껜 ??primary ??ENI??secondary private IP쨌?곌껐 public IP ?ы븿(肄붾뜳??吏??. */
+    static Set<String> instanceAddresses(Instance instance) {
+        Set<String> addresses = new LinkedHashSet<>();
+        addIfPresent(addresses, instance.privateIpAddress());
+        addIfPresent(addresses, instance.publicIpAddress());
+        for (var eni : instance.networkInterfaces()) {
+            for (var ip : eni.privateIpAddresses()) {
+                addIfPresent(addresses, ip.privateIpAddress());
+                if (ip.association() != null) {
+                    addIfPresent(addresses, ip.association().publicIp());
+                }
+            }
+        }
+        return addresses;
+    }
+
+    private static void addIfPresent(Set<String> into, String address) {
+        if (address != null && !address.isBlank()) {
+            into.add(address.trim());
+        }
+    }
+
+    private Match match(AgentHost host, String basis) {
+        return new Match(host.hostid(), host.name(), basis, host.lastCheckEpoch(), Instant.now());
+    }
+
+    // ===== Zabbix ?몄뒪??罹먯떆 =====
+
+    record AgentHost(String hostid, String name, Set<String> addresses, Long lastCheckEpoch) {
+    }
+
+    private record Snapshot(Instant fetchedAt, Map<String, List<AgentHost>> byAddress,
+            Map<String, AgentHost> byInstanceId) {
+    }
+
+    /**
+     * 罹먯떆 濡쒕뵫 ??synchronized濡?single-flight: 媛쒖슂??由ъ쟾 蹂묐젹 ?붿껌??肄쒕뱶 罹먯떆?먯꽌 ?숈떆??Zabbix ?꾩껜
+     * ?몄뒪?몃? N踰?議고쉶?섎뒗 寃껋쓣 留됰뒗??肄붾뜳??짠7). TTL ??寃쎈줈???좉툑 鍮꾩슜留?移섎Ⅸ??
+     */
+    private synchronized Snapshot hosts() {
+        Snapshot current = cache.get();
+        if (current != null && current.fetchedAt().isAfter(Instant.now().minus(CACHE_TTL))) {
+            return current;
+        }
+        try {
+            List<InventoryHost> hosts = inventoryPort.listHosts(SRC, CallerContext.system(),
+                    new HostQuery(null, null, Set.of(HostInclude.TAGS, HostInclude.LAST_CHECK)));
+            Map<String, List<AgentHost>> byAddress = new HashMap<>();
+            Map<String, AgentHost> byInstanceId = new HashMap<>();
+            Set<String> ambiguousInstanceIds = new HashSet<>();
+            for (InventoryHost host : hosts) {
+                Set<String> addresses = new LinkedHashSet<>();
+                for (HostNetworkInterface iface : host.interfaces()) {
+                    // ?뵶 AGENT ?명꽣?섏씠?ㅻ쭔 ??SNMP/IPMI 二쇱냼濡?"agent ?덉쓬" ?먯젙?섎㈃ ?깅뒫 吏?쒓? ?녿뒗??                    //    ?덈떎怨?留먰븯???덉씠 ?쒕떎(肄붾뜳??吏??.
+                    // ?뵶 useip=0(DNS ?묒냽) ?명꽣?섏씠?ㅻ뒗 ?쒖쇅 ??洹??몄뒪?몄쓽 ip ?꾨뱶???묒냽?????곕뒗 ?ㅼ젙媛믪씠??                    //    EC2 二쇱냼? ?곗뿰??媛숈븘??洹쇨굅媛 ?꾨땲??肄붾뜳??寃??짠2). useIp 誘몄긽(null)? ?ы븿.
+                    if (iface.kind() == InterfaceKind.AGENT && !Boolean.FALSE.equals(iface.useIp())) {
+                        addIfPresent(addresses, iface.address());
+                    }
+                }
+                if (addresses.isEmpty()) {
+                    continue;
+                }
+                AgentHost agentHost = new AgentHost(host.ref().nativeId(), host.name(), addresses, host.lastCheckEpoch());
+                for (String address : addresses) {
+                    byAddress.computeIfAbsent(address, k -> new java.util.ArrayList<>()).add(agentHost);
+                }
+                for (String instanceId : instanceIdClaims(host)) {
+                    // 媛숈? instanceId瑜????몄뒪?멸? 二쇱옣?섎㈃ ????踰꾨┛?????좎씪??洹쒖튃.
+                    if (byInstanceId.put(instanceId, agentHost) != null) {
+                        ambiguousInstanceIds.add(instanceId);
+                    }
+                }
+            }
+            ambiguousInstanceIds.forEach(byInstanceId::remove);
+            Snapshot fresh = new Snapshot(Instant.now(), byAddress, byInstanceId);
+            cache.set(fresh);
+            return fresh;
+        } catch (Exception e) {
+            log.warn("zabbix host fetch for ec2 matching failed: {}", e.getMessage());
+            // ?뵶 fail-closed ??留뚮즺 罹먯떆瑜??ъ궗?⑺븯硫?IP ?ы븷?뮤룻샇?ㅽ듃 ??젣 ??Zabbix ?μ븷媛 ?댁뼱吏???            //    ?됰슧???몄뒪?몄쓽 CPU/硫붾え由щ? EC2??遺숈뿬 蹂댁뿬以??肄붾뜳??寃??짠1). 誘몃ℓ移???CW ?대갚???덉쟾.
+            cache.set(null);
+            return null;
+        }
+    }
+
+    /** ?몄뒪?멸? 二쇱옣?섎뒗 instanceId ???몄뒪?몃챸??instanceId ?뺤떇?닿굅?? aws.instanceId ?쒓렇. */
+    private static Set<String> instanceIdClaims(InventoryHost host) {
+        Set<String> claims = new LinkedHashSet<>();
+        if (host.name() != null && host.name().startsWith("i-")) {
+            claims.add(host.name().trim());
+        }
+        host.tags().stream()
+                .filter(tag -> TAG_INSTANCE_ID.equals(tag.name()))
+                .map(tag -> tag.value())
+                .filter(v -> v != null && !v.isBlank())
+                .forEach(v -> claims.add(v.trim()));
+        return claims;
+    }
+}
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.aws.client.AwsReadOnlyGateway;
+import com.dmove.moveseye.aws.domain.CloudInstanceSnapshot;
+import com.dmove.moveseye.aws.domain.CloudVpcSnapshot;
+import com.dmove.moveseye.aws.repository.CloudInstanceSnapshotRepository;
+import com.dmove.moveseye.aws.repository.CloudVpcSnapshotRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.ec2.model.Instance;
+import software.amazon.awssdk.services.ec2.model.InstanceStatus;
+import software.amazon.awssdk.services.ec2.model.RouteTable;
+import software.amazon.awssdk.services.ec2.model.SecurityGroup;
+import software.amazon.awssdk.services.ec2.model.Subnet;
+import software.amazon.awssdk.services.ec2.model.Tag;
+import software.amazon.awssdk.services.ec2.model.Vpc;
+
+/**
+ * ?대씪?곕뱶 ?곹깭 ?ㅻ깄???섏쭛 ??"?꾩옱"瑜?留??뚯감 DB???곸옱???쒓컙 異뺤쓣 留뚮뱺??
+ * (devdesign_aws-status-timeline.md Phase 1, ?щ즺 B).
+ *
+ * <p>?뵶 <b>怨쇨툑 0 媛뺤젣</b>: 臾대즺 {@code Describe*}留??대떎({@link AwsReadOnlyGateway} 寃쎌쑀).
+ * CloudWatch??遺瑜댁? ?딅뒗???????곕뒗 怨좉컼???덈떎??寃껋씠 ???ㅺ퀎???꾩젣??
+ *
+ * <p>?먯젙 洹쒖튃? overview? 怨듭쑀?쒕떎({@link Ec2StatusRules}쨌{@link NetworkExposureScanner}) ??
+ * ?ㅼ떆媛??붾㈃怨??대젰 李⑦듃媛 媛숈? ?ш굔???ㅻⅤ寃?留먰븯硫????쒕떎.
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CloudSnapshotService {
+
+    /** overview(16)蹂대떎 蹂댁닔?곸쑝濡???諛곗튂??吏?곗씠 湲됲븯吏 ?딄퀬, 怨좉컼 怨꾩젙??API rate瑜??꾨??? */
+    private static final int MAX_PARALLELISM = 8;
+
+    private final AwsReadOnlyGateway aws;
+    private final CloudCredentialsResolver credentials;
+    private final CloudInstanceSnapshotRepository instanceRepository;
+    private final CloudVpcSnapshotRepository vpcRepository;
+    private final Ec2ZabbixMatcher matcher;
+
+    /**
+     * ?섏쭛 1?? 由ъ쟾 ?ъ븘?????몄뒪?댁뒪쨌VPC ?ㅻ깄???곸옱.
+     *
+     * @return ?ㅽ뻾 濡쒓렇 ?붿빟. ?먭꺽利앸챸???놁쑝硫?<b>?덉쇅媛 ?꾨땲??skip</b> ???대씪?곕뱶瑜????곕뒗
+     *     ?ㅼ튂蹂몄뿉????諛곗튂媛 留?5遺?"?ㅽ뙣"濡?李랁엳硫????쒕떎(?뺤긽 ?곹깭??.
+     */
+    public String collect() {
+        if (credentials.source() == CloudCredentialsResolver.CredentialSource.NONE) {
+            return "skipped: unconfigured";
+        }
+        LocalDateTime runAt = LocalDateTime.now();
+        // ?뵶 ?쒖꽦 由ъ쟾留???allRegions??誘몄샃?몄씤 由ъ쟾源뚯? 以??ъ븘???덈컲???몄쬆 ?ㅽ뙣濡??쏅룉???ㅼ륫).
+        List<String> regions = aws.enabledRegionNames();
+
+        List<Callable<RegionSnapshot>> tasks = regions.stream()
+                .map(region -> (Callable<RegionSnapshot>) () -> collectRegion(runAt, region)).toList();
+        List<RegionSnapshot> parts = runParallel(tasks);
+
+        List<CloudInstanceSnapshot> instanceRows = new ArrayList<>();
+        List<CloudVpcSnapshot> vpcRows = new ArrayList<>();
+        int failed = 0;
+        for (RegionSnapshot part : parts) {
+            if (part == null) {
+                failed++;
+                continue;
+            }
+            instanceRows.addAll(part.instances());
+            vpcRows.addAll(part.vpcs());
+        }
+        // ??由ъ쟾 ?ㅽ뙣???ㅽ뙣???먭꺽利앸챸 ?먭린쨌?ㅽ듃?뚰겕 ?⑥젅 ?? ??SchedulerJob 洹쒖튃?濡??섏졇???대젰???④릿??
+        if (!regions.isEmpty() && failed == regions.size()) {
+            throw new IllegalStateException("cloud snapshot failed in all " + failed + " regions");
+        }
+        instanceRepository.saveAll(instanceRows);
+        vpcRepository.saveAll(vpcRows);
+        // EC2 二쇱냼 ??깋??媛깆떊 ??IP 留ㅼ묶????갑???좎씪???щ즺(??由ъ쟾 ?몄뒪?댁뒪媛 ?ш린 ??紐⑥씤??.
+        matcher.indexInstances(parts.stream().filter(p -> p != null)
+                .flatMap(p -> p.rawInstances().stream()).toList());
+        return String.format("regions=%d instances=%d vpcs=%d failed=%d",
+                regions.size(), instanceRows.size(), vpcRows.size(), failed);
+    }
+
+    /** 蹂댁〈 湲곌컙 諛??ㅻ깄????젣. cleanup 諛곗튂媛 留ㅼ씪 ?몄텧?쒕떎. */
+    @Transactional
+    public String cleanup(int retentionDays) {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(retentionDays);
+        int instances = instanceRepository.deleteByRunAtBefore(cutoff);
+        int vpcs = vpcRepository.deleteByRunAtBefore(cutoff);
+        return String.format("deleted instances=%d vpcs=%d (retention=%dd)", instances, vpcs, retentionDays);
+    }
+
+    private RegionSnapshot collectRegion(LocalDateTime runAt, String region) {
+        List<Instance> instances = aws.describeInstances(region);
+
+        Map<String, String> statuses = new LinkedHashMap<>();
+        List<String> ids = instances.stream().map(Instance::instanceId).toList();
+        if (!ids.isEmpty()) {
+            for (InstanceStatus s : aws.describeInstanceStatuses(region, ids)) {
+                statuses.put(s.instanceId(), Ec2StatusRules.overallStatus(s));
+            }
+        }
+
+        List<CloudInstanceSnapshot> instanceRows = new ArrayList<>();
+        for (Instance i : instances) {
+            String state = i.state() == null ? "unknown" : i.state().nameAsString();
+            String check = statuses.get(i.instanceId());
+            instanceRows.add(CloudInstanceSnapshot.builder()
+                    .runAt(runAt).region(region)
+                    .instanceId(i.instanceId()).name(nameTag(i.tags()))
+                    .state(state).statusCheck(check)
+                    .severity(Ec2StatusRules.classify(state, check))
+                    .build());
+        }
+
+        List<CloudVpcSnapshot> vpcRows = new ArrayList<>();
+        for (Vpc vpc : aws.describeVpcs(region)) {
+            List<Subnet> subnets = aws.describeSubnetsByVpc(region, vpc.vpcId());
+            List<RouteTable> routeTables = aws.describeRouteTablesByVpc(region, vpc.vpcId());
+            List<SecurityGroup> groups = aws.describeSecurityGroupsByVpc(region, vpc.vpcId());
+            List<Map<String, Object>> findings = NetworkExposureScanner.findings(subnets, routeTables, groups);
+            long critical = findings.stream().filter(f -> "critical".equals(f.get("severity"))).count();
+            // ?몄뒪?댁뒪 ?뚯냽? ?대? 諛쏆븘 ??由ъ쟾 紐⑸줉?먯꽌 ?몃㈃ ?쒕떎 ??describeInstancesByVpc ?ы샇異쒖? ??퉬.
+            long inVpc = instances.stream().filter(i -> vpc.vpcId().equals(i.vpcId())).count();
+            vpcRows.add(CloudVpcSnapshot.builder()
+                    .runAt(runAt).region(region)
+                    .vpcId(vpc.vpcId()).name(nameTag(vpc.tags()))
+                    .subnetCount(subnets.size()).instanceCount((int) inVpc)
+                    .criticalCount((int) critical).warningCount(findings.size() - (int) critical)
+                    .findings(findings)
+                    .build());
+        }
+        return new RegionSnapshot(instanceRows, vpcRows, instances);
+    }
+
+    private String nameTag(List<Tag> tags) {
+        return tags.stream().filter(t -> "Name".equals(t.key())).map(Tag::value).findFirst().orElse(null);
+    }
+
+    /** 由ъ쟾蹂?蹂묐젹 ?섏쭛. ?ㅽ뙣??由ъ쟾? null ???몄텧遺媛 failed濡??쇰떎. */
+    private <T> List<T> runParallel(List<? extends Callable<T>> tasks) {
+        if (tasks.isEmpty()) {
+            return List.of();
+        }
+        ExecutorService pool = Executors.newFixedThreadPool(Math.min(tasks.size(), MAX_PARALLELISM));
+        try {
+            List<Future<T>> futures = tasks.stream().map(pool::submit).toList();
+            List<T> results = new ArrayList<>(futures.size());
+            for (Future<T> future : futures) {
+                try {
+                    results.add(future.get());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    results.add(null);
+                } catch (Exception e) {
+                    log.warn("cloud snapshot region task failed: {}", e.getMessage());
+                    results.add(null);
+                }
+            }
+            return results;
+        } finally {
+            pool.shutdown();
+        }
+    }
+
+    private record RegionSnapshot(List<CloudInstanceSnapshot> instances, List<CloudVpcSnapshot> vpcs,
+            List<Instance> rawInstances) {
+    }
+}
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.scheduler.SchedulerJob;
+import com.dmove.moveseye.scheduler.domain.SchedulerSetting;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+/**
+ * ?대씪?곕뱶 ?ㅻ깄???섏쭛 諛곗튂(湲곕낯 5遺? V28 ?쒕뱶). ?먭꺽利앸챸 誘몄꽕?뺤? skip ?붿빟?쇰줈 ?앸궃???? * ?ㅽ뙣 ?먯젙? {@link CloudSnapshotService#collect()}媛 ?섏????덉쇅(??由ъ쟾 ?ㅽ뙣)留뚯씠??
+ *
+ * <p>?섏쭛 諛곗튂?대?濡?{@code requiresActiveLicense}??湲곕낯媛?true)??洹몃?濡??붾떎 ??留뚮즺 怨좉컼?먯꽌
+ * AWS濡??섍????섏쭛??怨꾩냽 ?뚮㈃ ???쒕떎.
+ */
+@Component
+@RequiredArgsConstructor
+public class CloudSnapshotJob implements SchedulerJob {
+
+    private final CloudSnapshotService cloudSnapshotService;
+
+    @Override
+    public String jobKey() {
+        return "cloud_snapshot";
+    }
+
+    @Override
+    public String run(SchedulerSetting setting) {
+        return cloudSnapshotService.collect();
+    }
+}
+package com.dmove.moveseye.aws.repository;
+
+import com.dmove.moveseye.aws.domain.CloudApiBudget;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+public interface CloudApiBudgetRepository extends JpaRepository<CloudApiBudget, String> {
+
+    /**
+     * ?먯옄??利앷? ??read-modify-write濡??섎㈃ ?숈떆 ?붿껌??移댁슫?멸? ?좎떎???덉궛 媛?쒓? ?ル┛??
+     * ?몃옖??뀡???ш린 ?먮뒗 ?댁쑀: ?쒕퉬?ㅼ뿉???먭린?몄텧(@Transactional ?대? 硫붿꽌??濡?媛먯떥硫?     * ?꾨줉?쒓? ?고쉶??@Modifying??"no transaction"?쇰줈 二쎈뒗??
+     */
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO cloud_api_budget (month, calls) VALUES (:month, :n) "
+            + "ON CONFLICT (month) DO UPDATE SET calls = cloud_api_budget.calls + :n", nativeQuery = true)
+    void addCalls(@Param("month") String month, @Param("n") long n);
+
+    /**
+     * 議곌굔遺 ?먯옄 ?덉빟 ??{@code calls + n <= cap}???뚮쭔 利앷??섍퀬 媛깆떊 ????1/0)瑜??뚮젮以??
+     * ?뵶 "?붿뿬 ?뺤씤 ???몄텧 ??湲곕줉"??遺꾨━?섎㈃ ?숈떆 ?붿껌??媛숈? ?붿뿬瑜??쎄퀬 ?꾨? ?듦낵???곹븳???섎뒗??     * (肄붾뜳??寃??짠6). ?덉빟??0?대㈃ ?몄텧?섏? ?딅뒗?? ?ㅼ젣 ?몄텧???덉빟蹂대떎 ?곸쑝硫??몄텧遺媛 李⑥븸??諛섎궔?쒕떎.
+     */
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO cloud_api_budget (month, calls) VALUES (:month, :n) "
+            + "ON CONFLICT (month) DO UPDATE SET calls = cloud_api_budget.calls + :n "
+            + "WHERE cloud_api_budget.calls + :n <= :cap", nativeQuery = true)
+    int reserve(@Param("month") String month, @Param("n") long n, @Param("cap") long cap);
+}
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\Ec2ZabbixMatcher.java -Encoding utf8; rg -n -S \"cloud_snapshot|CloudSnapshot|5분|5m|PT5M\" src\\main src\\test db || "'$true; Get-Content src'"\\test\\java\\com\\dmove\\moveseye\\aws\\Ec2ZabbixMatcherTest.java -Encoding utf8; Get-Content src\\test\\java\\com\\dmove\\moveseye\\aws\\CloudMetricsServiceTest.java -Encoding utf8" in C:\solutions\moveseye-be-spring
+ exited 1 in 331ms:
+��ġ ��:2 ����:160
++ ... ud_snapshot|CloudSnapshot|5��|5m|PT5M" src\main src\test db || $true;  ...
++                                                                ~~
+'||' ��ū�� �� �������� �ùٸ� �� ���� ��ȣ�� �ƴմϴ�.
+��ġ ��:2 ����:163
++ ... pshot|CloudSnapshot|5��|5m|PT5M" src\main src\test db || $true; Get-Co ...
++                                                             ~~~~~
+���� ������������ ù ��° ��ҷμ��� ����� �� �ֽ��ϴ�.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : InvalidEndOfLine
+ 
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\Ec2ZabbixMatcher.java -Encoding utf8; rg -n -S \"cloud_snapshot|CloudSnapshot|5분|PT5M\" src\\main src\\test db; Get-Content src\\test\\java\\com\\dmove\\moveseye\\aws\\Ec2ZabbixMatcherTest.java -Encoding utf8; Get-Content src\\test\\java\\com\\dmove\\moveseye\\aws\\CloudMetricsServiceTest.java -Encoding utf8" in C:\solutions\moveseye-be-spring
+ succeeded in 464ms:
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.engine.model.CallerContext;
+import com.dmove.moveseye.engine.model.SourceRef;
+import com.dmove.moveseye.engine.model.inventory.HostInclude;
+import com.dmove.moveseye.engine.model.inventory.HostNetworkInterface;
+import com.dmove.moveseye.engine.model.inventory.HostQuery;
+import com.dmove.moveseye.engine.model.inventory.InterfaceKind;
+import com.dmove.moveseye.engine.model.inventory.InventoryHost;
+import com.dmove.moveseye.engine.port.InventoryPort;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.ec2.model.Instance;
+
+/**
+ * "이 EC2가 어느 Zabbix 호스트인가" — 소스 매트릭스의 매칭 축
+ * (devdesign_ec2-monitoring-sources.md §3, 코덱스 검토 §8 반영).
+ *
+ * <p>매칭 규칙(자동 연결은 보수적으로 — <b>오연결이 미연결보다 나쁘다</b>):
+ * <ul>
+ *   <li>1순위 {@code INSTANCE_ID_EXACT}: Zabbix 호스트명 == instanceId, 또는 호스트 태그
+ *       {@code aws.instanceId} == instanceId. 명시 식별자라 가장 안전.</li>
+ *   <li>2순위 {@code IP_EXACT}: EC2의 <b>ENI 전체 주소</b>(secondary IP·EIP 포함) ↔ Zabbix
+ *       <b>AGENT 인터페이스</b> 주소. 인스턴스가 정확히 한 호스트만 때릴 때만 연결
+ *       (사설 IP는 VPC 간 중복 가능).</li>
+ *   <li>Name 태그 == 호스트명 매칭은 하지 않는다 — 이름은 중복·변경이 흔하다(코덱스 지적).</li>
+ * </ul>
+ *
+ * <p>🔴 Zabbix 조회는 <b>시스템 컨텍스트</b>({@link CallerContext#system()}) + 전역 5분 캐시다 —
+ * 사용자별 세션 결과를 전역 캐시에 섞으면 권한 누출이 된다(코덱스가 잡은 리스크). 이 매칭 결과는
+ * awsResources.view 권한으로 게이트된 클라우드 화면에서만 소비된다.
+ *
+ * <p>⚠️ 알려진 한계: useip=0(DNS 접속) Zabbix 호스트는 InventoryPort 모델이 주소만 주므로 매칭 누락될
+ * 수 있다. 수동 연결(오버라이드)은 자산 축과 함께 2차.
+ */
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class Ec2ZabbixMatcher {
+
+    public static final String BASIS_INSTANCE_ID = "INSTANCE_ID_EXACT";
+    public static final String BASIS_IP = "IP_EXACT";
+    /** Zabbix 호스트 태그로 명시 연결하는 키(권장 온보딩 — 문서화 대상). */
+    static final String TAG_INSTANCE_ID = "aws.instanceId";
+
+    private static final Duration CACHE_TTL = Duration.ofMinutes(5);
+    private static final SourceRef SRC = SourceRef.DEFAULT;
+
+    private final InventoryPort inventoryPort;
+    private final AtomicReference<Snapshot> cache = new AtomicReference<>();
+    /**
+     * EC2 주소 → instanceId 역색인(전 리전). IP_EXACT의 <b>역방향 유일성</b> 검사 재료 —
+     * "이 호스트의 주소를 쓰는 EC2가 정확히 이 인스턴스 하나"여야 연결한다(코덱스 2차: 머지 차단 사유).
+     * 🔴 스냅샷 배치(5분, 전 리전)가 채운다. 비어 있으면(콜드) IP 근거는 쓰지 않는다 — fail-closed.
+     */
+    private final AtomicReference<Map<String, Set<String>>> ec2AddressIndex = new AtomicReference<>(Map.of());
+
+    /** 매칭 결과 — basis·판정 시각을 보존한다("왜 연결됐나"에 화면이 답할 수 있게). */
+    public record Match(String hostid, String hostName, String basis, Long lastCheckEpoch, Instant matchedAt) {
+    }
+
+    /**
+     * agent 수집이 신선한가 — 커버리지 판정의 freshness 프록시(LAST_CHECK 기반, MetricPort 호출 없음).
+     */
+    public boolean isFresh(Match match, Duration tolerance) {
+        return match.lastCheckEpoch() != null
+                && Instant.ofEpochSecond(match.lastCheckEpoch()).isAfter(Instant.now().minus(tolerance));
+    }
+
+    /**
+     * EC2 주소 역색인 갱신 — 스냅샷 배치가 전 리전 인스턴스를 넘긴다(통째 교체, 삭제된 인스턴스 자연 소거).
+     */
+    public void indexInstances(List<Instance> instances) {
+        Map<String, Set<String>> index = new HashMap<>();
+        for (Instance instance : instances) {
+            for (String address : instanceAddresses(instance)) {
+                index.computeIfAbsent(address, k -> new HashSet<>()).add(instance.instanceId());
+            }
+        }
+        ec2AddressIndex.set(index);
+    }
+
+    /**
+     * 단일 인스턴스 매칭. IP 축은 양방향 유일성을 요구한다:
+     * ① 인스턴스 주소들이 정확히 한 AGENT 호스트만 때리고 ② 그 호스트의 주소들을 쓰는 EC2가 이 인스턴스뿐.
+     * ②는 {@link #indexInstances} 역색인으로 판정하며, 색인이 비어 있으면(콜드) IP 근거를 쓰지 않는다.
+     */
+    public Optional<Match> matchFor(Instance instance) {
+        Snapshot snapshot = hosts();
+        if (snapshot == null || instance == null) {
+            return Optional.empty();
+        }
+        // 1순위: 명시 식별자
+        AgentHost byId = snapshot.byInstanceId().get(instance.instanceId());
+        if (byId != null) {
+            return Optional.of(match(byId, BASIS_INSTANCE_ID));
+        }
+        // 2순위: IP — ENI 전체 주소로 유일 호스트만
+        Set<AgentHost> hits = new LinkedHashSet<>();
+        for (String address : instanceAddresses(instance)) {
+            List<AgentHost> candidates = snapshot.byAddress().get(address);
+            if (candidates != null) {
+                hits.addAll(candidates);
+            }
+        }
+        if (hits.size() == 1) {
+            AgentHost host = hits.iterator().next();
+            if (reverseUnique(host, instance.instanceId())) {
+                return Optional.of(match(host, BASIS_IP));
+            }
+            log.debug("ec2 {} ↔ host {}: ip shared by other instances or index cold — not linking",
+                    instance.instanceId(), host.hostid());
+            return Optional.empty();
+        }
+        if (hits.size() > 1) {
+            log.debug("ec2 {} matches {} zabbix hosts by ip — not linking", instance.instanceId(), hits.size());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 역방향 유일성 — 호스트 주소를 쓰는 EC2가 이 인스턴스 하나뿐인가. 다른 VPC의 EC2가 같은 사설 IP를
+     * 쓰면 둘 다 같은 호스트 지표를 받게 되므로(코덱스 2차) 그 경우엔 연결하지 않는다.
+     * 색인이 비었거나(콜드) 호스트 주소가 색인에 없으면 판정 불가 → false(fail-closed).
+     */
+    private boolean reverseUnique(AgentHost host, String instanceId) {
+        Map<String, Set<String>> index = ec2AddressIndex.get();
+        if (index.isEmpty()) {
+            return false;
+        }
+        Set<String> owners = new HashSet<>();
+        for (String address : host.addresses()) {
+            Set<String> ids = index.get(address);
+            if (ids != null) {
+                owners.addAll(ids);
+            }
+        }
+        return owners.size() == 1 && owners.contains(instanceId);
+    }
+
+    /** EC2의 매칭 후보 주소 전체 — primary 외 ENI의 secondary private IP·연결 public IP 포함(코덱스 지적). */
+    static Set<String> instanceAddresses(Instance instance) {
+        Set<String> addresses = new LinkedHashSet<>();
+        addIfPresent(addresses, instance.privateIpAddress());
+        addIfPresent(addresses, instance.publicIpAddress());
+        for (var eni : instance.networkInterfaces()) {
+            for (var ip : eni.privateIpAddresses()) {
+                addIfPresent(addresses, ip.privateIpAddress());
+                if (ip.association() != null) {
+                    addIfPresent(addresses, ip.association().publicIp());
+                }
+            }
+        }
+        return addresses;
+    }
+
+    private static void addIfPresent(Set<String> into, String address) {
+        if (address != null && !address.isBlank()) {
+            into.add(address.trim());
+        }
+    }
+
+    private Match match(AgentHost host, String basis) {
+        return new Match(host.hostid(), host.name(), basis, host.lastCheckEpoch(), Instant.now());
+    }
+
+    // ===== Zabbix 호스트 캐시 =====
+
+    record AgentHost(String hostid, String name, Set<String> addresses, Long lastCheckEpoch) {
+    }
+
+    private record Snapshot(Instant fetchedAt, Map<String, List<AgentHost>> byAddress,
+            Map<String, AgentHost> byInstanceId) {
+    }
+
+    /**
+     * 캐시 로딩 — synchronized로 single-flight: 개요의 리전 병렬 요청이 콜드 캐시에서 동시에 Zabbix 전체
+     * 호스트를 N번 조회하는 것을 막는다(코덱스 §7). TTL 內 경로는 잠금 비용만 치른다.
+     */
+    private synchronized Snapshot hosts() {
+        Snapshot current = cache.get();
+        if (current != null && current.fetchedAt().isAfter(Instant.now().minus(CACHE_TTL))) {
+            return current;
+        }
+        try {
+            List<InventoryHost> hosts = inventoryPort.listHosts(SRC, CallerContext.system(),
+                    new HostQuery(null, null, Set.of(HostInclude.TAGS, HostInclude.LAST_CHECK)));
+            Map<String, List<AgentHost>> byAddress = new HashMap<>();
+            Map<String, AgentHost> byInstanceId = new HashMap<>();
+            Set<String> ambiguousInstanceIds = new HashSet<>();
+            for (InventoryHost host : hosts) {
+                Set<String> addresses = new LinkedHashSet<>();
+                for (HostNetworkInterface iface : host.interfaces()) {
+                    // 🔴 AGENT 인터페이스만 — SNMP/IPMI 주소로 "agent 있음" 판정하면 성능 지표가 없는데
+                    //    있다고 말하는 셈이 된다(코덱스 지적).
+                    // 🔴 useip=0(DNS 접속) 인터페이스는 제외 — 그 호스트의 ip 필드는 접속에 안 쓰는 설정값이라
+                    //    EC2 주소와 우연히 같아도 근거가 아니다(코덱스 검수 §2). useIp 미상(null)은 포함.
+                    if (iface.kind() == InterfaceKind.AGENT && !Boolean.FALSE.equals(iface.useIp())) {
+                        addIfPresent(addresses, iface.address());
+                    }
+                }
+                if (addresses.isEmpty()) {
+                    continue;
+                }
+                AgentHost agentHost = new AgentHost(host.ref().nativeId(), host.name(), addresses, host.lastCheckEpoch());
+                for (String address : addresses) {
+                    byAddress.computeIfAbsent(address, k -> new java.util.ArrayList<>()).add(agentHost);
+                }
+                for (String instanceId : instanceIdClaims(host)) {
+                    // 같은 instanceId를 두 호스트가 주장하면 둘 다 버린다 — 유일성 규칙.
+                    if (byInstanceId.put(instanceId, agentHost) != null) {
+                        ambiguousInstanceIds.add(instanceId);
+                    }
+                }
+            }
+            ambiguousInstanceIds.forEach(byInstanceId::remove);
+            Snapshot fresh = new Snapshot(Instant.now(), byAddress, byInstanceId);
+            cache.set(fresh);
+            return fresh;
+        } catch (Exception e) {
+            log.warn("zabbix host fetch for ec2 matching failed: {}", e.getMessage());
+            // 🔴 fail-closed — 만료 캐시를 재사용하면 IP 재할당·호스트 삭제 뒤 Zabbix 장애가 이어질 때
+            //    엉뚱한 호스트의 CPU/메모리를 EC2에 붙여 보여준다(코덱스 검수 §1). 미매칭 → CW 폴백이 안전.
+            cache.set(null);
+            return null;
+        }
+    }
+
+    /** 호스트가 주장하는 instanceId — 호스트명이 instanceId 형식이거나, aws.instanceId 태그. */
+    private static Set<String> instanceIdClaims(InventoryHost host) {
+        Set<String> claims = new LinkedHashSet<>();
+        if (host.name() != null && host.name().startsWith("i-")) {
+            claims.add(host.name().trim());
+        }
+        host.tags().stream()
+                .filter(tag -> TAG_INSTANCE_ID.equals(tag.name()))
+                .map(tag -> tag.value())
+                .filter(v -> v != null && !v.isBlank())
+                .forEach(v -> claims.add(v.trim()));
+        return claims;
+    }
+}
+rg: db: 지정된 파일을 찾을 수 없습니다. (os error 2)
+src\main\resources\db\migration\V28__cloud_snapshot.sql:7:-- 행 수 감각: 인스턴스 100대 × 5분 주기 = 하루 ~2.9만 행, 보존 30일 ≈ 86만 행. cleanup 배치가 자른다.
+src\main\resources\db\migration\V28__cloud_snapshot.sql:44:-- 수집 5분(EC2 기본 모니터링 해상도와 일치 — 더 촘촘해도 새 정보 없음), 정리 매일 01:00 보존 30일.
+src\main\resources\db\migration\V28__cloud_snapshot.sql:48:    ('cloud_snapshot',         TRUE, 'interval', 5,    NULL, NULL, NULL, NULL, '{}'::jsonb),
+src\main\resources\db\migration\V28__cloud_snapshot.sql:49:    ('cloud_snapshot_cleanup', TRUE, 'daily',    NULL, 1,    0,    NULL, NULL, '{"retentionDays":30}'::jsonb)
+src\main\resources\db\migration\V30__ai_monitor.sql:14:--    같은 판단: V28__cloud_snapshot.sql 의 run_at.
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotServiceTest.java:37:class CloudSnapshotServiceTest {
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotServiceTest.java:51:    private CloudSnapshotService service;
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotQueryServiceTest.java:22:class CloudSnapshotQueryServiceTest {
+src\test\java\com\dmove\moveseye\aws\CloudSnapshotQueryServiceTest.java:30:    private CloudSnapshotQueryService service;
+src\test\java\com\dmove\moveseye\license\SignedKeyLicenseProviderTest.java:122:    // ── 기간제 5분기 ──────────────────────────────────────────────
+src\test\java\com\dmove\moveseye\aws\AwsServiceImplCoverageTest.java:26:    private CloudSnapshotQueryService snapshotQuery;
+src\main\java\com\dmove\moveseye\auth\security\AuthRateLimiter.java:21:    // 로그인: 15분 동안 실패 10회 초과 시 차단(성공하면 카운터 리셋).
+src\main\java\com\dmove\moveseye\aimonitor\AiMonitorIngestService.java:41: * {@code V28__cloud_snapshot.sql}의 {@code run_at}도 같은 방식이다.
+src\main\java\com\dmove\moveseye\aimonitor\domain\AiMonUsageRepository.java:84:     * 같은 이유로 {@code V28__cloud_snapshot.sql}도 {@code run_at}에 DB 기본값을 두지 않고 앱이 넣는다.
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotCleanupJob.java:16:public class CloudSnapshotCleanupJob implements SchedulerJob {
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotCleanupJob.java:20:    private final CloudSnapshotService cloudSnapshotService;
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotCleanupJob.java:24:        return "cloud_snapshot_cleanup";
+src\main\java\com\dmove\moveseye\aws\repository\CloudInstanceSnapshotRepository.java:31:     * 추정 비용의 가동시간 원천 — 기간 내 인스턴스별 running 스냅샷 수(× 5분 = 가동시간, D8).
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:44:    /** CW 지표 정의 — EC2 기본 모니터링(5분, 무료)에 존재하는 것만. */
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:42:    private final CloudSnapshotQueryService snapshotQuery;
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:377:            // 판정 규칙은 스냅샷 수집(CloudSnapshotService)과 공유한다 — 복제 금지.
+src\main\java\com\dmove\moveseye\aws\CloudInfraController.java:50:    private final CloudSnapshotQueryService cloudSnapshotQueryService;
+src\main\java\com\dmove\moveseye\aws\CloudCostEstimateService.java:51:    /** 스냅샷 수집 주기(분) — running 스냅샷 1개 = 5분 가동. */
+src\main\java\com\dmove\moveseye\aws\CloudCostEstimateService.java:64:        // 가동시간(MTD): 이번 달 running 스냅샷 수 × 5분.
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotService.java:42:public class CloudSnapshotService {
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotService.java:57:     *     설치본에서 이 배치가 매 5분 "실패"로 찍히면 안 된다(정상 상태다).
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:40: * <p>🔴 Zabbix 조회는 <b>시스템 컨텍스트</b>({@link CallerContext#system()}) + 전역 5분 캐시다 —
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:65:     * 🔴 스냅샷 배치(5분, 전 리전)가 채운다. 비어 있으면(콜드) IP 근거는 쓰지 않는다 — fail-closed.
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:9: * 클라우드 스냅샷 수집 배치(기본 5분, V28 시드). 자격증명 미설정은 skip 요약으로 끝난다 —
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:10: * 실패 판정은 {@link CloudSnapshotService#collect()}가 던지는 예외(전 리전 실패)만이다.
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:17:public class CloudSnapshotJob implements SchedulerJob {
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:19:    private final CloudSnapshotService cloudSnapshotService;
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotJob.java:23:        return "cloud_snapshot";
+src\main\java\com\dmove\moveseye\aws\CloudSnapshotQueryService.java:25:public class CloudSnapshotQueryService {
+src\main\java\com\dmove\moveseye\event\EventService.java:289:        //    ok_period(기본 5분)만 problem.get에 남기므로, 그 이상 과거의 해결 이력은 이력 질의로만 볼 수 있다
+src\main\java\com\dmove\moveseye\event\dto\EventShowMode.java:6: * <p>🔴 두 값은 <b>서로 다른 Zabbix 질의</b>다. Zabbix는 해결된 문제를 {@code ok_period}(기본 5분)만
+src\main\java\com\dmove\moveseye\setting\AiServerNotifier.java:15: * 이게 없으면 AI 서버가 주기적으로 물어야 한다(폴링) — 그건 15분 폴백으로만 남긴다.
+package com.dmove.moveseye.aws;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import com.dmove.moveseye.engine.model.EntityRef;
+import com.dmove.moveseye.engine.model.inventory.Availability;
+import com.dmove.moveseye.engine.model.inventory.HostNetworkInterface;
+import com.dmove.moveseye.engine.model.inventory.HostTag;
+import com.dmove.moveseye.engine.model.inventory.InterfaceKind;
+import com.dmove.moveseye.engine.model.inventory.InventoryHost;
+import com.dmove.moveseye.engine.port.InventoryPort;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import software.amazon.awssdk.services.ec2.model.Instance;
+import software.amazon.awssdk.services.ec2.model.InstanceNetworkInterface;
+import software.amazon.awssdk.services.ec2.model.InstancePrivateIpAddress;
+
+/** EC2↔Zabbix 매칭 — "오연결이 미연결보다 나쁘다"가 계약이다(설계 §3·코덱스 §8). */
+@ExtendWith(MockitoExtension.class)
+class Ec2ZabbixMatcherTest {
+
+    @Mock
+    private InventoryPort inventoryPort;
+
+    @InjectMocks
+    private Ec2ZabbixMatcher matcher;
+
+    private static final long FRESH_EPOCH = Instant.now().getEpochSecond();
+
+    @Test
+    void matchesByExplicitInstanceIdBeforeIp() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "i-0abc", "10.0.0.5", List.of()),
+                host("10002", "web-2", "10.0.0.9", List.of())));
+
+        Optional<Ec2ZabbixMatcher.Match> match =
+                matcher.matchFor(instance("i-0abc", "10.0.0.99")); // IP는 안 맞아도 이름이 instanceId
+
+        assertThat(match).isPresent();
+        assertThat(match.get().hostid()).isEqualTo("10001");
+        assertThat(match.get().basis()).isEqualTo("INSTANCE_ID_EXACT");
+    }
+
+    @Test
+    void matchesByTagAwsInstanceId() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "tokyo-web", "10.0.0.5", List.of(new HostTag("aws.instanceId", "i-0abc")))));
+
+        Optional<Ec2ZabbixMatcher.Match> match = matcher.matchFor(instance("i-0abc", "192.168.1.1"));
+
+        assertThat(match).isPresent();
+        assertThat(match.get().basis()).isEqualTo("INSTANCE_ID_EXACT");
+    }
+
+    @Test
+    void matchesByUniqueIpIncludingSecondaryEni() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "web-1", "10.0.1.20", List.of())));
+        // primary IP는 다르지만 ENI secondary IP가 일치
+        Instance withEni = Instance.builder().instanceId("i-1").privateIpAddress("10.0.1.10")
+                .networkInterfaces(InstanceNetworkInterface.builder()
+                        .privateIpAddresses(InstancePrivateIpAddress.builder()
+                                .privateIpAddress("10.0.1.20").build())
+                        .build())
+                .build();
+        matcher.indexInstances(List.of(withEni)); // 역방향 유일성 재료(스냅샷 배치가 채우는 것)
+
+        Optional<Ec2ZabbixMatcher.Match> match = matcher.matchFor(withEni);
+
+        assertThat(match).isPresent();
+        assertThat(match.get().basis()).isEqualTo("IP_EXACT");
+    }
+
+    /** 🔴 다중 매칭이면 연결하지 않는다 — 사설 IP는 VPC 간 중복될 수 있다. */
+    @Test
+    void refusesAmbiguousIpMatch() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "a", "10.0.0.5", List.of()),
+                host("10002", "b", "10.0.0.5", List.of())));
+
+        assertThat(matcher.matchFor(instance("i-1", "10.0.0.5"))).isEmpty();
+    }
+
+    /** 🔴 AGENT 인터페이스만 후보 — SNMP 주소로 "agent 있음" 판정하면 지표 없는 연결이 된다. */
+    @Test
+    void ignoresNonAgentInterfaces() {
+        InventoryHost snmpOnly = new InventoryHost(EntityRef.ofDefault("10001"), "switch",
+                List.of(new HostNetworkInterface(InterfaceKind.SNMP, Availability.UNKNOWN, "10.0.0.5", true)),
+                List.of(), FRESH_EPOCH, List.of(), true, null);
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(snmpOnly));
+
+        assertThat(matcher.matchFor(instance("i-1", "10.0.0.5"))).isEmpty();
+    }
+
+    /** 같은 instanceId를 두 호스트가 주장하면 둘 다 버린다(유일성 규칙). */
+    @Test
+    void dropsAmbiguousInstanceIdClaims() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "i-0abc", "10.0.0.5", List.of()),
+                host("10002", "i-0abc", "10.0.0.9", List.of())));
+
+        assertThat(matcher.matchFor(instance("i-0abc", "192.168.9.9"))).isEmpty();
+    }
+
+    /** 역방향 유일성 — 다른 VPC의 EC2가 같은 사설 IP를 쓰면 둘 다 연결하지 않는다(코덱스 2차, 머지 차단 사유). */
+    @Test
+    void refusesIpMatchWhenAddressSharedByOtherInstance() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "web", "10.0.0.5", List.of())));
+        Instance a = instance("i-a", "10.0.0.5");
+        Instance b = instance("i-b", "10.0.0.5"); // 다른 VPC, 같은 사설 IP
+        matcher.indexInstances(List.of(a, b));
+
+        assertThat(matcher.matchFor(a)).isEmpty();
+        assertThat(matcher.matchFor(b)).isEmpty();
+    }
+
+    /** 색인이 비어 있으면(콜드) IP 근거를 쓰지 않는다 — fail-closed. INSTANCE_ID 근거는 영향 없음. */
+    @Test
+    void coldIndexDisablesIpBasisButNotInstanceId() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "web", "10.0.0.5", List.of()),
+                host("10002", "i-0abc", "10.0.0.9", List.of())));
+
+        assertThat(matcher.matchFor(instance("i-1", "10.0.0.5"))).isEmpty();
+        assertThat(matcher.matchFor(instance("i-0abc", "192.168.0.1"))).isPresent();
+    }
+
+    @Test
+    void freshnessUsesLastCheckEpoch() {
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(
+                host("10001", "i-0abc", "10.0.0.5", List.of())));
+        Ec2ZabbixMatcher.Match match = matcher.matchFor(instance("i-0abc", "10.0.0.5")).orElseThrow();
+
+        assertThat(matcher.isFresh(match, java.time.Duration.ofMinutes(30))).isTrue();
+        Ec2ZabbixMatcher.Match stale = new Ec2ZabbixMatcher.Match(
+                "10001", "i-0abc", "IP_EXACT", Instant.now().minusSeconds(86400).getEpochSecond(), Instant.now());
+        assertThat(matcher.isFresh(stale, java.time.Duration.ofMinutes(30))).isFalse();
+    }
+
+    /** useip=0(DNS 접속) 호스트의 ip 필드는 근거가 아니다 — 우연히 같아도 연결하지 않는다(코덱스 검수 2). */
+    @Test
+    void ignoresDnsAccessedInterfaces() {
+        InventoryHost dnsHost = new InventoryHost(EntityRef.ofDefault("10001"), "dns-host",
+                List.of(new HostNetworkInterface(InterfaceKind.AGENT, Availability.UNKNOWN, "10.0.0.5", true, "1", false)),
+                List.of(), FRESH_EPOCH, List.of(), true, null);
+        when(inventoryPort.listHosts(any(), any(), any())).thenReturn(List.of(dnsHost));
+
+        assertThat(matcher.matchFor(instance("i-1", "10.0.0.5"))).isEmpty();
+    }
+
+    /** fail-closed — 조회 실패 시 만료 캐시를 재사용하지 않는다(코덱스 검수 1: 오연결 경로). */
+    @Test
+    void fetchFailureDoesNotReuseCache() {
+        when(inventoryPort.listHosts(any(), any(), any()))
+                .thenReturn(List.of(host("10001", "i-0abc", "10.0.0.5", List.of())))
+                .thenThrow(new RuntimeException("zabbix down"));
+        assertThat(matcher.matchFor(instance("i-0abc", "10.0.0.5"))).isPresent();
+
+        // TTL 만료를 흉내낼 수 없으니 캐시를 비워 재조회를 강제 — 실패하면 빈 결과여야 한다.
+        org.springframework.test.util.ReflectionTestUtils.setField(matcher, "cache",
+                new java.util.concurrent.atomic.AtomicReference<>());
+        assertThat(matcher.matchFor(instance("i-0abc", "10.0.0.5"))).isEmpty();
+    }
+
+    private static InventoryHost host(String hostid, String name, String agentIp, List<HostTag> tags) {
+        return new InventoryHost(EntityRef.ofDefault(hostid), name,
+                List.of(new HostNetworkInterface(InterfaceKind.AGENT, Availability.UNKNOWN, agentIp, true)),
+                List.of(), FRESH_EPOCH, tags, true, null);
+    }
+
+    private static Instance instance(String instanceId, String privateIp) {
+        return Instance.builder().instanceId(instanceId).privateIpAddress(privateIp).build();
+    }
+}
+package com.dmove.moveseye.aws;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+import com.dmove.moveseye.aws.client.AwsReadOnlyGateway;
+import com.dmove.moveseye.engine.model.EntityRef;
+import com.dmove.moveseye.engine.model.metric.MetricDomain;
+import com.dmove.moveseye.engine.model.metric.MetricRef;
+import com.dmove.moveseye.engine.model.metric.Series;
+import com.dmove.moveseye.engine.model.metric.SeriesPoint;
+import com.dmove.moveseye.engine.port.MetricPort;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import software.amazon.awssdk.awscore.exception.AwsErrorDetails;
+import software.amazon.awssdk.services.cloudwatch.model.CloudWatchException;
+import software.amazon.awssdk.services.cloudwatch.model.Datapoint;
+import software.amazon.awssdk.services.ec2.model.Instance;
+
+/** 소스 선택기 — agent 품질 게이트 통과 시 CW 미호출, 미달 시 명시적 fallback(D11 개정). */
+@ExtendWith(MockitoExtension.class)
+class CloudMetricsServiceTest {
+
+    @Mock
+    private AwsReadOnlyGateway aws;
+    @Mock
+    private CloudWatchAvailability availability;
+    @Mock
+    private Ec2ZabbixMatcher matcher;
+    @Mock
+    private MetricPort metricPort;
+
+    @InjectMocks
+    private CloudMetricsService service;
+
+    private static final Instance INSTANCE = Instance.builder().instanceId("i-1").build();
+    private static final CloudWatchAvailability.Reservation RESERVATION =
+            new CloudWatchAvailability.Reservation("2026-08", 5);
+
+    @BeforeEach
+    void defaults() {
+        // Period 계산 같은 static 테스트에선 안 쓰인다 — strict stubs 회피로 lenient.
+        lenient().when(aws.findInstance(anyString(), anyString())).thenReturn(INSTANCE);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> collection(Map<String, Object> result) {
+        return (Map<String, Object>) result.get("collection");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> items(Map<String, Object> result) {
+        return (Map<String, Object>) result.get("items");
+    }
+
+    /** agent 매칭 + 품질 통과 → zabbix 시계열, CW 호출 0(프리티어 절약). */
+    @Test
+    void agentSourceSkipsCloudWatch() {
+        when(matcher.matchFor(any())).thenReturn(Optional.of(freshMatch()));
+        long now = Instant.now().getEpochSecond();
+        when(metricPort.querySeries(any(), any(), any())).thenReturn(
+                List.of(new Series(EntityRef.ofDefault("10001"), MetricRef.of(MetricDomain.CPU, "util"),
+                        "n", List.of(new SeriesPoint(now - 300, 12.5), new SeriesPoint(now - 60, 15.0)))));
+
+        Map<String, Object> result = service.metrics("i-1", "ap-northeast-1", 0, 0);
+
+        Map<String, Object> collection = collection(result);
+        assertThat(collection.get("source")).isEqualTo("zabbix-agent");
+        assertThat(collection.get("fallbackUsed")).isEqualTo(false);
+        assertThat(collection.get("matchBasis")).isEqualTo("IP_EXACT");
+        List<Map<String, Object>> cpu = (List<Map<String, Object>>) items(result).get("cpu");
+        assertThat(cpu).hasSize(2);
+        assertThat(cpu.get(0).get("value")).isEqualTo(12.5); // 시간순 정렬
+        // 🔴 CW 미호출 — agent 단독이 프리티어를 아끼는 핵심이다.
+        verify(aws, never()).getMetricStatistics(anyString(), anyString(), anyString(), anyString(),
+                anyString(), any(), any(), anyInt(), any());
+        verify(availability, never()).reserve(anyInt());
+    }
+
+    /** agent 매칭됐지만 stale → CW로 명시적 fallback(fallbackUsed=true) — 관측 공백 방지. */
+    @Test
+    void staleAgentFallsBackToCloudWatch() {
+        when(matcher.matchFor(any())).thenReturn(Optional.of(freshMatch()));
+        long stale = Instant.now().minus(Duration.ofHours(3)).getEpochSecond();
+        when(metricPort.querySeries(any(), any(), any())).thenReturn(
+                List.of(new Series(EntityRef.ofDefault("10001"), MetricRef.of(MetricDomain.CPU, "util"),
+                        "n", List.of(new SeriesPoint(stale, 12.5)))));
+        when(availability.isDenied(anyString())).thenReturn(false);
+        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+        when(aws.getMetricStatistics(anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(), any(), anyInt(), any())).thenReturn(List.of());
+
+        Map<String, Object> result = service.metrics("i-1", "ap-northeast-1", 0, 0);
+
+        Map<String, Object> collection = collection(result);
+        assertThat(collection.get("source")).isEqualTo("cloudwatch");
+        assertThat(collection.get("fallbackUsed")).isEqualTo(true);
+        // 5건 예약 후 5건 전부 나감 -> 반납 0
+        verify(availability).release(RESERVATION, 0);
+    }
+
+    /** 지표별 freshness — CPU가 stale이면 메모리가 최신이어도 agent 채택 금지(코덱스 검수 3). */
+    @Test
+    void cpuStaleAloneFallsBackEvenIfMemoryFresh() {
+        when(matcher.matchFor(any())).thenReturn(Optional.of(freshMatch()));
+        long now = Instant.now().getEpochSecond();
+        long stale = Instant.now().minus(Duration.ofHours(3)).getEpochSecond();
+        when(metricPort.querySeries(any(), any(), any()))
+                .thenReturn(List.of(new Series(EntityRef.ofDefault("10001"), MetricRef.of(MetricDomain.CPU, "util"),
+                        "n", List.of(new SeriesPoint(stale, 12.5)))))
+                .thenReturn(List.of(new Series(EntityRef.ofDefault("10001"), MetricRef.of(MetricDomain.MEMORY, "pused"),
+                        "n", List.of(new SeriesPoint(now - 60, 40.0)))));
+        when(availability.isDenied(anyString())).thenReturn(false);
+        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+        when(aws.getMetricStatistics(anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(), any(), anyInt(), any())).thenReturn(List.of());
+
+        Map<String, Object> result = service.metrics("i-1", "ap-northeast-1", 0, 0);
+
+        assertThat(collection(result).get("source")).isEqualTo("cloudwatch");
+        assertThat(collection(result).get("fallbackUsed")).isEqualTo(true);
+    }
+
+    /** 미매칭 인스턴스는 현행 CW 경로 — fallbackUsed=false(폴백이 아니라 원래 경로). */
+    @Test
+    void unmatchedUsesCloudWatchDirectly() {
+        when(matcher.matchFor(any())).thenReturn(Optional.empty());
+        when(availability.isDenied(anyString())).thenReturn(false);
+        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+        Instant t1 = Instant.parse("2026-08-25T01:00:00Z");
+        when(aws.getMetricStatistics(anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(), any(), anyInt(), any()))
+                .thenReturn(List.of(Datapoint.builder().timestamp(t1).average(10.0).build()));
+
+        Map<String, Object> result = service.metrics("i-1", "ap-northeast-1", 0, 0);
+
+        Map<String, Object> collection = collection(result);
+        assertThat(collection.get("state")).isEqualTo("ok");
+        assertThat(collection.get("source")).isEqualTo("cloudwatch");
+        assertThat(collection.get("fallbackUsed")).isEqualTo(false);
+        verifyNoInteractions(metricPort);
+    }
+
+    @Test
+    void budgetExhaustedBlocksCloudWatch() {
+        when(matcher.matchFor(any())).thenReturn(Optional.empty());
+        when(availability.isDenied(anyString())).thenReturn(false);
+        // 원자 예약 거부 = 상한 도달(동시 요청이 같은 잔여를 읽어도 DB 조건부 갱신이 한 쪽만 통과시킨다)
+        when(availability.reserve(5)).thenReturn(Optional.empty());
+
+        Map<String, Object> result = service.metrics("i-1", "ap-northeast-1", 0, 0);
+
+        Map<String, Object> collection = collection(result);
+        assertThat(collection.get("state")).isEqualTo("disabled");
+        assertThat(collection.get("reason")).isEqualTo("BUDGET_EXHAUSTED");
+        verify(aws, never()).getMetricStatistics(anyString(), anyString(), anyString(), anyString(),
+                anyString(), any(), any(), anyInt(), any());
+    }
+
+    /** 권한 거부는 리전 단위로 기록된다(코덱스 §8 — 전역이면 한 리전 실패가 전체를 막는다). */
+    @Test
+    void accessDeniedMarksRegionScoped() {
+        when(matcher.matchFor(any())).thenReturn(Optional.empty());
+        when(availability.isDenied("ap-northeast-1")).thenReturn(false);
+        when(availability.reserve(5)).thenReturn(Optional.of(RESERVATION));
+        when(aws.getMetricStatistics(anyString(), anyString(), anyString(), anyString(), anyString(),
+                any(), any(), anyInt(), any())).thenThrow(CloudWatchException.builder()
+                        .statusCode(403)
+                        .awsErrorDetails(AwsErrorDetails.builder().errorCode("AccessDenied").build())
+                        .message("denied").build());
+
+        Map<String, Object> result = service.metrics("i-1", "ap-northeast-1", 0, 0);
+
+        assertThat(collection(result).get("reason")).isEqualTo("CLOUDWATCH_ACCESS_DENIED");
+        verify(availability).markDenied("ap-northeast-1");
+        // 예약 5 중 실제 1건만 나감 -> 4건 반납(실패 콜도 AWS 입장에선 요청이라 남긴다).
+        // 반납은 예약 토큰의 달로 — 월 경계에서 다른 달에 음수가 찍히는 결함 방지(코덱스 2차).
+        verify(availability).release(RESERVATION, 4);
+    }
+
+    /** Period 규칙 — 공식 문서의 retention 규칙 + 1,440 포인트 상한. */
+    @Test
+    void resolvesPeriodByRangeAndRetention() {
+        Instant now = Instant.parse("2026-08-24T00:00:00Z");
+        assertThat(CloudMetricsService.resolvePeriodSeconds(now.minus(Duration.ofDays(1)), now, now))
+                .isEqualTo(300);
+        assertThat(CloudMetricsService.resolvePeriodSeconds(now.minus(Duration.ofDays(7)), now, now))
+                .isEqualTo(600);
+        assertThat(CloudMetricsService.resolvePeriodSeconds(now.minus(Duration.ofDays(90)), now, now))
+                .isEqualTo(7200);
+    }
+
+    private static Ec2ZabbixMatcher.Match freshMatch() {
+        return new Ec2ZabbixMatcher.Match("10001", "web-1", "IP_EXACT",
+                Instant.now().getEpochSecond(), Instant.now());
+    }
+}
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+codex
+두 수정은 코드와 단위 테스트에서 확인됐습니다. 현재 역색인은 원자 참조로 통째 교체돼 교체 도중의 혼합 읽기는 발생하지 않지만, 배치 간 IP 변경의 시간 창과 콜드 상태의 사용자 노출 여부를 추가로 대조 중입니다.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\AwsServiceImpl.java -Encoding utf8 | Select-Object -Skip 330 -First 105; Get-Content src\\main\\resources\\db\\migration\\V28__cloud_snapshot.sql -Encoding utf8 | Select-Object -Skip 38 -First 15; rg -n -S \"matchBasis|fallbackUsed|monitoredBy|monitoringCoverage|IP_EXACT|INSTANCE_ID_EXACT\" src\\main\\java src\\test\\java C:\\solutions\\_workspace\\contract_aws-free-monitoring.md C:\\solutions\\_workspace\\contract_aws-status-timeline.md" in C:\solutions\moveseye-be-spring
+ succeeded in 428ms:
+            if (p == null) continue;
+            collection.add(p.collection()); risks.addAll(p.risks());
+            total += p.total; healthy += p.healthy; warning += p.warning; critical += p.critical; unobserved += p.unobserved; stopped += p.stopped;
+        }
+        Map<String,Integer> coverage = new LinkedHashMap<>();
+        coverage.put("zabbix-agent", 0); coverage.put("cloudwatch", 0);
+        coverage.put("unavailable", 0); coverage.put("unmonitored", 0);
+        for (OverviewRegion p : parts) {
+            if (p != null) { p.coverage().forEach((k, v) -> coverage.merge(k, v, Integer::sum)); }
+        }
+        risks.sort((a,b) -> Integer.compare((int)b.get("rank"), (int)a.get("rank")));
+        risks.forEach(r -> r.remove("rank"));
+        Map<String,Object> summary = new LinkedHashMap<>();
+        summary.put("totalInstances", total); summary.put("healthyInstances", healthy); summary.put("warningInstances", warning);
+        summary.put("criticalInstances", critical); summary.put("unobservedInstances", unobserved); summary.put("stoppedInstances", stopped);
+        summary.put("activeAlarms", 0);
+        // 소스 매트릭스 커버리지(4값) — "에이전트 설치하면 메모리·디스크까지 무료" 안내의 근거 수치.
+        summary.put("monitoringCoverage", coverage);
+        summary.put("lastCollectedAt", Instant.now().toString());
+        return Map.of("summary", summary,
+                "collection", Map.of("regions", collection),
+                "riskResources", risks.stream().limit(10).toList(),
+                // instanceStates는 스냅샷(재료 B)에서 — AWS 추가 호출 0. cpuTop/networkTop은 무과금
+                // 모드에서 비워 둔다(전 인스턴스 지표 팬아웃은 예산을 태우는 짓).
+                "trends", Map.of(
+                        "instanceStates", snapshotQuery.instanceStateTrend(timeRange.from(), timeRange.to()),
+                        "cpuTop", List.of(), "networkTop", List.of()),
+                "alarms", List.of());
+    }
+
+    private OverviewRegion overviewForRegion(String region) {
+        Instant collected = Instant.now();
+        List<Instance> instances;
+        Map<String,String> statuses;
+        try {
+            instances = aws.describeInstances(region);
+            statuses = instanceStatuses(region, instances.stream().map(Instance::instanceId).toList());
+        } catch (Exception e) {
+            return OverviewRegion.unavailable(region, "EC2_UNAVAILABLE");
+        }
+        List<Map<String,Object>> risks=new ArrayList<>();
+        Map<String,Integer> coverage=new LinkedHashMap<>();
+        int healthy=0,warning=0,critical=0,unobserved=0,stopped=0;
+        for (Instance i : instances) {
+            coverage.merge(monitoredBy(i, region), 1, Integer::sum);
+            String state=i.state()==null ? "unknown" : i.state().nameAsString(); String check=statuses.get(i.instanceId());
+            // 판정 규칙은 스냅샷 수집(CloudSnapshotService)과 공유한다 — 복제 금지.
+            String severity = Ec2StatusRules.classify(state, check);
+            switch (severity) {
+                case Ec2StatusRules.SEVERITY_STOPPED -> stopped++;
+                case Ec2StatusRules.SEVERITY_CRITICAL -> critical++;
+                case Ec2StatusRules.SEVERITY_WARNING -> warning++;
+                case Ec2StatusRules.SEVERITY_UNOBSERVED -> unobserved++;
+                default -> healthy++;
+            }
+            if (!"healthy".equals(severity)) { Map<String,Object> x=overviewInstance(i,region,check,severity); x.put("rank", "critical".equals(severity)?4:"warning".equals(severity)?3:"unobserved".equals(severity)?2:1); risks.add(x); }
+        }
+        Map<String,Object> ec2 = collectionState("ok", collected.toString(), null);
+        Map<String,Object> disabled = collectionState("disabled", null, "ZERO_COST_MODE");
+        return new OverviewRegion(Map.of("region",region,"ec2",ec2,"cloudWatch",disabled,"alarms",disabled), instances.size(),healthy,warning,critical,unobserved,stopped,risks,coverage);
+    }
+    private Map<String,Object> collectionState(String state, String lastCollectedAt, String reason) {
+        Map<String,Object> result = new LinkedHashMap<>(); result.put("state", state); result.put("lastCollectedAt", lastCollectedAt); result.put("reason", reason); return result;
+    }
+    private Map<String,Object> overviewInstance(Instance i,String region,String check,String severity) {
+        Map<String,Object> x=new LinkedHashMap<>(); x.put("instanceId",i.instanceId()); x.put("instanceName",i.tags().stream().filter(t->"Name".equals(t.key())).map(t->t.value()).findFirst().orElse("-"));
+        x.put("region",region); x.put("availabilityZone",i.placement()==null?null:i.placement().availabilityZone()); x.put("state",i.state()==null?null:i.state().nameAsString()); x.put("statusCheck",check); x.put("cpuAverage",null); x.put("memoryAverage",null); x.put("alarmState",null); x.put("severity",severity);
+        List<String> reasons=new ArrayList<>(); if(check!=null&&!"2/2 checks passed".equals(check))reasons.add("EC2_STATUS_CHECK_FAILED"); if(reasons.isEmpty())reasons.add("EC2_STATE_"+x.get("state")); x.put("reasons",reasons); return x;
+    }
+    private record OverviewRegion(Map<String,Object> collection,int total,int healthy,int warning,int critical,int unobserved,int stopped,List<Map<String,Object>> risks,Map<String,Integer> coverage) {
+        static OverviewRegion unavailable(String region,String reason) { Map<String,Object> unavailable=collectionUnavailable(reason); Map<String,Object> disabled=collectionDisabled(); return new OverviewRegion(Map.of("region",region,"ec2",unavailable,"cloudWatch",disabled,"alarms",disabled),0,0,0,0,0,0,List.of(),Map.of()); }
+        private static Map<String,Object> collectionUnavailable(String reason) { Map<String,Object> result=new LinkedHashMap<>(); result.put("state","unavailable"); result.put("lastCollectedAt",null); result.put("reason",reason); return result; }
+        private static Map<String,Object> collectionDisabled() { Map<String,Object> result=new LinkedHashMap<>(); result.put("state","disabled"); result.put("lastCollectedAt",null); result.put("reason","ZERO_COST_MODE"); return result; }
+    }
+
+    @Override
+    public Map<String, Object> getEc2(String instanceId, String region, long fromEpoch, long toEpoch) {
+        Instance instance = aws.findInstance(region, instanceId);
+        if (instance == null) {
+            throw new ApiError(ErrorCode.INSTANCE_NOT_FOUND);
+        }
+
+        Map<String, Object> ec2Info = new LinkedHashMap<>();
+        ec2Info.put("instanceName", instance.tags().stream().filter(t -> "Name".equals(t.key()))
+                .map(t -> t.value()).findFirst().orElse("-"));
+        ec2Info.put("instanceId", instance.instanceId());
+        ec2Info.put("instanceState", instance.state() != null ? instance.state().nameAsString() : "-");
+        ec2Info.put("instanceType", instance.instanceTypeAsString() != null ? instance.instanceTypeAsString() : "-");
+        ec2Info.put("availabilityZone", instance.placement() != null ? instance.placement().availabilityZone() : "-");
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("ec2Info", ec2Info);
+
+        // 하위호환을 위해 기존 8개 지표 키는 유지한다. 무과금 모드에서는 CloudWatch를 호출하지 않는다.
+        result.put("cpu", List.of()); result.put("memory", List.of()); result.put("networkIn", List.of()); result.put("networkOut", List.of());
+        result.put("networkPacketsIn", List.of()); result.put("networkPacketsOut", List.of()); result.put("diskRead", List.of()); result.put("diskWrite", List.of());
+        result.put("collection", Map.of("state", "disabled", "reason", "ZERO_COST_MODE"));
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getEc2OperationalDetail(String instanceId, String region) {
+        try {
+            Instance instance = aws.findInstance(region, instanceId);
+            if (instance == null) throw new ApiError(ErrorCode.INSTANCE_NOT_FOUND);
+    findings       jsonb        NOT NULL DEFAULT '[]'::jsonb
+);
+CREATE INDEX IF NOT EXISTS idx_cloud_vpc_snapshot_vpc ON cloud_vpc_snapshot (vpc_id, run_at);
+CREATE INDEX IF NOT EXISTS idx_cloud_vpc_snapshot_run_at ON cloud_vpc_snapshot (run_at);
+
+-- 수집 5분(EC2 기본 모니터링 해상도와 일치 — 더 촘촘해도 새 정보 없음), 정리 매일 01:00 보존 30일.
+-- 자격증명 미설정 설치본에서는 job이 "skipped: unconfigured"로 조용히 넘어간다(정상 상태).
+INSERT INTO scheduler_setting (job_key, enabled, schedule_type, interval_minutes, at_hour, at_minute, day_of_week, day_of_month, options)
+VALUES
+    ('cloud_snapshot',         TRUE, 'interval', 5,    NULL, NULL, NULL, NULL, '{}'::jsonb),
+    ('cloud_snapshot_cleanup', TRUE, 'daily',    NULL, 1,    0,    NULL, NULL, '{"retentionDays":30}'::jsonb)
+ON CONFLICT (job_key) DO NOTHING;
+C:\solutions\_workspace\contract_aws-status-timeline.md:58:  - `fallbackUsed: boolean` — agent 매칭됐으나 품질 미달(필수 지표 없음/30분 내 포인트 없음/Zabbix 장애)로 CW로 내려온 경우 true.
+C:\solutions\_workspace\contract_aws-status-timeline.md:59:  - agent일 때: `matchBasis('IP_EXACT'|'INSTANCE_ID_EXACT')`, `zabbixHostid`, `zabbixHostName`, `observedAt`.
+C:\solutions\_workspace\contract_aws-status-timeline.md:65:- item에 `monitoredBy: 'zabbix-agent' | 'cloudwatch' | 'unavailable' | 'unmonitored'` 추가.
+C:\solutions\_workspace\contract_aws-status-timeline.md:69:- `summary.monitoringCoverage: { 'zabbix-agent': n, cloudwatch: n, unavailable: n, unmonitored: n }` (4키 0-채움).
+C:\solutions\_workspace\contract_aws-status-timeline.md:73:- INSTANCE_ID_EXACT(호스트명 == instanceId 또는 태그 `aws.instanceId`) > IP_EXACT(ENI 전체 주소 ↔ AGENT 인터페이스, 유일 히트만). 다중 히트·중복 주장은 연결하지 않음. Name 태그 매칭 없음.
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:49:        assertThat(match.get().basis()).isEqualTo("INSTANCE_ID_EXACT");
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:60:        assertThat(match.get().basis()).isEqualTo("INSTANCE_ID_EXACT");
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:79:        assertThat(match.get().basis()).isEqualTo("IP_EXACT");
+src\test\java\com\dmove\moveseye\aws\Ec2ZabbixMatcherTest.java:145:                "10001", "i-0abc", "IP_EXACT", Instant.now().minusSeconds(86400).getEpochSecond(), Instant.now());
+src\test\java\com\dmove\moveseye\host\coverage\MonitoringCoverageControllerTest.java:25:    @Mock MonitoringCoverageService monitoringCoverageService;
+src\test\java\com\dmove\moveseye\host\coverage\MonitoringCoverageControllerTest.java:36:        verifyNoInteractions(monitoringCoverageService);
+src\test\java\com\dmove\moveseye\host\coverage\MonitoringCoverageControllerTest.java:44:        when(monitoringCoverageService.diagnose("2", false)).thenReturn(result);
+src\test\java\com\dmove\moveseye\host\coverage\MonitoringCoverageControllerTest.java:49:        verify(monitoringCoverageService).diagnose(eq("2"), eq(false));
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:86:        assertThat(collection.get("fallbackUsed")).isEqualTo(false);
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:87:        assertThat(collection.get("matchBasis")).isEqualTo("IP_EXACT");
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:97:    /** agent 매칭됐지만 stale → CW로 명시적 fallback(fallbackUsed=true) — 관측 공백 방지. */
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:114:        assertThat(collection.get("fallbackUsed")).isEqualTo(true);
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:138:        assertThat(collection(result).get("fallbackUsed")).isEqualTo(true);
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:141:    /** 미매칭 인스턴스는 현행 CW 경로 — fallbackUsed=false(폴백이 아니라 원래 경로). */
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:157:        assertThat(collection.get("fallbackUsed")).isEqualTo(false);
+src\test\java\com\dmove\moveseye\aws\CloudMetricsServiceTest.java:211:        return new Ec2ZabbixMatcher.Match("10001", "web-1", "IP_EXACT",
+src\test\java\com\dmove\moveseye\aws\AwsServiceImplCoverageTest.java:41:        return new Ec2ZabbixMatcher.Match("10001", "h", "IP_EXACT", Instant.now().getEpochSecond(), Instant.now());
+src\test\java\com\dmove\moveseye\aws\AwsServiceImplCoverageTest.java:50:        assertThat(service().monitoredBy(instance("stopped"), "ap-northeast-1")).isEqualTo("unmonitored");
+src\test\java\com\dmove\moveseye\aws\AwsServiceImplCoverageTest.java:58:        assertThat(service().monitoredBy(instance("running"), "ap-northeast-1")).isEqualTo("zabbix-agent");
+src\test\java\com\dmove\moveseye\aws\AwsServiceImplCoverageTest.java:65:        assertThat(service().monitoredBy(instance("running"), "ap-northeast-1")).isEqualTo("cloudwatch");
+src\test\java\com\dmove\moveseye\aws\AwsServiceImplCoverageTest.java:68:        assertThat(service().monitoredBy(instance("running"), "ap-northeast-1")).isEqualTo("unavailable");
+src\test\java\com\dmove\moveseye\host\manage\HostManageServiceTest.java:220:    @DisplayName("create: monitoredBy=proxy인데 proxyId 없으면 HOST_PROXY_REQUIRED, 자빅스 미호출")
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:141:        validateProxy(req.monitoredByOrDefault(), req.getProxyId());
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:155:        applyMonitoredBy(params, req.monitoredByOrDefault(), req.getProxyId());
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:175:        validateProxy(req.monitoredByOrDefault(), req.getProxyId());
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:198:        applyMonitoredBy(params, req.monitoredByOrDefault(), req.getProxyId());
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:489:    private void validateProxy(int monitoredBy, String proxyId) {
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:490:        if (monitoredBy != 0 && (proxyId == null || proxyId.isBlank())) {
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:667:    private void applyMonitoredBy(Map<String, Object> params, int monitoredBy, String proxyId) {
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:668:        params.put("monitored_by", monitoredBy);
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:669:        params.put("proxyid", monitoredBy != 0 ? proxyId : "0");
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:717:        String monitoredBy = str(h.get("monitored_by"));
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:720:        if (monitoredBy != null && !"0".equals(monitoredBy) && proxyid != null && !"0".equals(proxyid)) {
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:746:                monitoredBy,
+src\main\java\com\dmove\moveseye\host\manage\HostManageService.java:827:        p.put("monitoredBy", req.monitoredByOrDefault());
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:32: *   <li>1순위 {@code INSTANCE_ID_EXACT}: Zabbix 호스트명 == instanceId, 또는 호스트 태그
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:34: *   <li>2순위 {@code IP_EXACT}: EC2의 <b>ENI 전체 주소</b>(secondary IP·EIP 포함) ↔ Zabbix
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:52:    public static final String BASIS_INSTANCE_ID = "INSTANCE_ID_EXACT";
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:53:    public static final String BASIS_IP = "IP_EXACT";
+src\main\java\com\dmove\moveseye\aws\Ec2ZabbixMatcher.java:63:     * EC2 주소 → instanceId 역색인(전 리전). IP_EXACT의 <b>역방향 유일성</b> 검사 재료 —
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:34: * 아니면 CW로 <b>명시적 fallback</b>(`fallbackUsed`)한다. 관측 공백 방지(코덱스 검토 §8).
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:89:        collection.put("fallbackUsed", match.isPresent());
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:90:        match.ifPresent(m -> collection.put("matchBasis", m.basis()));
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:136:            collection.put("fallbackUsed", false);
+src\main\java\com\dmove\moveseye\aws\CloudMetricsService.java:137:            collection.put("matchBasis", match.basis());
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:51:    String monitoredBy(Instance instance, String region) {
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:243:                item.put("monitoredBy", monitoredBy(inst, region));
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:348:        summary.put("monitoringCoverage", coverage);
+src\main\java\com\dmove\moveseye\aws\AwsServiceImpl.java:375:            coverage.merge(monitoredBy(i, region), 1, Integer::sum);
+src\main\java\com\dmove\moveseye\host\manage\dto\HostCreateReqDto.java:15: * (서비스에서 검증). {@code monitoredBy}가 1/2(proxy)이면 {@code proxyId}가 필수.
+src\main\java\com\dmove\moveseye\host\manage\dto\HostCreateReqDto.java:45:    private Integer monitoredBy = 0;
+src\main\java\com\dmove\moveseye\host\manage\dto\HostCreateReqDto.java:47:    @Schema(description = "프록시 ID(monitoredBy가 1/2일 때 필수)", example = "1")
+src\main\java\com\dmove\moveseye\host\manage\dto\HostCreateReqDto.java:65:    public int monitoredByOrDefault() {
+src\main\java\com\dmove\moveseye\host\manage\dto\HostCreateReqDto.java:66:        return monitoredBy == null ? 0 : monitoredBy;
+src\main\java\com\dmove\moveseye\host\manage\dto\ManagedHostDto.java:8: * status/monitoredBy/available는 Zabbix 원시 문자열을 보존한다.
+src\main\java\com\dmove\moveseye\host\manage\dto\ManagedHostDto.java:16:        @Schema(description = "모니터링 주체(0=server,1=proxy,2=proxy group)", example = "1") String monitoredBy,
+src\main\java\com\dmove\moveseye\host\manage\dto\ManagedHostDto.java:17:        @Schema(description = "프록시(monitoredBy=0이면 null)", nullable = true) ProxyRefDto proxy,
+src\main\java\com\dmove\moveseye\host\coverage\MonitoringCoverageController.java:27:    private final MonitoringCoverageService monitoringCoverageService;
+src\main\java\com\dmove\moveseye\host\coverage\MonitoringCoverageController.java:37:        return new ApiResult<MonitoringCoverageDto>().success(monitoringCoverageService.diagnose(groupId, includeDisabled));
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Failed
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content src\\main\\java\\com\\dmove\\moveseye\\aws\\AwsServiceImpl.java -Encoding utf8 | Select-Object -First 85; Get-Content C:\\solutions\\_workspace\\contract_aws-status-timeline.md -Encoding utf8 | Select-Object -Skip 44 -First 38; git status --short; git diff --check; .\\gradlew.bat test --tests com.dmove.moveseye.aws.Ec2ZabbixMatcherTest --tests com.dmove.moveseye.aws.CloudMetricsServiceTest" in C:\solutions\moveseye-be-spring
+ exited 1 in 10938ms:
+package com.dmove.moveseye.aws;
+
+import com.dmove.moveseye.common.exception.ApiError;
+import com.dmove.moveseye.common.exception.ErrorCode;
+import com.dmove.moveseye.aws.client.AwsReadOnlyGateway;
+import com.dmove.moveseye.aws.dto.CloudOverviewQueryDto.TimeRange;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.ec2.model.Instance;
+import software.amazon.awssdk.services.ec2.model.InstanceStatus;
+import software.amazon.awssdk.services.ec2.model.Subnet;
+import software.amazon.awssdk.services.ec2.model.Vpc;
+import software.amazon.awssdk.services.ec2.model.RouteTable;
+import software.amazon.awssdk.services.ec2.model.Route;
+import software.amazon.awssdk.services.ec2.model.SecurityGroup;
+import software.amazon.awssdk.services.ec2.model.IpPermission;
+import software.amazon.awssdk.services.ec2.model.Volume;
+import software.amazon.awssdk.services.ec2.model.Ec2Exception;
+
+/** NestJS src/aws/aws.service.ts 포팅 (AWS SDK v2). */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AwsServiceImpl implements AwsService {
+
+    /** 리전 팬아웃/지표 병렬 호출 상한(리전이 많아도 스레드 폭주 방지). */
+    private static final int MAX_PARALLELISM = 16;
+
+    private final AwsReadOnlyGateway aws;
+    private final CloudSnapshotQueryService snapshotQuery;
+    private final Ec2ZabbixMatcher matcher;
+    private final CloudWatchAvailability cloudWatchAvailability;
+
+    /**
+     * 모니터링 커버리지 판정(소스 매트릭스, devdesign_ec2-monitoring-sources.md §4 — 4값):
+     * zabbix-agent(매칭+신선) / cloudwatch(CW 가용) / unavailable(권한·예산·수집 실패) /
+     * unmonitored(중지 등 — 현재 지표가 어디에도 없음). AWS 추가 호출 0(매처 캐시 + CW 가용성 캐시만).
+     */
+    String monitoredBy(Instance instance, String region) {
+        // 🔴 stopped를 먼저 — 방금 껐어도 LAST_CHECK가 30분 안이면 agent로 세는 오류(코덱스 §4).
+        String state = instance.state() == null ? "unknown" : instance.state().nameAsString();
+        if ("stopped".equals(state)) {
+            return "unmonitored";
+        }
+        java.util.Optional<Ec2ZabbixMatcher.Match> match = matcher.matchFor(instance);
+        if (match.isPresent() && matcher.isFresh(match.get(), java.time.Duration.ofMinutes(30))) {
+            return "zabbix-agent";
+        }
+        if ("ok".equals(cloudWatchAvailability.availability(region))) {
+            return "cloudwatch";
+        }
+        return "unavailable";
+    }
+
+    /**
+     * 여러 작업을 제한된 스레드풀에서 병렬 실행하고 제출 순서대로 결과를 모은다.
+     * 리전 팬아웃(리전당 AWS 호출 수십 회)을 순차→병렬로 바꿔 벽시계 시간을 합계에서 최대 1건으로 단축.
+     * 개별 작업 실패는 null로 수집(호출부에서 skip). 작업 콜백은 자체적으로 예외를 처리해 부분값을 반환하는 것을 권장.
+     */
+    private <T> List<T> runParallel(List<? extends Callable<T>> tasks) {
+        if (tasks.isEmpty()) {
+            return List.of();
+        }
+        if (tasks.size() == 1) {
+            try {
+                return new ArrayList<>(List.of(tasks.get(0).call()));
+            } catch (Exception e) {
+                log.error("parallel task failed: {}", e.getMessage());
+                List<T> single = new ArrayList<>();
+                single.add(null);
+                return single;
+            }
+        }
+## FE 소비 (moveseyee_fe)
+
+- `InstanceTimeline`(신규, EC2 상세 편입): 상태 밴드(markArea) + CloudTrail write 이벤트 markLine +
+  성능 3차트(CPU·네트워크·디스크, ECharts). 강등 시 성능 차트 대신 밴드 스트립 + 안내 Alert.
+- `EC2Dashboard`: 플릿 상태 추이 스택 차트(`trends.instanceStates`).
+- `VPCDetail`: 노출 진단 추이 step 차트 + 기존 진단 표에 "최초 발견" 컬럼.
+- 서비스: `getEc2StateHistory`/`getEc2Metrics`/`getVpcHistory`, 쿼리키 `STATE_HISTORY`/`EC2_METRICS`/`VPC_HISTORY`.
+
+## 개정 2 (2026-08-26) — 소스 매트릭스 (devdesign_ec2-monitoring-sources.md)
+
+### `GET /cloud-infras/ec2/metrics` — 소스 선택
+- 우선순위 `zabbix-agent(품질 확인) > cloudwatch > 없음`. `collection`에 추가:
+  - `source: 'zabbix-agent' | 'cloudwatch'` — 항상 존재(ok일 때). FE는 배지로 노출.
+  - `fallbackUsed: boolean` — agent 매칭됐으나 품질 미달(필수 지표 없음/30분 내 포인트 없음/Zabbix 장애)로 CW로 내려온 경우 true.
+  - agent일 때: `matchBasis('IP_EXACT'|'INSTANCE_ID_EXACT')`, `zabbixHostid`, `zabbixHostName`, `observedAt`.
+- `items` 키 셋 고정 6개: `cpu, memoryUsage, networkIn, networkOut, diskReadBytes, diskWriteBytes`.
+  agent 소스는 `cpu`(CPU util %)·`memoryUsage`(메모리 pused %)만 채움(나머지 빈 배열), CW 소스는 `memoryUsage`가 빈 배열.
+- 권한 거부 캐시는 리전 단위(`CLOUDWATCH_ACCESS_DENIED`가 다른 리전 조회를 막지 않음).
+
+### `GET /cloud-infras/ec2s` — 커버리지 컬럼
+- item에 `monitoredBy: 'zabbix-agent' | 'cloudwatch' | 'unavailable' | 'unmonitored'` 추가.
+  판정: agent 매칭+LAST_CHECK 30분 내 → zabbix-agent / stopped → unmonitored / CW 가용(리전 미거부·예산 內) → cloudwatch / 그 외 unavailable. AWS 추가 호출 0.
+
+### `GET /cloud-infras/overview` — 커버리지 집계
+- `summary.monitoringCoverage: { 'zabbix-agent': n, cloudwatch: n, unavailable: n, unmonitored: n }` (4키 0-채움).
+
+### 매칭 규칙(BE 내부, `Ec2ZabbixMatcher`)
+- Zabbix 호스트는 시스템 컨텍스트로 조회·전역 5분 캐시(사용자 세션 미사용 — 권한 누출 방지).
+- INSTANCE_ID_EXACT(호스트명 == instanceId 또는 태그 `aws.instanceId`) > IP_EXACT(ENI 전체 주소 ↔ AGENT 인터페이스, 유일 히트만). 다중 히트·중복 주장은 연결하지 않음. Name 태그 매칭 없음.
+- 🔴 온보딩 권장: EC2의 Zabbix 호스트에 태그 `aws.instanceId=<instanceId>`를 붙이면 IP 변동과 무관하게 확정 연결된다.
+- (개정 2 보강, 코덱스 검수 반영) 엔진 모델 `HostNetworkInterface.useIp`(Boolean, 기존 생성자 보존) — Zabbix `useip`. 매처는 `useIp==false`(DNS 접속) 인터페이스를 IP 근거에서 제외한다. 매칭 캐시는 조회 실패 시 fail-closed(폐기). CW 예산은 `cloud_api_budget`에 **조건부 원자 예약**(`reserve`)으로 선점 후 호출, 미사용분 반납.
+fatal: detected dubious ownership in repository at 'C:/solutions/moveseye-be-spring'
+'C:/solutions/moveseye-be-spring' is owned by:
+	DESKTOP-Q21AG2J/DMOVE (S-1-5-21-257218257-3326819578-2473551123-1001)
+but the current user is:
+	DESKTOP-Q21AG2J/CodexSandboxOffline (S-1-5-21-257218257-3326819578-2473551123-1004)
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory C:/solutions/moveseye-be-spring
+warning: Not a git repository. Use --no-index to compare two paths outside a working tree
+usage: git diff --no-index [<options>] <path> <path>
+
+Diff output format options
+    -p, --patch           generate patch
+    -s, --no-patch        suppress diff output
+    -u                    generate patch
+    -U, --unified[=<n>]   generate diffs with <n> lines context
+    -W, --[no-]function-context
+                          generate diffs with <n> lines context
+    --raw                 generate the diff in raw format
+    --patch-with-raw      synonym for '-p --raw'
+    --patch-with-stat     synonym for '-p --stat'
+    --numstat             machine friendly --stat
+    --shortstat           output only the last line of --stat
+    -X, --dirstat[=<param1>,<param2>...]
+                          output the distribution of relative amount of changes for each sub-directory
+    --cumulative          synonym for --dirstat=cumulative
+    --dirstat-by-file[=<param1>,<param2>...]
+                          synonym for --dirstat=files,<param1>,<param2>...
+    --check               warn if changes introduce conflict markers or whitespace errors
+    --summary             condensed summary such as creations, renames and mode changes
+    --name-only           show only names of changed files
+    --name-status         show only names and status of changed files
+    --stat[=<width>[,<name-width>[,<count>]]]
+                          generate diffstat
+    --stat-width <width>  generate diffstat with a given width
+    --stat-name-width <width>
+                          generate diffstat with a given name width
+    --stat-graph-width <width>
+                          generate diffstat with a given graph width
+    --stat-count <count>  generate diffstat with limited lines
+    --[no-]compact-summary
+                          generate compact summary in diffstat
+    --binary              output a binary diff that can be applied
+    --[no-]full-index     show full pre- and post-image object names on the "index" lines
+    --[no-]color[=<when>] show colored diff
+    --ws-error-highlight <kind>
+                          highlight whitespace errors in the 'context', 'old' or 'new' lines in the diff
+    -z                    do not munge pathnames and use NULs as output field terminators in --raw or --numstat
+    --[no-]abbrev[=<n>]   use <n> digits to display object names
+    --src-prefix <prefix> show the given source prefix instead of "a/"
+    --dst-prefix <prefix> show the given destination prefix instead of "b/"
+    --line-prefix <prefix>
+                          prepend an additional prefix to every line of output
+    --no-prefix           do not show any source or destination prefix
+    --default-prefix      use default prefixes a/ and b/
+    --inter-hunk-context <n>
+                          show context between diff hunks up to the specified number of lines
+    --output-indicator-new <char>
+                          specify the character to indicate a new line instead of '+'
+    --output-indicator-old <char>
+                          specify the character to indicate an old line instead of '-'
+    --output-indicator-context <char>
+                          specify the character to indicate a context instead of ' '
+
+Diff rename options
+    -B, --break-rewrites[=<n>[/<m>]]
+                          break complete rewrite changes into pairs of delete and create
+    -M, --find-renames[=<n>]
+                          detect renames
+    -D, --irreversible-delete
+                          omit the preimage for deletes
+    -C, --find-copies[=<n>]
+                          detect copies
+    --[no-]find-copies-harder
+                          use unmodified files as source to find copies
+    --no-renames          disable rename detection
+    --[no-]rename-empty   use empty blobs as rename source
+    --[no-]follow         continue listing the history of a file beyond renames
+    -l <n>                prevent rename/copy detection if the number of rename/copy targets exceeds given limit
+
+Diff algorithm options
+    --minimal             produce the smallest possible diff
+    -w, --ignore-all-space
+                          ignore whitespace when comparing lines
+    -b, --ignore-space-change
+                          ignore changes in amount of whitespace
+    --ignore-space-at-eol ignore changes in whitespace at EOL
+    --ignore-cr-at-eol    ignore carrier-return at the end of line
+    --ignore-blank-lines  ignore changes whose lines are all blank
+    -I, --[no-]ignore-matching-lines <regex>
+                          ignore changes whose all lines match <regex>
+    --[no-]indent-heuristic
+                          heuristic to shift diff hunk boundaries for easy reading
+    --patience            generate diff using the "patience diff" algorithm
+    --histogram           generate diff using the "histogram diff" algorithm
+    --diff-algorithm <algorithm>
+                          choose a diff algorithm
+    --anchored <text>     generate diff using the "anchored diff" algorithm
+    --word-diff[=<mode>]  show word diff, using <mode> to delimit changed words
+    --word-diff-regex <regex>
+                          use <regex> to decide what a word is
+    --color-words[=<regex>]
+                          equivalent to --word-diff=color --word-diff-regex=<regex>
+    --[no-]color-moved[=<mode>]
+                          moved lines of code are colored differently
+    --[no-]color-moved-ws <mode>
+                          how white spaces are ignored in --color-moved
+
+Other diff options
+    --[no-]relative[=<prefix>]
+                          when run from subdir, exclude changes outside and show relative paths
+    -a, --[no-]text       treat all files as text
+    -R                    swap two inputs, reverse the diff
+    --[no-]exit-code      exit with 1 if there were differences, 0 otherwise
+    --[no-]quiet          disable all output of the program
+    --[no-]ext-diff       allow an external diff helper to be executed
+    --[no-]textconv       run external text conversion filters when comparing binary files
+    --ignore-submodules[=<when>]
+                          ignore changes to submodules in the diff generation
+    --submodule[=<format>]
+                          specify how differences in submodules are shown
+    --ita-invisible-in-index
+                          hide 'git add -N' entries from the index
+    --ita-visible-in-index
+                          treat 'git add -N' entries as real in the index
+    -S <string>           look for differences that change the number of occurrences of the specified string
+    -G <regex>            look for differences that change the number of occurrences of the specified regex
+    --pickaxe-all         show all changes in the changeset with -S or -G
+    --pickaxe-regex       treat <string> in -S as extended POSIX regular expression
+    -O <file>             control the order in which files appear in the output
+    --rotate-to <path>    show the change in the specified path first
+    --skip-to <path>      skip the output to the specified path
+    --find-object <object-id>
+                          look for differences that change the number of occurrences of the specified object
+    --diff-filter [(A|C|D|M|R|T|U|X|B)...[*]]
+                          select files by diff type
+    --output <file>       output to a specific file
+
+Downloading https://services.gradle.org/distributions/gradle-9.2.1-bin.zip
+
+Exception in thread "main" java.net.SocketException: Permission denied: getsockopt
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method)
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:694)
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:751)
+	at java.base/sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:304)
+	at java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:178)
+	at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:531)
+	at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:636)
+	at java.base/sun.net.www.protocol.https.HttpsClient.<init>(HttpsClient.java:265)
+	at java.base/sun.net.www.protocol.https.HttpsClient.New(HttpsClient.java:378)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.getNewHttpClient(AbstractDelegateHttpsURLConnection.java:196)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1257)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1143)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:1072)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:181)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1705)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1629)
+	at java.base/java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:531)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:307)
+	at org.gradle.wrapper.Install.forceFetch(SourceFile:2)
+	at org.gradle.wrapper.Install$1.call(SourceFile:8)
+	at org.gradle.wrapper.GradleWrapperMain.main(SourceFile:67)
+
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Failed
+codex
+## 항목별 확인
+
+- **O — 월 경계 예약/반납**: `Reservation(month, calls)` 토큰을 `reserve()`가 반환하고, `CloudMetricsService`가 `finally`에서 동일 토큰으로 `release(reservation, unused)` 합니다. 따라서 자정 이후에도 예약한 월에만 반납됩니다. `accessDeniedMarksRegionScoped`가 `release(RESERVATION, 4)`를 검증합니다.
+
+- **O — IP 역방향 유일성**: `CloudSnapshotService`가 전 리전 raw instance로 `indexInstances()`를 호출하고, IP 매칭은 Zabbix 호스트 주소의 소유 instanceId가 요청 instance 하나일 때만 허용합니다. 빈 색인은 IP 매칭을 거부하며, `coldIndexDisablesIpBasisButNotInstanceId`, `refusesIpMatchWhenAddressSharedByOtherInstance` 테스트도 있습니다.
+
+## 신규 결함
+
+- **X — 부분 리전 수집 실패 시 역색인이 불완전해집니다.** `CloudSnapshotService.collect()`은 일부 리전 실패를 허용한 뒤 성공 리전만으로 색인을 통째 교체합니다. 실패 리전에 동일 사설 IP를 가진 EC2가 있으면 색인에서 사라져, 성공 리전의 IP를 잘못 “유일”로 판정할 수 있습니다. 이는 IP 오연결 방지 목표를 다시 깨므로 **머지 차단** 사유입니다.
+
+- **X — 5분 갱신 창이 있습니다.** 정상 배치 사이에 다른 VPC에서 동일 private IP가 새로 생기면, 다음 색인 갱신 전까지 기존 색인은 이를 모르므로 IP 유일성을 잘못 통과시킬 수 있습니다. `aws.instanceId` 명시 태그는 이 창의 영향을 받지 않습니다.
+
+- **O — 색인 교체 중 동시 읽기 안전성**: 새 `HashMap`을 완성한 뒤 `AtomicReference.set()`으로 한 번에 교체하고 이후 수정하지 않습니다. 독자는 이전 완전 색인 또는 새 완전 색인만 읽습니다.
+
+- **X — 콜드 상태 UX 부재**: 콜드/색인 실패 시 IP 매칭은 안전하게 비활성화되지만, API는 이를 별도 상태로 노출하지 않습니다. 결과는 일반 CloudWatch 경로와 같고 `fallbackUsed=false`이므로 사용자는 “초기 색인 대기/색인 불가”를 구분할 수 없습니다.
+
+## 총평
+
+**현재는 머지 불가입니다.** 월 경계와 기본 역방향 유일성 구현은 맞지만, 부분 리전 실패에 의한 불완전 색인 교체가 오연결을 재도입합니다. 최소한 하나라도 리전 수집에 실패하면 기존의 완전 색인을 유지하거나, IP 색인을 콜드 처리해 IP 근거를 전면 비활성화해야 합니다.
+hook: Stop
+hook: Stop
+hook: Stop Completed
+hook: Stop Failed
+tokens used
+55,159
+## 항목별 확인
+
+- **O — 월 경계 예약/반납**: `Reservation(month, calls)` 토큰을 `reserve()`가 반환하고, `CloudMetricsService`가 `finally`에서 동일 토큰으로 `release(reservation, unused)` 합니다. 따라서 자정 이후에도 예약한 월에만 반납됩니다. `accessDeniedMarksRegionScoped`가 `release(RESERVATION, 4)`를 검증합니다.
+
+- **O — IP 역방향 유일성**: `CloudSnapshotService`가 전 리전 raw instance로 `indexInstances()`를 호출하고, IP 매칭은 Zabbix 호스트 주소의 소유 instanceId가 요청 instance 하나일 때만 허용합니다. 빈 색인은 IP 매칭을 거부하며, `coldIndexDisablesIpBasisButNotInstanceId`, `refusesIpMatchWhenAddressSharedByOtherInstance` 테스트도 있습니다.
+
+## 신규 결함
+
+- **X — 부분 리전 수집 실패 시 역색인이 불완전해집니다.** `CloudSnapshotService.collect()`은 일부 리전 실패를 허용한 뒤 성공 리전만으로 색인을 통째 교체합니다. 실패 리전에 동일 사설 IP를 가진 EC2가 있으면 색인에서 사라져, 성공 리전의 IP를 잘못 “유일”로 판정할 수 있습니다. 이는 IP 오연결 방지 목표를 다시 깨므로 **머지 차단** 사유입니다.
+
+- **X — 5분 갱신 창이 있습니다.** 정상 배치 사이에 다른 VPC에서 동일 private IP가 새로 생기면, 다음 색인 갱신 전까지 기존 색인은 이를 모르므로 IP 유일성을 잘못 통과시킬 수 있습니다. `aws.instanceId` 명시 태그는 이 창의 영향을 받지 않습니다.
+
+- **O — 색인 교체 중 동시 읽기 안전성**: 새 `HashMap`을 완성한 뒤 `AtomicReference.set()`으로 한 번에 교체하고 이후 수정하지 않습니다. 독자는 이전 완전 색인 또는 새 완전 색인만 읽습니다.
+
+- **X — 콜드 상태 UX 부재**: 콜드/색인 실패 시 IP 매칭은 안전하게 비활성화되지만, API는 이를 별도 상태로 노출하지 않습니다. 결과는 일반 CloudWatch 경로와 같고 `fallbackUsed=false`이므로 사용자는 “초기 색인 대기/색인 불가”를 구분할 수 없습니다.
+
+## 총평
+
+**현재는 머지 불가입니다.** 월 경계와 기본 역방향 유일성 구현은 맞지만, 부분 리전 실패에 의한 불완전 색인 교체가 오연결을 재도입합니다. 최소한 하나라도 리전 수집에 실패하면 기존의 완전 색인을 유지하거나, IP 색인을 콜드 처리해 IP 근거를 전면 비활성화해야 합니다.
