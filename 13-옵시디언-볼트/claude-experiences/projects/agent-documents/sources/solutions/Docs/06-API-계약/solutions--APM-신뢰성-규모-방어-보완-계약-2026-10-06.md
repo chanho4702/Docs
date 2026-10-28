@@ -1,0 +1,40 @@
+# APM 신뢰성·규모 방어 보완 계약 — 2026-10-06
+
+사용자 지시로 SOLO-CODEX에서 수행. BE는 `moveseye-be-spring`, FE는 성공 응답 shape 변경이 없어 코드 변경하지 않는다. 기존 `ApmCollectorController.java` 미커밋 수정은 보존한다.
+
+## 메트릭 수신
+
+- `POST /apm/otlp/v1/metrics`(기존 호환 경로 `/apm/otlp/v1/metrics/v1/metrics` 포함). Collector 수신 토큰의 Bearer 인증, OTLP JSON 요청, gzip 옵션과 라이선스 판정은 기존 `ApmOtlpController` 계약을 유지한다.
+- 같은 토큰·같은 해제 후 본문의 메트릭 영수증 선점과 1분 적재는 하나의 DB 트랜잭션이다. 영수증 보존 범위 안의 동일 본문 동시 요청·응답 유실 후 재전송은 한 번만 적재한다.
+- 정상·이미 처리한 본문은 실제 HTTP 200 `{}`. 정책상 제외의 기존 OTLP `partialSuccess`는 유지한다.
+- 일시적인 서비스 귀속 또는 DB 적재 실패는 전체 배치를 재전송할 수 있게 실제 HTTP 503. 일부 리소스만 귀속에 실패한 경우도 정상 부분을 먼저 영속화하지 않는다.
+- 트레이스 수신의 기존 영수증 경로·응답은 이번 작업에서 바꾸지 않는다.
+- 메트릭 관리/조회 API의 `ApiResult` envelope와 달리 OTLP 수신은 실제 HTTP 상태를 쓰는 기존 예외 계약을 따른다.
+
+## 실시간 SSE
+
+- `/apm/live/spans/stream`의 이벤트·payload·인증·권한·연결 admission 계약은 유지한다.
+- 활성·대기·사용자별 연결 제한, snapshot/송신 바이트 예산 유지.
+- 새로운 운영 설정: `app.apm.live.spans.stream.writer-threads`, 환경변수 `APM_LIVE_STREAM_WRITER_THREADS`, 기본 4, 허용 1~32. 비동기 Servlet 송신을 시작하는 워커 수다.
+- 실행기 작업 큐는 활성+대기 연결 상한에 맞추며, 연결 하나에 보류 송신 작업 하나만 둔다. 닫힌 연결의 대기 작업은 제거한다.
+- write timeout은 실제 송신 시작부터 적용하고 executor 대기는 기존 연결 큐 5초 만료 규칙으로 통제한다.
+
+## 조회 자원 제한
+
+[조회 상한 계약](solutions--APM-%EC%8B%9C%EA%B3%84%EC%97%B4-%EC%A1%B0%ED%9A%8C-%EC%9E%90%EC%9B%90-%EC%83%81%ED%95%9C-%EA%B3%84%EC%95%BD-2026-10-06.md)을 따른다. 변경점은 과도한 시간 격자 요청의 `APM_QUERY_TOO_MANY_POINTS` 오류이며 성공 payload와 query 파라미터는 유지한다.
+
+## RUM Web Vitals
+
+- 다운로드/복사되는 `rum-snippet.js`의 Web Vitals 전송만 보완한다. 고객의 기존 복사본에는 자동 적용되지 않는다.
+- 429·502·503·504·네트워크 실패·5초 응답 timeout: 원본문으로 최대 3회 전송, 총 유효기간 60초, backoff+jitter와 Retry-After 준수.
+- 200 partialSuccess와 영구 오류는 재전송하지 않는다. 진행 중 요청을 포함해 보류 관측 20건·직렬화 본문 32KiB 상한, 브라우저 영속 저장 없음.
+- 동의 철회 시 `consentGranted`를 false로 바꾸고 반환된 정리 함수를 호출한다. 예약 전송·in-flight 요청·리스너를 정리한다.
+- pagehide는 예약 재시도를 폐기하고 마지막 Vital·in-flight keepalive는 1회에 맡긴다. 페이지 종료 전달 보증 없음. pageshow에서 새 관측은 다시 받을 수 있다.
+- 서버의 기존 영수증·일 예산 계약 유지. 서버 적재 실패는 환급하지만, 서버 성공 후 응답만 유실된 재전송은 수신 예산을 다시 소비할 수 있다.
+- OTel trace exporter SDK 재시도 정책 변경은 없다.
+
+## 🔄 FE 요청사항
+
+필수 FE 코드 변경 없음. 성공 응답/서비스 경로/래퍼 깊이를 유지한다. 조회 상한 오류는 기존 Axios body-code 오류 경로가 처리한다.
+
+적용·검증 상태는 [대규모 운영 준비 상태](../01-%EC%A0%9C%ED%92%88-%EB%AC%B8%EC%84%9C/%EA%B0%9C%EC%9A%94/solutions--APM-%EA%B5%AC%ED%98%84-%EB%B3%B4%EC%99%84%EA%B3%BC-%EB%8C%80%EA%B7%9C%EB%AA%A8-%EC%9A%B4%EC%98%81-%EC%A4%80%EB%B9%84-%EC%83%81%ED%83%9C.md)와 각 검증 산출물을 따른다. 이번 작업은 운영 배포를 포함하지 않는다.

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 기능 문서 목록</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 기능 문서 목록</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 기획, 개발, QA, 운영</div><div><strong>문서 상태:</strong> review</div><div><strong>기준일:</strong> 2026-08-05</div><div><strong>정본 위치:</strong> C:/solutions/moveseye-docs/features</div></div>
+<h1>기능 문서 목록</h1>
+<p>완료된 기능의 “왜·경계·운영·검증”을 한곳에서 찾기 위한 디렉터리다. Controller와 component를 나열하는 문서가 아니라, 다음 질문에 답하는 문서만 둔다.</p>
+<ul>
+<li>사용자가 달성하는 목표는 무엇인가?</li>
+<li>원천 데이터와 편집 소유자는 누구인가?</li>
+<li>BE↔FE 요청·응답과 상태 전이는 무엇인가?</li>
+<li>권한·실패·빈 데이터·동시성은 어떻게 처리하는가?</li>
+<li>어떤 runtime evidence로 동작을 확인했는가?</li>
+</ul>
+<p>새 문서는 <strong>기능 문서 템플릿</strong>을 복사한다.</p>
+<p>현재 stable 영역으로 승격 완료된 기능 문서는 <strong>0건</strong>이다. 아래 <code>_workspace</code> 원천은 설계·계약·QA 증거이며 current 기능 문서를 대신하지 않는다.</p>
+<h2>승격 대기 목록</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>기능</th><th>기존 원천</th><th>우선순위</th></tr></thead>
+<tbody>
+<tr><td>자산 core</td><td><code>_workspace/designs/devdesign_assets-core.md</code>, <code>contract_assets-core.md</code></td><td>높음</td></tr>
+<tr><td>비용 대시보드·CSV upload</td><td><code>_workspace/designs/devdesign_asset-cost.md</code>, <code>contract_asset-cost.md</code>, <code>e2e_cost-dashboard.md</code></td><td>높음</td></tr>
+<tr><td>네트워크 맵</td><td><code>_workspace/designs/devdesign_network-maps.md</code>, <code>contract_network-maps.md</code></td><td>높음</td></tr>
+<tr><td>지리 맵</td><td><code>_workspace/designs/devdesign_geo-maps.md</code>, <code>contract_geo-maps.md</code>, <code>e2e_geo-maps.md</code></td><td>높음</td></tr>
+<tr><td>Host 등록</td><td><code>_workspace/designs/devdesign_host-registration.md</code>, <code>contract_host-registration.md</code></td><td>높음</td></tr>
+<tr><td>수집 엔진</td><td><code>_workspace/designs/devdesign_collector-engine.md</code>, engine module README</td><td>높음</td></tr>
+<tr><td>Zabbix Item/Trigger 관리</td><td>관련 design·contract·E2E</td><td>중간</td></tr>
+<tr><td>Host Group 모니터링</td><td>관련 contract·E2E</td><td>중간</td></tr>
+</tbody></table>
+<h2>문서명</h2>
+<p><code>&amp;lt;domain&amp;gt;-&amp;lt;feature&amp;gt;.md</code> 형식을 사용한다. 예: <code>asset-cost-bulk-upload.md</code>, <code>zabbix-host-management.md</code>.</p>
+</body></html>

@@ -1,0 +1,4 @@
+동의 URL 을 .consent-url.txt 에 썼습니다 (sns=f8962f17-9f12-43d0-91f5-7f3a626c1bbf.6a429133-1034-43cc-8201-71fd054b1497, scope=read:organization:custom read:forge-app:jira offline_access)
+localhost:8765 콜백 대기 중
+토큰 응답: 200 scope= f8962f17-9f12-43d0-91f5-7f3a626c1bbf.6a429133-1034-43cc-8201-71fd054b1497:read:organization:custom offline_access read:forge-app:jira expires_in= 3600 refresh_token= true 
+accessible-resources: 200 []

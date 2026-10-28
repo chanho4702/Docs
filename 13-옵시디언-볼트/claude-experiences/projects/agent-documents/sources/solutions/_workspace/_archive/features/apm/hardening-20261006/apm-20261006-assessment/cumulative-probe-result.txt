@@ -1,0 +1,20 @@
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+NORMALIZED={"http.request.method":"GET","http.route":"/orders","status_class":"2xx"} SAME_KEY=true
+COLLISION_BASE=100,20
+COLLISION_NEXT=90,22 EXPECTED=10,2
+ORDER_BASE=Optional.empty
+ORDER_DELTAS=20.0,110.0,20.0 EXPECTED_TOTAL=30
+
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+NODE A INPUT=100 DELTA=Optional.empty
+NODE B INPUT=110 DELTA=Optional.empty
+NODE A INPUT=120 DELTA=Optional[DeltaValues[count=0, sum=20.0, bucketCounts=null]]
+NODE B INPUT=130 DELTA=Optional[DeltaValues[count=0, sum=20.0, bucketCounts=null]]
+NODE A INPUT=140 DELTA=Optional[DeltaValues[count=0, sum=20.0, bucketCounts=null]]
+NODE B INPUT=150 DELTA=Optional[DeltaValues[count=0, sum=20.0, bucketCounts=null]]
+BOUNDS_CHANGE COUNT=1 BUCKETS=[0, 10] BUCKET_SUM=10
+FUTURE_ACCEPTED=2030-01-01T00:00:00Z

@@ -1,0 +1,160 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046679">English</a></p>
+<h2>접근 권한</h2>
+<p>프로젝트 상세는 <strong>탭마다 권한이 다릅니다.</strong> 권한이 없는 탭은 목록에 나타나지 않습니다.</p>
+<table>
+<thead>
+<tr>
+<th>탭 / 서브탭</th>
+<th>조회</th>
+<th>편집(쓰기)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>대시보드</strong></td>
+<td>「대시보드」 읽기</td>
+<td>「대시보드」 쓰기 (위젯 추가·레이아웃·필터)</td>
+</tr>
+<tr>
+<td><strong>인력 관리</strong> &gt; 인력 목록</td>
+<td>「프로젝트 관리」 읽기</td>
+<td>「프로젝트 관리」 쓰기 또는 「자원관리」 쓰기</td>
+</tr>
+<tr>
+<td><strong>인력 관리</strong> &gt; 급여 관리</td>
+<td>「비용」 읽기</td>
+<td>「비용」 쓰기</td>
+</tr>
+<tr>
+<td><strong>인력 관리</strong> &gt; 작업 배정</td>
+<td>「프로젝트 관리」 읽기 또는 「자원관리」 읽기</td>
+<td>「프로젝트 관리」 쓰기 또는 「자원관리」 쓰기</td>
+</tr>
+<tr>
+<td><strong>작업 관리</strong> (목록·트리·간트·맵)</td>
+<td>「프로젝트 관리」 읽기</td>
+<td>「프로젝트 관리」 쓰기</td>
+</tr>
+<tr>
+<td><strong>프로젝트 캘린더</strong></td>
+<td>「프로젝트 관리」 읽기</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>분석 및 리포트</strong> &gt; 작업·인력 분석</td>
+<td>「리포트」 읽기</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>분석 및 리포트</strong> &gt; 팀</td>
+<td>「리포트」 읽기 <strong>+</strong> 「프로젝트 관리」 읽기</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>분석 및 리포트</strong> &gt; 진척률</td>
+<td>「리포트」 읽기</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>분석 및 리포트</strong> &gt; 비용</td>
+<td>「비용」 읽기</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>분석 및 리포트</strong> &gt; 작업 이력</td>
+<td>「프로젝트 관리」 <strong>쓰기</strong> (탭 노출 조건)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>문서 관리</strong></td>
+<td>「프로젝트 관리」 읽기</td>
+<td>「프로젝트 관리」 쓰기 (+ 작업 연결은 Jira의 Edit Issues)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>프로젝트 상세에 진입하는 것 자체</strong>는 「프로젝트 관리」 읽기와 조회 범위 통과가 전제입니다. 범위 밖 프로젝트는 주소로 접근해도 거부됩니다.</li>
+<li>총 인건비·급여·비용은 「비용」 권한이 없으면 <strong>0원이 아니라 항목 자체가 사라집니다.</strong></li>
+<li>작업 관리의 편집은 앱 권한 외에 <strong>Jira 자체 권한</strong>(이슈 편집·일정 변경·담당자 지정·이슈 연결)도 필요합니다.</li>
+</ul>
+<p>프로젝트 목록·칸반·My Work 카드에서 프로젝트를 클릭하면 상세 화면으로 이동합니다.</p>
+<blockquote>
+<p><strong>[이미지 삽입 위치 · 추가 캡처 필요]</strong> 프로젝트 상세 — ① 브레드크럼(프로젝트 관리 / 프로젝트명 / 탭 / 하위 탭) ② 링크 복사 ③ 상위 탭 6개 ④ 하위 탭.</p>
+</blockquote>
+<h2>상단 헤더</h2>
+<ul>
+<li><strong>브레드크럼</strong>: <code>프로젝트 관리 / 프로젝트명 / 탭 / 하위 탭</code>. 각 항목을 눌러 목록이나 상위 탭으로 돌아갑니다.</li>
+<li><strong>링크 복사</strong>: 지금 보고 있는 탭·하위 탭·보기 방식까지 담긴 주소를 복사합니다. 받은 사람은 같은 화면(예: 이 프로젝트의 작업 관리 &gt; 간트)으로 바로 들어옵니다.</li>
+<li>탭을 바꾸면 주소도 함께 바뀌므로 <strong>새로고침·뒤로 가기</strong>가 탭 단위로 동작합니다.</li>
+</ul>
+<h2>탭 구성</h2>
+<table>
+<thead>
+<tr>
+<th>탭</th>
+<th>하위</th>
+<th>문서</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>대시보드</strong></td>
+<td></td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178889">5.1</a></td>
+</tr>
+<tr>
+<td><strong>인력 관리</strong></td>
+<td>인력 목록 / 급여 관리 / 작업 배정</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256">5.2</a></td>
+</tr>
+<tr>
+<td><strong>작업 관리</strong></td>
+<td>목록 / 트리 / 간트 / 맵 (보기 전환)</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">5.3</a></td>
+</tr>
+<tr>
+<td><strong>프로젝트 캘린더</strong></td>
+<td></td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173113349">5.4</a></td>
+</tr>
+<tr>
+<td><strong>분석 및 리포트</strong></td>
+<td>작업 / 인력 / 팀 / 진척률 / 비용 / 작업 이력</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178897">5.5</a></td>
+</tr>
+<tr>
+<td><strong>문서 관리</strong></td>
+<td>문서 / 작업 (보기 전환)</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718778">5.6</a></td>
+</tr>
+</tbody></table>
+<h2>어디부터 봐야 하나</h2>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th>순서</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트를 막 만들었다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256">5.2 인력 관리</a>로 사람을 넣고 → <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">5.3 작업 관리</a>로 이슈를 편입(수동 또는 자동 편입)</td>
+</tr>
+<tr>
+<td>일정을 잡아야 한다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">5.3 트리·간트</a></td>
+</tr>
+<tr>
+<td>여러 작업의 일정·계획 작업량을 한 번에 넣어야 한다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">5.3 일괄 적용</a></td>
+</tr>
+<tr>
+<td>주간 보고를 해야 한다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178897">5.5 진척률</a> → <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178889">5.1 대시보드</a></td>
+</tr>
+<tr>
+<td>설계서·회의록을 작업에 연결해야 한다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718778">5.6 문서 관리</a></td>
+</tr>
+<tr>
+<td>인건비를 정리해야 한다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256">5.2 급여 관리</a> → <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178897">5.5 비용</a></td>
+</tr>
+</tbody></table>

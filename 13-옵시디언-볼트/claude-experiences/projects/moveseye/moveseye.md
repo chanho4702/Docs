@@ -129,6 +129,7 @@ status: active
 - **2026-10-27** — **ZM-175 Zabbix Web 시나리오 관리**(유료 `WEB_SCENARIO`, APM 합성 감시와 코드 분리·단계 id 보존·이력에 비밀값 없음) 푸시(BE `21358d8`·FE `edf667c`·발급기 `44bb3e0`) + 요청 걸림 장부 IT 간헐 실패 수정 `c1ebf58`. → [[2026-10-27-zm175-zabbix-web-scenario]]
 - **2026-10-28** — 미뤄 둔 실측 소진: ZM-155 커스텀 지표·콜드 아카이브 S6 통과, ZM-114 워크트리 정리 + 실측 중 발견한 **감사 행위자 이름 null**(APM 9곳) `ActorResolver`로 수정·ArchUnit 규칙 `df1b39f`(미푸시). → [[2026-10-28-runtime-verification-and-actor-fix]]
 - **2026-10-28** — **Zabbix 프록시·프록시 그룹 관리**(기본 기능) BE·FE 구현, BE 검수 2차 승인·FE 1차 반영(2차 대기)·런타임 실측 대기, 미커밋. 🔴 PSK는 결과 TLS에서 빠지면 Zabbix가 지운다(내 첫 해석 오류를 Codex가 정정). → [[2026-10-28-zabbix-proxy-management]]
+- **2026-10-28** — **PC 교체 인계**: `_workspace` 문서·미커밋 프록시 패치·원격에 없는 커밋 번들(BE master·ZM-172·APM 심층 진단·로컬 전용 moveseye-docs)을 Vault로, 복원 순서·남은 작업 정리. → [[2026-10-28-pc-migration-handoff]]
 
 ## 교차 주제 (Topics)
 - [[zabbix-api-quirks]] — ⚠️ JSON-RPC 실전 함정(tags 전체교체·offset 없음·정렬 대소문자·폴백체인이 값을 바꿈 등).

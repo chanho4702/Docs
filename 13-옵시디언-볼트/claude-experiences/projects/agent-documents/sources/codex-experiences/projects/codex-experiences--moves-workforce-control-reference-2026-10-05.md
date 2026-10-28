@@ -1,0 +1,15 @@
+# Moves Workforce 버튼·필드·차트 상세 가이드 — 2026-10-05
+
+사용자가 기능별 안내의 정확성과 상세도를 요청하고 상위 모델 사용을 허용했다. doc-coauthoring의 읽기 전용 독자 검토에 gpt-6-astra를 사용해 실제 UI handler·서비스·권한 범위와 새 설명을 대조했다. 32주제 한영 64페이지에 언어별 211항목군을 추가하고 FAQ·권한 요약·프로젝트 상세 개요·심사 안내 교정을 포함한 기존 71페이지를 Confluence에 갱신했다.
+
+기존 설명과 새 표를 따로 검토하면 모순이 남는다. 기존 Add User 절차의 역할·레벨 선택, 비용 내보내기, 일괄 담당자 변경, 보드 구독, 미존재 이메일 원인 단정, 내 팀 범위의 전사 인력 조회 허용 설명을 제거했다. UI 번역의 오래된 문구도 그대로 옮기지 않는다. 후보 데이터는 실제 TeamAnalyticsScope와 서비스 필터가 근거다.
+
+입력값의 서버 검증만 읽으면 실제 입력 UX를 놓친다. 급여 밴드 입력은 숫자 외 문자를 제거하므로 -100이 100, 1.5가 15로 보일 수 있다. 금액 필드는 인원별 정책에서 숨겨져 최초 밴드 설정은 정책 전환 후 입력해야 한다. CPI가 0인 예상 완료 비용은 계획 비용을 대신 표시해 같은 막대를 위험 없음으로 해석할 수 없다. 필터 범위와 TOP50→TOP10 같은 집계 제한도 계산식과 함께 설명했다.
+
+게시 검증은 제목·H2 확인에 더해 새 표의 셀과 문장을 공개 storage 본문과 대조했다. 새 참조 64/64, 본문 1,334항목 통과. 핵심42·부속46·심사2 공개 검사와 한영44쌍88페이지 전환 검사, 기존 상세절차16페이지371항목 회귀도 통과했다. Confluence는 ÷·≤·×·−·곱셈·스마트 따옴표 등을 HTML entity로 바꾸므로 문자 정규화가 필요하다. 누락 판정을 원문 entity와 대조한 뒤 게시 누락과 구분했다.
+
+부속 준비기의 기본 실행은 예전 한국어 매뉴얼에서 원본을 다시 생성한다. 보강 후 `prepare-supplemental.cjs --html-only`로 HTML만 재생성해야 한다. 교정 전 내용을 만드는 이전 enrich generator도 그대로 재실행하지 않는다. Chrome 공식 UI publisher의 본문 제거 확인이 1회 실패했으며 새 본문을 게시하지 않고 중단한 뒤 publishCurrent 재시도로 복구했다.
+
+실제 UI 저장·역할별 설치 버전 검증과 문서 소스 대조는 구분한다. 기능의 항목군 수를 전체 버튼 전수 실동작 검증으로 보고하지 않는다. 이미지 실제 첨부0, 위치 표시77, 기존 캡처20+진단1 상태를 그대로 기록했다. 앱 코드·실사용 데이터 mutation·배포·커밋·Marketplace 제출은 하지 않았다.
+
+관련: [[projects/agent-documents/sources/codex-experiences/projects/codex-experiences--moves-workforce-guide-walkthroughs-2026-10-05|moves-workforce-guide-walkthroughs-2026-10-05]], [[projects/agent-documents/sources/codex-experiences/projects/codex-experiences--moves-workforce-bilingual-completion-2026-10-05|moves-workforce-bilingual-completion-2026-10-05]]

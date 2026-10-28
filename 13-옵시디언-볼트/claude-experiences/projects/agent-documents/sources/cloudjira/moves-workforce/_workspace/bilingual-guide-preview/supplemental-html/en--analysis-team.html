@@ -1,0 +1,58 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173277212">한국어</a></p>
+<h2>Responsible teams and contributing teams</h2>
+<p>Project team analysis compares the project&#39;s assigned responsible teams with teams that recorded worklogs in the selected period. It requires Report read, Project read, and access to the project.</p>
+<table>
+<thead>
+<tr>
+<th>Relationship</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Responsible and contributing</td>
+<td>Assigned ownership and recorded contribution agree</td>
+</tr>
+<tr>
+<td>Responsible without contribution</td>
+<td>The team owns the project but has no worklog contribution in the selected period</td>
+</tr>
+<tr>
+<td>Contributing without responsibility</td>
+<td>A team outside the assigned ownership list has contributed work</td>
+</tr>
+</tbody></table>
+<h2>Period and membership</h2>
+<p>Select a period when reviewing actual contribution. Team grouping uses current membership. It does not reconstruct the organizational assignment a person had when an old worklog was entered.</p>
+<h2>Cost visibility</h2>
+<p>Team cost is shown only with Cost access. Where it is labeled as the whole-project cost, it covers the project&#39;s full period and is independent of the worklog period filter. A hidden amount does not mean zero cost.</p>
+<p>Use differences between responsibility and contribution as a prompt to review staffing or ownership. The app does not automatically change responsible teams to match the worklogs.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Project team analysis compares responsible teams with actual contribution. Assignment and recorded contribution do not automatically coincide.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Period / team contribution</td>
+<td>Compare effort recorded in the selected period by members grouped under current teams.</td>
+<td>After membership changes, historical work can be grouped under the current team.</td>
+</tr>
+<tr>
+<td>Assigned teams vs contribution</td>
+<td>Compare project team assignment and worklog contribution as separate axes.</td>
+<td>Inspect assignment-without-effort and contribution-without-assignment. Do not read failed loading as no assignment.</td>
+</tr>
+<tr>
+<td>Team cost</td>
+<td>View team labor cost with financial access. Distinguish contribution dates from the salary/schedule cost basis.</td>
+<td>Distinguish denied access from zero cost and check personal/level policy.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

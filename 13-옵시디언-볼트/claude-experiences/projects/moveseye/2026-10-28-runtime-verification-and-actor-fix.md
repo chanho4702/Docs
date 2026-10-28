@@ -15,13 +15,13 @@ status: done
 BE `3cc08ea`·FE `ba018f0`이 이미 master에 같은 내용으로 있음을 확인하고 `C:/worktrees/zm-114-be`·`-fe`와 로컬 브랜치 삭제. 🔴 지우기 전에 다른 워크트리의 node_modules 정션이 이 폴더를 가리키는지 확인(메모리 `worktree-remove-junction-node-modules`) — zm-114-fe는 실물 node_modules였다.
 
 ## 2. ZM-155 커스텀 지표 런타임 실측 — 통과
-정본: [contract_apm-metric-allowlist §11](file:///C:/solutions/_workspace/features/apm/metric-allowlist/contract_apm-metric-allowlist.md)
+정본: [contract_apm-metric-allowlist §11](../agent-documents/sources/solutions/_workspace/features/apm/metric-allowlist/solutions--contract_apm-metric-allowlist.md)
 - 규칙 전 폐기 표 `registrable` · 거부 코드(BUILTIN·RESERVED·NOT_OBSERVED·TRUNCATED·INVALID) · 중복 409 · COUNTER 단위 `1`, GAUGE `ms` avg/min/max · 0.2 증가분 보존(`count=0,sum=0.2,observed=true`) · 단위 바뀜은 `CUSTOM_UNIT_MISMATCH`로 폐기 · enable/disable/clear-warning 멱등.
 - 함정: `jvm.memory.used`는 내장 허용목록이라 RESERVED가 아니라 BUILTIN이 먼저 나온다 → RESERVED는 `jvm.rt.custom`으로.
 - 미실측: L5 접힘·L8 경고·다중 노드 전파·fail-closed.
 
 ## 3. 콜드 아카이브 S6 런타임 실측 — 통과
-정본: [qa_zm-156-runtime-s6](file:///C:/solutions/_workspace/features/apm/cold-archive/qa_zm-156-runtime-s6.md)
+정본: [qa_zm-156-runtime-s6](../agent-documents/sources/solutions/_workspace/features/apm/cold-archive/solutions--qa_zm-156-runtime-s6.md)
 - 게이트 거부(최소 여유 10000GB로 `NO_SPACE` 유도) → 보류·배너·`ARCHIVE_HOLD` 알람 → 다음 회차 보관 → DROP·보류 ARCHIVED 해소 · ZIP 1,299행 = DB · 보류 기한(0=무기한, 7 → `HOLD_EXPIRED`) · 크래시 `.partial` 정리 · 동시 3건 중 1건만 실행 · 삭제·경로 조작 거절 · 끄기 시 보류 DISABLED.
 - 재현법: "오늘 지워질 날"은 `apm_retention` 옵션 `traceSummaryDays`를 잠시 줄여 만들고, 보류 기한은 `first_held_at`을 앞당겼다. `apm_retention`은 `logSuccess=false`라 완료를 BE 로그 줄로 감지.
 - 🔴 실측하려면 BE를 `ARCHIVE_ALLOWED_ROOTS`를 넣어 띄워야 한다(없으면 `configured=false`).

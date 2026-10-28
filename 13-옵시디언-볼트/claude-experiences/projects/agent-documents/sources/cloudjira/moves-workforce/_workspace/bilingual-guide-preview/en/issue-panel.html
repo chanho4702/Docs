@@ -1,0 +1,87 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jira issue panels</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Jira issue panels</h1>
+<p><a href="index.html">Guide home</a> · <a href="../ko/issue-panel.html">한국어</a></p>
+<blockquote>
+<p>Review draft: panel availability must be checked on the staging site&#39;s Jira issue screen.</p>
+</blockquote>
+<p>If the installed app version provides Jira issue panels, you can review planned effort and actual work and record time while viewing an issue linked to an app project. If the panel is unavailable, use <strong>Jira → Apps → Moves Workforce → My Work</strong> to record time and the project screens to review results.</p>
+<h2>Required access</h2>
+<ul>
+<li>You must be able to view the issue in Jira.</li>
+<li>Creating worklogs requires Work On Issues and enabled time tracking.</li>
+<li>Editing and deleting your own entries require Edit Own Worklogs and Delete Own Worklogs respectively.</li>
+<li>Project names and links into the app follow app project permissions and visibility scope.</li>
+</ul>
+<h2>Use the panel</h2>
+<ol>
+<li>Open a Jira issue linked to an app project.</li>
+<li>Review the summary in the <strong>Moves Workforce</strong> context panel or open details in its activity tab.</li>
+<li>Check the date, start time, end time, and duration, then describe the work.</li>
+<li>Save and check the recent-worklog list and KPIs.</li>
+<li>Use edit or delete on your own entries when correcting them.</li>
+</ol>
+<blockquote>
+<p>Image candidate IMG-17: the summary panel and activity tab locations on a sample Jira issue.</p>
+</blockquote>
+<h2>Measures and limits</h2>
+<p>Planned effort uses Jira estimates; recorded effort uses worklogs. <strong>My share</strong> means time you recorded and is approximate when the screen retrieves only recent entries. Do not assume the list contains the complete history.</p>
+<p>Worklogs saved in the panel are the same records used by Jira and My Work. Recording them in the activity tab does not create a separate copy.</p>
+<h2>When the panel is missing or shows a notice</h2>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No panel</td>
+<td>Check app-project linkage and whether the installed version includes the panel</td>
+</tr>
+<tr>
+<td>Worklog permission notice</td>
+<td>Check Jira access for the issue and time tracking</td>
+</tr>
+<tr>
+<td>No project link</td>
+<td>Check app Project read and project visibility scope</td>
+</tr>
+<tr>
+<td>Your share is unknown</td>
+<td>Check worklog retrieval errors and partial-list notices</td>
+</tr>
+<tr>
+<td>License notice</td>
+<td>Ask an administrator to check the app license</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>The Jira issue panel depends on installed version, project linking, and visibility conditions. These instructions apply when the panel is available.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Log work / date / start / end / description</td>
+<td>Create a Jira worklog on the current issue. End must follow start; Work On Issues and time tracking are required.</td>
+<td>Check save confirmation/recent entries; do not log the same work again in My Work.</td>
+</tr>
+<tr>
+<td>Reset input / edit / delete entry</td>
+<td>Reset restores input fields. Editing/deleting your record needs the corresponding Jira permissions; deletion removes the original entry.</td>
+<td>Reload a failed-to-load comment before saving. Unsupported original comment formats can allow date/time-only edits while preserving the source.</td>
+</tr>
+<tr>
+<td>Project context / Open in app</td>
+<td>View linked project context/permitted KPIs and open the full app.</td>
+<td>Distinguish unlinked/loading/license notices. Without the panel, use Jira Apps → My Work and project screens.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

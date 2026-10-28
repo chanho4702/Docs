@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+<title id="title">하나의 Trace 안에 여러 Span이 연결된다</title><desc id="desc">하나의 Trace 안에 여러 Span이 연결된다; 주문 요청의 일부 구간을 표현한 가상 예시  /  실제 측정값 아님; MOVESEYE  /  ENGINEERING NOTES; 직접 제작한 설명 도식; Trace ID는 같고, Span ID는 각 구간마다 다르다.; 0 ms; 200 ms; 400 ms; 600 ms; 800 ms; 1000 ms; 주문 API · SERVER; order-api; 1000 ms; DB 조회 · CLIENT; order-api; 180 ms; 결제 호출 · CLIENT; order-api; 550 ms; 결제 처리 · SERVER; payment-api; 500 ms; DB 저장 · CLIENT; order-api; 60 ms; 겹치는 구간의 시간을 모두 더하지 않는다; 클라이언트 호출 550ms 안에 서버 처리 500ms가 포함된다. 전체 요청은 1,000ms다.; Span의 시간 관계와 속성을 바탕으로 추가로 조사할 구간을 좁힌다.</desc>
+<defs>
+<marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#D8E2EA"/></marker>
+</defs>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5"/>
+<rect x="56" y="49" width="8" height="52" rx="3" fill="#087F82" stroke="#087F82" stroke-width="1.5"/>
+<text x="84" y="70.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="#142C3D">하나의 Trace 안에 여러 Span이 연결된다</text>
+<text x="84" y="121.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">주문 요청의 일부 구간을 표현한 가상 예시  /  실제 측정값 아님</text>
+<polyline points="56,838 1384,838" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round"/>
+<text x="56" y="865.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#526777">MOVESEYE  /  ENGINEERING NOTES</text>
+<text x="1384" y="865.0" dominant-baseline="central" text-anchor="end" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="400" fill="#526777">직접 제작한 설명 도식</text>
+<text x="56" y="191.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#087F82">Trace ID는 같고, Span ID는 각 구간마다 다르다.</text>
+<polyline points="420.0,250 420.0,610" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="420.0" y="227.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="16" font-weight="400" fill="#526777">0 ms</text>
+<polyline points="604.0,250 604.0,610" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="604.0" y="227.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="16" font-weight="400" fill="#526777">200 ms</text>
+<polyline points="788.0,250 788.0,610" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="788.0" y="227.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="16" font-weight="400" fill="#526777">400 ms</text>
+<polyline points="972.0,250 972.0,610" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="972.0" y="227.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="16" font-weight="400" fill="#526777">600 ms</text>
+<polyline points="1156.0,250 1156.0,610" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="1156.0" y="227.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="16" font-weight="400" fill="#526777">800 ms</text>
+<polyline points="1340.0,250 1340.0,610" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round" stroke-dasharray="7 6"/>
+<text x="1340.0" y="227.5" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="16" font-weight="400" fill="#526777">1000 ms</text>
+<text x="56" y="287.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="700" fill="#142C3D">주문 API · SERVER</text>
+<text x="56" y="315.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#526777">order-api</text>
+<rect x="420.0" y="280" width="920.0" height="31" rx="7" fill="#2563B5" stroke="#2563B5" stroke-width="1.5"/>
+<text x="430.0" y="295.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">1000 ms</text>
+<text x="56" y="357.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="700" fill="#142C3D">DB 조회 · CLIENT</text>
+<text x="56" y="385.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#526777">order-api</text>
+<rect x="530.4" y="350" width="165.6" height="31" rx="7" fill="#087F82" stroke="#087F82" stroke-width="1.5"/>
+<text x="540.4" y="365.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">180 ms</text>
+<text x="56" y="427.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="700" fill="#142C3D">결제 호출 · CLIENT</text>
+<text x="56" y="455.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#526777">order-api</text>
+<rect x="723.6" y="420" width="506.0" height="31" rx="7" fill="#AA6410" stroke="#AA6410" stroke-width="1.5"/>
+<text x="733.6" y="435.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">550 ms</text>
+<text x="56" y="497.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="700" fill="#142C3D">결제 처리 · SERVER</text>
+<text x="56" y="525.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#526777">payment-api</text>
+<rect x="742.0" y="490" width="460.0" height="31" rx="7" fill="#7257AC" stroke="#7257AC" stroke-width="1.5"/>
+<text x="752.0" y="505.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">500 ms</text>
+<text x="56" y="567.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="700" fill="#142C3D">DB 저장 · CLIENT</text>
+<text x="56" y="595.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="15" font-weight="400" fill="#526777">order-api</text>
+<rect x="1248.0" y="560" width="55.2" height="31" rx="7" fill="#087F82" stroke="#087F82" stroke-width="1.5"/>
+<text x="1238.0" y="575.5" dominant-baseline="central" text-anchor="end" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="17" font-weight="700" fill="#087F82">60 ms</text>
+<rect x="56" y="654" width="1328" height="137" rx="14" fill="#FFF8EB" stroke="#E7D6B4" stroke-width="1.5"/>
+<text x="82" y="688.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#AA6410">겹치는 구간의 시간을 모두 더하지 않는다</text>
+<text x="82" y="731.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#142C3D">클라이언트 호출 550ms 안에 서버 처리 500ms가 포함된다. 전체 요청은 1,000ms다.</text>
+<text x="82" y="764.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#526777">Span의 시간 관계와 속성을 바탕으로 추가로 조사할 구간을 좁힌다.</text>
+</svg>

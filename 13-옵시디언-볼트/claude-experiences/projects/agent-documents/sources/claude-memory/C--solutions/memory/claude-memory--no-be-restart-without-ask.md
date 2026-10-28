@@ -1,0 +1,18 @@
+---
+name: no-be-restart-without-ask
+description: BE(:3000) 재기동·실측 로그인은 사용자가 명시적으로 요청할 때만 — 커밋 승인에 묻어가지 않는다
+metadata: 
+  node_type: memory
+  type: feedback
+  originSessionId: d1440d35-6a53-45af-a8f0-26af2fbaa3c6
+  modified: 2026-09-16T08:15:15.571Z
+---
+
+BE(:3000) 프로세스 종료·재기동, 그리고 실측용 admin 로그인은 사용자가 **따로, 명시적으로** 요청할 때만 한다. 수정·테스트·커밋까지 했으면 거기서 멈추고, 런타임 실측이 필요하면 "재기동하면 확인 가능" 정도로만 알린다.
+
+**Why:** 2026-09-16 SSE ASYNC 디스패치 수정(`28a1ad3`) 때 "재기동할까요? + 커밋 승인?"을 한 메시지로 묶어 물었다. 사용자의 "ㅇㅇ 승인"을 두 질문 모두에 대한 승인으로 읽고 떠 있던 BE를 강제 종료·재기동한 뒤 admin으로 로그인했다. 사용자는 "백엔드 재기동 안해도됨"이라고 답했다. 재기동하면 다른 세션이 쓰던 BE가 끊기고, admin으로 로그인하면 Redis 세션이 바뀌어 사용자 브라우저가 로그아웃된다.
+
+**How to apply:**
+- 파괴적이거나 영향이 큰 행동(재기동·세션 교체)은 커밋 승인 같은 다른 질문과 **한 메시지에 묶어 묻지 않는다**.
+- 답이 짧아서 어느 질문에 대한 것인지 모호하면 좁게 해석한다(이 경우 커밋만).
+- 관련: [[projects/agent-documents/sources/claude-memory/C--solutions/memory/claude-memory--dev-runtime-startup|dev-runtime-startup]], [[projects/agent-documents/sources/claude-memory/C--solutions/memory/claude-memory--commit-requires-approval|commit-requires-approval]]

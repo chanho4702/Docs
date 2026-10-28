@@ -1,0 +1,220 @@
+<h1 id="데이터보안개인정보">데이터·보안·개인정보</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">한국어 가이드</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427">English</a></p>
+<blockquote>
+<p>대상: 사이트 관리자, 보안·개인정보 검토 담당자</p>
+</blockquote>
+<h2 id="요약">요약</h2>
+<ul>
+<li>Moves Approval은 <strong>Atlassian Forge</strong> 앱으로, Atlassian 인프라 안에서만 실행됩니다.</li>
+<li>앱 데이터는 Atlassian이 호스팅하는 <strong>Forge 저장소</strong>(Forge SQL·Forge Key-Value Store)에만 저장됩니다. 외부 서버로 데이터를 보내지 않습니다.</li>
+<li>사용자를 대신해 Confluence에 접근할 때는 <strong>그 사용자의 권한으로</strong> 호출합니다. 사용자는 자신이 볼 수 없는 페이지의 정보를 앱을 통해 볼 수 없습니다.</li>
+<li>앱은 <strong>페이지 본문을 저장하지 않습니다.</strong> 승인 판단에 필요한 버전 번호와 영역 내용의 해시값만 저장합니다. 결재 증명서의 문서 지문도 그때그때 계산할 뿐 본문을 남기지 않습니다.</li>
+<li>앱이 페이지 본문을 <strong>고치는</strong> 경우는 요청자가 선택한 <strong>결재란 자동 추가</strong> 하나뿐이며, 요청자의 권한으로만 고칩니다.</li>
+</ul>
+<h2 id="저장하는-데이터">저장하는 데이터</h2>
+<table>
+<thead>
+<tr>
+<th>데이터</th>
+<th>내용</th>
+<th>목적</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>승인 요청</td>
+<td>페이지 ID·제목·버전, 스페이스 키, 영역 식별자와 내용 해시, 상태, 마감일, 요청 메모(최대 500자), 요청자 계정 ID</td>
+<td>승인 진행과 이력</td>
+</tr>
+<tr>
+<td>결재선과 결정</td>
+<td>단계, 승인자 계정 ID, 결정(승인·반려), 결정 시각, 반려·회수 사유, 대리 결재자</td>
+<td>결정 기록</td>
+</tr>
+<tr>
+<td>감사 이벤트</td>
+<td>요청·승인·반려·회수·만료가 일어난 순서와 사유</td>
+<td>감사 타임라인</td>
+</tr>
+<tr>
+<td>업무함 색인</td>
+<td>계정 ID별 역할(승인자·요청자·참조자)과 차례 여부</td>
+<td>승인 업무함 목록</td>
+</tr>
+<tr>
+<td>앱 내 알림</td>
+<td>수신자 계정 ID, 알림 종류와 변수(문서 제목 등), 읽음 여부</td>
+<td>알림함</td>
+</tr>
+<tr>
+<td>서명</td>
+<td>사용자가 그리거나 올린 서명 이미지(480×160 이하로 축소)</td>
+<td>결정 옆 도장, 결재란</td>
+</tr>
+<tr>
+<td>서명 PIN</td>
+<td>PIN의 <strong>솔트 처리된 PBKDF2 해시</strong>와 실패 횟수. PIN 원문은 저장하지 않습니다.</td>
+<td>결정 확인</td>
+</tr>
+<tr>
+<td>결재 위임</td>
+<td>위임자·대리인 계정 ID, 기간, 메모</td>
+<td>대리 결재</td>
+</tr>
+<tr>
+<td>설정</td>
+<td>정책, 적용 스페이스, 결재선, 승인 그룹, 승인자 명부, 설정 관리자</td>
+<td>앱 동작</td>
+</tr>
+<tr>
+<td>결재 기록 보관 설정</td>
+<td>보관 기간, 마지막 내보내기의 날짜·건수·실행한 관리자 계정 ID</td>
+<td>보관 기간 관리</td>
+</tr>
+<tr>
+<td>설정 변경 이력</td>
+<td>변경한 사용자 계정 ID, 시각, 영역, 내용</td>
+<td>감사</td>
+</tr>
+</tbody>
+</table>
+<p>사용자는 Atlassian <strong>계정 ID</strong>로만 저장됩니다. 이름·이메일·프로필 사진은 저장하지 않고, 화면을 표시할 때마다 Confluence에서 그 시점의 정보를 읽어 옵니다.</p>
+<p>결재 증명서 PDF는 요청할 때마다 브라우저에서 만들어 내려받으며, 앱이 사본을 보관하지 않습니다.</p>
+<h2 id="보관-기간">보관 기간</h2>
+<table>
+<thead>
+<tr>
+<th>데이터</th>
+<th>보관</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>끝난 결재 기록(승인·반려·만료·회수된 요청과 그 결재선·감사 이벤트)</td>
+<td>관리자가 정한 보관 기간(무기한·1·3·5·10년, <strong>기본 3년</strong>) 동안 보관합니다. 기간이 지나도 자동으로 지우지 않으며, 관리자가 <strong>엑셀로 내보낸 뒤</strong> 직접 삭제할 때만 지워집니다.</td>
+</tr>
+<tr>
+<td>진행 중인 요청</td>
+<td>보관 기간 대상이 아닙니다.</td>
+</tr>
+<tr>
+<td>앱 내 알림</td>
+<td>180일 후 자동 삭제</td>
+</tr>
+<tr>
+<td>설정 변경 이력</td>
+<td>1년 후 자동 삭제</td>
+</tr>
+<tr>
+<td>서명·PIN·위임</td>
+<td>사용자가 삭제하거나 바꿀 때까지</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>보관 기간은 설정 → <strong>데이터 관리</strong> → <strong>결재 기록 보관</strong>에서 정합니다. 앱 관리자(Confluence 관리자·설정 관리자)만 이 화면을 쓸 수 있습니다.</li>
+<li>삭제는 <strong>마지막으로 내보낸 범위</strong>만 할 수 있고, 한 번 더 확인한 뒤 실행됩니다. 요청을 삭제하면 그 요청의 결재선·감사 이력·업무함 항목·관련 알림이 함께 지워집니다. <strong>삭제는 되돌릴 수 없습니다.</strong></li>
+<li>보관 기간 변경·내보내기·삭제는 설정 변경 이력에 남습니다(영역 &quot;보관 기간&quot;, 동작 &quot;내보내기&quot;·&quot;정리&quot;).</li>
+<li>사용자는 결재 기록을 수정할 수 없습니다. 결재 기록은 위의 보관 기간·정리 정책에 따라서만 지워집니다.</li>
+</ul>
+<p>앱을 제거한 뒤의 데이터 처리는 Atlassian Forge 플랫폼의 데이터 보관 정책을 따릅니다.</p>
+<h3 id="내보낸-파일">내보낸 파일</h3>
+<p><strong>엑셀로 내보내기</strong>로 받은 .xlsx 파일(시트: 결재 요청 / 결재선 / 이력)에는 문서 제목, 요청 메모, 반려·회수 사유, 그리고 내보낸 시점에 Confluence에서 읽은 <strong>사용자 이름</strong>이 들어 있습니다. 파일은 관리자의 컴퓨터로 내려받아지며 그 뒤의 보관·접근 통제·폐기는 <strong>고객의 책임</strong>입니다. 조직의 기록 보존 정책에 맞는 곳에 보관하세요.</p>
+<h3 id="저장-공간-한도">저장 공간 한도</h3>
+<p>앱 데이터는 Forge SQL의 설치당 저장 한도(1 GiB 기준) 안에 저장됩니다. 한도를 넘으면 새 결재를 저장할 수 없습니다. 설정 → <strong>데이터 관리</strong> → <strong>저장 공간</strong>에서 사용량을 확인할 수 있으며, 80% 이상이면 <strong>주의</strong>, 90% 이상이면 <strong>위험</strong>으로 표시됩니다. 테이블별 크기·행 수는 데이터베이스 통계 기반 추정치입니다.</p>
+<h2 id="confluence에-쓰는-데이터">Confluence에 쓰는 데이터</h2>
+<p>앱이 Confluence에 쓰는 것은 아래 두 가지뿐입니다.</p>
+<table>
+<thead>
+<tr>
+<th>무엇</th>
+<th>언제</th>
+<th>누구의 권한으로</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>결재란 매크로</strong>를 페이지 맨 위에 추가</td>
+<td>페이지 결재를 요청할 때 요청자가 <strong>문서 맨 위에 결재란 추가</strong>를 선택한 경우(기본값은 정책 <strong>승인 요청 시 문서 맨 위에 결재란 자동 추가</strong>, 기본 켬)</td>
+<td><strong>요청자</strong> — 앱 권한으로 쓰지 않습니다</td>
+</tr>
+<tr>
+<td>관련자를 @멘션하는 <strong>댓글</strong></td>
+<td><strong>Confluence 알림으로도 보내기</strong>가 켜진 경우(기본 켬)</td>
+<td>해당 작업을 실행한 사용자(<code>asUser</code>)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>결재란 자동 추가</strong>는 앱이 페이지 본문을 고치는 유일한 경우입니다. 요청자 권한으로 고치므로 페이지 버전이 하나 오르고 페이지 이력에 요청자가 &quot;Moves Approval&quot; 메시지로 남습니다. 문서에 결재란이 이미 있으면 넣지 않고, 요청자에게 편집 권한이 없거나 그 사이 다른 저장이 있으면 넣지 않은 채 요청만 진행합니다. 결재란은 결재 상태를 표시하는 매크로일 뿐 결재 데이터를 본문에 적지 않습니다.</li>
+<li>댓글은 Confluence 콘텐츠이므로 페이지를 볼 수 있는 사람 모두에게 보이고, 앱을 제거해도 남습니다. 결재란 매크로도 페이지 본문에 남지만, 앱을 제거하면 더 이상 동작하지 않습니다.</li>
+</ul>
+<h2 id="결재-증명서">결재 증명서</h2>
+<ul>
+<li>결재 증명서 PDF는 <strong>끝난 결재</strong>에 대해서만, 그 페이지를 <strong>볼 수 있는 사용자</strong>에게만 발급됩니다. 요청이 그 페이지의 것인지 서버에서 다시 확인합니다.</li>
+<li>문서 지문을 계산하려고 결재 대상 버전의 본문을 <strong>증명서를 여는 사용자의 권한으로</strong> 읽고, SHA-256 값만 계산해 돌려줍니다. 본문은 저장하지 않습니다. 그 버전을 읽을 수 없으면 지문을 생략합니다.</li>
+<li>증명서에는 요청자·결재자·처리자 이름, 요청 메모, 반려·회수 사유가 들어갑니다. 내려받은 PDF의 보관과 공유는 고객의 책임입니다.</li>
+</ul>
+<h2 id="요청하는-권한과-용도">요청하는 권한과 용도</h2>
+<table>
+<thead>
+<tr>
+<th>권한</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read:page:confluence</code>, <code>read:content-details:confluence</code>, <code>read:confluence-content.summary</code></td>
+<td>승인 대상 페이지의 제목·버전 확인, 페이지 수정 이벤트 수신, 영역 내용 해시와 결재 증명서의 문서 지문 계산</td>
+</tr>
+<tr>
+<td><code>write:page:confluence</code></td>
+<td>요청자가 선택한 경우 요청자 권한으로 페이지 맨 위에 결재란 매크로 추가</td>
+</tr>
+<tr>
+<td><code>read:space:confluence</code></td>
+<td>적용 스페이스 선택과 스페이스 이름 표시</td>
+</tr>
+<tr>
+<td><code>read:content.permission:confluence</code></td>
+<td>사용자와 승인자의 페이지 보기·편집 권한 확인</td>
+</tr>
+<tr>
+<td><code>read:user:confluence</code></td>
+<td>승인자·참조자 검색과 이름 표시</td>
+</tr>
+<tr>
+<td><code>read:group:confluence</code></td>
+<td>승인 그룹으로 쓸 Confluence 그룹과 구성원 조회</td>
+</tr>
+<tr>
+<td><code>read:comment:confluence</code>, <code>write:comment:confluence</code></td>
+<td>대상 페이지에 @멘션 알림 댓글 작성</td>
+</tr>
+<tr>
+<td><code>storage:app</code></td>
+<td>앱 데이터 저장(Forge 저장소)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="접근-통제">접근 통제</h2>
+<ul>
+<li><strong>모든 요청은 서버에서 권한을 다시 확인합니다.</strong> 화면에 버튼이 보이는지와 관계없이, 앱의 모든 기능은 서버의 권한 표에 선언된 조건(본인 데이터, 페이지 보기·편집 권한, 관리자 권한)을 통과해야 실행됩니다. 선언되지 않은 기능은 실행되지 않습니다.</li>
+<li><strong>목록은 건별로 다시 걸러냅니다.</strong> 승인 업무함은 결과를 돌려주기 전에 사용자가 실제로 볼 수 있는 페이지만 남깁니다.</li>
+<li><strong>페이지 권한을 우회하는 읽기는 사용자에게 돌려주지 않습니다.</strong> 마감 만료·페이지 수정 감지처럼 사용자 없이 도는 작업만 앱 권한으로 페이지를 읽으며, 그 결과는 버전 비교와 해시 계산에만 씁니다.</li>
+<li><strong>앱 권한으로 페이지 본문을 고치지 않습니다.</strong> 결재란 자동 추가는 요청자 권한으로만 실행됩니다.</li>
+<li><strong>동시 결정에 안전합니다.</strong> 같은 순간 여러 결정이 들어와도 한 대상에는 진행 중 요청이 하나만 존재하며, 다른 사람의 결정을 덮어쓸 수 없습니다.</li>
+<li><strong>마감 이후 결정은 서버가 거절합니다.</strong> 정기 정리가 돌기 전이라도 마감이 지난 요청에 대한 승인·반려는 기록되지 않습니다.</li>
+<li><strong>데이터 관리</strong>(저장 공간·결재 기록 보관·삭제)는 앱 관리자만 쓸 수 있습니다.</li>
+<li><strong>서명 PIN</strong>은 5회 실패 시 15분 동안 잠깁니다.</li>
+<li><strong>라이선스</strong>가 비활성이면 설정 화면을 제외한 모든 기능이 차단됩니다.</li>
+</ul>
+<h2 id="개인정보-주체-요청">개인정보 주체 요청</h2>
+<p>사용자는 <strong>내 서명</strong>에서 서명과 PIN을, <strong>내 위임</strong>에서 위임을 직접 삭제할 수 있습니다. 승인 결정 기록은 조직의 감사 기록이므로 사용자가 수정하거나 삭제할 수 없으며, 보관 기간이 지난 기록을 관리자가 내보낸 뒤 삭제할 때만 지워집니다. 앱은 이름·이메일을 자체 보관하지 않으므로, Atlassian 계정이 삭제되면 화면에는 Confluence가 그 계정에 대해 돌려주는 정보가 그대로 표시됩니다. 다만 이미 내보낸 엑셀 파일이나 내려받은 증명서 PDF에 들어간 이름은 고객이 관리하는 사본이므로 앱이 바꿀 수 없습니다. 그 밖의 요청은 사이트 관리자를 통해 지원 채널로 문의해 주세요.</p>
+<h2 id="관련-문서">관련 문서</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570662">소개와 핵심 개념</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378">FAQ와 문제 해결</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394">Marketplace 심사 안내</a></li>
+</ul>

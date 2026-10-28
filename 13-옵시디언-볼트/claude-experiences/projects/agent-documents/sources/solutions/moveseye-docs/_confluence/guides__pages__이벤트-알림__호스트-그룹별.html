@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>호스트 그룹별</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>호스트 그룹별</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 운영자, 팀 리더</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/event-alert/by-host-group/ByHostgroup.tsx, ByHostgroupDetail.tsx</div></div>
+<h1>호스트 그룹별</h1>
+<blockquote><p><strong>사이드바</strong> 이벤트/알림 &gt; 호스트 그룹별 <strong>경로</strong> <code>/event-alert/by-hostgroup</code> → 상세 <code>/:id</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>장애를 <strong>조직·서비스 단위로 묶어</strong> 보는 화면이다. <strong>Problem</strong>이 개별 장애 목록이라면, 이 화면은 "어느 그룹에 문제가 몰려 있는가"를 본다.</p>
+<h2>화면 구성</h2>
+<h3>목록</h3>
+<p>호스트 그룹별 이벤트 집계를 표로 본다.</p>
+<ul>
+<li><strong>검색</strong> — 호스트 그룹, 호스트 이름</li>
+<li><strong>기간 필터</strong></li>
+<li>그룹별 발생 건수와 상태</li>
+</ul>
+<h3>상세 (그룹 선택 시)</h3>
+<p>해당 그룹의 이벤트 목록을 본다.</p>
+<ul>
+<li><strong>검색</strong> — 호스트, problem name, 트리거 이름</li>
+</ul>
+<h2>사용 흐름</h2>
+<ol>
+<li>기간을 정한다(주간·월간 회고라면 그에 맞춰).</li>
+<li>발생 건수가 많은 그룹을 찾는다.</li>
+<li>그룹 상세에서 <strong>어떤 호스트·트리거가 반복되는지</strong> 확인한다.</li>
+<li>반복 원인이 명확하면 트리거 임계값 조정이나 근본 조치를 검토한다.</li>
+</ol>
+<h2>언제 이 화면을 쓰나</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>상황</th><th>이유</th></tr></thead>
+<tbody>
+<tr><td>주간·월간 장애 회고</td><td>그룹 단위 집계가 보고에 맞다</td></tr>
+<tr><td>특정 팀의 담당 범위 점검</td><td>호스트 그룹이 대개 조직 단위와 일치한다</td></tr>
+<tr><td>알람 노이즈 찾기</td><td>한 그룹에서 반복 발생하는 트리거를 식별한다</td></tr>
+</tbody></table>
+<h2>주의할 점</h2>
+<ul>
+<li>집계에는 <strong>내 권한 범위의 그룹만</strong> 포함된다. 전사 집계가 필요하면 전체 권한 계정으로 봐야 한다.</li>
+<li>기간을 넓히면 조회가 느려진다. 필요한 범위만 지정한다.</li>
+<li>건수가 많다고 항상 심각한 것은 아니다. <strong>낮은 심각도의 반복 알람</strong>이 건수를 부풀릴 수 있으므로 심각도와 함께 본다.</li>
+</ul>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>Problem</strong></li>
+<li><strong>호스트 그룹 모니터링</strong></li>
+<li><strong>트리거 관리</strong></li>
+</ul>
+</body></html>

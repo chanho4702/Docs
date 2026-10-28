@@ -1,0 +1,41 @@
+---
+type: feature-map
+tags: [moveseye, feature-map, network-map, geo-map, react-flow]
+updated: 2026-10-19
+---
+
+# 네트워크 맵·지리 맵 — 작도·뷰 모드·상태 오버레이·좌표 편집·전파 렌즈
+
+> 기능 지도 [[무브스아이-기능-지도]] · 허브 [[moveseye]] · 링크는 `C:\solutions` 로컬 파일(file://)이라 이 PC에서만 열린다. 읽기용 사본은 [[2026-10-07-docs-reading-repo]].
+
+**한 줄** — 네트워크 맵 편집·뷰 모드 탐색·상태 오버레이·내보내기(archify식 개선), 지리 맵 클러스터·좌표 편집(원천 = Zabbix 인벤토리)·타일, 자산 연결 지점, 전파 가시성 렌즈.
+
+**상태** — 현행. 네트워크 맵(07-13)·지리 맵(07-29)·demo seed(08-10)·archify 개선 ZM-132(09-02, 푸시 완료). 🔴 배포 전 자산 동기화 1회 필요.
+
+## 정본 문서 (moveseye-docs)
+- [네트워크 맵과 지리 맵(상세 가이드)](file:///C:/solutions/moveseye-docs/guides/features/네트워크-맵과-지리-맵.md)
+- [네트워크 맵](file:///C:/solutions/moveseye-docs/guides/pages/자산-관리/네트워크-맵.md)
+- [지리 맵](file:///C:/solutions/moveseye-docs/guides/pages/자산-관리/지리-맵.md)
+
+## 설계·기획 (_workspace)
+- [devdesign_network-maps](file:///C:/solutions/_workspace/features/maps/network-maps/devdesign_network-maps.md)
+- [devdesign_geo-maps](file:///C:/solutions/_workspace/features/maps/geo-maps/devdesign_geo-maps.md)
+- [design_propagation-lens](file:///C:/solutions/_workspace/features/maps/propagation-lens/design_propagation-lens.md)
+
+## 계약 (_workspace/contract_*)
+- [contract_network-maps](file:///C:/solutions/_workspace/features/maps/network-maps/contract_network-maps.md)
+- [contract_geo-maps](file:///C:/solutions/_workspace/features/maps/geo-maps/contract_geo-maps.md)
+- [contract_propagation-lens](file:///C:/solutions/_workspace/features/maps/propagation-lens/contract_propagation-lens.md)
+
+## 보고·검수·QA 증거
+- [review_network-map-archify](file:///C:/solutions/_workspace/features/maps/network-maps/review_network-map-archify.md)
+- [review_geo-map-explore](file:///C:/solutions/_workspace/features/maps/geo-maps/review_geo-map-explore.md)
+
+## 경험 노트 (Vault)
+[[2026-07-13-network-maps]] · [[2026-07-29-geo-maps]] · [[geo-maps-design-spec]] · [[2026-08-10-demo-map-seed]] · [[2026-09-02-network-map-archify]] · [[archify-showcase-authoring]]
+
+## 열린 항목
+- 전파 렌즈(propagation-lens) 미커밋·런타임 미검증
+
+## 이웃 영역
+[[자산과-비용]] · [[Zabbix-구성-관리]] · [[홈과-공통-화면-틀]]

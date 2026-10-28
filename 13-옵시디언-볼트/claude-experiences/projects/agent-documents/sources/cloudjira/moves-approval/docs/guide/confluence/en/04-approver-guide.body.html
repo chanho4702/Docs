@@ -1,0 +1,214 @@
+<h1 id="approver-guide">Approver guide</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">English Guide</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505136">한국어</a></p>
+<blockquote>
+<p>For: approvers on an approval line, and delegates deciding on someone's behalf</p>
+</blockquote>
+<h2 id="find-what-is-waiting-on-you">Find what is waiting on you</h2>
+<p>You can learn about new approval work in any of these places:</p>
+<ul>
+<li><strong>In-app notifications</strong> — When a request is created, every approver on the line receives &quot;{requester} requested approval for {page}.&quot; If you are in a later step, you then wait until the earlier steps finish.</li>
+<li><strong>Confluence notifications</strong> — If an administrator enabled them (on by default), you are @mentioned in a comment on the page <strong>when your step starts</strong>. Confluence delivers it according to your Confluence notification and email settings.</li>
+<li>The Moves Approval summary in the right panel of <strong>Confluence home</strong></li>
+<li>The <strong>approval inbox</strong> — top <strong>Apps</strong> → <strong>Moves Approval</strong> → <strong>My turn</strong> tab</li>
+</ul>
+<p>If an earlier step has not finished, the request appears under <strong>In progress</strong> and no decision buttons are shown (&quot;It is not your turn yet&quot;).</p>
+<h2 id="the-approval-inbox">The approval inbox</h2>
+<table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>My turn</td>
+<td>Requests waiting for your decision (or for someone who delegated to you)</td>
+</tr>
+<tr>
+<td>In progress</td>
+<td>Requests you are on, waiting for an earlier step</td>
+</tr>
+<tr>
+<td>My requests</td>
+<td>Approvals you requested</td>
+</tr>
+<tr>
+<td>Handled</td>
+<td>Requests you already decided</td>
+</tr>
+<tr>
+<td>Cc</td>
+<td>Requests you were copied on</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Filters</strong> — status, page title, space, requester, requested date (today, last 7 days, last 30 days, or a custom range), deadline (due soon only, overdue only, no deadline), and my turn only.</li>
+<li><strong>Deadline badges</strong> — In the deadline column, <code>D-2</code> within three days, <strong>Due today</strong> on the day, and <strong>Overdue</strong> after the deadline. Approval details show the same badge.</li>
+<li><strong>Page names</strong> — A page name is a link. Select it to go to that page; Ctrl-click (Cmd-click on Mac), Shift-click, or middle-click opens it in a new tab. Selecting anywhere else on the row opens approval details. Page names in the notification list work the same way.</li>
+<li><strong>Working with tables</strong> — Drag a column header border to resize the column; double-click it to reset. Below the list you see &quot;Showing N&quot;; if there is more, select <strong>Load more</strong> to continue.</li>
+<li><strong>Export to Excel</strong> — Export up to <strong>5,000 accessible requests</strong> matching the current tab and filters. The export can include items not yet loaded on screen. It contains the request list, not a complete backup of individual decisions and audit history.</li>
+<li>Lists show only pages you can view, so a tab's count (taken before permission filtering) can be higher than the rows you see.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 08-inbox</strong></p>
+<p>My turn with filters, deadlines, and export</p>
+<p>File: <code>ma-08-inbox-en.png</code> · Alt text: My turn with filters, deadlines, and export</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="approve">Approve</h2>
+<ol>
+<li>Select a request to open <strong>Approval details</strong>. Selecting the item below a page title, or <strong>Open approval details</strong> in the page's stamp box, opens the same dialog.</li>
+<li>Review it:
+<ul>
+<li><strong>Request note</strong>, <strong>Progress</strong> (which step is active), and <strong>Approval order and decisions</strong></li>
+<li>If you see <strong>The page changed after this request</strong>, use the <strong>View changes</strong> link to compare the requested version with the current one. The request is for the version it was made against.</li>
+<li>For area approvals, a preview of the area's text (check images, attachments, and other macros on the page)</li>
+</ul>
+</li>
+<li>Select <strong>Approve</strong>. If your site requires a PIN, enter your <strong>Signature PIN</strong>.</li>
+</ol>
+<p>When your step has the approvals it needs, the next step opens. When the last step finishes, the request is <strong>Approved</strong>.</p>
+<blockquote>
+<p>Buttons in the approval dialog always stay in the same place: <strong>Cancel</strong> and <strong>Back</strong> at the far left, and action buttons such as <strong>Approve</strong> and <strong>Reject</strong> at the far right. Even on an empty or error screen, the button at the far left closes the dialog.</p>
+</blockquote>
+<blockquote>
+<p><strong>Screenshot placement · 09-decision</strong></p>
+<p>Reviewing a request before approval or rejection</p>
+<p>File: <code>ma-09-decision-en.png</code> · Alt text: Reviewing a request before approval or rejection</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="reject">Reject</h2>
+<ol>
+<li>In approval details, select <strong>Reject</strong>.</li>
+<li>Enter the <strong>Reason for rejecting</strong> (required by default policy). The requester sees it.</li>
+<li>Confirm, entering your PIN if required.</li>
+</ol>
+<blockquote>
+<p>Rejecting <strong>ends the request immediately</strong>. It does not wait for other approvers in the step or for later steps.</p>
+<p>If Confluence notifications are on, the rejection is also posted as a page comment that page readers may see. Do not put sensitive information in the reason.</p>
+</blockquote>
+<h2 id="approve-several-at-once">Approve several at once</h2>
+<p>On the <strong>My turn</strong> tab, select items with the checkboxes and choose <strong>Approve N selected</strong>.</p>
+<ul>
+<li>Up to <strong>50</strong> items per batch.</li>
+<li>If your site requires a PIN, you enter it <strong>once per batch</strong>.</li>
+<li>Requests past their deadline are excluded from batch approval, and their checkboxes cannot be selected.</li>
+<li>The result reads &quot;Approved N · failed M.&quot; Review failed items individually (for example, someone decided first or the deadline passed in the meantime).</li>
+<li>Rejections are not batched, because each needs its own reason.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 10-bulk</strong></p>
+<p>Bulk approval selection and results</p>
+<p>File: <code>ma-10-bulk-en.png</code> · Alt text: Bulk approval selection and results</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="requests-past-their-deadline">Requests past their deadline</h2>
+<p>After the deadline, approval details show <strong>This request is past its deadline</strong> and the approve and reject buttons disappear. If the dialog stays open across the deadline, this takes effect within 30 seconds. Even if a decision is sent from a screen opened just before the deadline, the server refuses it and expires the request on the spot, so no approval or rejection can happen after the deadline.</p>
+<ul>
+<li>Expiry is processed once a day in the background, so it can take up to a day for the request to be cleaned up as <strong>Expired</strong> in lists. Until then, it shows as <strong>Overdue</strong> in the inbox and as &quot;⌛ Overdue&quot; in the item below the page title.</li>
+<li>If it is still needed, the requester must request approval again. When the new request is made, the earlier request past its deadline expires automatically.</li>
+</ul>
+<h2 id="stamp-box-and-stamps">Stamp box and stamps</h2>
+<p>If the requester added a <strong>stamp box</strong> to the page (automatically at request time, or placed in advance from a template or the editor), you can follow the approval on the page like a paper approval form.</p>
+<ul>
+<li>Each cell shows the <strong>step name</strong> at the top (&quot;Step N&quot; if the step has no name), the <strong>stamp</strong> in the middle, and the <strong>approver's name and decision date</strong> at the bottom. The step whose turn it is has a highlighted header.</li>
+<li>Stamps
+<ul>
+<li><strong>Approved</strong> — a round seal. If you registered a signature image under <strong>My signature</strong>, that image is stamped instead.</li>
+<li><strong>Rejected</strong> — a square &quot;Rejected&quot; seal</li>
+<li><strong>Pending</strong> — a dotted circle</li>
+<li>Cells decided by a delegate are marked &quot;(proxy)&quot;.</li>
+<li>If an administrator turned off signatures and stamps, text is shown instead of a stamp.</li>
+</ul>
+</li>
+<li>If the page is edited after approval, the stamp box shows &quot;The page changed after approval — the current version is not approved.&quot;</li>
+<li><strong>Open approval details</strong> in the stamp box opens the approval dialog.</li>
+<li>For area approvals, the same stamp box is attached below the area panel. Use <strong>Show stamps</strong> / <strong>Hide stamps</strong> to expand or collapse it (expanded by default).</li>
+</ul>
+<h2 id="approval-certificate-pdf">Approval certificate (PDF)</h2>
+<p>For a finished approval (Approved, Rejected, Expired, Withdrawn, and so on), select <strong>Approval certificate (PDF)</strong> next to the title in approval details to download a certificate. The button does not appear for requests still in progress. Anyone who can view the page can download it.</p>
+<ul>
+<li><strong>Contents</strong> — document, space, page ID, target (whole page or region in the page), status, requester, requested and closed dates, request note, the approved version and the current version (whether they match or the page changed after approval), <strong>Approval stamps</strong>, <strong>History</strong> (time, event, by, reason), <strong>Document fingerprint</strong>, and the issue date, issuer, and request ID.</li>
+<li><strong>Document fingerprint</strong> — The SHA-256 of the approved version's page body. Past Confluence versions do not change, so if you later recompute it from the same version and get the same value, the content the certificate refers to is unchanged. If that version's body cannot be read, the certificate is issued without a fingerprint.</li>
+<li>Korean text is embedded in the PDF as images, so it cannot be searched or copied. The request ID and fingerprint appear as text at the bottom of every page and in the PDF document properties (keywords), so they can be copied.</li>
+<li>The certificate is always produced on white paper, even if you use a dark theme.</li>
+</ul>
+<h2 id="my-signature-and-signature-pin">My signature and signature PIN</h2>
+<p>Set these up under <strong>My signature</strong> in the approval inbox.</p>
+<ul>
+<li><strong>Signature</strong> — <strong>Draw your signature</strong>, or <strong>Upload image</strong> (PNG or JPEG, up to 2MB). It is stamped next to your decision in the <strong>Approval order and decisions</strong> table and in the page's stamp box. Without one, an <strong>automatic name stamp</strong> is used. Stamps are shown 32px tall in the table, so wide signatures read best.</li>
+<li><strong>Signature PIN</strong> — 4 to 12 digits. If an administrator turned on &quot;Require the signature PIN to confirm approvals and rejections,&quot; you must set one before deciding.
+<ul>
+<li>Five failures lock it for 15 minutes.</li>
+<li>Changing or removing your PIN requires the current PIN. The app does not provide an administrator PIN reset feature. If you forget your PIN, contact your site administrator and support for guidance.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 11-signature</strong></p>
+<p>My signature and PIN settings</p>
+<p>File: <code>ma-11-signature-en.png</code> · Alt text: My signature and PIN settings</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="delegation-when-you-are-away">Delegation (when you are away)</h2>
+<p>If an administrator allows delegation, set it up under <strong>My delegation</strong> in the approval inbox.</p>
+<ol>
+<li>Choose a <strong>Delegate</strong>.</li>
+<li>Enter <strong>Starts</strong> and <strong>Ends</strong> dates, and optionally a <strong>Note</strong>, then save.</li>
+<li>To end it early, select <strong>Remove delegation</strong>.</li>
+</ol>
+<p>During that period your delegate can decide on requests that are your turn. The approval table records <strong>your name</strong>, and the person who actually decided is shown alongside as &quot;On behalf · {delegate}.&quot;</p>
+<blockquote>
+<p><strong>Screenshot placement · 12-delegation</strong></p>
+<p>Delegate and delegation dates</p>
+<p>File: <code>ma-12-delegation-en.png</code> · Alt text: Delegate and delegation dates</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="if-you-are-a-delegate">If you are a delegate</h2>
+<p><strong>People who delegated to me</strong> on the <strong>My delegation</strong> screen shows who delegated to you. During the delegation period, their turns appear in your <strong>My turn</strong> tab tagged <code>For: {name}</code>. Approve or reject them as usual.</p>
+<h2 id="common-messages">Common messages</h2>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Meaning and fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>It is not your turn yet.</td>
+<td>The request moves to <strong>My turn</strong> when the earlier step finishes.</td>
+</tr>
+<tr>
+<td>You already decided on this request.</td>
+<td>Refresh to see the latest state. Decisions cannot be changed.</td>
+</tr>
+<tr>
+<td>This approval request has already ended.</td>
+<td>It ended through another approver's rejection, a withdrawal, or expiry. You also see this when you send a decision on a request past its deadline.</td>
+</tr>
+<tr>
+<td>Another user changed this request first.</td>
+<td>Another decision arrived at the same moment. Refresh and try again.</td>
+</tr>
+<tr>
+<td>No signature PIN is registered.</td>
+<td>Set one under <strong>My signature</strong> first.</td>
+</tr>
+<tr>
+<td>The PIN is locked.</td>
+<td>Try again in 15 minutes.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Confirmed decisions cannot be reversed. If the request is still open, ask the requester to withdraw it and create a new request. If it has already ended, create a new request. The earlier decisions and history remain.</p>
+</blockquote>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472404">Overview and key concepts</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">FAQ and troubleshooting</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">Marketplace review guide</a></li>
+</ul>

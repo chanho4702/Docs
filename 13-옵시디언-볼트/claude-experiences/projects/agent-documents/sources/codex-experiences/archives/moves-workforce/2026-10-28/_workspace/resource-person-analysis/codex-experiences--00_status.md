@@ -1,0 +1,21 @@
+# 작업 상태
+
+- 기준 HEAD: 0e9074cb08c1703c1f8fb6e449c1865cdc9271c0
+- 기존 변경: AGENTS.md, README.md (보존)
+- 작업 디렉토리: _workspace/resource-person-analysis
+- 설계: /root/analysis_design 완료, 01_architect_design.md 소유
+- backend: /root/analysis_backend 완료, src 및 backend 테스트/보고서 소유
+- frontend: /root/analysis_frontend 완료, UI/집계/번역 및 실제 backend 계약 검증 완료.
+- verifier: /root/analysis_verify 정적 교차검토 완료, 03_verify_report.md 소유
+- 루트: 요구사항·상태 기록, 통합 검증 준비 및 최종 검토
+- 구현·필수 실행 검증 완료. 배포·커밋·푸시 미실행.
+- 확정 범위: /resource/people/:accountId, 기본28일/최대92일, 신규 분석 endpoint와 프로필 기본정보/스킬/프로젝트 경험. 기존 profile load/진행작업은 신규 페이지에 복제하지 않음.
+- 구현 전 backend baseline: npm test -- --runInBand, root, exit 0, 112 suites / 1511 tests 통과. 로그 backend-baseline.log. 변경 후 필수 검증은 별도 실행한다.
+- 최종 backend: npm test -- --runInBand, root, exit0, 113 suites/1549 tests. backend-final.log.
+- 최종 frontend: npm test -- --runInBand, static/ui, exit0, 111 suites/1753 tests/1snapshot. frontend-final.log.
+- 최종 CI build: CI=true npm run build, static/ui, exit0. frontend-build.log. 기존 외부 라이브러리 sourcemap 경고. main gzip450262 / budget950000 이내.
+- 최종 브라우저 fixture: browser/verify.cjs exit0, browser/result.json. 상세보기/계정전달/총합/프로젝트필터/이슈링크/기간검증/오류/재시도/빈결과/복귀 및 JS오류0. final.png 한글/차트/표 확인. 실제 Jira 연동 아님.
+- 복구: 신규 한글 문자열이 PowerShell→Python stdin 과정에서 물음표로 저장되어 apply_patch UTF8 복구 및 merge, 한글/생성본 검증과 회귀 테스트 추가. 초기 build 중단 및 그에 따른 lint index.html 누락은 최종 build 후 lint 재실행으로 확인한다.
+- 경험 기록: Codex-experiences/projects/moves-workforce-person-analysis-2026-09-07.md 및 INDEX 연결.
+- 최종 forge lint: app root pwd 후 실행, exit0/No issues found. forge-lint.log. PermissionLinter의 Unknown product 경고로 일부 product permission 검사는 미검증. CLI 업데이트 안내도 있음.
+- 최종 git diff --check exit0. 기존 AGENTS.md/README.md 변경 보존. 실제 Jira 설치의 권한/응답시간/E2E는 미검증.

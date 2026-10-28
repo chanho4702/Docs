@@ -1,0 +1,9 @@
+Fetching custom scopes...
+✔ Completed fetching custom scopes
+┌──────────────────────────┬───────────────────────────────────┐
+│ Name                     │ Display name                      │
+├──────────────────────────┼───────────────────────────────────┤
+│ read:organization:custom │ Read organization teams and users │
+├──────────────────────────┼───────────────────────────────────┤
+│ read:probe:custom        │ Probe temporary                   │
+└──────────────────────────┴───────────────────────────────────┘

@@ -1,0 +1,188 @@
+{
+    "schema_version":  2,
+    "diagram_type":  "workflow",
+    "meta":  {
+                 "title":  "워크로그 저장부터 승인 확정까지",
+                 "quality_profile":  "showcase"
+             },
+    "lanes":  [
+                  {
+                      "id":  "main",
+                      "label":  "정상 처리"
+                  },
+                  {
+                      "id":  "recovery",
+                      "label":  "사용자 조치·복구",
+                      "variant":  "exception"
+                  }
+              ],
+    "mainPath":  [
+                     "save",
+                     "request",
+                     "decision",
+                     "lock",
+                     "publish"
+                 ],
+    "nodes":  [
+                  {
+                      "id":  "save",
+                      "lane":  "main",
+                      "col":  0,
+                      "type":  "frontend",
+                      "label":  "정상 경로 저장",
+                      "sublabel":  "Jira 저장 성공",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "request",
+                      "lane":  "main",
+                      "col":  1,
+                      "type":  "backend",
+                      "label":  "승인 요청 접수",
+                      "sublabel":  "자동 또는 수동",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "decision",
+                      "lane":  "main",
+                      "col":  2,
+                      "type":  "security",
+                      "label":  "승인자 결정",
+                      "sublabel":  "건별·일괄 승인",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "lock",
+                      "lane":  "main",
+                      "col":  3,
+                      "type":  "database",
+                      "label":  "승인·잠금 확정",
+                      "sublabel":  "현재 원장 우선",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "publish",
+                      "lane":  "main",
+                      "col":  4,
+                      "type":  "messagebus",
+                      "label":  "게시 후 집계",
+                      "sublabel":  "큐 게시·검증 수신",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "select",
+                      "lane":  "recovery",
+                      "col":  1,
+                      "type":  "frontend",
+                      "label":  "승인자 선택·재접수",
+                      "sublabel":  "저장된 기록 유지",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "reject",
+                      "lane":  "recovery",
+                      "col":  2,
+                      "type":  "frontend",
+                      "label":  "반려 사유 확인",
+                      "sublabel":  "수정 가능 여부 확인",
+                      "width":  164,
+                      "height":  84
+                  },
+                  {
+                      "id":  "appeal",
+                      "lane":  "recovery",
+                      "col":  3,
+                      "type":  "security",
+                      "label":  "소명·재승인 요청",
+                      "sublabel":  "사유 필수·잠금 유지",
+                      "width":  164,
+                      "height":  84
+                  }
+              ],
+    "edges":  [
+                  {
+                      "from":  "save",
+                      "to":  "request",
+                      "label":  "정책 확인",
+                      "role":  "main"
+                  },
+                  {
+                      "from":  "request",
+                      "to":  "decision",
+                      "label":  "PENDING",
+                      "role":  "main"
+                  },
+                  {
+                      "from":  "decision",
+                      "to":  "lock",
+                      "label":  "승인",
+                      "role":  "main"
+                  },
+                  {
+                      "from":  "lock",
+                      "to":  "publish",
+                      "label":  "비동기",
+                      "role":  "async"
+                  },
+                  {
+                      "from":  "request",
+                      "to":  "select",
+                      "label":  "미접수·실패",
+                      "role":  "branch"
+                  },
+                  {
+                      "from":  "decision",
+                      "to":  "reject",
+                      "label":  "반려",
+                      "role":  "branch"
+                  },
+                  {
+                      "from":  "lock",
+                      "to":  "appeal",
+                      "label":  "사용자 소명",
+                      "role":  "branch"
+                  },
+                  {
+                      "from":  "select",
+                      "to":  "request",
+                      "label":  "접수 재시도",
+                      "role":  "return"
+                  },
+                  {
+                      "from":  "reject",
+                      "to":  "request",
+                      "label":  "허용된 재요청",
+                      "role":  "return"
+                  },
+                  {
+                      "from":  "appeal",
+                      "to":  "request",
+                      "label":  "새 소명 회차",
+                      "role":  "return"
+                  }
+              ],
+    "cards":  [
+                  {
+                      "dot":  "cyan",
+                      "title":  "자동 요청 ≠ 자동 승인",
+                      "items":  [
+                                    "팀장이 없으면 승인자 선택 필요",
+                                    "접수 실패는 저장 실패와 구분"
+                                ]
+                  },
+                  {
+                      "dot":  "rose",
+                      "title":  "확정·복구 조건",
+                      "items":  [
+                                    "마감 후에는 정상 경로 승인분만 집계",
+                                    "재접수·소명은 새 회차, 게시 지연에도 잠금 유지"
+                                ]
+                  }
+              ]
+}

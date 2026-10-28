@@ -1,0 +1,100 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205193221">한국어</a></p>
+<p>Set site-wide request defaults, notifications, and decision confirmation rules. Use <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205389833">space policies</a> for request defaults such as deadlines. PIN, delegation, and signature behavior currently follow global policy.</p>
+<p><strong>Location:</strong> Settings → <strong>Global policy</strong>.</p>
+<h2>Change policy</h2>
+<ol>
+<li>Review current values and scope. For example, prepare user PIN registration before making it mandatory.</li>
+<li>Edit the values and select <strong>Save policy</strong>.</li>
+<li>Confirm the save, then reopen the screen to check persistence.</li>
+<li>Open a new request and inspect the default deadline and stamp option. Do not assume existing request deadlines or approval lines have changed.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-15</strong> — Separate views of deadline/notification settings and signature/access settings.</p>
+</blockquote>
+<h2>Requests and decisions</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Use and effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default deadline</td>
+<td>7 days</td>
+<td>New-request default; 0 means no deadline. Requesters can change it.</td>
+</tr>
+<tr>
+<td>Rejection reason required</td>
+<td>On</td>
+<td>A reason is needed to confirm rejection.</td>
+</tr>
+<tr>
+<td>Verify approver page access</td>
+<td>On</td>
+<td>Rejects creation if an approver cannot view the page.</td>
+</tr>
+<tr>
+<td>Add stamp box automatically</td>
+<td>On</td>
+<td>Default for the page-request insertion option.</td>
+</tr>
+<tr>
+<td>Show signatures and stamps</td>
+<td>On</td>
+<td>Controls their presentation in decisions and stamp boxes.</td>
+</tr>
+<tr>
+<td>Require signature PIN</td>
+<td>Off</td>
+<td>Users must register a PIN before deciding when enabled.</td>
+</tr>
+<tr>
+<td>Allow delegation</td>
+<td>Off</td>
+<td>Saved delegations have no effect while disabled.</td>
+</tr>
+</tbody>
+</table>
+<h2>Notifications and access</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Use and effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>In-app notifications</td>
+<td>On</td>
+<td>Controls inbox notification creation.</td>
+</tr>
+<tr>
+<td>Confluence notifications</td>
+<td>On</td>
+<td>Creates @mention comments on the target page.</td>
+</tr>
+<tr>
+<td>Due-soon threshold</td>
+<td>24 hours</td>
+<td>Daily checks can notify up to a day early even with a shorter threshold.</td>
+</tr>
+<tr>
+<td>Reminders</td>
+<td>Off; first 3 days, repeat 3 days</td>
+<td>In-app notices to current-step approvers.</td>
+</tr>
+<tr>
+<td>Registered users only</td>
+<td>Off</td>
+<td>Enable after registering users and administrators. Applies site-wide.</td>
+</tr>
+</tbody>
+</table>
+<h2>Status labels</h2>
+<p>Select a state in the diagram to give it an organization-specific name. Leave it empty for each user's language default. Custom names are not translated automatically. Labels do not change approval, rejection, or withdrawal rules. Set review-step names in <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205160463">approval lines</a>.</p>
+<p>Check saved changes in <strong>Change log</strong>. If only one space differs, inspect its overrides before repeatedly saving the global policy.</p>

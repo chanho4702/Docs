@@ -1,0 +1,150 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047815">English</a></p>
+<h2>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>메뉴 노출 (사이드바)</td>
+<td>「권한 관리」 읽기</td>
+</tr>
+<tr>
+<td>휴일 추가·수정·삭제</td>
+<td>「휴일 관리」 쓰기</td>
+</tr>
+<tr>
+<td>휴일 목록 자체</td>
+<td>전역 공개 — 근무일 계산에 쓰이므로 모든 화면에서 읽힙니다</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>알려진 불일치:</strong> 메뉴 노출과 편집 판정이 서로 다른 항목을 씁니다. 「휴일 관리」만 가진 사용자는 <strong>사이드바에 메뉴가 보이지 않아</strong> 휴일 관리 화면 주소로 직접 접근해야 합니다(관리자에게 링크 복사를 요청하세요).</p>
+</blockquote>
+<p><strong>언제 쓰나</strong> — 근무일·가용 MD 계산의 기준이 되는 <strong>공휴일</strong>을 등록할 때.</p>
+<blockquote>
+<p><strong>[이미지 삽입 위치 · 추가 캡처 필요]</strong> 휴일 관리 — ① 월별 1MM 기준(자동 계산) ② 휴일 표(이름·날짜·가용률) ③ 휴일 추가.</p>
+</blockquote>
+<h2>목록 컬럼</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이름</td>
+<td>예: 설날</td>
+</tr>
+<tr>
+<td>날짜</td>
+<td>휴일 날짜</td>
+</tr>
+<tr>
+<td>가용률</td>
+<td>그날의 근무 가능 비율</td>
+</tr>
+<tr>
+<td>작업</td>
+<td>수정·삭제</td>
+</tr>
+</tbody></table>
+<p><strong>휴일 추가</strong>로 이름·날짜·가용률을 입력해 등록합니다.</p>
+<h2>가용률 이해하기</h2>
+<table>
+<thead>
+<tr>
+<th>값</th>
+<th>의미</th>
+<th>차감</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>완전 휴무</td>
+<td><strong>1 MD 차감</strong></td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>반일 근무</td>
+<td><strong>0.5 MD 차감</strong></td>
+</tr>
+<tr>
+<td>1</td>
+<td>정상 근무</td>
+<td>차감 없음</td>
+</tr>
+</tbody></table>
+<h2>계산 규칙</h2>
+<ul>
+<li><strong>주말(토·일)에 등록된 공휴일은 가용 MD 차감에서 제외됩니다.</strong> 기준 작업일(월 기준 MD)이 이미 주말을 빼고 있기 때문입니다.</li>
+<li><strong>개인 휴가는 별도로 반영</strong>됩니다 — 연차 1일당 1 MD, 반차 0.5 MD 차감, &#39;기타&#39;(가용률 1)는 차감 없음.</li>
+</ul>
+<h2>월별 1MM 기준</h2>
+<p>상단에 공휴일과 평일을 기준으로 <strong>자동 계산된 월별 1MM(근무일/시간)</strong> 이 표시됩니다. 휴일을 등록·수정하면 <strong>즉시 반영</strong>됩니다.</p>
+<h2>여기 등록한 휴일이 영향을 주는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>화면</th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172195861">My Work</a></td>
+<td>주·월 목표 시간의 근무일 수, 캘린더의 공휴일 라벨</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173113349">프로젝트 캘린더</a></td>
+<td>공휴일 라벨</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178897">인력 분석</a></td>
+<td>가동률 분모(실효 가용 MD)</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178897">진척률</a></td>
+<td>일정 진척의 근무일 계산</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172195861">워크로그 기간 일괄 입력</a></td>
+<td>공휴일 제외 옵션</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751541">Jira 이슈 패널</a></td>
+<td>이번 달 근무일 기준 MM 환산</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>버튼·입력 항목과 처리 결과 상세</h2>
+<p>휴일은 근무 가능 비율과 월별 MM 계산에 반영됩니다. 개인 휴가 일정과 조직 휴일은 다른 데이터입니다.</p>
+<table>
+<thead>
+<tr>
+<th>버튼·입력 항목</th>
+<th>기능·사용 조건·변경 대상</th>
+<th>결과 확인과 문제 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>연도 선택·월별 1MM 표</td>
+<td>해당 연도의 휴일과 평일을 기준으로 월별 근무일·시간을 확인합니다. 월별 1MM은 자동 계산 결과입니다.</td>
+<td>1MM을 임의 상수로 입력하는 것으로 가정하지 않습니다. 연도와 1일 근무시간을 함께 확인합니다.</td>
+</tr>
+<tr>
+<td>휴일 추가·이름·날짜·근무 비율</td>
+<td>조직 휴일의 날짜와 근무 가능 비율을 정합니다. 0=종일 휴무, 0.5=반일 가용, 1=정상 근무일입니다.</td>
+<td>중복 날짜·이름 안내를 확인하고 저장합니다. 근무 비율을 실제 기록 시간으로 해석하지 않습니다.</td>
+</tr>
+<tr>
+<td>수정·삭제·월 기준 확인</td>
+<td>수정·삭제는 해당 조직 휴일 기준을 변경하고 월 근무일 계산에 영향을 줍니다.</td>
+<td>저장 후 휴일 목록·월별 MM 표를 확인합니다. 집계 기반 목표·가동률은 집계 시각도 확인합니다.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

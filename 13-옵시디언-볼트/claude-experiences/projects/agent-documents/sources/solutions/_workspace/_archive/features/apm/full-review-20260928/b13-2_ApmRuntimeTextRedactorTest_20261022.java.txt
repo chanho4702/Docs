@@ -1,0 +1,216 @@
+package com.dmove.moveseye.premium.apm.core.security;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+/** 처리 중 요청의 지금 하는 일·경로 서버 가리기(전체 검토 B13, 코덱스 설계 1·2차 반례). */
+class ApmRuntimeTextRedactorTest {
+
+    private static final String U = ApmRuntimeTextRedactor.UNMASKABLE;
+
+    @Test
+    @DisplayName("DB — 에이전트가 이미 가린 정상 SQL은 그대로, 숫자는 ?, 식별자 안 숫자·위치 매개변수는 그대로")
+    void dbSanitizedSqlPassesThrough() {
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql select * from orders where id = ? and s = ?"))
+                .isEqualTo("DB postgresql select * from orders where id = ? and s = ?");
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql select * from t2 where c1 = 7 limit 1e3"))
+                .isEqualTo("DB postgresql select * from t2 where c1 = ? limit ?");
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql select * from t where a = $1 and b = $2"))
+                .isEqualTo("DB postgresql select * from t where a = $1 and b = $2");
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql SELECT 123_456_789, 0b101010, 0o755, 0xFF, .25, 1.5E-3"))
+                .isEqualTo("DB postgresql SELECT ?, ?, ?, ?, ?, ?");
+        assertThat(ApmRuntimeTextRedactor.op("DB mssql SELECT * FROM t WHERE a = @p1"))
+                .isEqualTo("DB mssql SELECT * FROM t WHERE a = @p1");
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql SELECT 주문_2 FROM t")).isEqualTo("DB postgresql SELECT 주문_2 FROM t");
+        assertThat(ApmRuntimeTextRedactor.op("DB")).isEqualTo("DB");
+    }
+
+    @Test
+    @DisplayName("🔴 DB — 첫 인용·주석·dollar-quote·모르는 문자에서 멈추고 그 뒤를 버린다(경계를 해석하지 않는다)")
+    void dbStopsAtFirstQuote() {
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql SELECT 'kim@example.com'")).isEqualTo("DB postgresql SELECT ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB mysql update users set pw = 'x''y' where id = 42"))
+                .isEqualTo("DB mysql update users set pw = ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql SELECT \"user\" FROM t")).isEqualTo("DB postgresql SELECT ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB mysql SELECT `user's` FROM t")).isEqualTo("DB mysql SELECT ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB mssql SELECT [user] FROM t")).isEqualTo("DB mssql SELECT ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql SELECT $tag$x$tag$")).isEqualTo("DB postgresql SELECT ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB mysql SELECT 1 -- kim")).isEqualTo("DB mysql SELECT ? ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB mysql SELECT 1 # kim")).isEqualTo("DB mysql SELECT ? ?…");
+        assertThat(ApmRuntimeTextRedactor.op("DB oracle SELECT /*+ index(t) */ a FROM t")).isEqualTo("DB oracle SELECT ?…");
+        // 백슬래시는 어디에 있든 설명 전체가 판정 불가.
+        assertThat(ApmRuntimeTextRedactor.op("DB postgresql SELECT a FROM t WHERE b = E'it\\'s'")).isEqualTo("DB " + U);
+    }
+
+    @Test
+    @DisplayName("🔴 1~5차 검수 반례 전부 — 한 번 가린 결과·다시 가린 결과 어디에도 민감값이 없다")
+    void allReviewBypasses() {
+        String[] inputs = {
+            "DB postgresql insert into t values ('ok', 'kim@exam…",
+            "DB postgresql SELECT $tag1$kim@example.com$tag1$",
+            "DB postgresql SELECT E'it\\'s kim@example.com'",
+            "DB postgresql SELECT 123456789e0",
+            "DB postgresql SELECT /* user's */ 'kim@example.com'",
+            "DB postgresql SELECT $태그$kim@example.com$태그$",
+            "DB mysql SELECT `user's`, 'kim@example.com' FROM t",
+            "DB mssql SELECT [user's], 'kim@example.com' FROM t",
+            "DB oracle SELECT q'[it's kim@example.com]' FROM dual",
+            "DB mssql SELECT [user]]'s], 'kim@example.com' FROM t",
+            "DB bigquery SELECT '''it's kim@example.com'''",
+            "DB bigquery SELECT '''hello' sk_live_a1B2c3D4e5F6g7H8i9J0 'bye'''",
+            "DB bigquery SELECT r'kim@example.com'",
+            "DB postgresql SELECT \"kim@example.com\" FROM t",
+            "DB mysql SELECT 1 -- kim@example.com",
+            "DB postgresql SELECT kim@example.com",
+            "HTTP GET api.example.com/users/kim%40example.com?x=kim@example.com",
+            "HTTP SELECT 'kim@example.com'",
+            "HTTP GET 'kim@example.com'/orders",
+            "HTTP GET h.example.com/reset/kim@example.com%23",
+            "SELECT 'kim@example.com'",
+        };
+        for (String in : inputs) {
+            String once = ApmRuntimeTextRedactor.op(in);
+            String twice = ApmRuntimeTextRedactor.op(once);
+            for (String out : new String[] {once, twice}) {
+                assertThat(out).as(in).doesNotContain("kim@exam").doesNotContain("sk_live").doesNotContain("123456789");
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("🔴 성질 — 경로 구간 안 긴 토큰은 앞뒤에 어떤 글자·인코딩이 붙어도 나오지 않는다(무작위 2만 개, 재적용 포함)")
+    void pathTokenNeverLeaksWithAffixes() {
+        String[] affix = {"", ";", "+", " ", ",", "!", "*", "(", ")", "=", "&", "$", ":", ".", "~", "'", "<", "|", "^",
+                "%3B", "%2B", "%20", "%2C", "%21", "%3D", "%26", "%24", "%3A", "%2E", "%7E", "%27", "%7C", "%5E", "%23",
+                "%253B", "%2520", "v=1", "jsessionid=", "x", "%FF"};
+        java.util.Random random = new java.util.Random(20261023L);
+        String alnum = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        String inner = "._-=~";
+        for (int round = 0; round < 20_000; round++) {
+            // 🔴 토큰 자체도 무작위 — 내부 구두점(. _ - = ~)을 섞는다(코덱스 구현 9차: 고정 토큰은 내부 구두점 반례를 놓쳤다).
+            StringBuilder tb = new StringBuilder("Zq7");
+            int len = 24 + random.nextInt(16);
+            while (tb.length() < len) {
+                tb.append(random.nextInt(6) == 0 ? inner.charAt(random.nextInt(inner.length()))
+                        : alnum.charAt(random.nextInt(alnum.length())));
+            }
+            String token = round % 2 == 0 ? tb.toString() : "Zq7Xw3Rt9Kp2Lm5Nb8Vc4Hj6";
+            String seg = affix[random.nextInt(affix.length)] + affix[random.nextInt(affix.length)] + token
+                    + affix[random.nextInt(affix.length)] + affix[random.nextInt(affix.length)];
+            String path = "/a/" + seg + "/b";
+            String once = ApmRuntimeTextRedactor.path(path);
+            assertThat(once).as(path).doesNotContain(token);
+            assertThat(ApmRuntimeTextRedactor.path(once)).as(path).doesNotContain(token);
+            assertThat(ApmRuntimeTextRedactor.op("HTTP GET h.example.com" + path)).as(path).doesNotContain(token);
+        }
+    }
+
+    @Test
+    @DisplayName("🔴 성질 — 어떤 인용 문자 뒤에 둔 비밀도 출력에 나오지 않는다(무작위 SQL 조각 2만 개)")
+    void nothingAfterAnyQuoteEverLeaks() {
+        String[] parts = {"SELECT", " ", "a", ",", "'", "''", "\"", "`", "[", "]", "$", "$1", "$t$", "/*", "*/", "--", "#",
+                "(", ")", "=", "?", "7", "1e5", "x_1", "주문", "@p", ";", "{", "}", "q", "N", "r", "'''", "]]", "."};
+        java.util.Random random = new java.util.Random(20261022L);
+        String secret = "ZZSECRETZZ";
+        for (int round = 0; round < 20_000; round++) {
+            StringBuilder sql = new StringBuilder("DB x ");
+            int before = random.nextInt(6);
+            for (int k = 0; k < before; k++) {
+                sql.append(parts[random.nextInt(parts.length)]);
+            }
+            sql.append(new String[] {"'", "\"", "`", "[", "$t$", "/*", "--", "#"}[random.nextInt(8)]);
+            int middle = random.nextInt(6);
+            for (int k = 0; k < middle; k++) {
+                sql.append(parts[random.nextInt(parts.length)]);
+            }
+            sql.append(' ').append(secret).append(' ');
+            int after = random.nextInt(6);
+            for (int k = 0; k < after; k++) {
+                sql.append(parts[random.nextInt(parts.length)]);
+            }
+            String in = sql.toString();
+            assertThat(ApmRuntimeTextRedactor.op(in)).as(in).doesNotContain(secret);
+        }
+    }
+
+    @Test
+    @DisplayName("HTTP — 쿼리스트링·프래그먼트를 버리고 경로 구간을 가린다")
+    void http() {
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET api.example.com/users/123/orders?token=secret#x"))
+                .isEqualTo("HTTP GET api.example.com/users/{id}/orders");
+        assertThat(ApmRuntimeTextRedactor.op("HTTP POST pay.example.com")).isEqualTo("HTTP POST pay.example.com");
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET /orders/7")).isEqualTo("HTTP GET /orders/{id}");
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET api.example.com:8443/v1")).isEqualTo("HTTP GET api.example.com:8443/v1");
+        // 🔴 형식이 아닌 HTTP 설명은 통째로 판정 불가(코덱스 구현 7차).
+        assertThat(ApmRuntimeTextRedactor.op("HTTP SELECT 'kim@example.com'")).isEqualTo("HTTP " + U);
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET 'kim@example.com'/orders")).isEqualTo("HTTP " + U);
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET kim@example.com/orders")).isEqualTo("HTTP " + U);
+    }
+
+    @Test
+    @DisplayName("RPC — 확장 형식만 그대로, 그 밖은 판정 불가. 모르는 접두는 통째로 판정 불가(2차 🔴3)")
+    void rpcAndUnknown() {
+        assertThat(ApmRuntimeTextRedactor.op("RPC grpc com.shop.OrderService/Place"))
+                .isEqualTo("RPC grpc com.shop.OrderService/Place");
+        assertThat(ApmRuntimeTextRedactor.op("RPC")).isEqualTo("RPC");
+        assertThat(ApmRuntimeTextRedactor.op("RPC grpc Svc/M 'kim@example.com'")).isEqualTo("RPC " + U);
+        assertThat(ApmRuntimeTextRedactor.op("SELECT 'kim@example.com'")).isEqualTo(U);
+        assertThat(ApmRuntimeTextRedactor.op("")).isEmpty();
+        assertThat(ApmRuntimeTextRedactor.op(null)).isNull();
+    }
+
+    @Test
+    @DisplayName("경로 — 숫자·hex·UUID·@·토큰 모양 구간을 가리고 라우트 이름은 남긴다")
+    void pathSegments() {
+        assertThat(ApmRuntimeTextRedactor.path("/users/kim@example.com/profile")).isEqualTo("/users/{id}/profile");
+        assertThat(ApmRuntimeTextRedactor.path("/orders/550e8400-e29b-41d4-a716-446655440000"))
+                .isEqualTo("/orders/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/reset/a1B2c3D4e5F6g7H8i9J0k1L2m3")).isEqualTo("/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/api/v1/customer-notification-preferences"))
+                .isEqualTo("/api/v1/customer-notification-preferences");
+        assertThat(ApmRuntimeTextRedactor.path("/reset?token=secret")).isEqualTo("/reset");
+    }
+
+    @Test
+    @DisplayName("🔴 경로 — percent-encoding(%40·%2540)·인코딩된 구분자·깨진 인코딩도 가린다(2차 🔴4)")
+    void pathEncoded() {
+        assertThat(ApmRuntimeTextRedactor.path("/users/kim%40example.com")).isEqualTo("/users/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/users/kim%2540example.com")).isEqualTo("/users/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/files/a%2Fb")).isEqualTo("/files/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/files/bad%zz")).isEqualTo("/files/{id}");
+        // 🔴 잘못된 UTF-8 바이트(%FF·overlong·서러게이트)는 대체 문자로 디코딩돼 토큰 판정을 피했다(코덱스 구현 6차).
+        assertThat(ApmRuntimeTextRedactor.path("/reset/%FFa1B2c3D4e5F6g7H8i9J0k1L2m3")).isEqualTo("/reset/{id}");
+        // 🔴 인코딩된 #·따옴표가 붙어도 판정 불가로 가린다(코덱스 구현 7차).
+        assertThat(ApmRuntimeTextRedactor.path("/reset/a1B2c3D4e5F6g7H8i9J0k1L2m3%23")).isEqualTo("/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/reset/a1B2c3D4e5F6g7H8i9J0k1L2m3%2523")).isEqualTo("/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/x/'secret'")).isEqualTo("/x/{id}");
+        // 🔴 구두점이 붙은 토큰도 조각으로 쪼개 판정한다(코덱스 구현 8차).
+        String t = "a1B2c3D4e5F6g7H8i9J0k1L2m3";
+        for (String p : new String[] {"/reset/" + t + ";v=1", "/reset/" + t + "%3Bv=1", "/reset/" + t + "+",
+                "/reset/" + t + "%20", "/orders;jsessionid=" + t}) {
+            assertThat(ApmRuntimeTextRedactor.path(p)).as(p).doesNotContain(t);
+        }
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET h.example.com/reset/" + t + ";v=1")).doesNotContain(t);
+        // 🔴 내부에 . ~ = 가 든 토큰 + 접미 구두점(코덱스 구현 9차).
+        for (String inner : new String[] {"Zq7Xw3Rt9Kp2.Lm5Nb8Vc4Hj6", "Zq7Xw3Rt9Kp2~Lm5Nb8Vc4Hj6", "Zq7Xw3Rt9Kp2=Lm5Nb8Vc4Hj6"}) {
+            for (String p : new String[] {"/reset/" + inner + "+", "/reset/" + inner + "%2B", "/reset/" + inner + ";v=x"}) {
+                assertThat(ApmRuntimeTextRedactor.path(p)).as(p).doesNotContain(inner);
+                assertThat(ApmRuntimeTextRedactor.path(ApmRuntimeTextRedactor.path(p))).as(p).doesNotContain(inner);
+            }
+            assertThat(ApmRuntimeTextRedactor.op("HTTP GET h.example.com/reset/" + inner + "+")).doesNotContain(inner);
+        }
+        // 라우트 이름·날짜는 남긴다.
+        assertThat(ApmRuntimeTextRedactor.path("/api-v2/report/2026-10-22/file.json"))
+                .isEqualTo("/api-v2/report/2026-10-22/file.json");
+        assertThat(ApmRuntimeTextRedactor.path("/reset/%C0%AFtoken")).isEqualTo("/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/reset/%E2%82token")).isEqualTo("/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/reset/%ED%A0%80token")).isEqualTo("/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.op("HTTP GET api.example.com/reset/%FFa1B2c3D4e5F6g7H8i9J0k1L2m3"))
+                .isEqualTo("HTTP GET api.example.com/reset/{id}");
+        assertThat(ApmRuntimeTextRedactor.path("/x/%25252540")).isEqualTo("/x/{id}");
+        // 정상 인코딩(공백)은 남긴다 — 원래 표기 그대로.
+        assertThat(ApmRuntimeTextRedactor.path("/search/hello%20world")).isEqualTo("/search/hello%20world");
+    }
+}

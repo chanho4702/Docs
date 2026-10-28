@@ -1,0 +1,109 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>데이터·보안·개인정보 · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">본문으로 이동</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">로컬 검토본 · 게시 전</span><div class="search"><input id="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../en/data-security.html">English ↗</a><button id="menu" class="menu" aria-expanded="false">목차</button></div></header><div class="layout"><nav class="sidenav" aria-label="문서 목차"><a class="navhome " href="index.html">한국어 가이드</a><h2>시작하기</h2><ul><li><a  href="quick-start.html">빠른 시작 — 첫 문서 승인</a></li><li><a  href="installation.html">설치와 사용 준비</a></li><li><a  href="glossary.html">개념과 상태 이해하기</a></li></ul><h2>사용자 가이드</h2><ul><li><a  href="page-approval.html">페이지 승인 요청</a></li><li><a  href="area-approval.html">영역 승인</a></li><li><a  href="inbox.html">승인 업무함</a></li><li><a  href="decisions.html">승인·반려와 일괄 승인</a></li><li><a  href="history-resubmit.html">수정·회수·재상신과 버전 이력</a></li><li><a  href="signature-pin.html">내 서명과 PIN</a></li><li><a  href="delegation.html">결재 위임과 대리 결재</a></li><li><a  href="stamp-box.html">문서의 결재란</a></li><li><a  href="certificate.html">결재 증명서 PDF</a></li><li><a  href="notifications.html">참조와 알림</a></li></ul><h2>관리자 가이드</h2><ul><li><a  href="admin-setup.html">관리자 초기 설정</a></li><li><a  href="admin-policy.html">전역 정책과 상태 표시명</a></li><li><a  href="admin-spaces.html">적용 스페이스와 개별 정책</a></li><li><a  href="admin-lines.html">결재선 관리</a></li><li><a  href="admin-groups.html">승인 그룹 관리</a></li><li><a  href="admin-access.html">사용자·관리자와 접근 권한</a></li><li><a  href="admin-data.html">데이터 보관·내보내기와 변경 이력</a></li></ul><h2>지원과 심사</h2><ul><li><a  href="faq.html">문제 해결과 지원</a></li><li><a class="active" aria-current="page" href="data-security.html">데이터·보안·개인정보</a></li><li><a  href="reviewer-guide.html">Marketplace 심사 안내</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; 지원과 심사</div><h1>데이터·보안·개인정보</h1><p class="lede">보안 검토 담당자와 관리자를 위한 앱의 데이터 처리 안내입니다. Moves Approval은 Atlassian Forge에서 실행하며, 현재 구성은 앱 데이터를 Forge SQL과 Key-Value Store에 저장합니다. 결재 데이터는 외부로 보내지 않으며, 별도 고객 서버 연결도 사용하지 않습니다. 외부 전송은 아래 <strong>오류 진단</strong> 하나뿐입니다.</p>
+<h2 id="section-0">어떤 정보를 저장하나요</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>데이터</th>
+<th>내용과 목적</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>요청·결정</td>
+<td>페이지 ID·제목·버전, 영역 식별자·해시, 요청자·승인자 계정 ID, 단계·상태·시각·마감</td>
+</tr>
+<tr>
+<td>요청 메모·사유</td>
+<td>검토 요청 내용, 반려·회수 사유와 감사 이력</td>
+</tr>
+<tr>
+<td>업무함·알림</td>
+<td>계정별 역할과 요청·결과를 알리는 데이터</td>
+</tr>
+<tr>
+<td>서명·PIN</td>
+<td>서명 이미지, 솔트 처리된 PIN 해시와 실패 횟수. PIN 원문은 저장하지 않습니다.</td>
+</tr>
+<tr>
+<td>위임</td>
+<td>원 승인자·대리인 계정 ID, 기간과 메모</td>
+</tr>
+<tr>
+<td>설정·변경 이력</td>
+<td>정책, 스페이스, 결재선, 그룹·명부·관리자, 보관 설정과 변경 기록</td>
+</tr>
+</tbody>
+</table></div>
+<p>사용자 이름·이메일·프로필 사진은 앱 저장소에 보관하지 않고 화면을 표시할 때 Confluence에서 조회합니다. 페이지 본문도 보관하지 않습니다. 버전·영역 변경 확인과 증명서 지문 계산에 필요한 본문은 읽어 처리합니다.</p>
+<h2 id="section-1">권한과 Confluence 변경</h2>
+<p>사용자 작업은 해당 사용자의 Confluence 권한을 따릅니다. 업무함과 요청 상세는 볼 수 있는 페이지로 제한됩니다. 사용자 없이 실행되는 정기 점검·페이지 수정 감지는 앱 권한으로 읽을 수 있지만 그 본문을 사용자에게 반환하지 않습니다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Confluence 변경</th>
+<th>실행 조건</th>
+<th>실행 권한</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>페이지에 결재란 추가</td>
+<td>요청자가 자동 삽입을 선택하고 기존 결재란이 없는 경우</td>
+<td>요청자. 삽입되면 페이지 버전이 오릅니다.</td>
+</tr>
+<tr>
+<td>@멘션 댓글</td>
+<td>Confluence 알림 정책이 켜진 경우</td>
+<td>해당 동작을 수행한 사용자. 댓글 작성 권한이 필요합니다.</td>
+</tr>
+</tbody>
+</table></div>
+<p>댓글은 페이지 열람자에게 보이며 앱을 제거해도 남을 수 있습니다. 앱 접근 제한을 켜도 이미 작성된 Confluence 댓글의 가시성이 달라지는 것은 아닙니다.</p>
+<h2 id="section-2">저장 기간과 내려받은 파일</h2>
+<p>종료 기록은 기본 3년이며 무기한·1·3·5·10년을 선택할 수 있습니다. 기간이 지나도 자동 삭제하지 않고, 관리자가 내보낸 범위를 직접 삭제합니다. 진행 중 요청은 제외됩니다. Confluence 에서 완전히 삭제된 페이지의 기록도 대상이 되며, 이때 제목·메모·사유는 비워서 내보냅니다(앱까지 막는 제한이 걸린 페이지도 Confluence 가 삭제된 페이지와 구분해 주지 않아 같이 처리됩니다). 앱 내 알림은 180일, 설정 변경 이력은 1년 후 정리됩니다. 서명·PIN·위임은 사용자가 변경·삭제할 수 있고, Atlassian 계정이 폐쇄되면 자동으로 지워집니다.</p>
+<p>Excel과 PDF에는 사용자 이름, 요청 메모와 사유가 포함될 수 있습니다. 다운로드 후 보관·공유·폐기는 고객이 관리합니다. 앱은 증명서 PDF 사본을 보관하지 않습니다. 앱 제거 후 저장 데이터 처리는 Forge 플랫폼 정책을 따릅니다.</p>
+<h2 id="section-3">요청 권한의 용도</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>권한 묶음</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>페이지·콘텐츠 읽기</td>
+<td>제목·버전·영역 확인, 수정 감지, 증명서 지문 계산</td>
+</tr>
+<tr>
+<td>페이지 쓰기</td>
+<td>요청자가 선택한 결재란 삽입</td>
+</tr>
+<tr>
+<td>스페이스·콘텐츠 권한 읽기</td>
+<td>적용 스페이스 선택과 열람·편집 가능 여부 확인</td>
+</tr>
+<tr>
+<td>사용자·그룹 읽기</td>
+<td>승인자·참조자 검색과 구성원 확인</td>
+</tr>
+<tr>
+<td>댓글 읽기·쓰기</td>
+<td>선택적 @멘션 알림 댓글</td>
+</tr>
+<tr>
+<td>앱 저장소</td>
+<td>승인 기록과 설정 저장</td>
+</tr>
+<tr>
+<td>개인정보 보고</td>
+<td>저장한 계정 ID를 Atlassian에 보고하고 폐쇄된 계정의 개인정보 삭제</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-4">오류 진단</h2>
+<p>Sentry DSN을 설정한 경우 앱 화면에서 처리되지 않은 오류를 <strong>Sentry</strong>(미국 리전)로 보냅니다. 클라이언트는 사용자 정보, 요청 URL·본문, 쿠키, 추가 데이터와 이동 기록을 제거하고 콘솔 로그 수집은 켜지 않습니다. 다만 오류 메시지와 스택 추적은 남기므로 오류 자체에 개인정보나 페이지 데이터가 들어 있으면 함께 전송될 수 있습니다. 이 잔여 위험을 수용하거나 오류 내용을 추가로 제거하기 전에는 DSN을 설정하지 마세요. DSN이 없으면 Sentry를 초기화하지 않습니다.</p>
+<h2 id="section-5">개인정보 관련 요청</h2>
+<p>서명·PIN과 위임은 해당 개인 화면에서 관리합니다. 승인 기록은 조직의 감사 기록으로, 사용자가 개별 결정을 수정·삭제할 수 없습니다. 앱은 저장한 계정 ID를 Atlassian 개인정보 보고 API로 7일마다 보고하고, 폐쇄된 계정의 서명·PIN·위임·받은 알림을 지우며 승인자 명부·설정 관리자에서 뺍니다. 결재·감사 기록 속 계정 ID는 보관 기간 정책을 따릅니다. 기타 요청은 사이트 관리자를 통해 지원 채널에 문의하세요. 이 안내는 제품의 기술적 처리 설명이며 운영 주체의 공개 개인정보처리방침과 이용약관은 별도로 확인해야 합니다.</p>
+<p><a href="admin-data.html">데이터 관리</a> · <a href="reviewer-guide.html">Marketplace 심사 안내</a></p>
+<div class="pager"><a href="faq.html"><small>← 이전 문서</small>문제 해결과 지원</a><a href="reviewer-guide.html"><small>다음 문서 →</small>Marketplace 심사 안내</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>이 문서에서</strong><a href="#section-0">어떤 정보를 저장하나요</a><a href="#section-1">권한과 Confluence 변경</a><a href="#section-2">저장 기간과 내려받은 파일</a><a href="#section-3">요청 권한의 용도</a><a href="#section-4">오류 진단</a><a href="#section-5">개인정보 관련 요청</a></aside></div><script>const items=[{"title":"빠른 시작 — 첫 문서 승인","text":"두 단계 승인 예제로 처음부터 끝까지 따라 합니다.","url":"quick-start.html"},{"title":"설치와 사용 준비","text":"앱 설치와 세 가지 진입점을 확인합니다.","url":"installation.html"},{"title":"개념과 상태 이해하기","text":"요청·단계·버전과 상태의 의미를 구분합니다.","url":"glossary.html"},{"title":"페이지 승인 요청","text":"페이지 전체의 승인자·순서·마감을 정합니다.","url":"page-approval.html"},{"title":"영역 승인","text":"문서 일부를 별도 대상으로 승인받습니다.","url":"area-approval.html"},{"title":"승인 업무함","text":"내 차례와 내 요청을 찾고 목록을 내보냅니다.","url":"inbox.html"},{"title":"승인·반려와 일괄 승인","text":"문서를 검토하고 개별·일괄 결정을 처리합니다.","url":"decisions.html"},{"title":"수정·회수·재상신과 버전 이력","text":"수정된 버전의 재승인과 이전 이력을 관리합니다.","url":"history-resubmit.html"},{"title":"내 서명과 PIN","text":"도장 이미지와 결정 확인용 PIN을 설정합니다.","url":"signature-pin.html"},{"title":"결재 위임과 대리 결재","text":"기간을 정해 대리인에게 결재를 맡깁니다.","url":"delegation.html"},{"title":"문서의 결재란","text":"문서와 템플릿에 결재란을 배치합니다.","url":"stamp-box.html"},{"title":"결재 증명서 PDF","text":"종료된 결재의 버전과 결정 증빙을 보관합니다.","url":"certificate.html"},{"title":"참조와 알림","text":"참조 역할과 앱·Confluence 알림을 구분합니다.","url":"notifications.html"},{"title":"관리자 초기 설정","text":"사용자가 첫 승인을 처리할 수 있게 준비합니다.","url":"admin-setup.html"},{"title":"전역 정책과 상태 표시명","text":"마감·알림·서명·접근 기본값을 정합니다.","url":"admin-policy.html"},{"title":"적용 스페이스와 개별 정책","text":"허용 스페이스와 개별 정책을 설정합니다.","url":"admin-spaces.html"},{"title":"결재선 관리","text":"반복되는 승인 순서를 저장합니다.","url":"admin-lines.html"},{"title":"승인 그룹 관리","text":"그룹 구성과 전원·1인 승인 조건을 정합니다.","url":"admin-groups.html"},{"title":"사용자·관리자와 접근 권한","text":"사용자 명부와 설정 관리 권한을 정합니다.","url":"admin-access.html"},{"title":"데이터 보관·내보내기와 변경 이력","text":"보관 기록을 내보내고 정리하며 변경을 추적합니다.","url":"admin-data.html"},{"title":"문제 해결과 지원","text":"증상별로 원인을 좁히고 지원을 요청합니다.","url":"faq.html"},{"title":"데이터·보안·개인정보","text":"데이터·권한·보관과 다운로드 범위를 확인합니다.","url":"data-security.html"},{"title":"Marketplace 심사 안내","text":"설치부터 권한·라이선스까지 심사 절차를 재현합니다.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="검색 결과가 없습니다.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

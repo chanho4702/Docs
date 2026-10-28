@@ -1,0 +1,78 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178915">한국어</a></p>
+<h2>Access and data axes</h2>
+<p>The team-analysis area can be entered with Report read, Resource management read, or Team management read. The entry permission alone provides people and utilization indicators. Effort, progress, and risk axes require Report read. Labor cost additionally requires Cost access and a snapshot compatible with the current salary policy.</p>
+<p>Lacking Report permission does not necessarily hide the whole tab. Restricted axes are hidden with an explanation.</p>
+<h2>Scope and widgets</h2>
+<p>Organization-wide access together with all-project scope provides the authorized organization. Team leads see the teams they lead and their child teams. Scope is determined by the app; a filter cannot widen it.</p>
+<p>Filter by team and project. Widgets include KPIs, team investment by project, utilization distribution, comparisons between teams, role and level composition, utilization-versus-size scatter plots, and hierarchy rollups.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Team and project filters, KPIs, team comparisons, utilization scatter plot, and hierarchy rollup. Use non-sensitive examples.</p>
+</blockquote>
+<h2>Interpretation and limitations</h2>
+<ul>
+<li>Grouping uses current team membership, not historical membership at the worklog date.</li>
+<li>Future capacity is excluded from utilization calculations.</li>
+<li>Read notices about projects that have not been aggregated; they may appear after the next batch.</li>
+<li>The documented large-population limit disables team filters and team views above 500 people. Check notices in the installed version.</li>
+<li>Rollup ratios combine numerators and denominators; they are not simple averages of child-team percentages.</li>
+</ul>
+<h2>Three different team views</h2>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Question</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>My Page → My Team</td>
+<td>How is the organization I lead doing?</td>
+<td>Led teams and their children</td>
+</tr>
+<tr>
+<td>Project → Team analysis</td>
+<td>Does project ownership match actual contribution?</td>
+<td>One project</td>
+</tr>
+<tr>
+<td>Resource management → Team analysis</td>
+<td>How do teams compare across projects?</td>
+<td>Authorized organization or led teams</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Team analytics uses distinct populations for organizational headcount, active people, and people with utilization.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>All visible teams / teams I lead</td>
+<td>Analyse currently permitted teams. A leadership-scoped result is not a company total.</td>
+<td>Check excluded unassigned/other-team people. REPORT/cost access can restrict corresponding metrics.</td>
+</tr>
+<tr>
+<td>Project / status selection</td>
+<td>Narrow active-project effort/cost/progress. Company-wide utilization columns can be independent of the project filter.</td>
+<td>Read asterisked-column explanations and filter coverage.</td>
+</tr>
+<tr>
+<td>Direct / total including descendants</td>
+<td>Direct means this team; total includes descendants. Summing every hierarchy row double-counts.</td>
+<td>Team utilization need not be a simple personal average; check the population basis.</td>
+</tr>
+<tr>
+<td>Compare axis / Show as % / chart-table</td>
+<td>Change metric/presentation for comparison. Effort/cost metrics require analytics access.</td>
+<td>Assigned teams without logged effort can be absent from contribution charts; distinguish them from assignment graphs.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

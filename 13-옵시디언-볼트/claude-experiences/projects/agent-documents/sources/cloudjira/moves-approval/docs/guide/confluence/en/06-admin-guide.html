@@ -1,0 +1,366 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moves Approval documentation</title><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1080px;margin:40px auto;padding:0 24px;color:#172b4d}h1{font-size:34px}h2{margin-top:36px;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;margin:24px 0}td,th{border:1px solid #dfe1e6;padding:10px;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:24px 0;padding:12px 20px;background:#f1f6ff;border-left:4px solid #579dff}code{background:#f4f5f7;overflow-wrap:anywhere}pre{padding:16px;background:#f4f5f7;overflow:auto}.status{background:#fff4d5;padding:12px}</style></head><body><p class="status">Local publication draft · This revision has not been published to Confluence · Screenshots are placement markers</p><h1 id="administrator-guide">Administrator guide</h1>
+<p><a href="00-index.html">English Guide</a> · <a href="../ko/06-admin-guide.html">한국어</a></p>
+<blockquote>
+<p>For: Confluence administrators and Moves Approval settings administrators</p>
+</blockquote>
+<h2 id="who-can-change-settings">Who can change settings</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Confluence administrator</td>
+<td>All settings. Always has access; no registration needed. Can also withdraw other people's requests.</td>
+</tr>
+<tr>
+<td>Settings administrator</td>
+<td>Manages app settings with the same scope as a Confluence administrator, including adding and removing other settings administrators.</td>
+</tr>
+</tbody>
+</table>
+<p>Settings are under <strong>Confluence settings</strong> → <strong>Moves Approval</strong>, and also open from the <strong>Settings</strong> link in the approval inbox. Permission is re-checked on the server for every action, so knowing the URL does not let anyone read or change settings.</p>
+<p>The settings screen has eight tabs: <strong>Global policy</strong>, <strong>Enabled spaces</strong>, <strong>Approval lines</strong>, <strong>Approval groups</strong>, <strong>Approvers</strong>, <strong>Settings administrators</strong>, <strong>Change log</strong>, and <strong>Data management</strong>.</p>
+<h2 id="global-policy">Global policy</h2>
+<p>Defaults for new requests, plus notification and security rules. Changes apply as soon as you save.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Default deadline (days)</td>
+<td>7 days</td>
+<td>Default deadline in the request form. <code>0</code> starts requests with no deadline. Requesters can change it per request.</td>
+</tr>
+<tr>
+<td>Due-soon threshold (hours)</td>
+<td>24 hours</td>
+<td>When this little time remains, the approvers whose turn it is (and the requester) get one due-soon notification. Deadlines are checked once a day, so even with a value below 24, the notice can go out as early as 24 hours before the deadline (on screen: &quot;checked once a day, so alerts may come up to a day early when set below 24 hours&quot;).</td>
+</tr>
+<tr>
+<td>Require a reason when rejecting</td>
+<td>On</td>
+<td>Rejections must include a reason.</td>
+</tr>
+<tr>
+<td>Use in-app notifications</td>
+<td>On</td>
+<td>Creates notifications under <strong>Notifications</strong> in the approval inbox.</td>
+</tr>
+<tr>
+<td>Also notify through Confluence</td>
+<td>On</td>
+<td>Leaves an @mention comment on the page. See <a href="#notifications">Notifications</a>.</td>
+</tr>
+<tr>
+<td>Show signatures and stamps next to decisions</td>
+<td>On</td>
+<td>Shows the registered signature or an automatic name stamp in the approval table.</td>
+</tr>
+<tr>
+<td>Require the signature PIN to confirm approvals and rejections</td>
+<td>Off</td>
+<td>When on, every approver must set a PIN under <strong>My signature</strong> before deciding.</td>
+</tr>
+<tr>
+<td>Send reminders</td>
+<td>Off</td>
+<td>Re-notifies <strong>only the approvers whose turn it is</strong> about requests left undecided.</td>
+</tr>
+<tr>
+<td>Days before the first reminder / Reminder interval (days)</td>
+<td>3 / 3</td>
+<td>Reminder timing when reminders are on.</td>
+</tr>
+<tr>
+<td>Add an approval stamp box to the top of the page when a request is made</td>
+<td>On</td>
+<td>Default for the <strong>Add a stamp box to the top of the page</strong> checkbox in the request form. Requesters can clear it per request. Applies to page approvals only. See <a href="#stamp-box">Stamp box</a>.</td>
+</tr>
+<tr>
+<td>Allow delegation</td>
+<td>Off</td>
+<td>Lets users choose a delegate under <strong>My delegation</strong>. When off, saved delegations have no effect.</td>
+</tr>
+<tr>
+<td>Verify approvers can view the page when a request is made</td>
+<td>On</td>
+<td>Refuses a request if any approver cannot view the page. Open requests are not affected.</td>
+</tr>
+<tr>
+<td>Only registered users can use the app</td>
+<td>Off</td>
+<td>When on, only the approver list, settings administrators, and Confluence administrators can open the inbox and request screens. <strong>Global only.</strong></td>
+</tr>
+<tr>
+<td>Status labels</td>
+<td>(per language)</td>
+<td>Display names for Pending approval, Approved, Rejected, Expired, and Withdrawn. <strong>Global only.</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="status-labels">Status labels</h3>
+<p>In the status diagram under <strong>Global policy</strong>, select a status to edit its label.</p>
+<ul>
+<li>Leave a label blank to show the default in each user's language. Organization-defined labels are <strong>not translated</strong> and appear as entered in every language.</li>
+<li>Only the wording changes; the approval workflow stays the same. Express intermediate states (for example, &quot;Legal review&quot;) through <strong>step names</strong> in approval lines.</li>
+</ul>
+<h3 id="before-you-restrict-access">Before you restrict access</h3>
+<ol>
+<li>Register all requesters and approvers on the <strong>Approvers</strong> tab.</li>
+<li>Register operators on the <strong>Settings administrators</strong> tab.</li>
+<li>Test the inbox and request screens with a registered regular user account.</li>
+<li>Then turn on <strong>Only registered users can use the app</strong>.</li>
+</ol>
+<p>Unregistered users will see &quot;Only registered users can use this app.&quot;</p>
+<blockquote>
+<p><strong>Screenshot placement · 15-policy</strong></p>
+<p>Global deadline, notification, signature, and access policies</p>
+<p>File: <code>ma-15-policy-en.png</code> · Alt text: Global deadline, notification, signature, and access policies</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="enabled-spaces">Enabled spaces</h2>
+<p>Choose which spaces use approvals, and optionally set a different policy per space.</p>
+<ul>
+<li><strong>Initially</strong>, with no spaces turned on, approvals work in every space.</li>
+<li><strong>Turning on any space</strong> limits new requests and the area macro to the spaces you turned on; all others are off.</li>
+<li><strong>Turning a space off</strong> does not close its open requests. Saving warns you how many remain; they can still be decided from the approval inbox (area boxes disappear from the pages).</li>
+</ul>
+<h3 id="space-policy">Space policy</h3>
+<p>Select <strong>Edit policy</strong> on a space row and switch on only the items that should differ in that space. The rest follow the global policy (shown as, for example, &quot;Follows global · currently 7 days&quot;). <strong>Only registered users can use the app</strong> and <strong>Status labels</strong> must be the same across the site, so they cannot be set per space.</p>
+<p>Example: the Legal space uses a 3-day deadline and requires a PIN; every other space uses the global defaults. <strong>Adding the stamp box automatically</strong> can also be switched on or off per space.</p>
+<blockquote>
+<p><strong>Screenshot placement · 16-spaces</strong></p>
+<p>Enabled spaces and space policy</p>
+<p>File: <code>ma-16-spaces-en.png</code> · Alt text: Enabled spaces and space policy</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="approval-lines">Approval lines</h2>
+<p>Predefine approval orders you use often. They appear on the <strong>Use an approval line</strong> tab of the request form.</p>
+<ul>
+<li><strong>Name</strong> (required, up to 255 characters), <strong>Description</strong> (shown to requesters), <strong>Default deadline (days)</strong> (1–365; leave empty to follow the global default)</li>
+<li><strong>Approval steps</strong> — The same editor as the request form: steps, approvers, approval groups, required approvals, and step names.</li>
+<li><strong>Spaces</strong> — The line is offered only in request forms in the spaces you pick. Leave it empty to offer it everywhere.</li>
+<li>Turning <strong>Enabled</strong> off hides the line from new requests only.</li>
+<li>Editing or deleting a line <strong>does not affect existing requests</strong>; each request keeps a copy of the line it was created with.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 17-lines</strong></p>
+<p>Approval steps and required approval counts</p>
+<p>File: <code>ma-17-lines-en.png</code> · Alt text: Approval steps and required approval counts</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="approval-groups">Approval groups</h2>
+<p>Groups that can be placed on an approval line as one step.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Confluence group</td>
+<td>Uses a Confluence group as is. Membership is managed in Confluence.</td>
+</tr>
+<tr>
+<td>Custom</td>
+<td>A group used only by this app. You pick the members (for example, &quot;Legal review&quot;).</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Passing rule</strong> — On: <strong>All must approve</strong>. Off: <strong>Any one</strong>.</li>
+<li>Turning off <strong>Show in approval-line search</strong> or deleting the group removes it from search, but requests already using it keep running.</li>
+<li><strong>View members</strong> shows the current members.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 18-groups</strong></p>
+<p>Approval group members and passing rule</p>
+<p>File: <code>ma-18-groups-en.png</code> · Alt text: Approval group members and passing rule</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="approvers">Approvers</h2>
+<p>The list of people who can be placed on an approval line.</p>
+<ul>
+<li><strong>Leave it empty</strong> to allow anyone to be an approver.</li>
+<li>With a list, only listed people can be placed on a line (&quot;Only registered approvers can be placed on the line&quot;).</li>
+<li>When <strong>Only registered users can use the app</strong> is on, this list also acts as the list of app users.</li>
+<li>Regardless of the list, approvers must be able to view the page when the request is made (default policy).</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 19-access</strong></p>
+<p>Approver list and registered users</p>
+<p>File: <code>ma-19-access-en.png</code> · Alt text: Approver list and registered users</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="settings-administrators">Settings administrators</h2>
+<p>People who can change every approval setting without being Confluence administrators. Enter at least two characters of a name to find someone, then select <strong>Save settings administrators</strong>. Confluence administrators do not need to be registered.</p>
+<h2 id="change-log">Change log</h2>
+<p>Changes to policy, enabled spaces, approval lines, approval groups, approvers, and settings administrators, plus retention changes, exports, and deletions under <strong>Data management</strong>, are recorded with <strong>when, user, area, action, and detail</strong> (data management actions appear with the area &quot;Retention&quot; and the actions &quot;Update,&quot; &quot;Export,&quot; and &quot;Purge&quot;). Users cannot edit or delete entries; they are removed automatically after <strong>one year</strong>. If you need longer retention, capture them periodically.</p>
+<p>Decision records for each request live in its <strong>Audit timeline</strong> and <strong>Approval history by version</strong>. Users cannot edit these either; they are removed only when an administrator exports and then deletes them under the retention policy in <a href="#data-management">Data management</a>.</p>
+<blockquote>
+<p><strong>Screenshot placement · 20-audit</strong></p>
+<p>Time, user, area, and action in the change log</p>
+<p>File: <code>ma-20-audit-en.png</code> · Alt text: Time, user, area, and action in the change log</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="data-management">Data management</h2>
+<p>Manage the storage the app uses and how long finished approval records are kept. Available to Confluence administrators and settings administrators.</p>
+<h3 id="storage">Storage</h3>
+<ul>
+<li>A bar shows how much space the app uses against a <strong>1 GiB</strong> limit (&quot;{used} of {limit} used (N%)&quot;). At 80% or more it shows <strong>Warning</strong>; at 90% or more, <strong>Critical</strong>.</li>
+<li><strong>When the limit is reached, new approvals can no longer be saved.</strong> When you see <strong>Warning</strong>, plan a cleanup with <a href="#approval-record-retention">Approval record retention</a>.</li>
+<li>A table shows <strong>Size, Rows (est.), and Share</strong> for each kind of data (table); select a column header to sort. Sizes and row counts are estimates from database statistics and may differ slightly from the actual values. Select <strong>Refresh</strong> to reload.</li>
+</ul>
+<h3 id="approval-record-retention">Approval record retention</h3>
+<p>Choose how long finished approvals (approved, rejected, expired, withdrawn) are kept. Approvals still in progress are not affected.</p>
+<ol>
+<li>Choose a <strong>Retention period</strong> — <strong>Forever</strong>, or 1, 3 (default), 5, or 10 years. The number of records past the period and the date of the oldest record are shown.</li>
+<li>Select <strong>Export to Excel</strong>. Every record past the period is downloaded as an Excel file with three sheets: <strong>Requests</strong>, <strong>Approvers</strong>, and <strong>History</strong>. The export is recorded only after the file has actually downloaded, and is shown as &quot;Last export: {date} · N records ({user}).&quot;</li>
+<li>After storing the file, select <strong>Delete N exported records</strong>, then select <strong>Delete</strong> again at &quot;Delete them? This cannot be undone.&quot;</li>
+</ol>
+<ul>
+<li><strong>Only the range covered by the last export</strong> is deleted. Records cannot be deleted before they are exported to Excel (&quot;Export the records past the retention period to Excel before deleting them.&quot;).</li>
+<li>If more records passed the period after the last export, you see &quot;N more records passed the period since the last export. Export again to delete them too.&quot;</li>
+<li>Deleting a request also deletes its approval line, audit history, inbox entries, and related notifications. <strong>This cannot be undone</strong>, so store the exported file according to your records retention rules first.</li>
+<li>Retention changes, exports, and deletions are all recorded in the <strong>Change log</strong>.</li>
+<li>Finished approval records are <strong>never deleted automatically</strong>, even after the retention period. They are removed only by exporting and then deleting as above.</li>
+</ul>
+<h3 id="automatic-cleanup">Automatic cleanup</h3>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Retention</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>In-app notifications</td>
+<td>Deleted automatically after 180 days</td>
+</tr>
+<tr>
+<td>Settings change log</td>
+<td>Deleted automatically after one year</td>
+</tr>
+<tr>
+<td>Finished approval records</td>
+<td>Never deleted automatically (an administrator deletes them after exporting the records past the retention period)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Screenshot placement · 21-retention</strong></p>
+<p>Storage, retention period, and export</p>
+<p>File: <code>ma-21-retention-en.png</code> · Alt text: Storage, retention period, and export</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="notifications">Notifications</h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>In-app notification</th>
+<th>Confluence notification (@mention comment)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approval requested</td>
+<td><strong>All</strong> approvers on the line, Cc</td>
+<td>Step 1 approvers</td>
+</tr>
+<tr>
+<td>Next step starts</td>
+<td>— (already notified at request time)</td>
+<td>Approvers of the step that just opened</td>
+</tr>
+<tr>
+<td>Final approval</td>
+<td>Requester, Cc</td>
+<td>Requester, Cc</td>
+</tr>
+<tr>
+<td>Rejected</td>
+<td>Requester, approvers who have not decided, Cc</td>
+<td>Requester</td>
+</tr>
+<tr>
+<td>Withdrawn</td>
+<td>Approvers who have not decided, Cc (plus the requester when someone else withdrew it)</td>
+<td>Approvers whose turn it is (plus the requester when someone else withdrew it)</td>
+</tr>
+<tr>
+<td>Expired</td>
+<td>Requester, approvers who have not decided, Cc</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Due soon</td>
+<td>Requester, approvers whose turn it is</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Reminder</td>
+<td>Approvers whose turn it is</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The person who performed the action is never notified about it.</li>
+<li>Intermediate approvals that still wait on others in the same step are not announced; notifications go out only when a step advances or the request ends.</li>
+<li>While a delegation is active, the delegate also sees those turns in their approval inbox.</li>
+<li>Due-soon notices and reminders stop when the request ends (approved, rejected, expired, or withdrawn). Requests without a deadline get no due-soon notice.</li>
+<li>@mention comments are <strong>visible to everyone who can view the page.</strong> Agree on how to write potentially sensitive content such as rejection reasons. If comments are unwelcome, turn off <strong>Also notify through Confluence</strong>.</li>
+<li>Email is delivered only when Confluence sends the @mention according to each user's Confluence notification settings. The app never sends email itself.</li>
+</ul>
+<h2 id="stamp-box">Stamp box</h2>
+<p>The stamp box is a macro that shows approval steps, approvers, and stamps on the page like a paper approval form (the macro appears in the editor as <strong>Moves Approval Stamps</strong>). It is used for page approvals; for area approvals, the same stamp box is attached below the area panel.</p>
+<ul>
+<li><strong>Automatic insertion</strong> — When the <strong>Add an approval stamp box to the top of the page when a request is made</strong> policy is on (on by default), a stamp box is added to the top of the page when a request is made. If the page already has one, nothing is added.
+<ul>
+<li>The page is edited with the requester's permissions, so the page version goes up by one and the page history shows the requester with the message &quot;Moves Approval&quot;. The approval applies to that new version.</li>
+<li>If the stamp box cannot be added (the requester cannot edit the page, or someone else saved in the meantime), the request still goes ahead without it.</li>
+<li>This is the only case in which the app writes to a page body, and it never does so with the app's own permissions.</li>
+</ul>
+</li>
+<li><strong>Tip</strong> — For documents that are approved often, place the <strong>Moves Approval Stamps</strong> macro in the Confluence template in advance. The stamp box is where you want it from the start, and the page version does not go up for it at request time. On a page with no approval request yet, the stamp box shows &quot;No approval request yet.&quot; and a <strong>Request approval</strong> button (for people who can request).</li>
+<li>If the <strong>Show signatures and stamps next to decisions</strong> policy is off, the stamp box shows text instead of stamps.</li>
+</ul>
+<h2 id="expiry-and-scheduled-processing">Expiry and scheduled processing</h2>
+<ul>
+<li>Deadline expiry, due-soon notices, reminders, and cleanup of old notifications and settings change log entries are handled by a background job that runs <strong>once a day</strong>. The Atlassian platform decides when it runs.</li>
+<li>As a result, it can take up to a day for a request past its deadline to be cleaned up as <strong>Expired</strong> in lists. Until then, the inbox and approval details show <strong>Overdue</strong>, and the item below the page title shows &quot;⌛ Overdue&quot;.</li>
+<li>However, once the deadline passes, decision buttons disappear right away, and any attempt to decide is refused by the server, which expires the request on the spot, so no approval can happen after the deadline. A new request on a page whose previous request is past its deadline expires the previous request automatically.</li>
+<li>Due-soon notices can go out as early as 24 hours before the deadline even when the threshold is set below 24 hours. Reminders are counted in days and are not affected.</li>
+</ul>
+<h2 id="operations-checklist">Operations checklist</h2>
+<ul>
+<li>[ ] Enabled spaces are configured as intended.</li>
+<li>[ ] Approvers can view the relevant spaces and pages.</li>
+<li>[ ] Deadline, due-soon threshold, and reminder intervals match your rules.</li>
+<li>[ ] If access is restricted, requesters, approvers, and settings administrators were registered first.</li>
+<li>[ ] Representative approval lines and groups exist, and a test request has run end to end.</li>
+<li>[ ] Decisions are made on signatures, PIN, delegation, and Confluence notifications, with rules for using them.</li>
+<li>[ ] You decided whether to add the stamp box automatically, and placed the stamp box in templates for documents that are approved often.</li>
+<li>[ ] The approval record retention period matches your rules, and storage usage is checked regularly.</li>
+<li>[ ] The change log and Excel exports are reviewed regularly.</li>
+</ul>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="02-installation.html">Installation and first-time setup</a></li>
+<li><a href="08-data-security-privacy.html">Data, security, and privacy</a></li>
+<li><a href="07-faq-troubleshooting.html">FAQ and troubleshooting</a></li>
+</ul>
+</body></html>

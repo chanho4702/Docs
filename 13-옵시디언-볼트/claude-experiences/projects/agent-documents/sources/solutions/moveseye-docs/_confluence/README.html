@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 문서 허브</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 문서 허브</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 전체</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> C:/solutions/moveseye-docs</div></div>
+<h1>MovesEye 문서 허브</h1>
+<p>MovesEye(DMOVE)는 여러 모니터링 데이터소스(Zabbix·Prometheus·Datadog·Elasticsearch)를 소스 중립 계약으로 정규화해, 서버·네트워크·클라우드 자원의 상태·장애·자산·비용을 하나의 운영 화면에서 관리하는 <strong>종합 모니터링 제품</strong>이다. 2026-08-11 현재 동작하는 어댑터는 <strong>Zabbix 하나</strong>이며, 나머지는 계약이 준비된 계획 상태다.</p>
+<p>이 디렉터리는 제품 설명부터 운영·개발 기준까지 연결하는 <strong>서술 문서 정본(SSOT)</strong> 이다. REST·schema·route 같은 기계적 사실은 코드와 생성 계약이 더 높은 우선순위를 가진다.</p>
+<h2>처음 보는 사람의 읽기 순서</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>독자</th><th>먼저 읽기</th><th>다음 문서</th></tr></thead>
+<tbody>
+<tr><td>고객·도입 검토자</td><td><strong>제품 소개서</strong></td><td><strong>자주 묻는 질문</strong>, <strong>제품 개요</strong>, <strong>용어집</strong></td></tr>
+<tr><td>반복 문의에 답해야 하는 지원 담당자</td><td><strong>자주 묻는 질문</strong></td><td><strong>문제 해결</strong></td></tr>
+<tr><td>신규 입사자</td><td><strong>제품 개요</strong></td><td><strong>용어집</strong></td></tr>
+<tr><td>일반 사용자</td><td><strong>빠른 시작</strong></td><td><strong>사용자 가이드</strong>, <strong>화면별 가이드</strong>, <strong>문제 해결</strong></td></tr>
+<tr><td>특정 화면 사용법을 찾는 사람</td><td><strong>화면별 가이드 색인</strong></td><td>사이드바 메뉴 그대로 찾는다</td></tr>
+<tr><td>시스템 관리자</td><td><strong>관리자 가이드</strong></td><td><strong>설치·배포 가이드</strong>, <strong>문제 해결</strong></td></tr>
+<tr><td>설치 담당자</td><td><strong>설치·배포 가이드</strong></td><td><strong>관리자 가이드</strong></td></tr>
+<tr><td>개발 운영자·검증 담당자</td><td><strong>로컬·검증 Runbook</strong></td><td><strong>아키텍처</strong>, <strong>데이터 모델</strong></td></tr>
+<tr><td>Production 운영 책임자</td><td><strong>Production Runbook draft</strong></td><td><strong>Credential 정책 draft</strong> — 둘 다 current 승격 전 실행 금지</td></tr>
+<tr><td>개발자</td><td><code>C:\solutions\moveseye_개발자_온보딩.md</code></td><td><strong>API 카탈로그</strong>, <strong>아키텍처</strong>, <strong>문서 운영 규칙</strong></td></tr>
+<tr><td>연동 개발자</td><td><strong>API 카탈로그</strong></td><td><strong>아키텍처</strong></td></tr>
+<tr><td>기능 담당자</td><td><strong>기능 문서 목록</strong></td><td><strong>기능 문서 템플릿</strong></td></tr>
+</tbody></table>
+<h2>문서 지도</h2>
+<pre>moveseye-docs/
+├── product/       제품 정의·도입 설명
+├── guides/        사용자가 목표를 달성하는 절차
+├── technical/     아키텍처·데이터·계약의 현재 기준선
+├── operations/    기동·점검·장애 대응 Runbook
+├── features/      기능별 설계→계약→운영 연결 문서
+├── decisions/     채택된 ADR(Architecture Decision Record)
+├── reference/     용어집·문서 인벤토리처럼 반복 참조하는 정보
+├── releases/      배포 기준 변경 이력
+└── templates/     새 문서를 만들 때 복사하는 표준 형식</pre>
+<p>전체 상태와 다음 작성 순서는 <strong>문서 인벤토리</strong>에서 관리한다.</p>
+<blockquote><p>기준선 주의: 위 commit은 문서 작성 시 확인한 HEAD다. BE에는 사용자 소유의 미커밋 변경이 있었고, 이 문서 세트는 실제 배포 환경을 검증하지 않았다. 따라서 capability 표의 “소스 구현”은 “배포됨”을 뜻하지 않는다.</p></blockquote>
+<h2>시스템 한눈에 보기</h2>
+<p><em>[다이어그램 — Confluence 기본 에디터는 mermaid를 렌더링하지 않습니다. Mermaid 매크로를 쓰거나 이미지로 교체하세요.]</em></p>
+<pre>flowchart LR
+    U[운영자·관리자] --&gt; FE[React 19 / Vite FE]
+    FE --&gt;|HTTP + refresh cookie| BE[Spring Boot 3.3 app]
+    BE --&gt; DB[(PostgreSQL / Flyway)]
+    BE --&gt; R[(Redis)]
+    BE --&gt; API[engine-api&lt;br/&gt;소스 중립 port]
+    API --&gt; ZBX[engine-zabbix]
+    API -.계획.-&gt; PRM[Prometheus]
+    API -.계획.-&gt; DDG[Datadog]
+    API -.계획.-&gt; ELS[Elasticsearch]
+    ZBX --&gt; Z[Zabbix JSON-RPC]
+    BE --&gt; AWS[AWS APIs]</pre>
+<p>백엔드 <code>app</code>은 <code>engine-api</code>만 compile 의존하고 어댑터는 runtimeOnly로 연결한다 — <strong>빌드가 이 경계를 강제한다.</strong> 새 모니터링 읽기 기능은 특정 소스 구현을 직접 호출하지 않고 capability port를 거치므로, 소스를 추가해도 서비스 레이어와 화면은 바뀌지 않는다.</p>
+<h2>무엇이 정본인가</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>정보</th><th>정본</th><th>이 문서 세트의 역할</th></tr></thead>
+<tbody>
+<tr><td>REST 경로·요청·응답</td><td>Spring Controller/DTO + dev OpenAPI</td><td>사람이 이해할 수 있게 흐름과 예외를 설명</td></tr>
+<tr><td>FE route·navigation</td><td><code>moveseyee_fe/src/routes/routes.tsx</code>, <code>SideNav.tsx</code></td><td>사용자 목표 기준으로 묶어 설명</td></tr>
+<tr><td>FE 화면의 실제 내용</td><td><code>moveseyee_fe/src/pages/</code>, <code>src/components/</code></td><td>안정된 사용자 동작을 설명</td></tr>
+<tr><td>DB schema</td><td><code>moveseye-be-spring/src/main/resources/db/migration/</code></td><td>테이블의 책임·관계를 설명</td></tr>
+<tr><td>수집 엔진 경계</td><td><code>engine-api</code> public type + module build dependency</td><td>중립 계약과 Zabbix 전용 계약의 경계를 설명</td></tr>
+<tr><td>진행 중 기능 계약</td><td><code>C:\solutions\_workspace\contract_*.md</code></td><td>완료 후 stable 문서로 승격</td></tr>
+<tr><td>결정·교훈·타임라인</td><td>Obsidian <code>claude-experiences/projects/moveseye/</code></td><td>최종 문서의 배경과 변경 이유를 보존</td></tr>
+<tr><td>에이전트·협업 규칙</td><td><code>C:\solutions\AGENTS.md</code>, <code>COLLAB.md</code></td><td>문서와 코드를 수정하는 절차를 통제</td></tr>
+</tbody></table>
+<p>코드와 문서가 충돌하면 코드를 확인하되, 충돌을 그대로 방치하지 말고 같은 변경에서 문서를 동기화한다.</p>
+<h2>기존 문서와의 관계</h2>
+<ul>
+<li><code>C:\solutions\제품소개_신규입사자.md</code>: 기존 상세 제품 온보딩. 제품 개요의 보조 자료로 유지한다.</li>
+<li><code>C:\solutions\moveseye_개발자_온보딩.md</code>: 개발자 입문 정본. 이 허브의 기술 문서와 함께 읽는다.</li>
+<li>각 코드 저장소의 <code>README.md</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code>: 해당 저장소의 빌드·코딩 규칙 정본이다.</li>
+<li><code>C:\solutions\_workspace\</code>: 설계·계약·QA 증거를 기능별로 누적하는 작업 공간이며, 완성 문서의 영구 위치가 아니다.</li>
+</ul>
+<h2>문서를 바꾸는 최소 절차</h2>
+<ol>
+<li><strong>문서 운영 규칙</strong>에서 문서 유형과 정본을 확인한다.</li>
+<li>코드·OpenAPI·migration·route 중 관련 사실 원천을 교차 확인한다.</li>
+<li>문서의 <code>baseline</code>, <code>reviewed_at</code>, 변경 이력을 갱신한다.</li>
+<li>상대 문서 링크와 <strong>문서 인벤토리</strong>를 확인한다.</li>
+<li>결정이나 재사용할 교훈이 생겼으면 Obsidian MOC에 연결한다.</li>
+</ol>
+</body></html>

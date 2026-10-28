@@ -1,0 +1,13 @@
+flowchart LR
+    WF["Moves Workforce backend<br/>팀·프로젝트·입력·집계"]
+    AP["Moves Approval backend<br/>승인·잠금·감사"]
+    WDB[(Workforce SQL/KVS)]
+    ADB[(Approval SQL)]
+    JIRA[(Jira 워크로그 원본)]
+    WF -->|"승인 조회·쓰기 예약·결과 조회 API"| AP
+    AP -->|"조직·입력 조건 조회 API"| WF
+    AP -->|"승인 변경 이벤트 API"| WF
+    WF --- WDB
+    AP --- ADB
+    WF -->|"사용자 컨텍스트로 Jira REST"| JIRA
+    AP -->|"허용된 통제·조회 경로"| JIRA

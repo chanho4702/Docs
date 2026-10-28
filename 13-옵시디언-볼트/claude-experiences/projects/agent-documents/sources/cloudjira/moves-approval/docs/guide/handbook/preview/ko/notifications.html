@@ -1,0 +1,80 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>참조와 알림 · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">본문으로 이동</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">로컬 검토본 · 게시 전</span><div class="search"><input id="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../en/notifications.html">English ↗</a><button id="menu" class="menu" aria-expanded="false">목차</button></div></header><div class="layout"><nav class="sidenav" aria-label="문서 목차"><a class="navhome " href="index.html">한국어 가이드</a><h2>시작하기</h2><ul><li><a  href="quick-start.html">빠른 시작 — 첫 문서 승인</a></li><li><a  href="installation.html">설치와 사용 준비</a></li><li><a  href="glossary.html">개념과 상태 이해하기</a></li></ul><h2>사용자 가이드</h2><ul><li><a  href="page-approval.html">페이지 승인 요청</a></li><li><a  href="area-approval.html">영역 승인</a></li><li><a  href="inbox.html">승인 업무함</a></li><li><a  href="decisions.html">승인·반려와 일괄 승인</a></li><li><a  href="history-resubmit.html">수정·회수·재상신과 버전 이력</a></li><li><a  href="signature-pin.html">내 서명과 PIN</a></li><li><a  href="delegation.html">결재 위임과 대리 결재</a></li><li><a  href="stamp-box.html">문서의 결재란</a></li><li><a  href="certificate.html">결재 증명서 PDF</a></li><li><a class="active" aria-current="page" href="notifications.html">참조와 알림</a></li></ul><h2>관리자 가이드</h2><ul><li><a  href="admin-setup.html">관리자 초기 설정</a></li><li><a  href="admin-policy.html">전역 정책과 상태 표시명</a></li><li><a  href="admin-spaces.html">적용 스페이스와 개별 정책</a></li><li><a  href="admin-lines.html">결재선 관리</a></li><li><a  href="admin-groups.html">승인 그룹 관리</a></li><li><a  href="admin-access.html">사용자·관리자와 접근 권한</a></li><li><a  href="admin-data.html">데이터 보관·내보내기와 변경 이력</a></li></ul><h2>지원과 심사</h2><ul><li><a  href="faq.html">문제 해결과 지원</a></li><li><a  href="data-security.html">데이터·보안·개인정보</a></li><li><a  href="reviewer-guide.html">Marketplace 심사 안내</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; 사용자 가이드</div><h1>참조와 알림</h1><p class="lede">참조자는 결정 없이 요청의 진행을 확인하고, 알림은 요청과 결과를 알려 줍니다. 참조 지정이나 알림 수신만으로 원본 페이지의 보기 권한이 생기지는 않습니다.</p>
+<h2 id="section-0">참조자로 확인하기</h2>
+<p>요청자가 참조로 지정하면 <strong>승인 업무함 → 참조</strong>에서 요청을 찾습니다. 그룹을 참조로 넣은 경우 요청을 저장한 시점의 구성원이 대상이며, 나중에 그룹에 들어온 사용자가 자동으로 추가되지는 않습니다.</p>
+<p>참조자에게는 요청 생성·최종 승인·반려·회수·만료의 앱 내 알림이 갑니다. 중간 단계의 승인은 최종 승인과 구분하세요.</p>
+<h2 id="section-1">알림 채널 구분</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>채널</th>
+<th>위치·동작</th>
+<th>확인할 점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앱 내 알림</td>
+<td>업무함의 <strong>알림</strong></td>
+<td>요청·결과·독촉·마감 임박을 정책에 따라 표시합니다.</td>
+</tr>
+<tr>
+<td>Confluence 알림</td>
+<td>대상 페이지의 @멘션 댓글</td>
+<td>댓글을 작성하는 사용자의 권한이 필요합니다.</td>
+</tr>
+<tr>
+<td>이메일</td>
+<td>Confluence가 개인 알림 설정에 따라 발송</td>
+<td>앱이 이메일을 직접 보내지는 않습니다.</td>
+</tr>
+</tbody>
+</table></div>
+<p><img src="../assets/ma-13-notifications.jpg" alt="승인 업무함의 요청과 결과 알림 목록"></p>
+<p><em>MA-13 · 앱 내 알림은 요청·결정 결과를 한곳에 모읍니다. Confluence 댓글 알림은 정책과 댓글 권한이 모두 필요합니다.</em></p>
+<h2 id="section-2">언제 누구에게 가나요</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>상황</th>
+<th>앱 내 알림</th>
+<th>@멘션 댓글</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>요청 생성</td>
+<td>모든 승인자·참조자</td>
+<td>첫 단계 승인자</td>
+</tr>
+<tr>
+<td>다음 단계 시작</td>
+<td>요청 때 받은 알림과 구분</td>
+<td>새 단계 승인자</td>
+</tr>
+<tr>
+<td>최종 승인</td>
+<td>요청자·참조자</td>
+<td>요청자·참조자</td>
+</tr>
+<tr>
+<td>반려</td>
+<td>요청자·미결정 승인자·참조자</td>
+<td>요청자</td>
+</tr>
+<tr>
+<td>만료</td>
+<td>요청자·미결정 승인자·참조자</td>
+<td>없음</td>
+</tr>
+<tr>
+<td>독촉·마감 임박</td>
+<td>지금 차례인 승인자, 마감 임박은 요청자 포함</td>
+<td>없음</td>
+</tr>
+</tbody>
+</table></div>
+<p>자신이 수행한 동작에 대한 알림은 본인에게 보내지 않습니다. 회수는 미결정 승인자·참조자에게 앱 내 알림을 보내며, 요청자가 아닌 사람이 회수하면 요청자도 받습니다.</p>
+<h2 id="section-3">알림을 받지 못했을 때</h2>
+<p>앱 내 알림 정책 → 알림 종류와 수신 역할 → 현재 차례 → 댓글 작성 권한 → 개인 Confluence 알림 설정 순으로 확인합니다. 댓글 실패만으로 결재가 실패했다고 판단하지 말고 상세의 실제 결정 기록을 확인하세요.</p>
+<p>독촉·마감 점검은 하루 한 번 수행됩니다. 마감 이후 결정은 정기 알림이나 상태 정리를 기다리지 않고 차단됩니다. 관리자는 <a href="admin-policy.html">전역 정책</a>에서 채널과 주기를 정합니다.</p>
+<div class="pager"><a href="certificate.html"><small>← 이전 문서</small>결재 증명서 PDF</a><a href="admin-setup.html"><small>다음 문서 →</small>관리자 초기 설정</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>이 문서에서</strong><a href="#section-0">참조자로 확인하기</a><a href="#section-1">알림 채널 구분</a><a href="#section-2">언제 누구에게 가나요</a><a href="#section-3">알림을 받지 못했을 때</a></aside></div><script>const items=[{"title":"빠른 시작 — 첫 문서 승인","text":"두 단계 승인 예제로 처음부터 끝까지 따라 합니다.","url":"quick-start.html"},{"title":"설치와 사용 준비","text":"앱 설치와 세 가지 진입점을 확인합니다.","url":"installation.html"},{"title":"개념과 상태 이해하기","text":"요청·단계·버전과 상태의 의미를 구분합니다.","url":"glossary.html"},{"title":"페이지 승인 요청","text":"페이지 전체의 승인자·순서·마감을 정합니다.","url":"page-approval.html"},{"title":"영역 승인","text":"문서 일부를 별도 대상으로 승인받습니다.","url":"area-approval.html"},{"title":"승인 업무함","text":"내 차례와 내 요청을 찾고 목록을 내보냅니다.","url":"inbox.html"},{"title":"승인·반려와 일괄 승인","text":"문서를 검토하고 개별·일괄 결정을 처리합니다.","url":"decisions.html"},{"title":"수정·회수·재상신과 버전 이력","text":"수정된 버전의 재승인과 이전 이력을 관리합니다.","url":"history-resubmit.html"},{"title":"내 서명과 PIN","text":"도장 이미지와 결정 확인용 PIN을 설정합니다.","url":"signature-pin.html"},{"title":"결재 위임과 대리 결재","text":"기간을 정해 대리인에게 결재를 맡깁니다.","url":"delegation.html"},{"title":"문서의 결재란","text":"문서와 템플릿에 결재란을 배치합니다.","url":"stamp-box.html"},{"title":"결재 증명서 PDF","text":"종료된 결재의 버전과 결정 증빙을 보관합니다.","url":"certificate.html"},{"title":"참조와 알림","text":"참조 역할과 앱·Confluence 알림을 구분합니다.","url":"notifications.html"},{"title":"관리자 초기 설정","text":"사용자가 첫 승인을 처리할 수 있게 준비합니다.","url":"admin-setup.html"},{"title":"전역 정책과 상태 표시명","text":"마감·알림·서명·접근 기본값을 정합니다.","url":"admin-policy.html"},{"title":"적용 스페이스와 개별 정책","text":"허용 스페이스와 개별 정책을 설정합니다.","url":"admin-spaces.html"},{"title":"결재선 관리","text":"반복되는 승인 순서를 저장합니다.","url":"admin-lines.html"},{"title":"승인 그룹 관리","text":"그룹 구성과 전원·1인 승인 조건을 정합니다.","url":"admin-groups.html"},{"title":"사용자·관리자와 접근 권한","text":"사용자 명부와 설정 관리 권한을 정합니다.","url":"admin-access.html"},{"title":"데이터 보관·내보내기와 변경 이력","text":"보관 기록을 내보내고 정리하며 변경을 추적합니다.","url":"admin-data.html"},{"title":"문제 해결과 지원","text":"증상별로 원인을 좁히고 지원을 요청합니다.","url":"faq.html"},{"title":"데이터·보안·개인정보","text":"데이터·권한·보관과 다운로드 범위를 확인합니다.","url":"data-security.html"},{"title":"Marketplace 심사 안내","text":"설치부터 권한·라이선스까지 심사 절차를 재현합니다.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="검색 결과가 없습니다.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

@@ -1,0 +1,51 @@
+---
+type: feature-map
+tags: [moveseye, feature-map, settings, scheduler, engine, redis, deploy, architecture]
+updated: 2026-10-19
+---
+
+# 설정·운영 기반 — 스케줄러·데이터 소스·설정 표·아카이브 공통 기반·수집 엔진·Redis·배포 토폴로지
+
+> 기능 지도 [[무브스아이-기능-지도]] · 허브 [[moveseye]] · 링크는 `C:\solutions` 로컬 파일(file://)이라 이 PC에서만 열린다. 읽기용 사본은 [[2026-10-07-docs-reading-repo]].
+
+**한 줄** — 스케줄러(배치 22종, DB 옵션화·실행 이력), 데이터 소스 관리, `setting` 표, 아카이브 공통 기반, 이메일, 수집 엔진 모듈 경계(engine-api/engine-zabbix), 응답·예외 규약, Redis 키·TTL·읽기-통과 캐시, 설정 키 전수, 배포 토폴로지(FE 아파치·BE+AI 도커·비트버킷 파이프라인).
+
+**상태** — 현행. 수집 엔진 Phase 1(07-28, 스텝 6 보류)·패키지 구조 정리·스케줄러 옵션화(07-29)·사내 VM 배포 복구(08-07)·아키텍처 평가(08-21)·Redis 캐시 공통화 ZM-168(09-23).
+
+## 정본 문서 (moveseye-docs)
+- [설정과 운영 기반(상세 가이드)](file:///C:/solutions/moveseye-docs/guides/features/설정과-운영-기반.md)
+- [스케줄러](file:///C:/solutions/moveseye-docs/guides/pages/설정/스케줄러.md)
+- [데이터 소스 관리](file:///C:/solutions/moveseye-docs/guides/pages/설정/데이터-소스-관리.md)
+- [설치·배포 가이드](file:///C:/solutions/moveseye-docs/operations/설치-배포-가이드.md)
+- [운영자 런북](file:///C:/solutions/moveseye-docs/operations/운영자-런북.md)
+- [프로덕션 런북](file:///C:/solutions/moveseye-docs/operations/프로덕션-런북.md)
+- [아키텍처](file:///C:/solutions/moveseye-docs/technical/아키텍처.md)
+- [데이터 모델](file:///C:/solutions/moveseye-docs/technical/데이터-모델.md)
+- [API 카탈로그](file:///C:/solutions/moveseye-docs/technical/API-카탈로그.md)
+
+## 설계·기획 (_workspace)
+- [devdesign_collector-engine(스트랭글러 7스텝)](file:///C:/solutions/_workspace/features/platform/collector-engine/devdesign_collector-engine.md)
+- [devdesign_data-archiving](file:///C:/solutions/_workspace/features/platform/data-archiving/devdesign_data-archiving.md)
+- [devdesign_load-test-synthetic-mock](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_load-test-synthetic-mock.md)
+- [req_hyundai-capital-13](file:///C:/solutions/_workspace/features/product-docs/product-docs/req_hyundai-capital-13.md)
+- [tickets_scale-hardening](file:///C:/solutions/_workspace/features/infra/scale-call-guard/tickets_scale-hardening.md)
+
+## 계약 (_workspace/contract_*)
+- [contract_report-management](file:///C:/solutions/_workspace/features/infra/report-management/contract_report-management.md)
+- [contract_zabbix-managed-marker](file:///C:/solutions/_workspace/features/zabbix-config/managed-marker/contract_zabbix-managed-marker.md)
+
+## 보고·검수·QA 증거
+- [review_redis-cache-common](file:///C:/solutions/_workspace/features/platform/redis-cache/review_redis-cache-common.md)
+- [review_feature-guides-2026-10-06](file:///C:/solutions/_workspace/features/product-docs/product-docs/review_feature-guides-2026-10-06.md)
+
+## 경험 노트 (Vault)
+[[2026-06-01-runtime-environment]] · [[2026-07-22-collector-engine-decision]] · [[2026-07-28-collector-engine-phase1]] · [[2026-07-28-be-package-restructure]] · [[2026-07-29-scheduler-and-licensing]] · [[2026-07-06-vault-secrets]] · [[2026-08-07-onprem-deployment-recovery]] · [[2026-08-07-flyway-pg-compat]] · [[2026-08-21-architecture-audit]] · [[2026-09-23-redis-cache-common]] · [[2026-06-10-spring-conversion]] · [[strangler-port-migration]] · [[shared-it-db-worktree-collision]]
+
+## 열린 항목
+- 수집 엔진 스텝 6(Prometheus) 보류
+- 설치 번들 부재(아키텍처 평가 최대 공백)
+- 스케줄러 DTO 시각 = 서버 현지 시각 + `Z` 결함
+- Flyway 번호 경합 관리(V72~V82)
+
+## 이웃 영역
+[[인증-권한-라이선스]] · [[apm-수집과-운영]] · [[인프라-모니터링]]

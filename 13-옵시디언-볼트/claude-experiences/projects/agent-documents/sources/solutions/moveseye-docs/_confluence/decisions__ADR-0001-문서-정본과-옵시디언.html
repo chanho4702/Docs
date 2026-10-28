@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>ADR-0001 문서 정본과 Obsidian 경험 Vault 분리</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>ADR-0001 문서 정본과 Obsidian 경험 Vault 분리</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 기획, 개발, 운영, 문서 관리자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-05</div><div><strong>정본 위치:</strong> C:/solutions/moveseye-docs</div></div>
+<h1>ADR-0001 문서 정본과 Obsidian 경험 Vault 분리</h1>
+<h2>상태</h2>
+<p><code>accepted</code></p>
+<h2>맥락</h2>
+<p>MovesEye는 Spring BE, React FE, 구 NestJS 참조본, <code>_workspace</code>, 공유 Obsidian Vault로 정보가 나뉘어 있다. 기존 온보딩 문서는 있었지만 제품·사용자·운영·기술 문서의 탐색 허브와 갱신 규칙이 없었다. <code>C:\solutions</code> 루트는 Git 저장소도 아니어서 루트 Markdown만으로는 version 이력을 안정적으로 보존하기 어렵다.</p>
+<p>Moves Workforce는 제품 산출물과 개발 기준선, Obsidian의 경험·결정 노트를 분리하고 서로 연결해 이 문제를 해결했다.</p>
+<h2>결정</h2>
+<p>MovesEye의 current 제품 문서는 독립된 <code>C:\solutions\moveseye-docs</code> 저장소를 정본으로 삼는다. <code>_workspace</code>는 기능 개발 중 설계·계약·QA 증거를 보존하고, 기능 완료 후 안정된 지식만 문서 정본으로 승격한다. 공유 Obsidian Vault는 최종 문서 복사본을 저장하지 않고 프로젝트 MOC, 결정 이유, 타임라인, 재사용할 교훈을 위키링크로 관리한다.</p>
+<p>API·schema·화면 사실은 각각 Spring Controller/OpenAPI, Flyway migration, FE route/SideNav를 기계적 정본으로 유지한다.</p>
+<h2>고려한 대안</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>대안</th><th>장점</th><th>비용·위험</th><th>판단</th></tr></thead>
+<tbody>
+<tr><td>모든 문서를 Obsidian에 저장</td><td>탐색·위키링크가 편함</td><td>코드 review/version 기준과 분리, 최종 문서 중복</td><td>기각</td></tr>
+<tr><td>Spring repo에 전체 문서 저장</td><td>Git versioning 쉬움</td><td>FE·제품·운영 문서가 BE 소유권에 종속</td><td>기각</td></tr>
+<tr><td><code>C:\solutions</code> 루트 Markdown 유지</td><td>기존 방식과 연속성</td><td>root가 Git repo가 아니고 문서 수 증가 시 탐색 어려움</td><td>보조 entrypoint로만 유지</td></tr>
+<tr><td>독립 docs repo + Obsidian MOC</td><td>역할·version·탐색을 분리</td><td>별도 저장소 동기화 비용</td><td>채택</td></tr>
+</tbody></table>
+<h2>결과</h2>
+<ul>
+<li>문서 상태와 정본이 명시돼 오래된 설명을 current로 오인할 가능성이 줄어든다.</li>
+<li>코드 변경자는 문서 변경 trigger를 함께 확인해야 한다.</li>
+<li>Obsidian과 docs repo의 내용을 복제하지 않고 link 유지 비용만 감수한다.</li>
+<li>조직이 별도 문서 platform을 채택하면 <code>moveseye-docs</code>를 source로 publish하되 정본 정책은 유지한다.</li>
+</ul>
+<h2>재검토 조건</h2>
+<ul>
+<li><code>C:\solutions</code> 자체가 version 관리되는 진짜 monorepo로 전환될 때</li>
+<li>Confluence·GitBook 등 공식 publish platform이 정본 편집 기능까지 맡을 때</li>
+<li>문서 접근 권한을 코드 저장소와 별도로 분리해야 할 때</li>
+</ul>
+<h2>근거</h2>
+<ul>
+<li><code>C:\CloudJira\moves-workforce\Moves_Workforce_*.md</code></li>
+<li>Obsidian <code>[[2026-07-08-deliverables-map]]</code></li>
+<li>Obsidian <code>[[moveseye-documentation-system]]</code></li>
+</ul>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-05</td><td>최초 채택</td></tr>
+</tbody></table>
+</body></html>

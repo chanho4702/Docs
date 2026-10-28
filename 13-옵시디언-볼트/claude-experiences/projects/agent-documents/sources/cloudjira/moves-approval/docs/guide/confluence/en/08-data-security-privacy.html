@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moves Approval documentation</title><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1080px;margin:40px auto;padding:0 24px;color:#172b4d}h1{font-size:34px}h2{margin-top:36px;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;margin:24px 0}td,th{border:1px solid #dfe1e6;padding:10px;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:24px 0;padding:12px 20px;background:#f1f6ff;border-left:4px solid #579dff}code{background:#f4f5f7;overflow-wrap:anywhere}pre{padding:16px;background:#f4f5f7;overflow:auto}.status{background:#fff4d5;padding:12px}</style></head><body><p class="status">Local publication draft · This revision has not been published to Confluence · Screenshots are placement markers</p><h1 id="data-security-and-privacy">Data, security, and privacy</h1>
+<p><a href="00-index.html">English Guide</a> · <a href="../ko/08-data-security-privacy.html">한국어</a></p>
+<blockquote>
+<p>For: site administrators and security or privacy reviewers</p>
+</blockquote>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Moves Approval is an <strong>Atlassian Forge</strong> app and runs entirely on Atlassian's infrastructure.</li>
+<li>App data is stored only in Atlassian-hosted <strong>Forge storage</strong> (Forge SQL and the Forge Key-Value Store). No data is sent to external servers.</li>
+<li>When acting for a user, the app calls Confluence <strong>with that user's permissions</strong>. Users cannot see information about pages they cannot view through the app.</li>
+<li>The app <strong>does not store page content.</strong> It stores only version numbers and a hash of area content, which it needs to make approval decisions. The document fingerprint on an approval certificate is computed on demand, and the content is not kept.</li>
+<li>The only time the app <strong>edits</strong> page content is the <strong>automatic stamp box</strong> that a requester chooses, and it does so only with the requester's permissions.</li>
+</ul>
+<h2 id="data-the-app-stores">Data the app stores</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Contents</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approval requests</td>
+<td>Page ID, title, and version; space key; area identifier and content hash; status; deadline; request note (up to 500 characters); requester account ID</td>
+<td>Approval progress and history</td>
+</tr>
+<tr>
+<td>Approval lines and decisions</td>
+<td>Steps, approver account IDs, decisions (approve or reject), decision times, rejection and withdrawal reasons, delegate who decided</td>
+<td>Decision records</td>
+</tr>
+<tr>
+<td>Audit events</td>
+<td>Order and reasons of requests, approvals, rejections, withdrawals, and expiries</td>
+<td>Audit timeline</td>
+</tr>
+<tr>
+<td>Inbox index</td>
+<td>Role per account ID (approver, requester, Cc) and whether it is their turn</td>
+<td>Approval inbox lists</td>
+</tr>
+<tr>
+<td>In-app notifications</td>
+<td>Recipient account ID, notification type and variables (such as page title), read state</td>
+<td>Notifications</td>
+</tr>
+<tr>
+<td>Signatures</td>
+<td>Signature image drawn or uploaded by the user (resized to fit 480×160)</td>
+<td>Stamps next to decisions and in the stamp box</td>
+</tr>
+<tr>
+<td>Signature PIN</td>
+<td>A <strong>salted PBKDF2 hash</strong> of the PIN and a failure count. The PIN itself is never stored.</td>
+<td>Decision confirmation</td>
+</tr>
+<tr>
+<td>Delegations</td>
+<td>Delegator and delegate account IDs, period, note</td>
+<td>Deciding on behalf</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td>Policy, enabled spaces, approval lines, approval groups, approver list, settings administrators</td>
+<td>App behavior</td>
+</tr>
+<tr>
+<td>Record retention settings</td>
+<td>Retention period; date, record count, and administrator account ID of the last export</td>
+<td>Managing retention</td>
+</tr>
+<tr>
+<td>Settings change log</td>
+<td>Account ID of the person who changed it, time, area, details</td>
+<td>Audit</td>
+</tr>
+</tbody>
+</table>
+<p>Users are stored only as Atlassian <strong>account IDs</strong>. Names, email addresses, and profile pictures are not stored; they are read from Confluence each time a screen is shown.</p>
+<p>Approval certificate PDFs are generated in the browser each time they are requested and downloaded; the app keeps no copy.</p>
+<h2 id="retention">Retention</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Retention</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Finished approval records (approved, rejected, expired, or withdrawn requests, with their approval lines and audit events)</td>
+<td>Kept for the retention period an administrator sets (Forever, 1, 3, 5, or 10 years; <strong>3 years by default</strong>). They are not deleted automatically when the period ends; they are removed only when an administrator <strong>exports them to Excel</strong> and then deletes them.</td>
+</tr>
+<tr>
+<td>Open requests</td>
+<td>Not subject to the retention period.</td>
+</tr>
+<tr>
+<td>In-app notifications</td>
+<td>Deleted automatically after 180 days</td>
+</tr>
+<tr>
+<td>Settings change log</td>
+<td>Deleted automatically after one year</td>
+</tr>
+<tr>
+<td>Signatures, PIN, delegations</td>
+<td>Until the user removes or changes them</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Set the retention period under settings → <strong>Data management</strong> → <strong>Approval record retention</strong>. Only app administrators (Confluence administrators and settings administrators) can use this screen.</li>
+<li>Only <strong>the range you last exported</strong> can be deleted, and deletion runs after a second confirmation. Deleting a request also deletes its approval line, audit history, inbox entries, and related notifications. <strong>Deletion cannot be undone.</strong></li>
+<li>Retention changes, exports, and deletions are recorded in the settings change log (area &quot;Retention&quot;, actions &quot;Export&quot; and &quot;Purge&quot;).</li>
+<li>Users cannot modify approval records. Approval records are removed only according to the retention and cleanup policy above.</li>
+</ul>
+<p>Handling of data after uninstallation follows the Atlassian Forge platform's data retention policy.</p>
+<h3 id="exported-files">Exported files</h3>
+<p>The .xlsx file from <strong>Export to Excel</strong> (sheets: Requests / Approvers / History) contains page titles, request notes, rejection and withdrawal reasons, and <strong>user names</strong> read from Confluence at the time of export. The file is downloaded to the administrator's computer, and its storage, access control, and disposal from then on are <strong>the customer's responsibility</strong>. Keep it somewhere that meets your organization's records retention policy.</p>
+<h3 id="storage-limit">Storage limit</h3>
+<p>App data is stored within Forge SQL's per-installation storage limit (based on 1 GiB). When the limit is reached, new approvals can no longer be saved. Check usage under settings → <strong>Data management</strong> → <strong>Storage</strong>: it shows <strong>Warning</strong> at 80% or more and <strong>Critical</strong> at 90% or more. Sizes and row counts per table are estimates from database statistics.</p>
+<h2 id="what-the-app-writes-to-confluence">What the app writes to Confluence</h2>
+<p>The app writes only these two things to Confluence.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>When</th>
+<th>With whose permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A <strong>stamp box macro</strong> at the top of the page</td>
+<td>When the requester selects <strong>Add a stamp box to the top of the page</strong> while requesting page approval (the default comes from the <strong>Add an approval stamp box to the top of the page when a request is made</strong> policy, on by default)</td>
+<td><strong>The requester's</strong> — never the app's</td>
+</tr>
+<tr>
+<td><strong>Comments</strong> that @mention the people involved</td>
+<td>When <strong>Also notify through Confluence</strong> is on (the default)</td>
+<td>The user performing the action (<code>asUser</code>)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The automatic stamp box is the only case in which the app edits page content. Because it is done with the requester's permissions, the page version goes up by one and the page history shows the requester with the message &quot;Moves Approval&quot;. If the page already has a stamp box it is not added again, and if the requester lacks edit permission or someone else saved the page in the meantime, the request proceeds without it. The stamp box is a macro that displays approval status; it does not write approval data into the page body.</li>
+<li>Comments are Confluence content: everyone who can view the page can see them, and they remain after the app is uninstalled. The stamp box macro also remains in the page body, but it stops working once the app is uninstalled.</li>
+</ul>
+<h2 id="approval-certificates">Approval certificates</h2>
+<ul>
+<li>An approval certificate PDF is issued only for <strong>finished approvals</strong>, and only to users who <strong>can view</strong> the page. The server also checks that the request belongs to that page.</li>
+<li>To compute the document fingerprint, the app reads the body of the approved version <strong>with the permissions of the user opening the certificate</strong>, and returns only the SHA-256 value. The body is not stored. If that version cannot be read, the fingerprint is omitted.</li>
+<li>Certificates include the names of the requester, approvers, and actors, the request note, and rejection and withdrawal reasons. Storing and sharing downloaded PDFs is the customer's responsibility.</li>
+</ul>
+<h2 id="permissions-the-app-requests">Permissions the app requests</h2>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read:page:confluence</code>, <code>read:content-details:confluence</code>, <code>read:confluence-content.summary</code></td>
+<td>Reading the title and version of pages under approval, receiving page-updated events, and computing area content hashes and certificate document fingerprints</td>
+</tr>
+<tr>
+<td><code>write:page:confluence</code></td>
+<td>Adding the stamp box macro to the top of a page with the requester's permissions, when the requester chooses it</td>
+</tr>
+<tr>
+<td><code>read:space:confluence</code></td>
+<td>Choosing enabled spaces and showing space names</td>
+</tr>
+<tr>
+<td><code>read:content.permission:confluence</code></td>
+<td>Checking whether users and approvers can view or edit a page</td>
+</tr>
+<tr>
+<td><code>read:user:confluence</code></td>
+<td>Searching for approvers and Cc recipients, and showing names</td>
+</tr>
+<tr>
+<td><code>read:group:confluence</code></td>
+<td>Looking up Confluence groups and members for approval groups</td>
+</tr>
+<tr>
+<td><code>read:comment:confluence</code>, <code>write:comment:confluence</code></td>
+<td>Posting @mention notification comments on pages</td>
+</tr>
+<tr>
+<td><code>storage:app</code></td>
+<td>Storing app data (Forge storage)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="access-control">Access control</h2>
+<ul>
+<li><strong>Every request is authorized on the server.</strong> Whether or not a button is visible, each app function runs only after passing the condition declared for it on the server (own data, page view or edit permission, or administrator permission). Functions without a declared condition are refused.</li>
+<li><strong>Lists are filtered item by item.</strong> Before returning results, the approval inbox keeps only pages the user can actually view.</li>
+<li><strong>Reads that bypass page permissions are never returned to users.</strong> Only background jobs with no user context, such as deadline expiry and page-edit detection, read pages with app permissions, and they use the result only for version comparison and hashing.</li>
+<li><strong>The app never edits page content with its own permissions.</strong> The automatic stamp box runs only with the requester's permissions.</li>
+<li><strong>Safe under concurrent decisions.</strong> Even when several decisions arrive at the same moment, only one open request can exist per target, and nobody can overwrite someone else's decision.</li>
+<li><strong>The server refuses decisions after the deadline.</strong> Even before the scheduled cleanup runs, approvals or rejections on a request past its deadline are not recorded.</li>
+<li><strong>Data management</strong> (storage, approval record retention, and deletion) is available only to app administrators.</li>
+<li><strong>Signature PINs</strong> lock for 15 minutes after five failures.</li>
+<li>When the <strong>license</strong> is inactive, everything except the settings screen is blocked.</li>
+</ul>
+<h2 id="data-subject-requests">Data subject requests</h2>
+<p>Users can delete their own signature and PIN under <strong>My signature</strong>, and their delegation under <strong>My delegation</strong>. Approval decisions are part of the organization's audit record and cannot be modified or deleted by users; they are removed only when an administrator exports and then deletes records past the retention period. Because the app does not keep names or email addresses itself, when an Atlassian account is deleted the screens show whatever Confluence returns for that account. Names already contained in exported Excel files or downloaded certificate PDFs, however, are copies managed by the customer and cannot be changed by the app. For any other request, contact the support channel through your site administrator.</p>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="01-overview.html">Overview and key concepts</a></li>
+<li><a href="07-faq-troubleshooting.html">FAQ and troubleshooting</a></li>
+<li><a href="09-marketplace-review.html">Marketplace review guide</a></li>
+</ul>
+</body></html>

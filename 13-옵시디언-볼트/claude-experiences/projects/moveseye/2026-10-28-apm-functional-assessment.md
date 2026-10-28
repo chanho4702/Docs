@@ -2,7 +2,7 @@
 
 - 사용자 요청: APM 기능 평가. `SOLO-CLAUDE` 검수로 수행했으며 제품 코드·배포는 변경하지 않았다.
 - 기준: BE `21358d8`, FE `edf667c`.
-- 상세 평가: [검수 기록](C:/solutions/_workspace/features/apm/full-review-20261028/review_apm-functional-assessment-20261028.md).
+- 상세 평가: [검수 기록](../agent-documents/sources/solutions/_workspace/features/apm/full-review-20261028/solutions--review_apm-functional-assessment-20261028.md).
 - 판단: 핵심 기능 범위는 넓고 검증된 조합의 단일 BE 파일럿 가치가 있다. 대규모·HA 보증은 근거 부족. 임의의 서비스 수·처리량·완료율로 점수화하지 않았다.
 - 10월 6일 평가의 결함을 그대로 현재 결함으로 옮기지 않았다. 누적 정확성·환경 필터·rollup 완전성·알람 전달과 이력 보존·커스텀 지표 후속·HostLinker 배치화의 실제 최신 반영을 확인했다.
 - 현재 제약: CUMULATIVE checkpoint와 RUM 예산의 노드 로컬 상태, 서비스 전량 집계·trace offset 조회, 애플리케이션 로그 미저장, 실제 독자 알림 채널 부재, Java 진행 중 요청 확장의 제한된 지원 조합.

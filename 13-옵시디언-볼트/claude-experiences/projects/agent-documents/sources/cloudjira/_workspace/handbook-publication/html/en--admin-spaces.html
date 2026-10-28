@@ -1,0 +1,43 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832787">한국어</a></p>
+<p>Choose spaces that allow new requests and define policy exceptions. For example, Legal can use a three-day deadline while other spaces follow the global default.</p>
+<p><strong>Location:</strong> Settings → <strong>Enabled spaces</strong>.</p>
+<h2>Set the scope</h2>
+<ol>
+<li>Review the initial notice that approvals are available in all spaces.</li>
+<li>Search by name or key and load more entries if needed. <strong>Enabling the first space immediately restricts new requests in other spaces</strong>, so decide the scope before changing a toggle.</li>
+<li>Change the required space toggles individually. Each change is saved immediately; check the result and any error.</li>
+<li>If an excluded space has open requests, review the warning and confirm its exclusion.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-16</strong> — Space enablement and the policy dialog showing inherited and overridden values.</p>
+</blockquote>
+<h2>Set an exception</h2>
+<p>Open <strong>Edit policy</strong> on a space row. Enable only the items you want to override, enter values, and save. Disabled items inherit global policy. Overriding the deadline alone leaves other request defaults inherited.</p>
+<p>In the current version, <strong>PIN requirements, delegation, and signature display</strong> use global policy. Space overrides for these items do not change their runtime behavior.</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Scope and action</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disable a space</td>
+<td>Restricts new requests and area use there</td>
+<td>Open requests are not closed automatically.</td>
+</tr>
+<tr>
+<td>Disable an override</td>
+<td>Restores global inheritance for that item</td>
+<td>Check the displayed inherited value.</td>
+</tr>
+<tr>
+<td>Access restriction / status labels</td>
+<td>Global only</td>
+<td>Cannot be set per space.</td>
+</tr>
+</tbody>
+</table>
+<p>After saving, open a new request on a test page in that space to inspect defaults. Users with the required page permission can still handle existing requests in the inbox after the space is excluded.</p>

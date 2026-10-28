@@ -1,0 +1,203 @@
+{
+    "schema_version":  1,
+    "diagram_type":  "architecture",
+    "meta":  {
+                 "title":  "워크로그 승인 · 데이터와 권한 경계",
+                 "quality_profile":  "showcase",
+                 "viewBox":  [
+                                 1200,
+                                 560
+                             ]
+             },
+    "components":  [
+                       {
+                           "id":  "entry",
+                           "type":  "frontend",
+                           "label":  "작성 화면",
+                           "sublabel":  "이슈 패널 · Workforce 앱",
+                           "pos":  [
+                                       30,
+                                       100
+                                   ],
+                           "size":  [
+                                        190,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "guard",
+                           "type":  "security",
+                           "label":  "사용자 권한 확인",
+                           "sublabel":  "guardedDefine · asUser",
+                           "pos":  [
+                                       330,
+                                       100
+                                   ],
+                           "size":  [
+                                        210,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "request",
+                           "type":  "backend",
+                           "label":  "건별 승인 서비스",
+                           "sublabel":  "WorklogRequestService",
+                           "pos":  [
+                                       670,
+                                       100
+                                   ],
+                           "size":  [
+                                        230,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "jira",
+                           "type":  "external",
+                           "label":  "Jira 워크로그",
+                           "sublabel":  "원문 · 작성자 · 변경 시각",
+                           "pos":  [
+                                       30,
+                                       260
+                                   ],
+                           "size":  [
+                                        190,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "control",
+                           "type":  "security",
+                           "label":  "수정·삭제 통제",
+                           "sublabel":  "현재 SQL 상태로 판정",
+                           "pos":  [
+                                       330,
+                                       260
+                                   ],
+                           "size":  [
+                                        210,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "ledger",
+                           "type":  "database",
+                           "label":  "승인 SQL 원장",
+                           "sublabel":  "요청 · 결정 · 이력 · 잠금",
+                           "pos":  [
+                                       670,
+                                       260
+                                   ],
+                           "size":  [
+                                        230,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "workforce",
+                           "type":  "backend",
+                           "label":  "Workforce 집계",
+                           "sublabel":  "권한 범위 · 월 마감 정책",
+                           "pos":  [
+                                       30,
+                                       420
+                                   ],
+                           "size":  [
+                                        190,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "signed",
+                           "type":  "cloud",
+                           "label":  "서명 교환 문서",
+                           "sublabel":  "cert · ctl · flows",
+                           "pos":  [
+                                       330,
+                                       420
+                                   ],
+                           "size":  [
+                                        210,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "publisher",
+                           "type":  "messagebus",
+                           "label":  "큐 게시 작업",
+                           "sublabel":  "WorkforcePublisher · asApp",
+                           "pos":  [
+                                       670,
+                                       420
+                                   ],
+                           "size":  [
+                                        230,
+                                        76
+                                    ]
+                       }
+                   ],
+    "connections":  [
+                        {
+                            "from":  "entry",
+                            "to":  "guard",
+                            "label":  "invoke"
+                        },
+                        {
+                            "from":  "guard",
+                            "to":  "request",
+                            "label":  "본인·이슈 권한"
+                        },
+                        {
+                            "from":  "request",
+                            "to":  "ledger",
+                            "label":  "요청·결정 저장",
+                            "labelDy":  45
+                        },
+                        {
+                            "from":  "ledger",
+                            "to":  "control",
+                            "label":  "승인·기간 잠금"
+                        },
+                        {
+                            "from":  "control",
+                            "to":  "jira",
+                            "label":  "검증된 통제"
+                        },
+                        {
+                            "from":  "ledger",
+                            "to":  "publisher",
+                            "label":  "아웃박스·깨우기",
+                            "variant":  "dashed",
+                            "labelDy":  45
+                        },
+                        {
+                            "from":  "publisher",
+                            "to":  "signed",
+                            "label":  "큐에서만 게시"
+                        },
+                        {
+                            "from":  "signed",
+                            "to":  "workforce",
+                            "label":  "서명 검증"
+                        }
+                    ],
+    "cards":  [
+                  {
+                      "dot":  "rose",
+                      "title":  "판정 근거",
+                      "items":  [
+                                    "Approval 잠금은 현재 SQL 원장으로 판정",
+                                    "프로퍼티만으로 승인 권한을 부여하지 않음"
+                                ]
+                  },
+                  {
+                      "dot":  "emerald",
+                      "title":  "조회 경계",
+                      "items":  [
+                                    "일반 Jira 조회는 asUser",
+                                    "숨김 보충은 본인·현재 팀장 범위와 이슈 권한 재확인"
+                                ]
+                  }
+              ]
+}

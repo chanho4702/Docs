@@ -1,0 +1,294 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moves Approval documentation</title><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1080px;margin:40px auto;padding:0 24px;color:#172b4d}h1{font-size:34px}h2{margin-top:36px;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;margin:24px 0}td,th{border:1px solid #dfe1e6;padding:10px;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:24px 0;padding:12px 20px;background:#f1f6ff;border-left:4px solid #579dff}code{background:#f4f5f7;overflow-wrap:anywhere}pre{padding:16px;background:#f4f5f7;overflow:auto}.status{background:#fff4d5;padding:12px}</style></head><body><p class="status">Local publication draft · This revision has not been published to Confluence · Screenshots are placement markers</p><h1 id="faq-and-troubleshooting">FAQ and troubleshooting</h1>
+<p><a href="00-index.html">English Guide</a> · <a href="../ko/07-faq-troubleshooting.html">한국어</a></p>
+<h2 id="menus-and-screens">Menus and screens</h2>
+<h3 id="i-dont-see-request-approval-on-a-page">I don't see &quot;Request approval&quot; on a page</h3>
+<ul>
+<li>Everyone who can read the page sees the item below its title, but <strong>Request approval</strong> in the <code>•••</code> menu appears only with <strong>edit permission</strong>.</li>
+<li>Requesting requires edit permission. If the approval dialog has no request button, check your edit permission.</li>
+<li>If an administrator limited approvals to certain spaces, check that this space is an <strong>enabled space</strong>.</li>
+<li>If <strong>Only registered users can use the app</strong> is on, you must be on the approver list or a settings administrator.</li>
+</ul>
+<h3 id="an-app-screen-is-blank-or-shows-could-not-load-this-screen">An app screen is blank or shows &quot;Could not load this screen&quot;</h3>
+<p>Refresh the browser. Right after an app update, a cached screen may need one refresh. If it continues, try another browser or a private window and include the details in your support request.</p>
+<h3 id="the-bottom-of-a-macro-is-cut-off">The bottom of a macro is cut off</h3>
+<p>An issue where the stamp box or area macro was clipped at the bottom when names or signature images loaded late has been fixed. If it still looks clipped, you are seeing a cached screen — refresh the page.</p>
+<h3 id="initials-appear-instead-of-profile-pictures">Initials appear instead of profile pictures</h3>
+<p>When the browser or your organization's security settings block profile images, the app shows initials instead. Functionality is not affected.</p>
+<h2 id="requests">Requests</h2>
+<h3 id="my-request-is-not-created">My request is not created</h3>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An approval request is already open.</td>
+<td>Only one request can be open per target. Review or withdraw the existing request. If the existing request is already past its deadline, submitting again automatically expires it and starts the new request.</td>
+</tr>
+<tr>
+<td>Someone on the approval line cannot view this page.</td>
+<td>Change the approver, or grant page and space permission.</td>
+</tr>
+<tr>
+<td>Only registered approvers can be placed on the line.</td>
+<td>Pick someone on the approver list, or ask an administrator to register the person.</td>
+</tr>
+<tr>
+<td>The approval line is invalid.</td>
+<td>Check for empty steps, required approvals exceeding a step's approvers, and steps mixing a group with others.</td>
+</tr>
+<tr>
+<td>Approvals are not enabled in this space.</td>
+<td>Ask an administrator to enable the space.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="i-cant-find-someone-for-the-approval-line">I can't find someone for the approval line</h3>
+<p>Enter <strong>at least two characters</strong> of the name or account. If there are many matches, only some are shown — type more to narrow them. If an administrator maintains an approver list, people outside it cannot be added.</p>
+<h3 id="i-edited-the-page-after-requesting">I edited the page after requesting</h3>
+<p>The request continues. To get the edits approved too, select <strong>Resubmit for the new version</strong> in the approval dialog. → <a href="03-requester-guide.html#if-you-edited-the-page-after-requesting">Requester guide</a></p>
+<h3 id="the-area-macro-says-edit-and-save-this-area-once-before-requesting-approval">The area macro says &quot;Edit and save this area once before requesting approval&quot;</h3>
+<p>Open the macro in the editor once, save it, and publish the page. Once the area identifier is recorded you can request approval.</p>
+<h3 id="this-page-contains-duplicate-area-identifiers">&quot;This page contains duplicate area identifiers&quot;</h3>
+<p>Copying and pasting an area macro can duplicate its identifier. Delete the later macro, <strong>insert a new one</strong>, move the content into it, and save.</p>
+<h2 id="stamp-box">Stamp box</h2>
+<h3 id="the-stamp-box-was-not-added-to-my-page">The stamp box was not added to my page</h3>
+<p>When you submit with <strong>Add a stamp box to the top of the page</strong> selected in the request form, the app inserts a stamp box at the top of the page. If it did not appear, check the following.</p>
+<table>
+<thead>
+<tr>
+<th>Cause</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The policy is off</td>
+<td>If an administrator turned off <strong>Add an approval stamp box to the top of the page when a request is made</strong> (globally or for the space), the checkbox in the request form starts cleared. You can still select it for each request.</td>
+</tr>
+<tr>
+<td>The box was cleared</td>
+<td>You cleared <strong>Add a stamp box to the top of the page</strong> when submitting.</td>
+</tr>
+<tr>
+<td>Area approval</td>
+<td>Area approvals do not have this checkbox. The same stamp box is attached below the area macro's panel instead.</td>
+</tr>
+<tr>
+<td>No edit permission</td>
+<td>The stamp box is inserted with the requester's permissions. If you cannot edit the page body (for example, because of page restrictions), it cannot be added.</td>
+</tr>
+<tr>
+<td>Already present</td>
+<td>If the page already has a stamp box (for example, from a template), another one is not added.</td>
+</tr>
+<tr>
+<td>Simultaneous save</td>
+<td>If someone else saved the page at the moment you submitted, it cannot be added.</td>
+</tr>
+</tbody>
+</table>
+<p>Even when the stamp box cannot be added, the request proceeds normally without it. To add one yourself, type <code>/</code> in the editor and insert the <strong>Moves Approval Stamps</strong> macro.</p>
+<h3 id="the-page-version-went-up-when-i-requested-approval">The page version went up when I requested approval</h3>
+<p>That is the automatic stamp box. The app inserts the stamp box at the top of the page with the requester's permissions, so the page version goes up by one and the page history shows the requester with the message &quot;Moves Approval&quot;. The approval is based on that new version, so the request is not marked as edited after requesting. If you don't want the version to change, clear <strong>Add a stamp box to the top of the page</strong> when you submit.</p>
+<h3 id="the-stamp-box-says-the-page-changed-after-approval">The stamp box says &quot;The page changed after approval&quot;</h3>
+<p>The page was edited after it was approved, so the current version is not approved. Request approval again if the edits need approval too.</p>
+<h2 id="decisions">Decisions</h2>
+<h3 id="a-request-is-missing-from-my-inbox">A request is missing from my inbox</h3>
+<ul>
+<li>If an earlier step hasn't finished, it is under <strong>In progress</strong>, not <strong>My turn</strong>.</li>
+<li>Pages you cannot view are excluded from lists.</li>
+<li>Check whether filters are applied (<strong>Clear all</strong>).</li>
+<li>Lists load in batches. Select <strong>Show more</strong> below the list to load the rest.</li>
+</ul>
+<h3 id="there-are-no-approve-or-reject-buttons">There are no approve or reject buttons</h3>
+<ul>
+<li>It may not be your turn yet, you may have decided already, or the request may have ended.</li>
+<li>If you see <strong>This request is past its deadline</strong>, decisions are no longer possible. The requester needs to submit again. Even if the approval dialog stays open while the deadline passes, the buttons disappear within 30 seconds.</li>
+</ul>
+<h3 id="i-cant-select-some-requests-for-bulk-approval">I can't select some requests for bulk approval</h3>
+<p>Requests past their deadline are excluded from bulk approval, and their checkboxes are disabled.</p>
+<h3 id="i-approved-or-rejected-by-mistake">I approved (or rejected) by mistake</h3>
+<p>Confirmed decisions cannot be reversed. If the request is still open, ask the requester to withdraw it and create a new request. If it has already ended, create a new request. The earlier decisions and history remain.</p>
+<h3 id="pin-issues">PIN issues</h3>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No signature PIN is registered.</td>
+<td>Set one under approval inbox → <strong>My signature</strong>.</td>
+</tr>
+<tr>
+<td>The PIN is incorrect.</td>
+<td>Five failures lock it for 15 minutes.</td>
+</tr>
+<tr>
+<td>The PIN is locked.</td>
+<td>Try again in 15 minutes.</td>
+</tr>
+<tr>
+<td>The PIN must be 4 to 12 digits.</td>
+<td>Enter 4 to 12 digits only.</td>
+</tr>
+</tbody>
+</table>
+<p>Changing or removing your PIN requires the current PIN. The app does not provide an administrator PIN reset feature. If you forget your PIN, contact your site administrator and support for guidance.</p>
+<h2 id="deadlines">Deadlines</h2>
+<h3 id="the-deadline-passed-but-the-request-is-still-in-the-list">The deadline passed but the request is still in the list</h3>
+<p>Deadline expiry is handled by a scheduled job that runs <strong>once a day</strong> (the Atlassian platform decides the exact time). A request past its deadline can therefore take up to a day to be cleared from lists. Until then, the inbox and approval dialog show <strong>Overdue</strong>, and the item below the page title shows <strong>⌛ Overdue</strong>.</p>
+<p>The outcome is not affected in the meantime:</p>
+<ul>
+<li>The approve and reject buttons disappear, and if anyone tries to decide, the server refuses and expires the request on the spot.</li>
+<li>If the requester submits a new request for the same page, the earlier request expires automatically and the new one starts.</li>
+</ul>
+<h3 id="a-due-soon-notice-arrived-earlier-than-the-policy-says">A due-soon notice arrived earlier than the policy says</h3>
+<p>Due-soon checks also run once a day. So even if an administrator sets the <strong>Due-soon threshold (hours)</strong> below 24 hours, the notice may arrive up to a day before the deadline. It is sent only once for the same step of a request.</p>
+<h2 id="approval-certificate">Approval certificate</h2>
+<h3 id="i-dont-see-the-approval-certificate-pdf-button">I don't see the Approval certificate (PDF) button</h3>
+<p><strong>Approval certificate (PDF)</strong> is next to the title in the approval dialog and appears only for <strong>finished approvals</strong> (approved, rejected, expired, withdrawn, and so on). Open requests don't have it. Anyone who can view the page can download it. If you see &quot;Could not create the certificate&quot;, try again shortly.</p>
+<h3 id="i-cant-search-the-text-in-the-certificate-pdf">I can't search the text in the certificate PDF</h3>
+<p>Korean text in the certificate body is embedded as images, so it cannot be searched or copied inside the PDF. The <strong>request ID and document fingerprint</strong>, however, are included as text at the bottom of every page and in the PDF document properties (keywords), so you can copy them. The certificate is always produced on white paper, even when you use the dark theme.</p>
+<h3 id="how-do-i-verify-the-document-fingerprint">How do I verify the document fingerprint?</h3>
+<p>The document fingerprint is the SHA-256 value of the <strong>approved version</strong>'s body in Confluence's document format (ADF). Confluence never changes the content of a past version, so if you fetch the same version again and get the same value, the content the certificate refers to is unchanged.</p>
+<ol>
+<li>Find the <strong>Page ID</strong> and <strong>Approved version</strong> on the certificate.</li>
+<li>Using an account that can view the page, call the Confluence REST API <code>GET /wiki/api/v2/pages/{Page ID}?version={Approved version}&amp;body-format=atlas_doc_format</code>.</li>
+<li>Compute SHA-256 over the <code>body.atlas_doc_format.value</code> string from the response <strong>exactly as returned</strong> (UTF-8).</li>
+<li>Compare the result (hexadecimal) with the <strong>Document fingerprint</strong> on the certificate.</li>
+</ol>
+<p>For an area approval, the fingerprint still covers the whole page version that contains the area. If the body of that version could not be read when the certificate was created, the certificate shows &quot;The body of this version could not be read, so no fingerprint was computed.&quot; and omits the fingerprint.</p>
+<h2 id="data-management-administrators">Data management (administrators)</h2>
+<h3 id="i-cant-delete-records-past-the-retention-period">I can't delete records past the retention period</h3>
+<p>If you see &quot;Export the records past the retention period to Excel before deleting them.&quot;, first select <strong>Export to Excel</strong> under settings → <strong>Data management</strong> → <strong>Approval record retention</strong>.</p>
+<ul>
+<li>An export is recorded only after the file has actually been downloaded. If your browser blocked the download, export again.</li>
+<li>Deletion covers <strong>only the range you last exported</strong>. If you see &quot;N more records passed the period since the last export&quot;, export again to delete those records too.</li>
+<li>Deletion cannot be undone. Deleting a request also deletes its approval line, audit history, inbox entries, and related notifications.</li>
+<li>Open requests are never subject to the retention period.</li>
+</ul>
+<h3 id="storage-shows-warning-or-critical">Storage shows &quot;Warning&quot; or &quot;Critical&quot;</h3>
+<p>Settings → <strong>Data management</strong> → <strong>Storage</strong> shows how much storage the app uses. At 80% or more it shows <strong>Warning</strong>, and at 90% or more <strong>Critical</strong>. When the limit (based on 1 GiB) is reached, new approvals can no longer be saved, so export and then delete approval records past the retention period to free up space. Sizes and row counts per table are estimates from database statistics. After cleaning up, select <strong>Refresh</strong> to check again.</p>
+<h2 id="notifications">Notifications</h2>
+<h3 id="i-dont-receive-email">I don't receive email</h3>
+<p>The app does not send email itself. In-app notifications are the default, and when an administrator turns on <strong>Also notify through Confluence</strong>, the app leaves an @mention comment on the page. Email arrives only when Confluence sends that mention according to your Confluence notification settings. Due-soon notices, reminders, and expiry are in-app only.</p>
+<h3 id="comments-keep-appearing-on-my-page">Comments keep appearing on my page</h3>
+<p>That is the <strong>Also notify through Confluence</strong> policy. An administrator can turn it off in the global policy or per space.</p>
+<h3 id="old-notifications-have-disappeared">Old notifications have disappeared</h3>
+<p>In-app notifications are deleted automatically after 180 days. The approval outcome and history remain in the audit timeline of the approval dialog.</p>
+<h2 id="all-error-messages">All error messages</h2>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>Meaning</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>You cannot perform this action.</td>
+<td>No permission for this action</td>
+<td>Contact a Confluence administrator</td>
+</tr>
+<tr>
+<td>You cannot view this page. / You cannot edit this page.</td>
+<td>Missing page permission</td>
+<td>Ask a space administrator</td>
+</tr>
+<tr>
+<td>Only administrators can use this feature.</td>
+<td>No access to settings</td>
+<td>Ask a Confluence administrator or settings administrator</td>
+</tr>
+<tr>
+<td>Only registered users can use this app.</td>
+<td>Access restriction is on</td>
+<td>Ask a settings administrator to register you</td>
+</tr>
+<tr>
+<td>The app license is not active.</td>
+<td>License expired or inactive</td>
+<td>Ask a site administrator to check the license</td>
+</tr>
+<tr>
+<td>The app license status is unavailable.</td>
+<td>Temporary check failure</td>
+<td>Try again shortly</td>
+</tr>
+<tr>
+<td>The approval target is unavailable.</td>
+<td>Page moved or deleted, or the screen is stale</td>
+<td>Refresh and try again</td>
+</tr>
+<tr>
+<td>The approval request could not be found.</td>
+<td>Stale list, or deleted by retention cleanup</td>
+<td>Refresh the list</td>
+</tr>
+<tr>
+<td>This approval request has already ended.</td>
+<td>Ended by another decision, withdrawal, or expiry (including an attempt to decide after the deadline)</td>
+<td>Check the latest state</td>
+</tr>
+<tr>
+<td>Another user changed this request first.</td>
+<td>Decisions arrived at the same time</td>
+<td>Refresh and try again</td>
+</tr>
+<tr>
+<td>Enter a reason for rejecting the request.</td>
+<td>Reason-required policy</td>
+<td>Enter a reason</td>
+</tr>
+<tr>
+<td>An administrator has turned delegation off.</td>
+<td>Delegation not allowed</td>
+<td>Contact an administrator</td>
+</tr>
+<tr>
+<td>Export the records past the retention period to Excel before deleting them.</td>
+<td>Tried to delete records that were not exported</td>
+<td>Select <strong>Export to Excel</strong>, then delete</td>
+</tr>
+<tr>
+<td>The app storage is still being prepared.</td>
+<td>Right after install or update</td>
+<td>Try again shortly</td>
+</tr>
+<tr>
+<td>The app could not retrieve required information from Confluence.</td>
+<td>Confluence did not respond</td>
+<td>Try again shortly</td>
+</tr>
+<tr>
+<td>The app storage failed to process the request. / An unexpected error occurred.</td>
+<td>Temporary error</td>
+<td>Try again. If it continues, an administrator should check storage under <strong>Data management</strong> and contact support</td>
+</tr>
+</tbody>
+</table>
+<h2 id="information-to-include-in-a-support-request">Information to include in a support request</h2>
+<ul>
+<li>URL of the affected page (or the inbox screen)</li>
+<li>When it happened, with time zone</li>
+<li>Your role (requester, approver, Cc, administrator)</li>
+<li>The exact message shown, or a screenshot</li>
+<li>Steps to reproduce and what you expected</li>
+<li>Your browser</li>
+<li>For questions about an approval certificate, the request ID on the certificate</li>
+</ul>
+<p>Please share personal data only as far as needed to solve the problem.</p>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="01-overview.html">Overview and key concepts</a></li>
+<li><a href="09-marketplace-review.html">Marketplace review guide</a></li>
+</ul>
+</body></html>

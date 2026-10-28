@@ -1,0 +1,77 @@
+---
+title: MovesEye 최근 작업과 APM 읽기 안내
+doc_type: hub
+audience: [기획, 개발, 운영, QA]
+status: review
+owner: MovesEye 팀
+baseline: 2026-10-05
+source_of_truth: "현재 BE·FE 소스와 본문에 연결한 설계·계약·검증 자료"
+reviewed_at: 2026-10-05
+review_cycle: event-driven
+deployment_scope: source
+be_commit: 3637c77
+fe_commit: 9dfcbe8
+---
+
+# MovesEye 최근 작업과 APM 읽기 안내
+
+**처음에는 이 페이지와 ‘최근 작업’만 읽으세요.** 전체 문서를 순서대로 읽을 필요는 없습니다. 이 안내서는 2026년 10월 5일 작업 디렉터리의 코드와 문서를 대조해, 최근 변화와 APM의 현재 수준을 이해하기 위한 입구입니다.
+
+최근 작업의 중심은 **인프라 조회 부담을 줄이고, APM으로 애플리케이션 내부를 관측하며, 수집·보존·화면의 신뢰성을 보강하는 것**이었습니다. 기능의 범위는 넓어졌지만 데이터 중복 집계 방지와 운영 규모 검증에는 남은 과제가 있습니다.
+
+## 읽는 순서
+
+| 순서 | 읽을 문서 | 알게 되는 것 |
+|---|---|---|
+| 1 | [최근 작업을 쉽게 이해하기](solutions--recent-work.md) | 무엇을 왜 바꿨으며 사용자에게 무엇이 달라졌는가 |
+| 2 | [APM 개념과 우리 화면](solutions--apm-explained.md) | 처리량·오류율·지연·트레이스를 어떻게 해석하는가 |
+| 3 | [OpenTelemetry와 수집 흐름](solutions--opentelemetry-explained.md) | Agent·Collector·MovesEye가 각각 무엇을 하는가 |
+| 4 | [설계와 구현의 연결 지도](solutions--design-implementation-map.md) | 어떤 설계를 어떤 코드와 화면으로 만들었는가 |
+| 5 | [APM 구현 부족점 분석 리포트](solutions--apm-gap-report.md) | 현재 위험, 기능 공백, 검증 부족, 다음 작업의 완료 조건 |
+| 6 | [APM 대규모 운영 준비 상태](solutions--apm-scale-readiness.md) | 10월 6일 보완 구현, 규모별 방어 장치와 남은 검증 |
+| 7 | [APM 전반 완성도와 개선 우선순위](solutions--apm-overall-assessment.md) | 새 정확성·권한·조사 흐름 검수, Claude 의견, 전체 개선 순서 |
+
+**시간이 짧다면:** 1번의 첫 부분 → 5번의 결론과 우선순위만 읽습니다.  
+**기술 구조를 이해하려면:** 2번 → 3번 → 4번을 읽습니다.  
+**개발을 이어가려면:** 7번의 최신 우선순위와 6번의 완료 보완을 확인하고 5번의 과거 분석·4번의 원본 설계와 계약으로 이동합니다.
+
+## 문서의 상태를 읽는 법
+
+- **현재:** 확인한 소스에 구현되어 있습니다. 운영 서버 배포를 뜻하지 않습니다.
+- **부분:** 일부 기능이나 조건에서만 구현·검증되어 있습니다.
+- **계획:** 설계 또는 제안이며 구현 완료로 안내할 수 없습니다.
+- **보류:** 재개 결정이 필요한 작업입니다.
+
+리포트는 근거도 구분합니다. **코드 확인**은 이번에 실제 소스를 읽은 내용, **기존 검증 기록**은 과거 QA의 결과, **제안**은 앞으로 할 일입니다. 과거에 테스트가 통과했어도 현재 배포가 검증됐다는 뜻은 아닙니다.
+
+## 이번 정리의 범위와 기준선
+
+최근 작업은 2026년 8월 말부터 10월 2일까지를 중심으로 설명합니다. Spring 전환과 수집 엔진 분리는 그 이전의 배경으로 다룹니다.
+
+| 대상 | 이번 확인 기준 |
+|---|---|
+| BE | `moveseye-be-spring` master, HEAD `3637c77` |
+| FE | `moveseyee_fe` master, HEAD `9dfcbe8` |
+| DB 구조 | 소스의 Flyway V69까지. 실제 DB 적용 여부는 미확인 |
+| Java 확장 | `moveseye-otel-extension` 작업 폴더, README 버전 0.2.0. 독립 Git 저장소 아님 |
+| 미커밋 변경 | BE `ApmCollectorController.java`에 기존 변경 존재. 문서 저장소에도 기존 수정·이름 변경 다수 존재 |
+| 검증 방식 | 설계·계약·기능 문서·Git 이력·핵심 코드 정적 대조. 이번 작업에서 서비스 기동·부하 시험·DB 변경은 수행하지 않음 |
+
+전체 코드를 전수 검증한 인증 보고서가 아닙니다. 데이터 수신, 중복 방지, 실시간 송신, 알람, RUM, 보존·아카이브와 화면 진입 경로를 중심으로 확인했습니다. 실제 설치 환경별 지원 수준은 추가 검증이 필요합니다.
+
+## 문서가 많을 때의 선택 규칙
+
+**설명은 이 묶음, 정확한 API는 계약과 코드, 과거 판단은 검수 기록**에서 찾습니다.
+
+| 궁금한 것 | 선택할 자료 |
+|---|---|
+| 제품을 이해하고 싶다 | 이 묶음 또는 [제품 개요](../product/solutions--%EC%A0%9C%ED%92%88-%EA%B0%9C%EC%9A%94.md) |
+| 특정 화면을 사용하고 싶다 | [화면별 가이드](../guides/pages/solutions--README.md). 메뉴 이동은 현재 FE route와 대조 |
+| 왜 이런 구조를 선택했나 | [설계·구현 지도](solutions--design-implementation-map.md)의 설계 링크 |
+| 요청·응답 필드를 구현해야 한다 | `_workspace/contract_*.md`와 해당 Controller·DTO |
+| 실제로 시험했는가 | `_workspace/verification`의 대상 환경·날짜·결과 |
+| 현재 남은 문제인가 | [부족점 리포트](solutions--apm-gap-report.md)의 현재 재확인 결과 |
+
+기존 APM 안내서는 19개 파일로 나뉘어 있습니다. [기존 안내서 목차](../../_workspace/guides/apm-handbook/solutions--00-index.md)는 상세 참고서로 활용하세요. 그 문서의 9월 17일 상태와 이후 구현은 이 묶음에서 구분했습니다.
+
+[문서 저장소 전체 목차로 돌아가기](../solutions--README.md)

@@ -1,0 +1,65 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178927">한국어</a></p>
+<h2>Purpose and access</h2>
+<p>Define job levels and, under level-band salary policy, the annual salary bands used for cost estimates. Level management read opens the screen; write permits adding, editing, deleting, quick add, and band changes. Monetary band fields follow the applicable Cost or Level management access. A readable level-name list does not guarantee access to band amounts.</p>
+<p>People management and Settings readers can also obtain level choices for their forms and missing-band checks.</p>
+<h2>Register levels</h2>
+<p>Use Add level for a name, description, and band. Quick add provides schemes such as Junior/Senior, G1–G5, Korean job grades, and bands. The table displays level, description, salary range, and the representative value used in calculation.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Level list and add dialog with lower bound, upper bound, representative value, and midpoint calculation. Use fictitious amounts.</p>
+</blockquote>
+<h2>Salary-band rules</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lower and upper bounds</td>
+<td>Non-negative; the lower bound cannot exceed the upper bound</td>
+</tr>
+<tr>
+<td>Representative value</td>
+<td>Used in annualized cost calculation. An empty value can use the midpoint when both valid bounds exist</td>
+</tr>
+</tbody></table>
+<p>Calculate midpoint fills the representative value. A representative value outside the range triggers a warning but can be saved. Under individual salary policy, bands are not used; the screen provides a settings link.</p>
+<h2>Missing prices</h2>
+<p>If no valid representative value or midpoint can be determined under level-band policy, the person&#39;s calculated cost is zero and is treated as unpriced. Review missing-band warnings when changing policy and the unpriced-member indicator in cost views. This does not mean the person&#39;s work is free.</p>
+<p>Levels are used by People management, project members and cost calculations, dashboard distributions, and resource filters.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Levels connect personnel definitions to level-based costs. Salary bands are annual amounts; do not enter monthly pay or abbreviated monetary units.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Add Level / name / description</td>
+<td>Register an organizational level. Levels remain usable under Per person, but their bands are not the cost basis.</td>
+<td>Check the policy notice/list. Entering a band does not itself switch salary policy.</td>
+</tr>
+<tr>
+<td>Min / Max</td>
+<td>Enter nonnegative numbers with min ≤ max. Empty means unset/cleared, different from zero.</td>
+<td>Enter whole amounts in the currency’s base unit. Decimal points, minus signs, and letters are stripped during entry; verify the displayed number and amount hint. A minimum above the maximum blocks saving.</td>
+</tr>
+<tr>
+<td>Representative / Use midpoint</td>
+<td>The representative annual amount is used for cost. With no representative and valid min/max, the midpoint is filled.</td>
+<td>An out-of-range representative warns but can still be saved; verify that it is intentional.</td>
+</tr>
+<tr>
+<td>Quick Add / Edit / Delete</td>
+<td>Add selected career-stage presets or edit/delete existing levels. Existing presets are skipped.</td>
+<td>Deleting an in-use level can be blocked. Before clearing amounts, check affected costs/missing-basis warnings.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

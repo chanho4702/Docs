@@ -1,0 +1,172 @@
+<h1 id="cc-and-viewer-guide">CC and viewer guide</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">English Guide</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570692">한국어</a></p>
+<blockquote>
+<p>For: people copied (Cc) on a request, and anyone checking a page's approval status</p>
+</blockquote>
+<h2 id="cc-recipients">Cc recipients</h2>
+<p>When a requester copies you (<strong>Cc</strong>), you can follow the request without deciding.</p>
+<ul>
+<li><strong>Where</strong> — The <strong>Cc</strong> tab of the approval inbox (top <strong>Apps</strong> → <strong>Moves Approval</strong>)</li>
+<li><strong>What you receive</strong> — In-app notifications when the request is created, <strong>finally</strong> approved, rejected, withdrawn, or expires. Intermediate step approvals are not sent. If Confluence notifications are on, you are also @mentioned in a page comment on final approval.</li>
+<li><strong>What you cannot do</strong> — Approve, reject, or withdraw</li>
+<li>If you were copied through a group, the group's members at request time become Cc recipients. People who join the group later are not included.</li>
+<li>You need view permission on the page to see its details.</li>
+</ul>
+<h2 id="page-readers-reading-the-approval-status">Page readers: reading the approval status</h2>
+<p>The item below the page title shows the current status.</p>
+<table>
+<thead>
+<tr>
+<th>Shown</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request approval</td>
+<td>This page has no approval request yet.</td>
+</tr>
+<tr>
+<td>⏳ Pending approval · Step 2 of 3 in progress</td>
+<td>Step 2 of 3 is in progress.</td>
+</tr>
+<tr>
+<td>⏳ Legal review · step 2 of 3</td>
+<td>Progress when the step has a name.</td>
+</tr>
+<tr>
+<td>✅ Approved</td>
+<td>Every step approved.</td>
+</tr>
+<tr>
+<td>❌ Rejected</td>
+<td>An approver rejected it.</td>
+</tr>
+<tr>
+<td>⌛ Overdue</td>
+<td>The deadline has passed. It can no longer be approved or rejected and turns Expired within a day.</td>
+</tr>
+<tr>
+<td>⌛ Expired</td>
+<td>It closed after its deadline.</td>
+</tr>
+<tr>
+<td>↩️ Withdrawn</td>
+<td>The requester withdrew it.</td>
+</tr>
+</tbody>
+</table>
+<p>If an administrator renamed the status labels, you will see your organization's terms instead.</p>
+<p>Select the item to open the approval dialog. With view permission on the page you can see:</p>
+<ul>
+<li><strong>Progress</strong> and <strong>Approval order and decisions</strong> (who decided when, signature stamps, and whether someone decided on another's behalf)</li>
+<li><strong>Audit timeline</strong> — the order of requests, approvals, rejections, withdrawals, and expiries, with reasons</li>
+<li><strong>Approval history by version</strong> — earlier requests and which version each one approved</li>
+<li><strong>Deadline</strong> — a <code>D-n</code> or <code>Due today</code> badge from three days before the deadline, and <code>Overdue</code> once it passes</li>
+</ul>
+<h2 id="reading-the-approval-stamps-on-a-page">Reading the approval stamps on a page</h2>
+<p>If a page contains <strong>approval stamps</strong> (the Moves Approval Stamps macro), you can see the approval at a glance, like a paper approval form, without opening the approval dialog. The stamp box is added to the top of the page when approval is requested, or placed by the author directly or through a template.</p>
+<table>
+<thead>
+<tr>
+<th>Position</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Top row</td>
+<td>The step name. Without a name it reads &quot;Step 1&quot;, &quot;Step 2&quot;, and so on. The step whose turn it is is highlighted.</td>
+</tr>
+<tr>
+<td>Middle row</td>
+<td>The stamp</td>
+</tr>
+<tr>
+<td>Bottom row</td>
+<td>The approver's name and decision date. A proxy decision shows &quot;(proxy)&quot; before the date.</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Stamp</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Round seal with the approver's name</td>
+<td>Approved. If the approver registered a signature and the administrator turned signatures on, the signature image is stamped instead.</td>
+</tr>
+<tr>
+<td>Square &quot;Rejected&quot; seal</td>
+<td>Rejected</td>
+</tr>
+<tr>
+<td>&quot;Pending&quot; in a dashed circle</td>
+<td>Not decided yet</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>&quot;No approval request yet.&quot; means the page has no request. If you can edit the page, use the <strong>Request approval</strong> button next to it to request right away.</li>
+<li>&quot;The page changed after approval — the current version is not approved.&quot; means the stamps apply to an earlier version. See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570724">What &quot;current version not approved&quot; means</a> below.</li>
+<li><strong>Open approval details</strong> opens the approval dialog.</li>
+<li>The stamp box shows the <strong>page approval</strong>. Area approvals have their own stamps below each area approval box.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 13-stamps</strong></p>
+<p>Steps, stamps, approvers, and dates</p>
+<p>File: <code>ma-13-stamps-en.png</code> · Alt text: Steps, stamps, approvers, and dates</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="downloading-the-approval-certificate-pdf">Downloading the approval certificate (PDF)</h2>
+<p>For a finished approval (Approved, Rejected, Expired, or Withdrawn), select <strong>Approval certificate (PDF)</strong> next to the approval dialog title to download a certificate. Anyone who can view the page can download it; open requests have no button.</p>
+<p>The certificate contains:</p>
+<ul>
+<li><strong>Document details</strong> — document, space, page ID, target (whole page / region in the page), status, requester, requested and closed times, and request note</li>
+<li><strong>Versions</strong> — the approved version and the current version (whether they match or the page changed after approval)</li>
+<li><strong>Approval stamps</strong> — approvers and stamps for each step</li>
+<li><strong>History</strong> — time, event, by, and reason</li>
+<li><strong>Document fingerprint</strong> — the SHA-256 of the approved version's body</li>
+<li>Issue time, issuer, and request ID</li>
+</ul>
+<p>Good to know:</p>
+<ul>
+<li>The certificate body is embedded in the PDF as an image (so Korean text always renders correctly), so it cannot be searched or copied. <strong>The request ID and document fingerprint appear as text at the bottom of every page and in the PDF document properties (keywords)</strong>, so you can copy them.</li>
+<li>The certificate is always printed on white paper, even if you use the dark theme.</li>
+<li>If the body of that version cannot be read, the certificate is issued without a fingerprint and shows &quot;The body of this version could not be read, so no fingerprint was computed.&quot;</li>
+<li>For area approvals, the fingerprint is also computed from the <strong>whole page</strong> body of that version.</li>
+</ul>
+<h3 id="verifying-the-document-fingerprint">Verifying the document fingerprint</h3>
+<p>Confluence never changes the content of a saved version. So if you fetch the body of the version named on the certificate and compute the hash the same way, a matching value means the content the certificate refers to is unchanged.</p>
+<ol>
+<li>On the certificate, note the <strong>Page ID</strong>, the <strong>Approved version</strong> (for example, v5), and the <strong>Document fingerprint</strong>.</li>
+<li>With an account that can view the page, fetch that version's body in ADF format from the Confluence REST API:
+<code>GET https://&lt;your-site&gt;.atlassian.net/wiki/api/v2/pages/&lt;page ID&gt;?version=&lt;version number&gt;&amp;body-format=atlas_doc_format</code></li>
+<li>Compute the SHA-256 of the <code>body.atlas_doc_format.value</code> string <strong>exactly as returned</strong> (UTF-8, no added newline).</li>
+<li>If the result (hex) matches the fingerprint on the certificate, the content has not changed.</li>
+</ol>
+<p>Example (using an API token; requires <code>jq</code>):</p>
+<pre><code>curl -s -u you@example.com:&lt;API token&gt; \
+  &quot;https://&lt;your-site&gt;.atlassian.net/wiki/api/v2/pages/&lt;page ID&gt;?version=&lt;version number&gt;&amp;body-format=atlas_doc_format&quot; \
+  | jq -j '.body.atlas_doc_format.value' | sha256sum
+</code></pre>
+<blockquote>
+<p><strong>Screenshot placement · 14-certificate</strong></p>
+<p>Certificate and fingerprint for a finished request</p>
+<p>File: <code>ma-14-certificate-en.png</code> · Alt text: Certificate and fingerprint for a finished request</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="what-current-version-not-approved-means">What &quot;current version not approved&quot; means</h2>
+<p>An approval applies to a specific <strong>version</strong>. If the page was edited after approval, you see &quot;Approved at v5 · current version not approved.&quot; What you are reading may differ from what was approved; check that version in the page history if you need the approved content.</p>
+<h2 id="area-approval-boxes">Area approval boxes</h2>
+<p>A <strong>Content approval</strong> box inside a page shows the status for that part only, separately from the page as a whole. <strong>Content changed</strong> means the area's content changed after the approval baseline. Areas with a request show their approval stamps at the bottom of the box; use <strong>Hide stamps</strong> / <strong>Show stamps</strong> to collapse or expand them.</p>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472404">Overview and key concepts</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">FAQ and troubleshooting</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">Marketplace review guide</a></li>
+</ul>

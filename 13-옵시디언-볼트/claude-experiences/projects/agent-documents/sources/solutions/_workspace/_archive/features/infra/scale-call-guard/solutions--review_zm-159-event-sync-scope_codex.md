@@ -1,0 +1,19 @@
+## 검수 결과
+
+R1 · 필수 · [ZabbixAlertAdapter.java:286](C:/worktrees/zm-159-be/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/alert/ZabbixAlertAdapter.java:286) · `enabledRulesOnly`가 실제 목록 조회에 적용되지 않음 · `countActive` 계열만 `enabledProblemTriggerIds()`를 사용하고, `listActive`·`listActiveWithRules`는 해당 플래그를 읽지 않는다. 따라서 보정·증분 모두 “꺼진 규칙 제외”를 설정해도 동일한 알람을 받으며 부하와 1만 건 상한도 줄지 않는다. 현재 테스트는 mock `AlertPort`에 flag가 전달됐는지만 검사하여 이를 발견하지 못한다 · `listActive`에서도 활성 trigger ID를 Zabbix `objectids` 조건으로 적용하고, 규칙 0건·청크·전역 limit을 처리할 것. 규칙 포함/미포함 경로의 adapter 회귀 테스트를 추가할 것.
+
+R2 · 필수 · [EventSyncService.java:287](C:/worktrees/zm-159-be/src/main/java/com/dmove/moveseye/event/EventSyncService.java:287) · 범위를 좀혀도 기존 사본 행은 즉시 제외되지 않고, 정상적인 범위 밖 열린 알람이 “사라진 후보”로 오인됨 · 범위 적용 결과의 `unresolvedIds`를 전역 사본과 비교하므로 [EventProblemRepository.java:67](C:/worktrees/zm-159-be/src/main/java/com/dmove/moveseye/event/repository/EventProblemRepository.java:67)이 모든 범위 밖 열린 행을 매번 되짚기 대상으로 뽑는다. 복구 이벤트가 없으므로 화면에는 계속 남고, 최대 2일 뒤 좀비 정리가 삭제한다. 그동안 최대 500건씩 불필요한 `event.get` 되짚기가 반복되어 오히려 Zabbix 부하가 늘 수 있으며, “연속 완전 보정은 전체 열린 알람을 받았다”는 A-1 전제도 더는 성립하지 않는다 · 범위 밖 상태를 명시적으로 표시하거나 즉시 제거하고, 되짚기·좀비 정리는 현재 범위 안에서 추적하던 행만 대상으로 삼도록 분리할 것. 범위 축소 직후 표시·되짚기 호출 수·2일 정리 경계를 테스트할 것.
+
+R3 · 필수 · [EventSyncService.java:656](C:/worktrees/zm-159-be/src/main/java/com/dmove/moveseye/event/EventSyncService.java:656) · 조치 직후 표적 재동기화가 범위를 우회해 제외된 알람을 사본에 다시 넣음 · `resyncEvents()`는 ID만으로 조회한 결과를 범위 판정 없이 upsert한다. 이 경로는 확인·억제·심각도 변경·수동 종료 뒤 호출되므로, 이력 화면에서 범위 밖 알람을 조치하면 벨·기본 목록에 다시 나타날 수 있다 · `withRule()`로 받은 severity·suppressed·rule.enabled·rule.groups를 공통 범위 정책으로 판정한 뒤 적합한 행만 upsert할 것. 범위 밖 표적 재동기화가 행을 생성하지 않는 테스트를 추가할 것.
+
+R4 · 필수 · [EventSyncScopeCard.tsx:54](C:/worktrees/zm-159-fe/src/pages/setting/integrations/components/EventSyncScopeCard.tsx:54) · 설정 조회 실패와 “미설정 null”을 구분하지 않아 기존 제한을 실수로 전부 해제할 수 있음 · `isError`를 받지 않고 `scope?.value`가 없으면 빈 그룹·심각도 없음·false로 폼을 채운다. 최초 GET이 실패해도 저장 버튼이 활성화되어 관리자가 그대로 저장하면 기존 운영 보호 설정이 제한 없음으로 덮인다. FE 테스트도 null만 검사하고 오류를 검사하지 않는다 · 조회 오류 시 오류 안내와 재시도만 제공하고 폼·저장 버튼을 비활성화할 것. 실제 `data:null`일 때만 제한 없음으로 초기화할 것.
+
+R5 · 권장 · [EventSyncScopeCard.tsx:45](C:/worktrees/zm-159-fe/src/pages/setting/integrations/components/EventSyncScopeCard.tsx:45) · 영향 범위 안내에서 이벤트 현황 통계와 AI 요약이 누락됨 · `/event/stats`는 [EventStatsService.java:22](C:/worktrees/zm-159-be/src/main/java/com/dmove/moveseye/event/stats/EventStatsService.java:22)처럼 전부 `event_problems`를 집계하고, AI 알람 요약도 `GET /event/problems`를 사용한다. SSE 역시 [useEventStream.ts:29](C:/worktrees/zm-159-fe/src/hooks/useEventStream.ts:29)에서 `EventStats`를 무효화하는 신호일 뿐 별도 원본 데이터가 아니다. 따라서 통계 탭과 AI digest도 제한된 사본 기준이 된다 · 경고 문구와 계약에 이벤트 현황 통계·AI 요약 영향을 명시하고, 영향받지 않는 일반 리포트와 구분할 것.
+
+R6 · 권장 · [EventSyncScopeCard.tsx:71](C:/worktrees/zm-159-fe/src/pages/setting/integrations/components/EventSyncScopeCard.tsx:71) · `zabbixHostGroupId`가 없을 때 로컬 PK를 Zabbix `groupids`로 전송함 · BE의 `zabbix_hostgroupid` 컬럼은 nullable이므로 실제 null 행 존재 여부는 추정이지만, fallback된 `group.id`는 완전히 다른 식별자 축이며 우연히 같은 Zabbix 그룹 ID를 가리킬 수도 있다 · fallback을 제거하고 `zabbixHostGroupId`가 없는 그룹은 선택지에서 제외하거나 “Zabbix 동기화 필요”로 비활성 표시할 것.
+
+R7 · 권장 · [EventSyncScopeCard.tsx:65](C:/worktrees/zm-159-fe/src/pages/setting/integrations/components/EventSyncScopeCard.tsx:65) · 호스트 그룹 선택지가 첫 1,000건으로 고정됨 · `/users/host-groups`는 실제 paged API이므로 1,001번째 이후 그룹은 선택할 수 없다. 열린 알람과 그룹이 많은 대규모 설치본이 이번 운영 회피책의 주 대상이라는 점에서 경계가 맞지 않는다 · 전체 페이지를 순차 수집하거나 검색형 server-side Select로 전환할 것.
+
+R8 · 권장 · [EventSyncServiceTest.java:295](C:/worktrees/zm-159-be/src/test/java/com/dmove/moveseye/event/EventSyncServiceTest.java:295) · 테스트가 실제 위험 경계를 고정하지 못함 · 추가된 BE 3건은 모두 첫 `runFullSync()`과 mock query capture만 검사하여 증분 적용, Zabbix adapter 필터, 기존 행 전환, 되짚기·좀비 정리, 표적 재동기화를 검증하지 않는다. FE 테스트도 조회 오류와 그룹 ID 축·페이지 경계를 다루지 않는다 · 위 R1~R4의 실제 경로 테스트와 증분 두 번째 호출 검증을 추가할 것.
+
+그 외 `withGroupIds`의 뒤쪽 필드 보존, 보정·증분 양쪽의 범위 전달, `minSeverity` 이상 등급 확장, PG enum 마이그레이션, 관리자 가드와 비밀값 빈 분기는 정적 검토상 이상을 찾지 못했습니다. 지시대로 빌드·테스트는 실행하지 않았습니다.

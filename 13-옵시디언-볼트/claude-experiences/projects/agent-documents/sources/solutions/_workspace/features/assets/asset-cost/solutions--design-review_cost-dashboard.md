@@ -1,0 +1,99 @@
+# 설계 검토 — 자산 비용 M2 Dashboard (2026-08-04, Codex)
+
+## 총평
+
+**조건부 승인**한다.
+
+- **예산(`cost_budget`)을 M2에서 빼는 결정에는 동의**한다. 다만 “예산 자체가 무의미하다”가 아니라, 현재 데이터로는 감가상각(비현금 회계비용)과 유지보수·리스 배분액을 한 총액으로 묶어 예산과 비교할 근거가 없다는 뜻이다. 향후 예산이 필요하면 감가상각과 분리된 **현금성 지출/계약 갱신/신규 취득 계획** 축으로 다시 설계해야 한다.
+- **상각 종료와 만료를 분리해 보여주는 데는 동의**하지만, 날짜가 다르다는 이유만으로 `🔴 불일치` 경고를 만드는 데는 **반대**한다. 현재 `expiryDate` 하나가 보증 종료와 리스 종료를 함께 뜻해 업무 의미가 불명확하고, 두 날짜가 다른 것은 정상일 수 있다. 첫 릴리스에서는 중립적인 **“상각·만료 시점 비교” 또는 “검토 후보”**가 적절하다.
+- 제안값은 **12개월 동의**, **90일 불일치 기준 반대(만료 임박 구간으로는 동의)**, **`bookValue=null`의 지표별 제외 + 제외 건수 표시 동의**다.
+- 단, 현 설계에는 구현 전에 닫아야 할 계약 충돌이 있다. 특히 `hwTotal`을 상각비로 오인한 KPI, “장부가 0”이라는 완료 정의, 이미 만료된 자산까지 무제한 포함하는 기존 90일 집계, 개정되지 않은 설계서 후반부가 그대로 남아 있다.
+
+근거: 화면 목적은 “관리 중인 자산을 비용이라는 렌즈로 다루는 것”이며 비용 생애주기를 취득→상각→유지보수→만료→교체/폐기로 정의한다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:9-16`). M2 개정안은 관찰 목적을 근거로 예산을 제외하고 향후 상각 예정액을 대안으로 제시한다(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:16-29`).
+
+## 1. 예산 미채택
+
+### 판정: **M2 제외에 동의. 영구 폐기 논리에는 반대**
+
+감가상각비에 총액 예산을 대어 초과/미달을 판단하는 구조는 채택하지 않는 것이 맞다.
+
+1. 감가상각은 취득가액·취득월·내용연수·상각방법·잔존가액으로 결정되는 스케줄이다. 실제 계산 입력에도 예산이나 만료일이 없고(`moveseye-be-spring/src/main/java/com/dmove/moveseye/cost/calc/DepreciationInput.java:18-25`), 계산기는 이 입력으로 월별 상각액과 장부가액을 결정한다(`moveseye-be-spring/src/main/java/com/dmove/moveseye/cost/calc/DepreciationCalculator.java:46-64`, `:69-91`, `:96-145`). 이미 등록된 자산의 상각액을 예산 초과라고 표시해도 사용자가 그 달의 상각을 줄이는 식의 조치를 할 수 없다.
+2. 현재 시스템의 유지보수·리스 금액도 지급 전표나 청구서의 **실제 지출**이 아니다. 자산당 정적 금액 한 벌을 저장하고(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:86-92`), 선택 기간에 월/연/일시 규칙으로 배분해 비용을 만든다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:437-445`). 따라서 현 데이터만으로 `예산 대비 실제 지출`이라고 부르면 과장이다.
+3. 더구나 현행 `periodTotalCost`는 상각+유지보수+리스의 합이다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:131-138`). 비현금 상각과 현금성일 수 있는 계약비를 한 예산과 비교하면 초과 원인의 성격을 구분할 수 없다.
+
+반론도 유효하다. 유지보수료·리스료·신규 취득은 계약 갱신이나 구매 의사결정으로 바꿀 수 있어 예산의 대상이 될 수 있다. 그러므로 이번 결정은 **“M2의 통합 예산 기능을 만들지 않는다”**이지 **“자산 예산은 앞으로도 필요 없다”**가 아니다. 나중에 실제 수요가 확인되면 다음처럼 별도 기능으로 설계하는 편이 맞다.
+
+- 상각 예정액: 비현금 회계비용, 시스템 계산값
+- 유지보수·리스: 계약상 예정액과 실제 지급액을 구분
+- 신규 취득: 아직 등록되지 않은 자산을 포함하는 구매 계획
+- 예산 비교: 위 현금성 범위에만 적용하고 상각액과 섞지 않음
+
+### “향후 상각 예정액”에 사용자가 예산값을 입력해야 하는가: **반대**
+
+입력값은 필요 없다. 향후 상각액은 현재 등록된 자산의 결정적 월 스케줄에서 계산해야 한다. 사용자가 별도 “예정 상각액”을 입력하면 계산 정본과 수동 예산 정본이 이중화된다. 위젯명은 **“향후 12개월 예상 상각비”**로 하고, **“비현금 · 현재 상각 설정 기준”**이라는 설명을 붙이는 것이 정확하다. 이는 예산 자체가 아니라 예산/재무계획의 참고자료다.
+
+아직 취득하지 않은 자산까지 예측하려면 상각 예산 숫자를 직접 넣는 것이 아니라 **신규 취득 계획(예상 취득월·금액·내용연수)** 데이터가 필요하다. 그 기능은 현재 M2 범위를 벗어난다.
+
+## 2. 상각·만료 불일치
+
+### 계산 분리 사실: **동의**
+
+구현상 두 축은 완전히 분리돼 있다. `DepreciationInput`에는 `expiryDate`가 없고(`moveseye-be-spring/src/main/java/com/dmove/moveseye/cost/calc/DepreciationInput.java:18-25`), 계산기는 취득월과 상각 파라미터만 사용한다(`moveseye-be-spring/src/main/java/com/dmove/moveseye/cost/calc/DepreciationCalculator.java:69-91`, `:96-145`). 반면 계약의 `expiryDate`는 수동값 또는 Zabbix inventory 값에서 해석되는 별도 필드다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:115-116`). 이 사실을 화면에서 함께 보여주는 것은 자산 관리자에게 유용하다.
+
+### `🔴 상각·만료 불일치` 경고: **반대**
+
+차이 자체를 이상으로 판정해서는 안 된다.
+
+- 설계는 `expiryDate`를 “보증·리스 종료”로 함께 설명한다(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:35-40`). 보증 종료는 장비 사용 불가일이 아니고, 리스 종료는 사용권 종료일일 수 있다. 한 필드에 서로 다른 의미가 들어가므로 같은 날짜 차이도 업무 해석이 달라진다.
+- “상각 완료 후에도 만료 전”은 장부가액 하한에 도달한 자산을 계속 사용하는 정상 상태일 수 있다. 이것만으로 교체나 오류를 요구할 근거가 없다.
+- “만료 임박인데 장부가 잔존”도 보증 종료라면 정상일 수 있다. 현 파일만으로 이를 손상 검토나 사용 불가로 단정할 수 없다.
+
+따라서 첫 릴리스에서는 빨간 경고 대신 다음처럼 처리한다.
+
+1. 섹션명: **상각·만료 시점 비교** 또는 **상각/만료 검토 후보**
+2. 사유 태그: `상각 완료·만료 미도래`, `만료 임박·장부가 잔존`, `만료 경과·장부가 잔존`
+3. 심각도: 기본은 중립/주의. `expiryDate`의 의미가 리스 종료 등으로 확인된 경우에만 높은 경고로 승격
+4. `expiryDate=null`은 불일치가 아니라 **판정 불가**이므로 이 목록에서 제외하고, 필요하면 데이터 완성도 건수로만 표시
+5. 이미 별도로 제안된 `상각 완료 ∩ 유지보수·리스비 계속 발생`은 사용자가 비용 재검토를 할 수 있어 더 행동 가능한 교체 검토 신호다(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:84-88`).
+
+빈 경고가 많아지는 것보다 더 큰 위험은 **정상 자산을 이상으로 오인하는 것**이다. 데이터가 없으면 빈 상태를 정상적으로 보여주고, “해당 조건의 검토 후보가 없습니다”라고 설명하면 된다. 위젯을 채우기 위해 정상적인 날짜 차이를 경고로 만들 필요는 없다.
+
+장기적으로 강한 판정을 원한다면 `expiryType`(예: `warranty_end`, `lease_end`, `support_end`) 또는 이에 준하는 업무 의미가 먼저 필요하다. 지금처럼 날짜 하나만으로는 자동 판정의 정확도를 확보할 수 없다.
+
+## 3. 제안값 3건
+
+| 항목 | 판정 | 권고 |
+|---|---|---|
+| 향후 상각 예정 기간 **12개월** | **동의** | 연간 계획에 쓸 수 있고 월별 계절/연차 전환을 한 번 포함하는 최소한의 기간이다. “향후”는 이번 기간 KPI와 겹치지 않게 **기준월 다음 달부터 12개 완전한 월**로 정의한다. `basisDate`와 “현재 설정 기준 재계산” 문구를 함께 표시한다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:90-96`, `_workspace/features/assets/asset-cost/devdesign_asset-cost.md:211-221`). 24개월 선택기는 실제 요구가 확인되기 전에는 넣지 않는다. |
+| 불일치 판정 여유 **90일** | **불일치 기준으로는 반대**, 만료 임박 구간으로는 **동의** | 상각은 월 단위이고 만료는 일 단위이며, 두 날짜가 90일 이상 다른 것이 곧 오류라는 근거가 없다. 90일은 기존 M1의 운영상 만료 임박 구간으로만 쓴다. `만료 경과(<오늘)`와 `90일 이내 예정(오늘~오늘+90일)`을 분리하고, 상각 완료 여부는 날짜 차이가 아니라 `depreciationStatus`로 독립 판정한다. |
+| `bookValue=null`을 합계에서 제외하고 **n건 제외** 표시 | **동의, 단 지표별 적용** | 0으로 바꾸면 “장부가액을 모름”이 “가치 없음”으로 왜곡된다. `현재/기준월 말 장부가액`과 장부가액 분포에서는 제외하고 `bookValueIncludedCount`·`bookValueExcludedCount`를 제공한다. 그러나 수동 연액으로 계산 가능한 `periodDepreciation`, 유지보수비, 리스료, 총비용까지 그 자산을 통째로 제외하면 안 된다. 계약도 취득가액 없이 수동 연액만 있는 경우 상각비는 계산하되 장부가액만 null로 둔다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:196-206`, `_workspace/features/assets/asset-cost/contract_asset-cost.md:131-137`). |
+
+추가로 90일 경계는 양끝 포함 여부를 계약에 고정해야 한다. 권고는 `today <= expiryDate <= today + 90 days`다. 현재 M1의 `within90`은 “경과 포함”이라 과거 만료일도 모두 들어간다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:71-76`, `:567`). 이를 그대로 “만료 임박”으로 재사용하면 오래전에 만료된 자산까지 임박 건수에 섞인다.
+
+## 4. 빠진 것 / 불필요한 것
+
+### 구현 전에 반드시 보완할 것
+
+1. **`hwTotal`의 의미를 바로잡아야 한다.** 개정안은 `hwTotal`을 “이번 기간 상각비”의 출처로 썼다(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:74-78`). 그러나 계약과 계산 정의상 `hwTotal`은 상각+유지보수+리스의 총비용이다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:67-73`, `:131-138`; `_workspace/features/assets/asset-cost/devdesign_asset-cost.md:437-445`). 기존 값을 재사용하려면 KPI명을 **“이번 기간 총 자산비용”**으로 바꿔야 한다. 정말 상각비만 보여주려면 별도 합계 필드가 필요하다. 권고는 총비용 KPI를 유지하고 tooltip/세부값으로 상각·유지보수·리스를 구분하는 것이다.
+2. **“상각 완료 = 장부가 0” 정의를 폐기해야 한다.** 기본 계산은 기본 잔존가액(당시 1,000원) 또는 수동 잔존가액을 남긴다(`moveseye-be-spring/src/main/java/com/dmove/moveseye/cost/calc/DepreciationCalculator.java:29-30`, `:69-91`). 따라서 개정안의 “장부가 0 도달”(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:77`)이 아니라 **`depreciationStatus=completed` 또는 상각 하한 도달**로 정의해야 한다.
+3. **장부가액의 기준시점을 고정해야 한다.** 계약의 `bookValue`는 선택 기간 말 값이다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:131-135`). 기간 필터가 있는 화면에서 “현재 장부가액”이라고 부르면 과거 월을 선택했을 때 틀린 표현이 된다. **“기준월 말 장부가액”**으로 바꾸고 기준월을 함께 보여준다. 총 취득원가도 과거 스냅샷이 아니라 “현재 등록돼 있고 현재 필터에 들어온 자산의 취득원가”임을 설명해야 한다. 현 정책은 과거도 현재 파라미터로 재계산한다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:211-222`).
+4. **`expiryDate`의 업무 의미를 결정하거나 불명확성을 표시해야 한다.** 현재 계약에는 날짜와 출처만 있고 만료 유형이 없다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:115-116`, `:153-157`). 최소한 UI 설명에 “보증/리스 등 입력된 만료 기준”이라고 쓰고 자동 위험 판정은 제한해야 한다.
+5. **만료 경과와 만료 임박을 분리해야 한다.** 기존 M1은 `within30/60/90`에 경과분을 포함한다(`_workspace/features/assets/asset-cost/contract_asset-cost.md:75-76`, `:567`). M2에서는 `expiredCount`와 `upcomingWithin90Count`를 분리하지 않으면 사용자가 어떤 조치를 해야 하는지 알 수 없다.
+6. **집계별 유효 모집단과 제외 건수를 API 계약에 넣어야 한다.** `totalAssetCount`, `purchaseCostIncluded/ExcludedCount`, `bookValueIncluded/ExcludedCount`, `expiryKnown/UnknownCount` 정도는 필요하다. 하나의 전역 `excludedCount`로 뭉치면 어떤 KPI에서 빠졌는지 알 수 없다.
+7. **M2 API 계약을 구현 전에 확정해야 한다.** 작업 계획은 `GET /costs/dashboard` 하나를 제안하지만(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:53-60`), 설계서 §7은 여전히 `/costs/summary`, `/costs/trend`, `/costs/review-queue`, 예산 API를 적고 있다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:486-505`). 설계서 §10도 M2를 예산 단계로 남겨뒀다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:618-625`). §6.3의 `예산 초과 위험` 점수(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:459-473`)와 §11의 예산 리스크(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:631-644`)도 개정 결정과 충돌한다. 이 drift를 닫고 단일 계약을 정본으로 삼아야 한다.
+8. **비용 성격을 화면에서 분리해 설명해야 한다.** “총비용”에는 상각과 유지보수·리스 배분액이 함께 들어가지만, 상각은 비현금이고 후자는 현금성일 수 있다. 최소한 breakdown과 도움말이 없으면 예산을 뺀 이유도 사용자에게 납득되지 않는다.
+9. **확인 필요 목록의 행·사유 규칙을 정해야 한다.** 한 자산이 `비용 미입력`, `만료 임박`, `상각·만료 비교`에 동시에 걸릴 수 있다. API는 자산당 한 행 + 복수 `reasonTags`를 반환하고, 총건수는 distinct asset 기준으로 계산해야 한다. 우선순위와 정렬 기준도 계약에 고정해야 한다.
+
+### 불필요하거나 줄일 수 있는 것
+
+1. **상각·만료 위젯, 교체 검토 후보, 만료 임박 위젯, 확인 필요 테이블이 서로 겹친다.** 첫 릴리스는 `만료 현황 요약(경과/30/60/90)`과 **하나의 검토 후보 테이블**로 합치는 편이 낫다. 테이블의 사유 태그로 상각 완료·장부 잔존·계약비 지속을 표현하면 같은 자산을 세 곳에서 반복하지 않는다.
+2. **필터 6개를 모두 첫 화면에 상시 노출하는 것은 과할 수 있다.** `deviceType`·`owner`·`lifecycle`을 기본 노출하고 `location`·`vendor`·`costStatus`는 “추가 필터”로 접어도 계약은 그대로 재사용할 수 있다. 다만 필터가 KPI·위젯 모집단 전체에 선적용되고 “n건 기준”을 표시해야 한다는 원칙에는 동의한다(`_workspace/features/assets/asset-cost/plan_cost-dashboard.md:90-109`).
+3. **24개월 선택, 사용자 정의 불일치 임계값, 별도 예산 입력은 M2 첫 릴리스에서 불필요**하다. 12개월·90일의 고정 기본값으로 사용성을 확인한 뒤 실제 운영 요청이 있을 때 설정화하면 된다.
+
+## 근거 없이 판단하지 못한 부분
+
+- `expiryDate`가 실제 운영 데이터에서 보증 종료, 리스 종료, 지원 종료 중 무엇을 뜻하는지와 자산별로 의미가 일관적인지는 **확인 못 함**. 현재 문서와 계약에는 유형 필드가 없다.
+- 자산관리자·회계담당자가 실제로 12개월 또는 24개월 중 어느 계획 주기를 쓰는지는 **확인 못 함**. 12개월 권고는 연간 계획과 화면 복잡도를 기준으로 한 설계 판단이지 사용자 조사 결과가 아니다.
+- 90일이 조직의 계약 갱신 리드타임/SLA와 맞는지는 **확인 못 함**. 기존 M1이 30/60/90일을 사용한다는 사실만 확인했다.
+- 유지보수·리스의 저장 금액이 계약액, 청구액, 실제 지급액 중 무엇인지와 갱신일·계약기간이 별도로 관리되는지는 **확인 못 함**. 현재 파일에서는 정적 금액과 배분 주기만 확인된다.
+- 회계팀이 이 화면을 세무/회계 대사에 사용할지, 내부 자산관리 참고용으로만 사용할지는 **확인 못 함**. 설계서도 상각률표는 회계팀 확인을 권장하고, 과거 수치는 현재 설정으로 소급 재계산한다고 명시한다(`_workspace/features/assets/asset-cost/devdesign_asset-cost.md:158-172`, `:211-221`). 회계 대사가 목적이라면 현재 M2 판단과 별도로 월 마감 스냅샷·회계 기준 검증이 필요하다.

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>준비 중인 모니터링 (DB · GPU)</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>준비 중인 모니터링 (DB · GPU)</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 사용자, 도입 검토자, 지원 담당자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-09-01</div><div><strong>정본 위치:</strong> pages/database-monitoring, gpu-monitoring</div></div>
+<h1>준비 중인 모니터링 (DB · GPU)</h1>
+<blockquote><p><strong>사이드바</strong> 모니터링 &gt; DB 모니터링 / GPU 모니터링 어플리케이션 모니터링(APM)은 2026-09-01 1단계가 구현되어 이 문서에서 분리됐다 → <strong>어플리케이션 모니터링</strong> · <strong>수집기 설치</strong></p></blockquote>
+<h2>현재 상태</h2>
+<p>두 메뉴 모두 <strong>"준비 중" 안내만 표시</strong>한다. 화면을 열면 제목과 준비 중 문구가 나오고 데이터는 없다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td>DB 모니터링</td><td>준비 중</td></tr>
+<tr><td>GPU 모니터링</td><td>준비 중</td></tr>
+</tbody></table>
+<p><strong>고장이 아니다.</strong> 메뉴는 있지만 기능이 아직 구현되지 않은 상태다.</p>
+<h2>왜 메뉴가 먼저 있는가</h2>
+<p>두 기능은 상위 에디션(PREMIUM)에 포함될 예정이며, 라이선스 체계에서 이미 개별 기능으로 정의돼 있다(<code>DB_MONITORING</code>, <code>GPU_MONITORING</code>). 메뉴 자리와 라이선스 정의가 먼저 자리를 잡은 것이다. 같은 방식으로 자리를 잡았던 <code>APM</code>은 구현이 끝나 별도 문서로 옮겨 갔다.</p>
+<h2>언제 제공되는가</h2>
+<p><strong>구체적 일정은 확정되지 않았다.</strong></p>
+<ul>
+<li><strong>DB 모니터링</strong>의 경계: 앱 입장에서 본 DB(커넥션 풀, 앱이 겪는 DB 호출 지연)는 이미 <strong>어플리케이션 모니터링</strong>의 런타임·트랜잭션 탭이 다룬다. DB 인스턴스 내부(세션·락·복제·버퍼)가 이 메뉴의 몫이다.</li>
+<li><strong>GPU 모니터링</strong>: 수집 방식 미정.</li>
+</ul>
+<h2>지원 담당자를 위한 안내</h2>
+<p>고객이 "메뉴를 눌렀는데 아무것도 없다"고 문의하면:</p>
+<ul>
+<li>오류나 권한 문제가 아니라 <strong>미구현 기능</strong>임을 안내한다</li>
+<li>계약에 이 기능이 포함돼 있는지 확인한다 (포함돼 있다면 제공 일정 확인이 필요하다)</li>
+<li>현재 제공되는 대체 수단이 있는지 검토한다 (예: DB 서버의 자원 사용률은 <strong>서버 모니터링</strong>에서, 앱이 겪는 DB 호출 지연·커넥션 풀은 <strong>어플리케이션 모니터링</strong>에서 확인 가능)</li>
+<li>어플리케이션 모니터링 메뉴가 <strong>잠겨</strong> 있다는 문의는 준비 중이 아니라 라이선스 문제다 → <strong>어플리케이션 모니터링 — 지원 담당자를 위한 안내</strong></li>
+</ul>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>어플리케이션 모니터링 (APM)</strong></li>
+<li><strong>제품 소개서 — 로드맵</strong></li>
+<li><strong>라이선스</strong></li>
+</ul>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-11</td><td>신설 (어플리케이션 · DB · GPU)</td></tr>
+<tr><td>2026-09-01</td><td>APM 절 분리(1단계 구현). "Prometheus·Datadog 소스가 붙어야 애플리케이션 지표를 수집" 문구 삭제 — APM은 소스에서 가져오는 것이 아니라 고객 앱이 보내는 방식이다</td></tr>
+</tbody></table>
+</body></html>

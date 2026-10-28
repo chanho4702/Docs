@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Installation and first setup</title><style>body{margin:0;background:#f5f7fa;color:#172b4d;font:16px/1.75 system-ui,-apple-system,"Malgun Gothic",sans-serif}main{max-width:1000px;margin:32px auto;padding:40px 48px;background:white;border:1px solid #dfe4eb;border-radius:12px}h1{font-size:30px;line-height:1.3;border-bottom:3px solid #1868db;padding-bottom:22px}h2{margin-top:36px;font-size:22px}a{color:#0c66e4}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dfe4eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eef3fa}img{max-width:100%;height:auto;border:1px solid #dfe4eb}code{background:#eef1f6;padding:2px 4px;border-radius:3px}li{margin:7px 0}blockquote{border-left:4px solid #1868db;padding-left:16px;color:#44546f}@media(max-width:700px){main{margin:0;padding:20px}table{display:block;overflow:auto}h1{font-size:25px}}@media print{body{background:white}main{border:0;margin:0;padding:0}h2{break-after:avoid}table,img{break-inside:avoid}}</style><main><h1>Installation and first setup</h1>
+<p>Prepare a Jira Cloud site administrator, a test project, an author and an approver. Before public release, use the test installation route provided by the vendor.</p>
+<ol>
+<li>Once listed, locate <strong>Moves Approval for Jira</strong> on Marketplace, verify the vendor and requested permissions, and install it.</li>
+<li>Open <strong>Apps → Moves Approval</strong> in Jira and enter the administrator settings.</li>
+<li>Select the enabled projects. Projects are allowed by default until an explicit scope is configured, so establish a test scope first.</li>
+<li>For standalone use, configure teams, leads and any required approver directory. For connected use, complete <a href="10-workforce-integration.html">Workforce pairing</a>.</li>
+<li>Set automatic worklog requests and the monthly closing grace period. <strong>0 days disables automatic closing.</strong></li>
+<li>In Jira <strong>Settings → System → Time tracking</strong>, select <strong>Moves Approval</strong> and verify the issue's <strong>Log work / Work log</strong> entry points.</li>
+<li>Save one test worklog and verify request creation, a decision and history using the author and approver accounts.</li>
+<li>Check <a href="01-overview.html">current availability</a>. Status change approval and period timesheet submission are not part of the current setup flow.</li>
+</ol>
+<p>A site has one active time tracking provider. Check the impact before replacing another provider. Verify behavior for your installed version and project type.</p>
+<h2>Updates and uninstalling</h2>
+<p>Versions that change permissions or modules may require an administrator-approved installation upgrade. Before uninstalling, export required records, <strong>release worklog controls and verify the results</strong>, then remove time tracking provider and workflow validator dependencies. The pre-uninstall release attempt is a fallback and does not guarantee that every record is restored.</p>
+<p>Uninstalling does not delete Jira worklogs. Check the applicable Forge and vendor policies for app-data retention and recovery after uninstalling.</p>
+<p><a href="00-index.html">Documentation home</a> · <a href="../ko/02-installation.html">한국어</a></p>
+</main></html>

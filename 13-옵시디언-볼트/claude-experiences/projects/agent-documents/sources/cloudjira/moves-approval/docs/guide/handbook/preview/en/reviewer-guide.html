@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Marketplace reviewer walkthrough · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/reviewer-guide.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a class="active" aria-current="page" href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; Support and review</div><h1>Marketplace reviewer walkthrough</h1><p class="lede">A reproducible path from installation to approval, permission checks, and record retention. The table contains expected results, not executed test evidence or an approval report.</p>
+<h2 id="section-0">App and documentation</h2>
+<p>Moves Approval for Confluence provides sequential approval for Cloud pages or areas and records decisions against versions. Features include saved lines, groups, Cc, delegation, signature PINs, bulk approval, stamp boxes, and PDF certificates.</p>
+<p>See <a href="quick-start.html">quick start</a>, <a href="installation.html">installation</a>, and <a href="data-security.html">data and security</a>. This is not documentation for a Jira or Confluence Data Center app.</p>
+<p><img src="../assets/ma-05-inbox-2026-10-26.jpg" alt="Approval inbox showing the review entry point and the main personal feature tabs"></p>
+<p><em>The deployed staging inbox shows My turn, In progress, My requests, Handled, Cc, Notifications, My signature, My delegation, and the Excel export entry point in one view.</em></p>
+<h2 id="section-1">Prepare the test</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Preparation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Submitted version</td>
+<td>Owner provides installation link, version, and access instructions.</td>
+</tr>
+<tr>
+<td>Requester A</td>
+<td>Edit permission on the test page.</td>
+</tr>
+<tr>
+<td>Approvers B and C</td>
+<td>View permission; also comment permission when testing comments.</td>
+</tr>
+<tr>
+<td>Restricted user D</td>
+<td>No view permission on that page.</td>
+</tr>
+<tr>
+<td>Test pages</td>
+<td>A page approval target and a page with an area macro.</td>
+</tr>
+<tr>
+<td>Special records</td>
+<td>Links, request IDs, and dates for overdue and past-retention test records.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-2">Procedure and expected results</h2>
+<p>Use separate requests for terminal outcomes. Restore policy changes before the next scenario.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Action</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entry and installation</td>
+<td>Open inbox, page dialog, settings</td>
+<td>Views load; normal page editing still works.</td>
+</tr>
+<tr>
+<td>Sequential approval</td>
+<td>A requests B → C; both approve</td>
+<td>C cannot decide early; final step completes approval.</td>
+</tr>
+<tr>
+<td>Rejection and withdrawal</td>
+<td>B rejects one request; A withdraws another</td>
+<td>Terminal states, reasons, and actors are recorded.</td>
+</tr>
+<tr>
+<td>Page changes</td>
+<td>Edit during review, then resubmit</td>
+<td>Editing alone does not end it; resubmission replaces it.</td>
+</tr>
+<tr>
+<td>Area</td>
+<td>Request area approval, then remove the macro</td>
+<td>Separate target status; removal withdraws the area request.</td>
+</tr>
+<tr>
+<td>Permission</td>
+<td>D attempts list and detail access</td>
+<td>Restricted page information is not exposed.</td>
+</tr>
+<tr>
+<td>Deadline</td>
+<td>Try a decision and new request on overdue test data</td>
+<td>Decision refused; new request expires the old one.</td>
+</tr>
+<tr>
+<td>PIN and delegation</td>
+<td>Decide under required PIN and valid delegation</td>
+<td>PIN checked; original and actual actors recorded.</td>
+</tr>
+<tr>
+<td>Cc and notifications</td>
+<td>Check creation, results, and comments</td>
+<td>Cc cannot decide; comment failure does not undo a decision.</td>
+</tr>
+<tr>
+<td>Bulk approval</td>
+<td>Select several current-turn requests</td>
+<td>Per-request success/failure counts shown.</td>
+</tr>
+<tr>
+<td>Files</td>
+<td>Download finished-request PDF and inbox Excel</td>
+<td>Target version/request ID and list-export scope can be checked.</td>
+</tr>
+<tr>
+<td>Cleanup</td>
+<td>Export past-retention records, then delete</td>
+<td>Only confirmed export scope deleted; open requests excluded.</td>
+</tr>
+<tr>
+<td>Languages</td>
+<td>Use Korean and English accounts</td>
+<td>Equivalent functions and corresponding guides available.</td>
+</tr>
+<tr>
+<td>License</td>
+<td>Test inactive license in paid-release configuration</td>
+<td>Every screen (including settings) and macro shows a purchase notice; all feature calls rejected. Area-macro content and byline status remain.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Record the submitted version, date/time zone, roles, actual results, and screenshots. Do not change production record dates to prepare deadline or retention tests.</p>
+<h2 id="section-3">Submission materials</h2>
+<ul>
+<li>Verify every public documentation page and image while signed out.</li>
+<li>Put working support, operator, privacy-policy, and customer EULA URLs in the listing. In the version's <strong>Links</strong> section, select Atlassian's Standard Agreement or provide a counsel-reviewed custom EULA URL, and record which option was used. Do not submit drafts, internal URLs, or placeholders.</li>
+<li>Match the app name, description, Cloud product, pricing, trial, permissions, and images to the submitted version, and provide an install link and reviewer access steps.</li>
+<li>Complete the <strong>Privacy &amp; Security</strong> tab so its storage, egress, PAT/shared-secret, scope-justification, and privacy-policy answers match this technical documentation.</li>
+<li>For a new app, complete app and partner security questionnaires, the one-time partner identity/business verification, automated vulnerability scanning, and Marketplace manual review. Fix and resubmit for any blocking Critical or applicable High finding.</li>
+<li>Attach the submitted version, site, account roles, execution time, actual results, and screenshots to the review ticket. Expected results in this guide are not execution evidence.</li>
+</ul>
+<h2 id="section-4">Stop conditions before submission</h2>
+<p>Do not submit while any of these conditions remains:</p>
+<ul>
+<li>A documentation, image, support, privacy-policy, or EULA link requires login, returns an authorization error, or is missing.</li>
+<li>Listing copy or screenshots do not match the submitted app's menus, behavior, or permissions.</li>
+<li>Reviewer accounts cannot reproduce installation, settings, request, decision, and file-download paths.</li>
+<li>Privacy &amp; Security answers conflict with Forge storage, Sentry egress, or requested scopes.</li>
+<li>Area macro, licensing, restricted-page, deadline, or retention scenarios hang or behave differently from the documentation.</li>
+<li>A security questionnaire, partner verification, vulnerability remediation, or requested review-ticket artifact is incomplete.</li>
+</ul>
+<p>Check final requirements against <a href="https://developer.atlassian.com/platform/marketplace/app-approval-guidelines/">Atlassian app approval guidelines</a>, the <a href="https://developer.atlassian.com/platform/marketplace/app-approval-security-workflow/">new security approval workflow</a>, <a href="https://developer.atlassian.com/platform/marketplace/security-privacy-tab/">Privacy &amp; Security tab guidance</a>, and <a href="https://developer.atlassian.com/platform/marketplace/data-privacy-guidelines/">data privacy guidelines</a>. Publishing documentation alone does not complete app review or security certification.</p>
+<div class="pager"><a href="data-security.html"><small>← PREVIOUS</small>Data, security, and privacy</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">App and documentation</a><a href="#section-1">Prepare the test</a><a href="#section-2">Procedure and expected results</a><a href="#section-3">Submission materials</a><a href="#section-4">Stop conditions before submission</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

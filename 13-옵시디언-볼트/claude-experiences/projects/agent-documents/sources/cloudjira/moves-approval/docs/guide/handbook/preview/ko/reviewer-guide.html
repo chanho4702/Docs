@@ -1,0 +1,146 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Marketplace 심사 안내 · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">본문으로 이동</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">로컬 검토본 · 게시 전</span><div class="search"><input id="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../en/reviewer-guide.html">English ↗</a><button id="menu" class="menu" aria-expanded="false">목차</button></div></header><div class="layout"><nav class="sidenav" aria-label="문서 목차"><a class="navhome " href="index.html">한국어 가이드</a><h2>시작하기</h2><ul><li><a  href="quick-start.html">빠른 시작 — 첫 문서 승인</a></li><li><a  href="installation.html">설치와 사용 준비</a></li><li><a  href="glossary.html">개념과 상태 이해하기</a></li></ul><h2>사용자 가이드</h2><ul><li><a  href="page-approval.html">페이지 승인 요청</a></li><li><a  href="area-approval.html">영역 승인</a></li><li><a  href="inbox.html">승인 업무함</a></li><li><a  href="decisions.html">승인·반려와 일괄 승인</a></li><li><a  href="history-resubmit.html">수정·회수·재상신과 버전 이력</a></li><li><a  href="signature-pin.html">내 서명과 PIN</a></li><li><a  href="delegation.html">결재 위임과 대리 결재</a></li><li><a  href="stamp-box.html">문서의 결재란</a></li><li><a  href="certificate.html">결재 증명서 PDF</a></li><li><a  href="notifications.html">참조와 알림</a></li></ul><h2>관리자 가이드</h2><ul><li><a  href="admin-setup.html">관리자 초기 설정</a></li><li><a  href="admin-policy.html">전역 정책과 상태 표시명</a></li><li><a  href="admin-spaces.html">적용 스페이스와 개별 정책</a></li><li><a  href="admin-lines.html">결재선 관리</a></li><li><a  href="admin-groups.html">승인 그룹 관리</a></li><li><a  href="admin-access.html">사용자·관리자와 접근 권한</a></li><li><a  href="admin-data.html">데이터 보관·내보내기와 변경 이력</a></li></ul><h2>지원과 심사</h2><ul><li><a  href="faq.html">문제 해결과 지원</a></li><li><a  href="data-security.html">데이터·보안·개인정보</a></li><li><a class="active" aria-current="page" href="reviewer-guide.html">Marketplace 심사 안내</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; 지원과 심사</div><h1>Marketplace 심사 안내</h1><p class="lede">심사자가 설치부터 문서 승인·권한·기록 보관까지 재현하는 절차입니다. 아래 표는 기대 결과이며 실제 실행 결과나 심사 통과 보고서가 아닙니다.</p>
+<h2 id="section-0">앱과 문서</h2>
+<p>Moves Approval for Confluence는 Confluence Cloud 페이지 또는 특정 영역에 순차 승인을 요청하고 결정·버전별 이력을 기록합니다. 결재선·승인 그룹·참조·위임·서명 PIN·일괄 승인·결재란·PDF 증명서를 지원합니다.</p>
+<p>사용 안내는 <a href="quick-start.html">빠른 시작</a>, 설치는 <a href="installation.html">설치와 준비</a>, 데이터 항목과 권한은 <a href="data-security.html">데이터·보안</a>을 확인합니다. 이 앱의 문서를 Jira 또는 Confluence Data Center용 안내로 사용하지 않습니다.</p>
+<p><img src="../assets/ma-05-inbox-2026-10-26.jpg" alt="심사 시 진입점과 주요 개인 기능 탭을 확인할 수 있는 승인 업무함"></p>
+<p><em>실제 스테이징 배포본의 승인 업무함. My turn, In progress, My requests, Handled, Cc, Notifications, My signature, My delegation 탭과 Excel 내보내기 진입점을 한 화면에서 확인할 수 있습니다.</em></p>
+<h2 id="section-1">테스트 준비</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>대상</th>
+<th>준비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설치 버전</td>
+<td>제출 담당자가 설치 링크, 제출한 버전과 접근 방법을 제공합니다.</td>
+</tr>
+<tr>
+<td>요청자 A</td>
+<td>테스트 문서 편집 권한</td>
+</tr>
+<tr>
+<td>승인자 B·C</td>
+<td>문서 보기 권한. 댓글 검증에는 댓글 작성 권한도 준비</td>
+</tr>
+<tr>
+<td>제한 확인 사용자 D</td>
+<td>대상 문서 보기 권한 없음</td>
+</tr>
+<tr>
+<td>테스트 문서</td>
+<td>페이지 승인용 문서와 영역 매크로가 있는 문서</td>
+</tr>
+<tr>
+<td>특수 기록</td>
+<td>마감 경과·보관 기간 경과 테스트 기록의 링크, 요청 ID와 날짜</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-2">실행과 기대 결과</h2>
+<p>각 종료 시나리오는 별도 요청으로 실행하고, 바꾼 정책은 다음 테스트 전에 원래 조건으로 복원합니다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>확인</th>
+<th>실행</th>
+<th>기대 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>진입·설치</td>
+<td>업무함, 페이지 승인 창, 관리자 설정 열기</td>
+<td>화면이 로드되며 기본 페이지 편집도 정상 동작</td>
+</tr>
+<tr>
+<td>순차 승인</td>
+<td>A가 B → C 순서로 요청하고 각각 승인</td>
+<td>C는 먼저 결정할 수 없고 최종 단계 뒤 승인 완료</td>
+</tr>
+<tr>
+<td>반려·회수</td>
+<td>별도 요청에서 B 반려, 다른 요청에서 A 회수</td>
+<td>각 종료 상태·사유·처리 이력 기록</td>
+</tr>
+<tr>
+<td>문서 수정</td>
+<td>진행 중 편집 후 새 버전으로 다시 상신</td>
+<td>편집만으로 종료되지 않으며 재상신 시 이전 요청 종료·새 요청 생성</td>
+</tr>
+<tr>
+<td>영역</td>
+<td>영역 요청 후 매크로 삭제</td>
+<td>페이지 전체와 별도 상태, 영역 제거 시 자동 회수</td>
+</tr>
+<tr>
+<td>권한</td>
+<td>D가 목록과 상세 접근 시도</td>
+<td>제한 문서 정보가 노출되지 않음</td>
+</tr>
+<tr>
+<td>마감</td>
+<td>준비한 기한 초과 요청에서 결정·새 요청 시도</td>
+<td>결정 거절, 새 요청 시 지난 요청 만료</td>
+</tr>
+<tr>
+<td>PIN·위임</td>
+<td>PIN 필수와 유효한 위임으로 각각 결정</td>
+<td>PIN 확인, 원 승인자와 실제 대리 처리자 기록</td>
+</tr>
+<tr>
+<td>참조·알림</td>
+<td>참조 지정 후 생성·결과와 댓글 확인</td>
+<td>참조는 결정 불가, 댓글 권한 실패가 결정 기록을 되돌리지 않음</td>
+</tr>
+<tr>
+<td>일괄 승인</td>
+<td>현재 차례인 여러 요청 선택 후 처리</td>
+<td>요청별 성공·실패 건수 확인</td>
+</tr>
+<tr>
+<td>파일</td>
+<td>종료 요청 PDF, 업무함 Excel 다운로드</td>
+<td>대상 버전·요청 ID 확인, 목록 내보내기 범위 확인</td>
+</tr>
+<tr>
+<td>기록 정리</td>
+<td>기간 지난 기록 내보내기 후 삭제</td>
+<td>확정한 내보내기 범위만 삭제, 진행 중 요청 제외</td>
+</tr>
+<tr>
+<td>언어</td>
+<td>한국어·영어 설정의 계정으로 확인</td>
+<td>같은 기능과 대응 문서 이용 가능</td>
+</tr>
+<tr>
+<td>라이선스</td>
+<td>유료 출시 구성에서 비활성 상태 확인</td>
+<td>모든 화면(설정 포함)과 매크로에 구매 안내, 모든 기능 호출 거절. 영역 매크로 본문과 byline 상태는 유지</td>
+</tr>
+</tbody>
+</table></div>
+<p>실행자는 제출 버전, 날짜·시간대, 계정 역할, 실제 결과와 화면 증빙을 기록합니다. 마감·보관 테스트를 위해 운영 데이터 날짜를 변경하지 않습니다.</p>
+<h2 id="section-3">제출 자료 확인</h2>
+<ul>
+<li>공개 Documentation URL과 한·영 페이지·이미지를 로그아웃 상태에서도 열 수 있는지 확인합니다.</li>
+<li>실제 응답하는 지원 채널, 운영 주체, 개인정보처리방침, 고객 이용약관(EULA) URL을 리스팅에 입력합니다. 버전의 <strong>Links</strong>에서 Atlassian Standard Agreement를 선택하거나 법률 검토를 마친 자체 EULA URL을 제공하고 선택 결과를 기록합니다. 초안·사내 주소·자리표시자는 제출하지 않습니다.</li>
+<li>앱 이름·설명·Cloud 제품·가격·평가판·권한·이미지를 실제 제출 버전과 맞추고, 심사자가 설치할 수 있는 링크와 접근 절차를 제공합니다.</li>
+<li><strong>Privacy &amp; Security</strong> 탭에서 데이터 저장·외부 전송, PAT 또는 공유 비밀 사용 여부, 요청 scope의 근거와 개인정보처리방침을 이 문서의 기술 설명과 일치시킵니다.</li>
+<li>신규 앱이면 앱·파트너 보안 설문, 1회성 partner 신원·사업자 검증, 자동 취약점 스캔과 Marketplace 수동 심사까지 완료합니다. Critical 또는 일부 High 결과가 나오면 수정 버전을 다시 제출합니다.</li>
+<li>제출 버전·사이트·계정 역할·실행 시각·실제 결과·화면 증빙을 심사 티켓에 남깁니다. 문서의 기대 결과를 실행 증빙으로 대신하지 않습니다.</li>
+</ul>
+<h2 id="section-4">제출 중단 조건</h2>
+<p>다음 중 하나라도 남으면 심사 제출을 보류합니다.</p>
+<ul>
+<li>공개 문서, 이미지, 지원, 개인정보처리방침 또는 EULA 링크가 로그인·권한·404로 막힘</li>
+<li>리스팅 설명이나 캡처가 제출한 앱의 메뉴·기능·권한과 다름</li>
+<li>심사 계정이 설치·관리자 설정·요청·승인·파일 다운로드를 재현할 수 없음</li>
+<li>Privacy &amp; Security 답변과 실제 Forge 저장소·Sentry 전송·scope가 서로 다름</li>
+<li>영역 매크로, 라이선스, 제한 문서, 마감·보관 시나리오 중 하나가 무한 로딩 또는 설명과 다른 결과를 보임</li>
+<li>보안 설문·partner 검증·취약점 조치 또는 심사 티켓의 요청 자료가 미완료</li>
+</ul>
+<p>최종 제출 조건은 <a href="https://developer.atlassian.com/platform/marketplace/app-approval-guidelines/">Atlassian 앱 심사 가이드</a>, <a href="https://developer.atlassian.com/platform/marketplace/app-approval-security-workflow/">신규 보안 심사 절차</a>, <a href="https://developer.atlassian.com/platform/marketplace/security-privacy-tab/">Privacy &amp; Security 탭 안내</a>와 <a href="https://developer.atlassian.com/platform/marketplace/data-privacy-guidelines/">데이터 개인정보 가이드</a>를 기준으로 확인합니다. 문서를 게시했다는 사실만으로 심사나 보안 인증이 완료되는 것은 아닙니다.</p>
+<div class="pager"><a href="data-security.html"><small>← 이전 문서</small>데이터·보안·개인정보</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>이 문서에서</strong><a href="#section-0">앱과 문서</a><a href="#section-1">테스트 준비</a><a href="#section-2">실행과 기대 결과</a><a href="#section-3">제출 자료 확인</a><a href="#section-4">제출 중단 조건</a></aside></div><script>const items=[{"title":"빠른 시작 — 첫 문서 승인","text":"두 단계 승인 예제로 처음부터 끝까지 따라 합니다.","url":"quick-start.html"},{"title":"설치와 사용 준비","text":"앱 설치와 세 가지 진입점을 확인합니다.","url":"installation.html"},{"title":"개념과 상태 이해하기","text":"요청·단계·버전과 상태의 의미를 구분합니다.","url":"glossary.html"},{"title":"페이지 승인 요청","text":"페이지 전체의 승인자·순서·마감을 정합니다.","url":"page-approval.html"},{"title":"영역 승인","text":"문서 일부를 별도 대상으로 승인받습니다.","url":"area-approval.html"},{"title":"승인 업무함","text":"내 차례와 내 요청을 찾고 목록을 내보냅니다.","url":"inbox.html"},{"title":"승인·반려와 일괄 승인","text":"문서를 검토하고 개별·일괄 결정을 처리합니다.","url":"decisions.html"},{"title":"수정·회수·재상신과 버전 이력","text":"수정된 버전의 재승인과 이전 이력을 관리합니다.","url":"history-resubmit.html"},{"title":"내 서명과 PIN","text":"도장 이미지와 결정 확인용 PIN을 설정합니다.","url":"signature-pin.html"},{"title":"결재 위임과 대리 결재","text":"기간을 정해 대리인에게 결재를 맡깁니다.","url":"delegation.html"},{"title":"문서의 결재란","text":"문서와 템플릿에 결재란을 배치합니다.","url":"stamp-box.html"},{"title":"결재 증명서 PDF","text":"종료된 결재의 버전과 결정 증빙을 보관합니다.","url":"certificate.html"},{"title":"참조와 알림","text":"참조 역할과 앱·Confluence 알림을 구분합니다.","url":"notifications.html"},{"title":"관리자 초기 설정","text":"사용자가 첫 승인을 처리할 수 있게 준비합니다.","url":"admin-setup.html"},{"title":"전역 정책과 상태 표시명","text":"마감·알림·서명·접근 기본값을 정합니다.","url":"admin-policy.html"},{"title":"적용 스페이스와 개별 정책","text":"허용 스페이스와 개별 정책을 설정합니다.","url":"admin-spaces.html"},{"title":"결재선 관리","text":"반복되는 승인 순서를 저장합니다.","url":"admin-lines.html"},{"title":"승인 그룹 관리","text":"그룹 구성과 전원·1인 승인 조건을 정합니다.","url":"admin-groups.html"},{"title":"사용자·관리자와 접근 권한","text":"사용자 명부와 설정 관리 권한을 정합니다.","url":"admin-access.html"},{"title":"데이터 보관·내보내기와 변경 이력","text":"보관 기록을 내보내고 정리하며 변경을 추적합니다.","url":"admin-data.html"},{"title":"문제 해결과 지원","text":"증상별로 원인을 좁히고 지원을 요청합니다.","url":"faq.html"},{"title":"데이터·보안·개인정보","text":"데이터·권한·보관과 다운로드 범위를 확인합니다.","url":"data-security.html"},{"title":"Marketplace 심사 안내","text":"설치부터 권한·라이선스까지 심사 절차를 재현합니다.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="검색 결과가 없습니다.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

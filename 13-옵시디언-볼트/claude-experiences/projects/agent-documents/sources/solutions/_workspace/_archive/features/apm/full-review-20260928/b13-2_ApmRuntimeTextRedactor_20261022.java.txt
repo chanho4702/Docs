@@ -1,0 +1,333 @@
+package com.dmove.moveseye.premium.apm.core.security;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Pattern;
+
+/**
+ * 처리 중 요청의 <b>"지금 하는 일"({@code currentOp})·경로</b>를 서버에서 가린다 — 전체 검토 B13(🟠20).
+ *
+ * <h2>왜 서버가 또 가리나</h2>
+ * Java 확장({@code moveseye-otel-extension}의 {@code ChildOperationDescription}·{@code PathMasker})이 이미 가려 보내지만,
+ * 수신은 {@code o}·{@code p}를 <b>임의 문자열</b>로 받는다 — 다른 송신자, 손댄 확장, 확장이 160자로 잘라 닫는 따옴표가 사라진
+ * SQL이 그대로 장부·SSE·REST로 흘렀다. 그래서 확장을 믿지 않고 같은 기준을 서버에서 다시 건다.
+ *
+ * <h2>원칙 — 판정할 수 없으면 원문을 내보내지 않는다</h2>
+ * <ul>
+ *   <li>{@code DB …} → <b>SQL로 간주</b>하고 첫 인용·주석·모르는 문자에서 멈춰 그 뒤를 버린다({@link #sql}). 숫자는 {@code ?}.
+ *       백슬래시가 있으면 통째로 {@link #UNMASKABLE}.</li>
+ *   <li>{@code HTTP …} → 쿼리스트링·프래그먼트를 버리고 경로 구간을 {@link #path} 규칙으로.</li>
+ *   <li>{@code RPC …} → 확장 형식({@code RPC system service/method}, 식별자 문자만)일 때만 그대로. 아니면 {@code RPC ?(unmaskable)}.</li>
+ *   <li>그 밖의 접두 → {@link #UNMASKABLE}(코덱스 설계 2차 🔴3 — 모르는 형식을 RPC처럼 통과시키지 않는다).</li>
+ * </ul>
+ *
+ * <p>⚠️ DB 설명은 첫 인용에서 멈추므로 큰따옴표·백틱 식별자 뒤의 SQL 모양도 사라진다(안전한 쪽 — 설계 §7).
+ * 정본 마스킹은 에이전트·Collector이고, 이 클래스는 그것이 없을 때 최악을 줄이는 서버 방어선이다.
+ *
+ * <p>🔴 {@code core}에 둔 이유: 소비자가 수신({@code collector})·장부 조회({@code alert})·실시간({@code overview}) 세 메뉴다.
+ * {@code trace/ingest.ApmSqlMasker}를 쓰면 core → 메뉴 역방향 의존이 생긴다. 순수 함수라 상태가 없다.
+ */
+public final class ApmRuntimeTextRedactor {
+
+    /** 판정 불가 대체값 — {@code ApmSqlMasker.UNMASKABLE}과 같은 문자열(화면이 같은 뜻으로 읽는다). */
+    public static final String UNMASKABLE = "?(unmaskable)";
+    /** 가린 경로 구간 — 확장 {@code PathMasker}와 같은 표기. */
+    static final String ID = "{id}";
+
+    /** 입력 상한 — 수신 상한(200·512)보다 크면 정상 경로가 아니다. 정규식을 거대 입력에 돌리지 않는다. */
+    private static final int MAX_INPUT = 2048;
+    /** {@code RPC [system ][service][/method]} — 식별자 문자만. 공백은 system 뒤 하나. */
+    private static final Pattern RPC_FORM = Pattern.compile("RPC(?: [\\w.$:\\-]+)?(?: ?[\\w.$:\\-]*(?:/[\\w.$:\\-]+)?)?(?:…)?");
+    /** 긴 토큰 구간(세션·리셋 토큰 등) — 이 길이 이상이면 가린다. */
+    private static final int LONG_TOKEN = 24;
+    private static final int MAX_DECODE_ROUNDS = 3;
+
+    private ApmRuntimeTextRedactor() {}
+
+    /**
+     * {@code currentOp} 한 줄을 가린다.
+     *
+     * @param op 확장이 만든 {@code "DB postgresql SELECT …"}·{@code "HTTP GET host/path"}·{@code "RPC grpc Svc/Method"}
+     * @return 가린 값. null·빈 문자열은 그대로
+     */
+    public static String op(String op) {
+        if (op == null || op.isEmpty()) {
+            return op;
+        }
+        if (op.length() > MAX_INPUT) {
+            return UNMASKABLE;
+        }
+        if (op.equals("DB") || op.startsWith("DB ")) {
+            String masked = sql(op.substring(2));
+            return EMAIL_SHAPE.matcher(masked).find() ? "DB " + UNMASKABLE : "DB" + masked;
+        }
+        if (op.equals("HTTP") || op.startsWith("HTTP ")) {
+            return "HTTP" + http(op.substring(4));
+        }
+        if (op.equals("RPC") || op.startsWith("RPC ")) {
+            return RPC_FORM.matcher(op).matches() ? op : "RPC " + UNMASKABLE;
+        }
+        return UNMASKABLE;
+    }
+
+    /**
+     * 요청 경로를 가린다 — 쿼리스트링·프래그먼트를 버리고, 구간마다 percent-decoding(최대 3겹 — {@code %2540}) 뒤
+     * 숫자만·16자 이상 hex·UUID·{@code @} 포함·24자 이상 토큰이거나, 디코딩이 깨졌거나 인코딩된 구분자가 나오면 {@code {id}}.
+     * 남기는 구간은 원래 표기 그대로다.
+     */
+    public static String path(String path) {
+        if (path == null || path.isEmpty()) {
+            return path;
+        }
+        if (path.length() > MAX_INPUT) {
+            return UNMASKABLE;
+        }
+        int cut = firstOf(path, '?', '#');
+        String p = cut >= 0 ? path.substring(0, cut) : path;
+        StringBuilder out = new StringBuilder(p.length());
+        int i = 0;
+        while (true) {
+            int j = p.indexOf('/', i);
+            String segment = p.substring(i, j < 0 ? p.length() : j);
+            out.append(sensitive(segment) ? ID : segment);
+            if (j < 0) {
+                break;
+            }
+            out.append('/');
+            i = j + 1;
+        }
+        return out.toString();
+    }
+
+    /**
+     * SQL 한 줄을 가린다 — <b>첫 인용·해석할 수 없는 문자에서 멈추고 그 뒤를 버린다</b>(코덱스 구현 5차 뒤 재설계).
+     *
+     * <h3>왜 문자열을 "가리지" 않고 "버리나"</h3>
+     * 서버는 SQL 방언을 모른다. 작은따옴표 하나도 방언마다 경계가 다르다(PostgreSQL {@code ''}, BigQuery {@code '''…'''},
+     * Oracle {@code q'[…]'}, SQL Server {@code [it's]}…). 경계를 해석해 리터럴만 {@code ?}로 바꾸는 방식은 1~5차 검수에서
+     * 매번 새 방언 반례로 원문이 새었다 — 경계를 잘못 읽으면 문자열 <b>안</b>이 식별자로 출력된다. 그래서 경계를 해석하지 않는다:
+     * 인용이 시작되는 순간부터 끝까지를 버리면, 따옴표 안의 어떤 글자도 출력에 나올 수 없다(방언과 무관한 성질).
+     *
+     * <h3>남기는 것</h3>
+     * 식별자·키워드(유니코드 글자·숫자·{@code _}), 위치 매개변수({@code $1}·{@code ?}), 공백과 연산자·구두점
+     * ({@link #SQL_PUNCT}). 숫자 토큰은 경계가 모호하지 않아 {@code ?}로 바꾸고 계속 읽는다. 에이전트가 이미 리터럴을
+     * {@code ?}로 바꿔 보낸 정상 SQL은 그대로 다 남는다 — 잘리는 것은 원문 리터럴이 실제로 온 경우뿐이다.
+     *
+     * <h3>멈추는 것 → {@code ?…}</h3>
+     * 작은따옴표·큰따옴표·백틱·대괄호, 숫자 아닌 {@code $}(dollar-quote), 주석({@code --}·{@code #}·{@code /*}), 그 밖에
+     * 목록에 없는 모든 문자. 백슬래시가 어디든 있으면 설명 전체가 {@link #UNMASKABLE}이다.
+     */
+    private static String sql(String rest) {
+        if (rest.indexOf('\\') >= 0) {
+            return " " + UNMASKABLE;
+        }
+        StringBuilder out = new StringBuilder(rest.length());
+        int n = rest.length();
+        int i = 0;
+        while (i < n) {
+            char c = rest.charAt(i);
+            if (Character.isLetter(c) || c == '_') {
+                int j = i + 1;
+                while (j < n && identPart(rest.charAt(j))) {
+                    j++;
+                }
+                out.append(rest, i, j);
+                i = j;
+                continue;
+            }
+            if (c == '$' && i + 1 < n && Character.isDigit(rest.charAt(i + 1))) {
+                int j = i + 1;
+                while (j < n && Character.isDigit(rest.charAt(j))) {
+                    j++;
+                }
+                out.append(rest, i, j);
+                i = j;
+                continue;
+            }
+            if (Character.isDigit(c) || (c == '.' && i + 1 < n && Character.isDigit(rest.charAt(i + 1)))) {
+                int j = i + 1;
+                while (j < n) {
+                    char d = rest.charAt(j);
+                    if (Character.isLetterOrDigit(d) || d == '_' || d == '.') {
+                        j++;
+                    } else if ((d == '+' || d == '-') && (rest.charAt(j - 1) == 'e' || rest.charAt(j - 1) == 'E')
+                            && j + 1 < n && Character.isDigit(rest.charAt(j + 1))) {
+                        j++;
+                    } else {
+                        break;
+                    }
+                }
+                out.append('?');
+                i = j;
+                continue;
+            }
+            boolean comment = (c == '-' && i + 1 < n && rest.charAt(i + 1) == '-')
+                    || (c == '/' && i + 1 < n && rest.charAt(i + 1) == '*');
+            if (!comment && (Character.isWhitespace(c) || c == '?' || SQL_PUNCT.indexOf(c) >= 0)) {
+                out.append(c);
+                i++;
+                continue;
+            }
+            // 인용·주석·dollar-quote·모르는 문자 — 그 뒤는 해석하지 않는다.
+            return out.append("?…").toString();
+        }
+        return out.toString();
+    }
+
+    /** 그대로 남기는 SQL 연산자·구두점. 🔴 인용 문자({@code ' " `})·{@code [}·{@code #}·{@code \}·숫자 아닌 {@code $}는 없다. */
+    static final String SQL_PUNCT = "(),.*=<>!+-/%;:|&^~@{}]";
+
+    /**
+     * 식별자 글자. 🔴 {@code $}는 넣지 않는다 — {@code q$t$…$t$}처럼 식별자에 붙은 {@code $}가 방언에 따라 dollar-quote의
+     * 시작일 수 있다(무작위 성질 테스트가 찾은 반례). {@code v$session} 같은 이름은 거기서 잘린다(안전한 쪽).
+     */
+    private static boolean identPart(char c) {
+        return Character.isLetterOrDigit(c) || c == '_';
+    }
+
+    /** 가린 결과에 이메일 모양({@code 글자@글자})이 남으면 통째로 판정 불가 — 인용 없이 온 비정상 값에 대한 마지막 그물. */
+    private static final Pattern EMAIL_SHAPE = Pattern.compile("[\\p{L}\\p{N}_.%+-]@[\\p{L}\\p{N}]");
+
+    /**
+     * HTTP 설명 — 확장 형식({@code HTTP [METHOD ][host]/path})일 때만 남긴다. 🔴 경로 앞(메서드·호스트)이 형식에 맞지 않으면
+     * 통째로 판정 불가 — 접두만 {@code HTTP}인 임의 문자열({@code HTTP SELECT 'kim@…'})이 그대로 나갔다(코덱스 구현 7차).
+     */
+    private static String http(String rest) {
+        int cut = firstOf(rest, '?', '#');
+        String r = cut >= 0 ? rest.substring(0, cut) : rest;
+        int slash = r.indexOf('/');
+        String head = slash < 0 ? r : r.substring(0, slash);
+        if (!HTTP_HEAD.matcher(head).matches()) {
+            return " " + UNMASKABLE;
+        }
+        return slash < 0 ? head : head + path(r.substring(slash));
+    }
+
+    /** 경로 앞부분 — {@code " GET"}·{@code " GET host:8080"}·{@code " GET "}(호스트 없음). 메서드는 대문자, 호스트는 호스트 글자만. */
+    private static final Pattern HTTP_HEAD = Pattern.compile("(?: [A-Z]{1,16})?(?: [A-Za-z0-9.\\-:\\[\\]]{1,255})? ?");
+
+    private static boolean sensitive(String segment) {
+        if (segment.isEmpty()) {
+            return false;
+        }
+        String s = segment.endsWith("…") ? segment.substring(0, segment.length() - 1) : segment;
+        String decoded = s;
+        for (int round = 0; round < MAX_DECODE_ROUNDS && decoded.indexOf('%') >= 0; round++) {
+            try {
+                decoded = URLDecoder.decode(decoded.replace("+", "%2B"), StandardCharsets.UTF_8);
+            } catch (IllegalArgumentException malformed) {
+                return true;   // 깨진 인코딩은 판정할 수 없다
+            }
+        }
+        // 🔴 URLDecoder는 잘못된 UTF-8(%FF·overlong %C0%AF·서러게이트 %ED%A0%80)을 예외 없이 대체 문자(U+FFFD)로 바꾼다 —
+        //    그러면 토큰 판정을 피해 원래 구간이 그대로 나갔다(코덱스 구현 6차). 대체 문자가 나오면 깨진 인코딩으로 본다.
+        if (decoded.indexOf('\uFFFD') >= 0) {
+            return true;
+        }
+        // 경로 구간에 올 수 없는 글자(인코딩된 #·따옴표·백틱·꺾쇠·제어 문자)는 판정할 수 없다 — %23을 붙이면 토큰 판정을
+        // 피했다(코덱스 구현 7차).
+        for (int k = 0; k < decoded.length(); k++) {
+            char ch = decoded.charAt(k);
+            if (ch == '#' || ch == '\'' || ch == '"' || ch == '`' || ch == '<' || ch == '>' || Character.isISOControl(ch)) {
+                return true;
+            }
+        }
+        if (decoded.indexOf('%') >= 0 || decoded.indexOf('/') >= 0 || decoded.indexOf('?') >= 0) {
+            return true;       // 3겹 넘게 인코딩됐거나, 인코딩된 구분자가 구간 안에 숨어 있다
+        }
+        if (decoded.indexOf('@') >= 0 || looksLikeId(decoded) || longToken(decoded)) {
+            return true;
+        }
+        // 🔴 구간 안 조각도 본다 — 글자·숫자·-·_ 아닌 글자로 쪼갠 조각 하나라도 ID·토큰 모양이면 구간 전체를 가린다.
+        //    구두점이 붙으면(T;v=1·jsessionid=T·T+) 구간 전체 판정이 거짓이 되어 토큰이 그대로 나갔다(코덱스 구현 8차).
+        //    🔴 쪼개는 기준은 토큰 판정({@link #longToken})과 같은 글자 집합이다 — 기준이 다르면 토큰 안의 . = ~ 에서 갈라져
+        //    조각이 24자 미만이 되어 길이 판정이 사라졌다(코덱스 구현 9차). 같은 집합으로 자른 조각을 보고, 그 조각을 . = ~ 로
+        //    한 번 더 자른 작은 조각(숫자 ID 등)도 본다.
+        for (String piece : split(decoded, c -> tokenChar((char) c))) {
+            if (looksLikeId(piece) || longToken(piece)) {
+                return true;
+            }
+            for (String sub : split(piece, c -> Character.isLetterOrDigit(c) || c == '-' || c == '_')) {
+                if (looksLikeId(sub) || longToken(sub)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** 확장 {@code PathMasker.looksLikeId}와 같다 — 숫자만, 또는 하이픈을 뺀 hex가 16자 이상(UUID 포함). */
+    private static boolean looksLikeId(String s) {
+        boolean digitsOnly = true, hexOnly = true;
+        int hexLen = 0;
+        for (int k = 0; k < s.length(); k++) {
+            char c = s.charAt(k);
+            boolean digit = c >= '0' && c <= '9';
+            boolean hex = digit || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+            if (!digit) {
+                digitsOnly = false;
+            }
+            if (c == '-') {
+                continue;
+            }
+            if (!hex) {
+                hexOnly = false;
+            } else {
+                hexLen++;
+            }
+        }
+        return digitsOnly || (hexOnly && hexLen >= 16);
+    }
+
+    /**
+     * 토큰 모양 — 24자 이상, 토큰 문자만, <b>글자와 숫자가 섞여 있다</b>. 섞임을 요구하는 이유: 긴 라우트 이름
+     * ({@code customer-notification-preferences})까지 가리면 화면이 아무것도 말하지 않는다.
+     */
+    private static boolean longToken(String s) {
+        if (s.length() < LONG_TOKEN) {
+            return false;
+        }
+        boolean letter = false, digit = false;
+        for (int k = 0; k < s.length(); k++) {
+            char c = s.charAt(k);
+            if (Character.isDigit(c)) {
+                digit = true;
+            } else if (Character.isLetter(c)) {
+                letter = true;
+            } else if (c != '_' && c != '-' && c != '.' && c != '=' && c != '~') {
+                return false;
+            }
+        }
+        return letter && digit;
+    }
+
+    /** 토큰 글자 — {@link #longToken}이 허용하는 집합과 같다. */
+    private static boolean tokenChar(char c) {
+        return Character.isLetterOrDigit(c) || c == '_' || c == '-' || c == '.' || c == '=' || c == '~';
+    }
+
+    /** {@code keep}에 맞는 글자의 최대 연속 구간들. */
+    private static java.util.List<String> split(String s, java.util.function.IntPredicate keep) {
+        java.util.List<String> out = new java.util.ArrayList<>();
+        int start = -1;
+        for (int k = 0; k < s.length(); k++) {
+            if (keep.test(s.charAt(k))) {
+                if (start < 0) {
+                    start = k;
+                }
+            } else if (start >= 0) {
+                out.add(s.substring(start, k));
+                start = -1;
+            }
+        }
+        if (start >= 0) {
+            out.add(s.substring(start));
+        }
+        return out;
+    }
+
+    private static int firstOf(String s, char a, char b) {
+        int x = s.indexOf(a), y = s.indexOf(b);
+        return x < 0 ? y : (y < 0 ? x : Math.min(x, y));
+    }
+}

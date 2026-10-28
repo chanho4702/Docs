@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Users, administrators, and access · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/admin-access.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a class="active" aria-current="page" href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; Administrator guides</div><h1>Users, administrators, and access</h1><p class="lede">Manage who can enter the app, appear on approval lines, and change settings. App registration does not replace Confluence page permission.</p>
+<h2 id="section-0">Roles</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Role or list</th>
+<th>Capability</th>
+<th>Separate requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Confluence administrator</td>
+<td>All app settings; withdraw other people's open requests</td>
+<td>Document actions still have their own permission checks.</td>
+</tr>
+<tr>
+<td>Settings administrator</td>
+<td>All settings, including managing settings administrators</td>
+<td>Does not automatically gain withdrawal rights over others' requests.</td>
+</tr>
+<tr>
+<td>Approver list</td>
+<td>Eligible people when the list is in use</td>
+<td>Must also be able to view the target page.</td>
+</tr>
+<tr>
+<td>Requester</td>
+<td>Create requests and withdraw their own open requests</td>
+<td>Creation and resubmission require page edit permission.</td>
+</tr>
+<tr>
+<td>Cc / reader</td>
+<td>Read accessible request status and history</td>
+<td>Cc alone does not allow approval or rejection.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-1">Register approvers</h2>
+<p>Under <strong>Settings → Approvers</strong>, find and add users, then save the approver list. An empty list does not restrict selection by registration. Once you maintain a populated list, only its members can be placed on approval lines.</p>
+<p>If you plan to enable registered-users-only access, register requesters as well. That policy allows inbox and request access to listed users, settings administrators, and Confluence administrators.</p>
+<p><img src="../assets/ma-19-approvers.jpg" alt="Empty approver registry with the Add control and access-policy guidance"></p>
+<p><em>MA-19A · The registry is empty in this example; use Add to register approvers. Search and selection appear after opening that control.</em></p>
+<p><img src="../assets/ma-19-settings-admins.jpg" alt="Assign Moves Approval settings administrators"></p>
+<p><em>MA-19B · No settings administrators are registered in this example. Use Add to appoint one; Confluence site administrators already have access.</em></p>
+<h2 id="section-2">Register settings administrators</h2>
+<p>Open <strong>Settings → Settings administrators</strong>. Enter at least two characters to find users, select them, and save. Confluence administrators do not need separate registration.</p>
+<h2 id="section-3">Before restricting access</h2>
+<ol>
+<li>Register requesters and approvers.</li>
+<li>Register operations owners as settings administrators.</li>
+<li>Check the inbox and target pages with regular accounts.</li>
+<li>Enable the global restriction and compare registered and unregistered access.</li>
+</ol>
+<p>Settings access, page visibility, and an active approval turn are separate conditions. Seeing a menu does not imply access to every page or decision.</p>
+<div class="pager"><a href="admin-groups.html"><small>← PREVIOUS</small>Manage approval groups</a><a href="admin-data.html"><small>NEXT →</small>Retention, export, and change log</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">Roles</a><a href="#section-1">Register approvers</a><a href="#section-2">Register settings administrators</a><a href="#section-3">Before restricting access</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

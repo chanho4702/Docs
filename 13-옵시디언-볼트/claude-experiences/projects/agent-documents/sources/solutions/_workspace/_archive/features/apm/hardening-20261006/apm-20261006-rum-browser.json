@@ -1,0 +1,25 @@
+{
+  "scope": "Chromium 실제 HTTP, SDK 대역, 제품 BE 미연결",
+  "results": [
+    {
+      "scenario": "503 복구와 동일 본문",
+      "passed": true,
+      "httpRequests": 2
+    },
+    {
+      "scenario": "429 Retry-After 준수",
+      "passed": true,
+      "httpRequests": 2
+    },
+    {
+      "scenario": "401 영구 오류 무재시도",
+      "passed": true,
+      "httpRequests": 1
+    },
+    {
+      "scenario": "동의 철회 후 예약 전송 취소",
+      "passed": true,
+      "httpRequests": 1
+    }
+  ]
+}

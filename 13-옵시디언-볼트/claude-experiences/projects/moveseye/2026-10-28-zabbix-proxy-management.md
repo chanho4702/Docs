@@ -10,7 +10,7 @@ status: active
 
 - 프로젝트: [[moveseye]] · 기능 지도 [[Zabbix-운영-관리]] · 래핑 공백 목록에서 남은 것(Proxy CRUD → SLA·인증·API 토큰·General)
 - 상태: **구현·검수 진행 중, 미커밋** — 워크트리 BE `C:\worktrees\zbx-proxy-be` · FE `C:\worktrees\zbx-proxy-fe`(브랜치 `zabbix-proxy`). 티켓 번호 미정. BE 검수 2차 승인 · FE 1차 반려 반영 완료, 2차 검수는 메모리 부족으로 중단돼 재실행 대기 · 런타임 실측 대기(BE를 작업 브랜치로 재기동해야 함, 스크립트 준비됨).
-- 정본: 계약 [contract_proxy](file:///C:/solutions/_workspace/features/zabbix-config/proxy/contract_proxy.md)(§0 실측표) · 검수 [review_proxy-be](file:///C:/solutions/_workspace/features/zabbix-config/proxy/review_proxy-be.md) · [review_proxy-fe](file:///C:/solutions/_workspace/features/zabbix-config/proxy/review_proxy-fe.md)
+- 정본: 계약 [contract_proxy](../agent-documents/sources/solutions/_workspace/features/zabbix-config/proxy/solutions--contract_proxy.md)(§0 실측표) · 검수 [review_proxy-be](../agent-documents/sources/solutions/_workspace/features/zabbix-config/proxy/solutions--review_proxy-be.md) · [review_proxy-fe](../agent-documents/sources/solutions/_workspace/features/zabbix-config/proxy/solutions--review_proxy-fe.md)
 
 ## 결정 (사용자)
 - **기본 기능**(라이선스 게이트 없음 — 호스트·매크로·점검 기간과 같은 급).

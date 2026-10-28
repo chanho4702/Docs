@@ -1,0 +1,164 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173310035">한국어</a></p>
+<h2>Default sets and actual access</h2>
+<p>This is an explanatory document. Check My Page → My permissions for your actual set and project scope. Defaults can be changed by an administrator; the installed site&#39;s settings take precedence over a default example.</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Admin</th>
+<th>Default Member</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>My Work and My Page</td>
+<td>Available</td>
+<td>Own data; underlying Jira access still applies</td>
+</tr>
+<tr>
+<td>Jira issue panel</td>
+<td>Available where installed</td>
+<td>Requires the relevant Jira access; panel availability depends on the installed version</td>
+</tr>
+<tr>
+<td>Project list, Kanban, and work views</td>
+<td>Read and write</td>
+<td>Read-only where the relevant read permission is included</td>
+</tr>
+<tr>
+<td>Project or status changes</td>
+<td>Available</td>
+<td>Not granted by default</td>
+</tr>
+<tr>
+<td>Work edits, bulk updates, inclusion, subscriptions, Tree/Gantt editing</td>
+<td>Available with Jira access</td>
+<td>Project write is required</td>
+</tr>
+<tr>
+<td>Document list</td>
+<td>Available</td>
+<td>Project read is required</td>
+</tr>
+<tr>
+<td>Link, classify, or unlink documents</td>
+<td>Available</td>
+<td>Project write is required; issue links also need Jira Edit Issues</td>
+</tr>
+<tr>
+<td>Project dashboard and analysis</td>
+<td>Available</td>
+<td>Corresponding Dashboard or Report read is required</td>
+</tr>
+<tr>
+<td>Portfolio reaggregation</td>
+<td>Available</td>
+<td>Report write is required</td>
+</tr>
+<tr>
+<td>Salary and cost</td>
+<td>Available under policy</td>
+<td>Cost access is not granted by default</td>
+</tr>
+<tr>
+<td>Resource management</td>
+<td>Available</td>
+<td>Requires Resource management access</td>
+</tr>
+<tr>
+<td>Worklog export</td>
+<td>Available</td>
+<td>Requires Worklog export access; older installations may enable only Admin</td>
+</tr>
+<tr>
+<td>Settings and reference-data changes</td>
+<td>Available</td>
+<td>Corresponding write permission is required</td>
+</tr>
+<tr>
+<td>Holiday view</td>
+<td>Available</td>
+<td>Data is read for calculations; sidebar visibility uses a separate gate</td>
+</tr>
+</tbody></table>
+<p>Admin does not replace Jira product permissions. The issue panel can be absent in a particular installation; My Work provides the alternative worklog route.</p>
+<h2>Permission categories</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Read</th>
+<th>Write</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Project</td>
+<td>Lists, details, people, work views, calendar, documents</td>
+<td>Project, people, and work changes; bulk operations; subscriptions; document changes; history-tab availability</td>
+</tr>
+<tr>
+<td>Dashboard</td>
+<td>Project dashboard</td>
+<td>Widgets, layout, and custom filters</td>
+</tr>
+<tr>
+<td>Kanban</td>
+<td>Board</td>
+<td>Card moves and column changes</td>
+</tr>
+<tr>
+<td>Report</td>
+<td>Analysis, portfolio, analytical widgets</td>
+<td>Portfolio reaggregation</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Salary and cost views, monetary widgets</td>
+<td>Permitted salary changes</td>
+</tr>
+<tr>
+<td>Resource management</td>
+<td>People, organization, teams, candidates</td>
+<td>Skills and assignment under the applicable scope</td>
+</tr>
+<tr>
+<td>Worklog export</td>
+<td>Export screen</td>
+<td>No separate write workflow</td>
+</tr>
+<tr>
+<td>Settings categories</td>
+<td>Corresponding setting</td>
+<td>Corresponding edits</td>
+</tr>
+</tbody></table>
+<h2>Project visibility scope</h2>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Projects shown</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>All projects</td>
+<td>All authorized app projects</td>
+</tr>
+<tr>
+<td>Participating projects</td>
+<td>Projects where you are registered as a member</td>
+</tr>
+<tr>
+<td>My team</td>
+<td>Projects associated with your applicable team, led teams, and child teams; no valid team can mean an empty result</td>
+</tr>
+</tbody></table>
+<p>Jira administrators and the Admin set have the applicable all-project exception. Check project visibility and organizational people scope separately. Resource read alone does not always grant the full directory. Authorized organization-wide users see the full scope; team leaders see their permitted led teams and descendants. Without an allowed scope, organization analytics are restricted. Worklog export and Jira issue panels use Jira access rather than this app-project scope.</p>
+<h2>Diagnose a missing screen</h2>
+<ol>
+<li>Check My Page → My permissions and project scope.</li>
+<li>Identify the category and whether read or write is required.</li>
+<li>Ask the administrator for that specific access rather than a job-role change.</li>
+<li>For a missing project, check project membership or team assignment.</li>
+<li>Check Jira Browse Projects, issue security, editing, scheduling, assignment, or linking as applicable.</li>
+</ol>
+<p>See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047763">Permissions and data visibility</a> and <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046526">My Page</a>. Access checks apply to returned data as well as visible controls.</p>

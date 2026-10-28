@@ -1,0 +1,68 @@
+# 부록 B. 이 프로젝트가 뒤집은 가정 — 실측·검수가 설계를 바꾼 36가지
+
+> **MovesEye APM 종합 안내서** 분책 15/18 · 원본 절 **부록 B** · 마지막 갱신 **2026-09-17**(원본 `apm-handbook.md` 2026-09-14 작성분을 옮긴 뒤, 2026-09-15 P5 실측(R-P5b·R-P5.6)에서 3건(#27~#29) 추가, 2026-09-17 P5 실측(R-P5)·구현 검수에서 7건(#30~#36) 추가).
+>
+> **이 문서를 읽으면 알게 되는 것**
+> 1. 설계·문서가 가정했으나 실측·검수가 뒤집은 36가지(500 즉시 폐기·686B·exemplar≠최댓값·AND→OR…·`\uXXXX` 팽창 아님·개발 빌드 성능 오판·`keep_keys`는 키만·`propagate`가 저장 300% 중복·G1 heap 상시 null)
+> 2. 각 가정이 어떤 실측·검수로 무너졌는지
+> 3. 그 결과 코드·계약·가이드에 무엇이 반영됐는지
+>
+> **전제 문서** — 이전 [14-glossary.md](solutions--14-%EB%B6%80%EB%A1%9D-A.-%EC%9A%A9%EC%96%B4-%EC%82%AC%EC%A0%84%28%EC%A0%84%EC%B2%B4%29.md) · 다음 [16-faq.md](solutions--16-%EB%B6%80%EB%A1%9D-C.-%EC%9E%90%EC%A3%BC-%ED%95%98%EB%8A%94-%EC%A7%88%EB%AC%B8.md) · 목차 [00-index.md](solutions--00-MovesEye-APM-%EC%A2%85%ED%95%A9-%EC%95%88%EB%82%B4%EC%84%9C-%EB%AA%A9%EC%B0%A8-%EC%9D%BD%EB%8A%94-%EC%88%9C%EC%84%9C-%EC%9A%A9%EC%96%B4-%EC%9A%94%EC%95%BD%ED%8C%90-%EC%A0%84%EC%B2%B4-%EC%A7%80%EB%8F%84.md). 용어는 [14-glossary.md](solutions--14-%EB%B6%80%EB%A1%9D-A.-%EC%9A%A9%EC%96%B4-%EC%82%AC%EC%A0%84%28%EC%A0%84%EC%B2%B4%29.md), 출처 전체는 [17-sources.md](solutions--17-%EB%B6%80%EB%A1%9D-D.-%EC%B6%9C%EC%B2%98-%EB%AA%A9%EB%A1%9D-%EC%99%B8%EB%B6%80-%EA%B3%B5%EC%8B%9D-%EB%AC%B8%EC%84%9C-%EB%82%B4%EB%B6%80-%EC%A0%95%EB%B3%B8.md).
+> **표기**: 🔴 = 어기면 데이터가 조용히 틀리는 규칙 · ⚠️ = 알고 있어야 하는 한계 · ✅ = 실측으로 확인된 것.
+
+## 부록 B. 이 프로젝트가 뒤집은 가정 — 실측·검수가 설계를 바꾼 36가지
+
+> **#1~#26**은 P1~P4 실측이, **#27~#29**는 P5 실측(R-P5b·R-P5.6)이, **#30~#36**은 P5 실측(R-P5)과 **구현 검수**가 뒤집은 것이다. #27~#36의 배경·맥락은 [18-p5-realtime.md](solutions--18-P5-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EA%B4%80%EC%A0%9C-%EC%A7%80%EA%B8%88-%EC%9D%B4-%EC%88%9C%EA%B0%84%EC%9D%84-%EB%B3%B4%EB%8A%94-%EA%B8%B8%28%EB%9D%BC%EC%9D%B4%EB%B8%8C-%EC%8A%A4%ED%8C%AC-X-View-%EC%9A%94%EC%B2%AD-%EA%B4%80%EC%A0%9C-%EB%B9%84%EB%8F%99%EA%B8%B0%29.md) §10.7에 있다.
+
+| # | 설계·문서의 가정 | 실측·검수 결과 | 반영 |
+|---|---|---|---|
+| 1 | 5xx면 Collector가 30분 재시도로 버틴다 | **500은 즉시 폐기**(60초 31배치 손실), 재시도는 429·502·503·504만 | 503 계약·500 금지, AI 모니터링 컨트롤러도 정정 |
+| 2 | 403은 재시도로 버틴다 | 영구 실패 즉시 폐기 | 만료=즉시 손실, D-14 배너·중지 절차 |
+| 3 | delta 선호를 켜면 전부 delta | UpDownCounter는 CUMULATIVE | 포인트 단위 판정 |
+| 4 | exemplar는 trace_id만 | 원문 SQL·URL·IP가 `filteredAttributes`에, Collector는 안 만진다 | BE 폐기 |
+| 5 | exemplar = 그 버킷의 최댓값 | 대표 표본. CUMULATIVE 극값은 차분 불가라 800배 | V47 값 정본=exemplar, min/max NULL |
+| 6 | 재버킷은 선형 보간이면 충분 | 초 값+ms 격자를 12칸에 펴서 p95 4.7초 | 분할 금지·`UNIQUE(bounds,family)`·min/max 클램프 |
+| 7 | Java는 `active_requests` 플래그 필요 | 플래그 없이 나옴. Node·Python은 안 나옴 | 언어별 표·배지 |
+| 8 | Python은 신 semconv 기본 | 구 이름으로 와서 RED 전량 폐기, 가이드는 "정상" | opt-in 필수 안내·별칭 |
+| 9 | 행당 150B | **686B**(인덱스 절반, PK 41%) | 용량 4.5배 상향·승격 3축 |
+| 10 | 롤업 5분 초과면 승격 | 정상 1회 1.2초, 백필만 6분 39초 | "정상 1회 60초"·`maxBuckets` 288→60 |
+| 11 | 목록 화면은 빠르다 | 24h cold 13초(1m 12.96M행 스캔) | 5m 기준선+워터마크 꼬리 |
+| 12 | 질의 최적화는 SQL 손질 | `order by` 제거·전개 축소 무효, `work_mem` 4→64MB 하나가 스필 소멸 | 설치 가이드 PG 튜닝 |
+| 13 | 아이템 만들면 바로 push 가능 | 캐시 동기화 ~10초 전 "does not exist"(권한 없음과 같은 문구) | 대기≠실패, `cache_ready`는 첫 push 성공 |
+| 14 | `problem.get recent:true`로 복구 판정 | 최근 해소분 포함 | `event.get r_eventid` |
+| 15 | 기존 알림 채널로 보내면 된다 | 자체 푸시는 이메일뿐 | Zabbix `history.push` 경유 |
+| 16 | PG 파티션 PK는 자유 | 파티션 키 포함 강제 | `PK(trace_id, span_id, start_ts)` + 논리 dedup |
+| 17 | 트랜잭션이면 덧셈 UPSERT도 안전 | 커밋 후 재실행이 두 번 센다 | 예외 롤업 대입, `count_total`=보존 창 합 |
+| 18 | tail 정책은 사유를 적어 준다 | 안 적는다 | `SLOW_INFERRED` |
+| 19 | SLO 번 알람은 두 조건 AND | SRE는 두 알람 OR, 확인 창 필요 | 4창 OR/AND·상한 `1/(1−목표)` |
+| 20 | Zabbix `httptest.steps`에 `post_type` | 필드 없음, RAW/FORM은 `posts` 타입. 상수도 반대로 읽음 | 값→선언 순 판정 |
+| 21 | 배치 잡은 하루보다 길어야 놓친다 | 15분 | V54 완료 시각 경로 |
+| 22 | 실시간 = 초 단위 | 상류 export 주기가 알갱이. 화면 도달 중앙값 ≈14초·최악 ≈23초 | "약 30초 이내" |
+| 23 | 조회 EP는 운영자 이상(설계 🅞) | P1부터 판정 없음 → USER가 스택·SQL 열람 | ADMIN 일괄 → DMOVE 권한 옵션 |
+| 24 | K8s OOM 이유는 메트릭·재시작은 `container.restart_count` | 기본 비활성 리소스 속성·semconv 정본 `k8s.container.restart_count`. 테스트가 지어낸 이름을 먹여 초록 | `k8s_cluster.resource_attributes` 켜기·정본 이름·변이 실험 |
+| 25 | V27을 베끼면 백필된다 | `'{}'` 기본값 행에서 마이그레이션 실패 | UPDATE 3문 |
+| 26 | 전역·서비스별 규칙은 이름이 달라도 된다 | 같은 (kind, 서비스)면 트리거 이름 충돌 → 영영 미생성 | 서비스별에만 uid 접미 |
+| 27 | "링크 실측 0건"은 구현 주석의 방어 문구일 뿐, 실 트래픽에는 링크가 있을 것이다(그래서 P5.6 비동기 화면이 링크 목록을 앞세웠다) | **주석이 사실이었다** — R-P5.6 시작 시점 `apm_span` 82,582행 중 `links IS NOT NULL` **0행**. javaagent 2.31.1 `@Async`·CompletableFuture 14구성 1,400요청도 링크 **0%**(부모 전파는 100%). 링크 경로는 합성 fixture로 처음 실측(191건 100% 보존) | 출시 문구 "해당 구성에서는 링크가 자동 생성되지 않음"을 도움말·안내서에 그대로 · 워터폴의 첫 신호는 링크가 아니라 **⇢ 부모 종료 이후 종료**(fire-and-forget 100% 이 모양) · Kafka/RabbitMQ 미측정을 유일한 공백으로 명기 |
+| 28 | 표시 성능은 개발 서버(Vite dev)에서 재도 된다 | 개발 빌드는 5,000스팬에서 최장 정지 748~774ms로 D-5(500ms)를 **넘지만**, **8스팬 대조군도 469ms** — React dev 모드의 고정 비용이지 스팬 수 비례가 아니다. 프로덕션 빌드는 228ms / 58ms | UX 정본 §3.5 D-5에 **"프로덕션 빌드(`vite build`+`preview`)로 측정, 개발 빌드 금지"** 못 박음 · 판정은 프로덕션 값으로만 · (부수) dev CORS는 5173~5175만이라 QA 포트 예시를 5174~5175로 |
+| 29 | Collector JSON exporter는 비-ASCII를 `\uXXXX`로 이스케이프해 한글 본문이 최대 6배(v3) 팽창한다 → 최악 UTF-8 배치 2.11 MiB > 2 MB, `send_batch_max_size`를 낮춰야 한다(R-P5 §14) | **팽창은 없다**(R-P5b) — exporter는 **원시 UTF-8**로 쓴다(`\u` 등장 0). 같은 바이트 상한이면 **한글 비용 = ASCII 비용**(포화 1,000스팬 785,699 vs 786,779 B). R-P5 §14의 2.11 MiB는 gen3 fixture가 **바이트가 아니라 문자 수를 세어**(`error.type` 64자 = 192 B) 생긴 결함 | 정본 v4.1: `\uXXXX` 문장 삭제·R-P5 §14 판정 철회 · `send_batch_max_size` 1,000 유지(근거는 실측 G = N 1.337 MiB로 교체, "넘으면 800" 삭제) · `truncate_all`은 바이트 상한을 **문자 경계**에서 자른다(UTF-8 깨짐 0) · 같은 회차에서 압축본 상한 512 KiB가 정상 입력을 거절함이 드러나 2 MiB로 |
+| 30 | OTTL `keep_keys`로 허용 키만 남기면 라이브 스팬은 깨끗하다 — 값 검사는 BE에서 해도 된다(설계 v2) | 🔴 **`keep_keys`는 키만 거른다. 허용한 키의 *값*은 손대지 않는다.** 설계 v2 원문 그대로 돌리자 **4종이 그대로 유출**됐다 — `http.route` 값 4,798 · `service.instance.id` 값 3,603 · `scope.name` 3,603 · `schemaUrl` 7,206(R-P5 §4.2). "BE에서 치환"은 자기모순이다 — **BE가 치환하기 전에 원문이 이미 네트워크를 건너갔다** | `redaction/live`(허용 키의 **속성 값** 검사)를 Collector에 추가 + scope·schemaUrl `set("")` 문장 4개 추가 → 결합 정본에서 **13/13 차단**. ⚠️ redaction의 방어 범위는 **속성 값뿐** — `status.message`·`span.name`·`traceState`·scope 필드·`events[].name`·`links[].attributes`는 검사 대상이 아니라 `filter/live-safety` 13조건이 **비-속성 필드의 유일한 방어**다 |
+| 31 | 라이브 정리 문장이 실패하면 그 배치만 폐기된다(설계 v2 `error_mode: propagate` 주석) | 🔴 **배치를 폐기하는 게 아니라 상류 전체를 실패시키고 저장을 오염시킨다.** transform이 오류를 상류로 반환하고 fan-out이 각 consumer 오류를 모아 receiver에 돌려주므로, SDK가 **503 × 5,176**을 받아 **3,882회 재전송** → 저장 분기는 그 요청을 이미 처리했으므로 `apm_span` **중복 26,769건(고유 8,923의 300%)**. 라이브 도달은 0. 같은 실패 문장을 `ignore`로 돌리면 중복 0·유실 0 | 라이브 프로세서는 전부 **`error_mode: ignore`**(R2-8 FAIL → v3 결정). 대가(정리 실패 스팬이 덜 깎인 채 통과)는 ① `transform/live-slim`은 **입력에 의존해 실패할 수 없는 문장만** 담는다는 불변식 ② BE 카나리아 `slimBypassed{reason}` ③ 전송 전 차단 `filter/live-safety`로 막는다. 🔴 `ignore`는 **문장 단위로만** 건너뛰므로 `set(span.status.message,"")`가 실패하면 그 필드는 **무방비 전송**된다(실측: 1,337/1,337 스팬이 PII를 실은 채 도달) |
+| 32 | OTTL feature gate(`ottl.set.allowNil`)가 빠지면 `span.events`/`links` 정리가 **조용히** 무시된다 — 경고 0건·로그 0·카운터 0(설계 리스크 #13, R-P5 §4.3) | **경고가 0은 아니다** — 프로세스 수명당 **WARN 1회**가 뜬다(`ottlfuncs/func_set.go:46`, "Enable the feature gate 'ottl.set.allowNil'"). 정확한 문구는 *"1회 WARN이 뜨지만 ① 기능은 차단되지 않고 ② 전용 카운터가 없으며 ③ 제품이 이 로그를 보고 있지 않다"*. 🔴 그 WARN에는 **파이프라인·컴포넌트 라벨이 없다**(전역) → 알람은 "이 Collector에 gate가 빠졌다"까지만 말할 수 있다. 부수 정정: gate OFF의 유출 벡터는 3종이 아니라 **2종**(`events[].attributes` 값은 redaction이 마스킹) | 6단계가 **로그 WARN 계수**(V59 `apm_collector_log_1m` — `gate_warn`·`statement_warn`·`condition_warn`)를 수집기 탭으로 올린다. 🔴 **WARN 수 ≠ 손실 수**(내부 로그 샘플링 — 13,196스팬 실패에 WARN 170줄 · 1,337 실패에 52줄) · `failed processing traces`는 `ignore`에서 **0건**이라 감시 문자열로 쓰면 아무것도 못 잡는다 · 정확한 카운터는 `otelcol_processor_filter_spans_filtered{filter="filter/live-safety"}` **하나뿐** |
+| 33 | `pressure.arenaPressure > 0`이면 "서버 보관 축소 중"이니 그대로 배지 조건으로 쓰면 된다 | 🔴 **누적 카운터였다.** `LiveSpanRing.Counters.arenaPressure`는 `AtomicLong`이고 압박마다 `incrementAndGet()`만 할 뿐 **리셋 지점이 없다**. 둘이 같이 터진다 — ① FE 배지가 **기동 후 한 번이라도 압박이 있었으면 영구 ON** ② BE가 `if (tick.pressure() > 0) sendControl(degraded)`라 **첫 압박 이후 모든 연결에 매초 control{degraded}를 무한 발송**하며 연결 큐 바이트를 계속 소모 | 7단계에서 SSE 값을 **tick 구간 증분**으로 교체(해제 시 0 발행, 연결 없는 tick도 기준 전진, 누적값은 내부 진단으로만). 계약서 §6-C의 "FE가 우회하라"는 지시는 그 뒤 **stale**이 됐다 |
+| 34 | 표시 성능을 고치는 재작성은 표본·판정을 바꾸지 않는다 | **두 번 깼다**(P5.2 코덱스 2차 🔴2). ① **사전 ID**: 병합을 덧칠(`{...기존, ...신규}`)로 해 만료 ID가 클라이언트에만 영구 잔류 → BE가 route ID를 회수·재발급하면 필터가 **옛 ID만 골라 정상 점을 숨겼다** ② **dedup 키**: 색인 키를 `spanId` 하나로 줄여 다른 trace의 같은 spanId가 서로 덮어씀 → base/emphasis 중복 제거 실패로 **고유 2점이 3점으로 표시** | ① 사전을 **서비스 단위 교체** + 필터 환산을 단일 ID → **ID 집합**으로 ② 색인을 중첩 `Map<traceId, Map<spanId, slot>>`으로. 🔴 교훈: 재작성 뒤 **표본 동등성**을 수치로 고정한다 — 솎음 해시 입력을 전체 키로 되돌려 `displayed 251,924 · keepRatio 0.3454`가 재작성 전과 **정확히 일치**함을 확인하고서야 속도(7~12배)를 인정했다 |
+| 35 | 최신 1초 칸이 비어 있으면 잠깐 유예를 두는 편이 화면이 덜 깜빡인다(P5.3 구현 중 추가한 3초 grace) | 🔴 **그 유예가 "관측 없음 ≠ 0" 규칙을 스스로 깼다.** 유예 안에 버킷이 없으면 `bucketAt=null`인데 TPS는 **0으로 그려졌다** — 관측이 계속 있어도 처리량이 0으로 보인다 | 칸을 버리지 않고 **"받은 것 중 가장 최근"**으로 쓰되 `latestAgeMs`·`latestDelayed`로 집계 시각과 지연을 함께 적고, 🔴 `tps`를 **`number \| null`**로 바꿔 관측 없음과 0을 **타입으로** 가른다. 같은 라운드에서 정직성 위반 6건을 함께 복구했다(동시 요청 분자·분모 출처 분리 · `live{}`에만 있는 서비스의 타일 누락 · "지연 p95"가 실은 "최신 집계 구간의 나이"였던 오표기 · wall 팝업 가림 · 임계 참고선 잔류) |
+| 36 | `jvm.memory.used`/`limit`을 **메모리 풀별로 1:1 매칭**하면 heap 사용률이 나온다 | 🔴 **G1(JDK 17 기본 GC)에서는 상시 `null`이 된다** — `MemoryPoolMXBean.getUsage().getMax()`가 **Eden·Survivor에서 −1**이고 OTel Java는 그 값을 `jvm.memory.limit`로 **내보내지 않는다**. `HEAP_USED`는 pool 3개, `HEAP_LIMIT`은 `G1 Old Gen` 1개만 도착해 첫 Eden 키에서 즉시 null. 더 나쁜 것은 **같은 제품 안에서 두 화면이 다른 답**을 한다는 점 — 런타임 탭은 값을 내고 P5는 "측정 불가"를 말했다 | `heapPct = heap Σused / Σ(limit 보유 pool)`로 교체(기존 런타임 화면의 `jvm.memory.type` 합산과 **같은 방식**) — ✅ JDK 17 실측 **26.20%**(Eden max −1 · Survivor max −1 · Old Gen max 1,073,741,824). ⚠️ 잔여: used pool 일부만 stale이면 **부분 비율이 정상 숫자처럼** 나간다(FE가 부분 관측 배지로 표시) |
+
+---
+
+## 더 보기 — 내부 정본(이 문서에서 근거로 인용한 것)
+
+경로는 `C:\solutions\_workspace\` 기준, 코드는 각 레포 `src/main/java/com/dmove/moveseye/` 기준. 절별 정확한 위치(§·#·클래스)는 본문 각 절 끝의 **더 보기** 줄에 있고, 아래는 그것을 문서 단위로 모은 것이다.
+
+- 이 문서 본문에는 절별 **더 보기** 줄이 없다(부록·목차 성격). 근거 문서 전체는 [17-sources.md](solutions--17-%EB%B6%80%EB%A1%9D-D.-%EC%B6%9C%EC%B2%98-%EB%AA%A9%EB%A1%9D-%EC%99%B8%EB%B6%80-%EA%B3%B5%EC%8B%9D-%EB%AC%B8%EC%84%9C-%EB%82%B4%EB%B6%80-%EC%A0%95%EB%B3%B8.md) D.2.
+- 관련 분책: 이전 [14-glossary.md](solutions--14-%EB%B6%80%EB%A1%9D-A.-%EC%9A%A9%EC%96%B4-%EC%82%AC%EC%A0%84%28%EC%A0%84%EC%B2%B4%29.md) · 다음 [16-faq.md](solutions--16-%EB%B6%80%EB%A1%9D-C.-%EC%9E%90%EC%A3%BC-%ED%95%98%EB%8A%94-%EC%A7%88%EB%AC%B8.md) · 목차 [00-index.md](solutions--00-MovesEye-APM-%EC%A2%85%ED%95%A9-%EC%95%88%EB%82%B4%EC%84%9C-%EB%AA%A9%EC%B0%A8-%EC%9D%BD%EB%8A%94-%EC%88%9C%EC%84%9C-%EC%9A%A9%EC%96%B4-%EC%9A%94%EC%95%BD%ED%8C%90-%EC%A0%84%EC%B2%B4-%EC%A7%80%EB%8F%84.md) · 용어 [14-glossary.md](solutions--14-%EB%B6%80%EB%A1%9D-A.-%EC%9A%A9%EC%96%B4-%EC%82%AC%EC%A0%84%28%EC%A0%84%EC%B2%B4%29.md) · 출처 전체 [17-sources.md](solutions--17-%EB%B6%80%EB%A1%9D-D.-%EC%B6%9C%EC%B2%98-%EB%AA%A9%EB%A1%9D-%EC%99%B8%EB%B6%80-%EA%B3%B5%EC%8B%9D-%EB%AC%B8%EC%84%9C-%EB%82%B4%EB%B6%80-%EC%A0%95%EB%B3%B8.md) · #27~#36의 배경 [18-p5-realtime.md](solutions--18-P5-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EA%B4%80%EC%A0%9C-%EC%A7%80%EA%B8%88-%EC%9D%B4-%EC%88%9C%EA%B0%84%EC%9D%84-%EB%B3%B4%EB%8A%94-%EA%B8%B8%28%EB%9D%BC%EC%9D%B4%EB%B8%8C-%EC%8A%A4%ED%8C%AC-X-View-%EC%9A%94%EC%B2%AD-%EA%B4%80%EC%A0%9C-%EB%B9%84%EB%8F%99%EA%B8%B0%29.md)
+
+## 출처 — 외부 공식 문서(이 문서에 쓰인 것만)
+
+이 문서 본문에는 외부 URL을 직접 인용한 줄이 없다. 전체 목록은 [17-sources.md](solutions--17-%EB%B6%80%EB%A1%9D-D.-%EC%B6%9C%EC%B2%98-%EB%AA%A9%EB%A1%9D-%EC%99%B8%EB%B6%80-%EA%B3%B5%EC%8B%9D-%EB%AC%B8%EC%84%9C-%EB%82%B4%EB%B6%80-%EC%A0%95%EB%B3%B8.md) D.1.
+

@@ -1,0 +1,52 @@
+[← 이전: 5.5 분석 및 리포트](../05-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%81%EC%84%B8/codex-experiences--05-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%A6%AC%ED%8F%AC%ED%8A%B8.md) · [목차](../README.md) · [다음: 6.1 인력 현황 →](codex-experiences--01-%EC%9D%B8%EB%A0%A5-%ED%98%84%ED%99%A9.md)
+
+---
+
+# 6. 자원 관리
+
+## 🔐 접근 권한
+
+| 구분 | 필요 권한 |
+|---|---|
+| 메뉴·화면 진입 (`/resource`) | `RESOURCE_MANAGEMENT` 읽기 (없으면 **사이드바에 메뉴가 없습니다**) |
+| 인력 현황 · 조직 현황 | `RESOURCE_MANAGEMENT` 읽기 |
+| 팀 분석 | `RESOURCE_MANAGEMENT` 읽기 (+ 공수·진척·리스크 축은 `REPORT` 읽기, 인건비는 `PROJECT_COST` 읽기) |
+| 프로젝트 배정 — 조회 | `RESOURCE_MANAGEMENT` 읽기 |
+| 프로젝트 배정 — 실행 | `PROJECT` 쓰기 또는 `RESOURCE_MANAGEMENT` 쓰기 **+ Jira 담당자 지정 권한** |
+| 인력 보유 스킬 편집 | `RESOURCE_MANAGEMENT` 쓰기 (또는 자기 팀원에 한해 팀장) |
+
+**보이는 인원 범위는 권한이 아니라 별도 판정을 따릅니다**
+
+| 사용자 | 인력·조직 현황 | 팀 분석 |
+|---|---|---|
+| 관리자·PMO·PM (프로젝트 범위 `ALL`) | 전사 인원 | 전 팀 |
+| 팀장 | 자신이 이끄는 팀 인원 | 자신이 이끄는 팀과 하위 팀 |
+
+> ⚠️ **프로젝트 조회 범위와 인원 조회 범위는 다릅니다.** 권한 세트를 `TEAM_ONLY`로 두어도 **프로젝트 범위만** 제한되며, 자원 관리 읽기를 함께 주면 전사 인원 목록은 그대로 보입니다.
+
+---
+
+좌측 **자원관리(`/resource`)** 메뉴이며 `RESOURCE_MANAGEMENT` 읽기 권한이 필요합니다.
+
+**언제 쓰나** — 프로젝트 하나가 아니라 **조직 전체 관점에서** 사람을 볼 때. "지금 누가 여유가 있나", "이 스킬 가진 사람이 누구지", "우리 팀 부하가 어떤가"를 답합니다.
+
+## 네 개의 탭
+
+| 탭 | 답하는 질문 | 문서 |
+|---|---|---|
+| **인력 현황** | 개인별로 누가 얼마나 바쁜가, 어떤 스킬을 갖고 있나 | [6.1](codex-experiences--01-%EC%9D%B8%EB%A0%A5-%ED%98%84%ED%99%A9.md) |
+| **조직 현황** | 조직도가 어떻게 되고 팀별 인원·가동률은 어떤가 | [6.2](codex-experiences--02-%EC%A1%B0%EC%A7%81-%ED%98%84%ED%99%A9.md) |
+| **팀 분석** | 팀 단위로 자원 지표를 비교하면 어떤가 | [6.3](codex-experiences--03-%ED%8C%80-%EB%B6%84%EC%84%9D.md) |
+| **프로젝트 배정** | 이 프로젝트에 누구를 넣을까 | [6.4](codex-experiences--04-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%B0%B0%EC%A0%95.md) |
+
+## 프로젝트 화면과의 차이
+
+| 질문 | 이 곳 | 프로젝트 상세 |
+|---|---|---|
+| 이 사람 지금 바쁜가? | [6.1 인력 현황](codex-experiences--01-%EC%9D%B8%EB%A0%A5-%ED%98%84%ED%99%A9.md) — 전 프로젝트 합산 부하 | [5.5 인력 분석](../05-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%81%EC%84%B8/codex-experiences--05-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%A6%AC%ED%8F%AC%ED%8A%B8.md#552-인력-분석--누가-과부하이고-누가-여유인가) — 이 프로젝트 기준 가동률 |
+| 팀이 얼마나 기여했나? | [6.3 팀 분석](codex-experiences--03-%ED%8C%80-%EB%B6%84%EC%84%9D.md) — 팀·프로젝트 교차 | [5.5 팀 분석](../05-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%81%EC%84%B8/codex-experiences--05-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%A6%AC%ED%8F%AC%ED%8A%B8.md#553-팀-분석--담당-조직과-실제-기여가-일치하는가) — 담당 vs 실제 기여 |
+| 누구를 넣을까? | [6.4 프로젝트 배정](codex-experiences--04-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%B0%B0%EC%A0%95.md) — 전사 후보 | [5.2 작업 배정](../05-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%81%EC%84%B8/codex-experiences--02-%EC%9D%B8%EB%A0%A5-%EA%B4%80%EB%A6%AC.md#524-작업-배정) — 프로젝트 인력 대상 |
+
+---
+
+[← 이전: 5.5 분석 및 리포트](../05-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%81%EC%84%B8/codex-experiences--05-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%A6%AC%ED%8F%AC%ED%8A%B8.md) · [목차](../README.md) · [다음: 6.1 인력 현황 →](codex-experiences--01-%EC%9D%B8%EB%A0%A5-%ED%98%84%ED%99%A9.md)

@@ -1,0 +1,252 @@
+# 검수 요청 — 자산 관리 × 클라우드 통합: 클라우드 자산 + 비용 탭 이전 (ZM-119)
+
+> 작성 2026-08-26 · Claude → Codex 검수(COLLAB.md §8). **커밋·리베이스·로컬 병합 완료(2026-08-27)·미푸시** — FE `master`(`c397c10`→`7f23be3`)·BE `ZM-79`(`b865e54`→`d54d55c`), worktree 제거·브랜치 보존. — worktree 브랜치 `ZM-119`: BE `81c1999`(base `ZM-79@0e2aad5`, 47파일 +4132/−71) · FE `1e841b3`(base `master@7bc64d2`, 53파일 +4523/−303). 커밋 시점 메인은 각각 3커밋 앞서 있음 → 병합 전 리베이스 필요.
+> 설계 [designs/devdesign_asset-cloud.md](../02-%EC%84%A4%EA%B3%84/solutions--MovesEye-%EA%B0%9C%EB%B0%9C-%EC%84%A4%EA%B3%84-%EC%9E%90%EC%82%B0-%EA%B4%80%EB%A6%AC-x-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%28AWS%29-%ED%86%B5%ED%95%A9-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EC%9E%90%EC%82%B0-%EB%B9%84%EC%9A%A9-%ED%83%AD-%EC%9D%B4%EC%A0%84-%28ZM-119%29.md) · 계약 [contract_asset-cloud.md](../06-API-%EA%B3%84%EC%95%BD/solutions--API-%EA%B3%84%EC%95%BD-%EC%9E%90%EC%82%B0-%EA%B4%80%EB%A6%AC-x-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%ED%86%B5%ED%95%A9-%28ZM-119-BE-M1%29.md)(개정판, §6 실왕복 샘플) · 정적 QA `qa_asset-cloud.md` · 런타임 QA `e2e_asset-cloud.md`
+
+## 1. 범위
+
+| 레포 | 내용 |
+|---|---|
+| BE `C:\worktrees\zm-119-be` | `V36__asset_cloud.sql`(`asset.cloud_resource_id` + 부분 유니크) · `asset.source='cloud'` · `asset/cloud/{AssetCloudData,CloudAssetDerivation,CloudAssetSyncService}`(5분 스냅샷 배치에 `aws/spi/InstanceSnapshotListener`로 결합 + 수동 `POST /assets/sync sources[]`) · Zabbix 자동 연결(`Ec2ZabbixMatcher`) · `GET /costs/cloud`(추정+자산 조인+실청구 요약) · `CostDashboardResDto.cloud` · 자산 대시보드 cloud 구간·연식 `launch_time`·품질 태그 규칙 · **결정 #11 개정**(HW 모집단 `source!=cloud`, cloud `cost_data` 쓰기 거부) · `PATCH /assets/{id}` `clearFields`(연결 해제) · 에러코드 `ASSET_CLOUD_READ_ONLY`·`ASSET_COST_NOT_APPLICABLE`·`ASSET_INVALID_CLEAR_FIELD` |
+| FE `C:\worktrees\zm-119-fe` | `/asset/cost?tab=cloud` = `CloudCostTab`(+`CloudCostSummary/CloudEstimateTable/CloudWasteTable/CloudBillingCompare/CloudAssetCostCard`) — `CloudCostPage` 내용 **이동**(원본은 리다이렉트만) · SideNav/Mobile `cloud-cost` 제거 · `navSearchEntries`·`page-guide` 이전 · 자산 상세/편집 cloud 읽기 전용 + 월 추정 카드 · 동기화 모달 소스 체크박스 · 연결 해제 Popconfirm(`clearFields`) · 목록 `source=cloud`·region · 대시보드 cloud 구간·비용 대시보드 KPI 1개 · `tsconfig.contract.json`+`npm run typecheck:contract`(계약 픽스처 실제 게이트) |
+
+## 2. 의도
+
+- **U1 완전 이동**: 클라우드 비용의 유일한 화면은 자산 비용 Cloud 탭. 클라우드 인프라 메뉴에서는 사라지고 구 경로는 리다이렉트. EC2 개요의 실청구 카드는 요약으로 유지.
+- **U2 EC2 자산화(D6 번복)**: 기획 정본이 원래 Cloud+On-prem 통합이고, 파급은 assets-core의 편집 소유권 규칙(`cloud_data`=동기화 소유, 사용자 필드 불가침)으로 흡수된다. 자동 경로는 배치가 이미 받은 `Instance` 리스트를 재사용해 **AWS 추가 호출 0**.
+- **U3 실청구 서비스 단위**: 인스턴스 귀속(CE RESOURCE_ID, 14일·유료) 제외. Cloud 탭은 추정 합계 vs 실청구 합계를 나란히.
+- 패키지 방향 `aws ← asset ← cost` 유지 — 스냅샷→자산 통지는 SPI 인터페이스로 역전(aws가 asset을 import하지 않음).
+- 🔴 **결정 #11 개정**이 없으면 EC2가 생기는 순간 HW 미입력 큐가 EC2로 가득 찬다.
+- 🔴 KRW(HW)·USD(Cloud) **합산 금지** — 대시보드는 나란히.
+
+## 3. 🔴 불안한 지점 (검수 우선순위)
+
+### BE
+1. **수동 동기화 ↔ 배치 경합** — 처음 `AWS_UNAVAILABLE`로 잡힌 결함. 원인은 5분 배치(리전 팬아웃 14.9초) 창 안에 수동 경로가 들어와 둘 다 create → 유니크 제약 충돌. 수정: upsert 직렬화(JVM 락) + 유니크 위반 1회 재시도 + `SYNC_FAILED` 사유 분리. **다중 인스턴스에선 JVM 락이 안 통하고 재시도에만 의존** — 스케줄러 lease가 배치를 한 인스턴스로 묶는 전제.
+2. **`link_basis=manual_cleared`** — 사용자가 해제한 연결을 배치가 IP 근거로 되붙이지 않게 하는 표식. INSTANCE_ID_EXACT는 예외로 재연결. 표식이 `cloud_data`(동기화 소유 jsonb) 안에 있어 **동기화가 자기 소유 영역에 사용자 의사를 기록**하는 구조 — 의도적이나 소유권 원칙과 살짝 긴장.
+3. `account`·`arn`은 항상 null(게이트웨이 평탄화로 `Reservation.ownerId` 소실, ENI ownerId는 공유 VPC 오귀속 위험) — 키 자체가 응답에 없음.
+4. `cloud_data.last_seen_at` 폐기 → `asset.last_synced_at`(벌크 UPDATE, `updated_at` 무접촉). dirty check가 매 회차 "변경"이 되는 것을 막기 위함.
+5. 리스너가 배치 트랜잭션과 어떤 경계로 도는지(리스너 예외가 스냅샷 적재를 되돌리지 않는지) — 정적 QA 항목 7.
+6. `CostCloudService`가 `credentials.isConfigured()` 예외(복호화 실패)를 `dashboardSummary()` try 안으로 옮김 — 클라우드 문제가 HW 비용 대시보드까지 500내던 결함 수정. 같은 계열이 다른 EP에 남아 있을 수 있음.
+7. 완성도 점수: cloud 자산에 `inventory_*` 태그는 안 달지만 `filledFields` 인벤토리 5항목은 "미입력"으로 세어 **EC2가 늘면 `completenessAvgPct`가 내려간다**(설계가 태그만 언급). 재론 후보.
+
+### FE
+8. 🔴 **ZM-116의 "계약 픽스처를 tsc가 강제" 주장은 게이트 허위였다** — `tsconfig`가 `src/__tests__`를 exclude, `isolatedModules`라 ts-jest도 타입을 안 봄. 이번에 `tsconfig.contract.json` + `npm run typecheck:contract` 신설, 그 게이트가 ZM-116 픽스처 누락 2건을 즉시 잡음. **검수·QA 체크리스트에 이 명령을 넣어야 한다.**
+9. `clearFields` 예약 시 모순되는 `linkedHostid`를 body에서 제거, 다른 변경과 한 요청에 동봉 — **동봉 시 BE가 둘 다 처리하는지 실왕복 확인 필요**(런타임 QA 4-d).
+10. `assetLinked` boolean 직렬화(axios `false` → Spring 바인딩) 실서버 확인.
+11. `SyncOptionsModal`의 `defaultSources` useEffect에 `eslint-disable react-hooks/exhaustive-deps`(호출부 리터럴 배열 무한 루프 방지) — 의도적.
+12. 비용 대시보드 KPI 7카드가 `lg`에서 7번째 줄바꿈(시각 판정 — 런타임 QA 11).
+13. i18n 네임스페이스 `asset.cloud.*` 대신 `asset_cloud.*`(루트 `asset`이 문자열 리프라 충돌).
+14. `first_seen_at` Z 표기는 재기동 후 생성분부터 — 기존 id 176은 Z 없는 값(상세는 원문 표시).
+
+### 설계에서 바뀐 것(계약 §5 표)
+`failedRegions`→`failedRegionCount`(엔진이 이름 미보존) · `last_seen_at` 폐기 · `cloud_data` 키는 기존 FE 폼 키 채택 · `AWS_UNAVAILABLE`·`SYNC_FAILED` 사유 신설 · `clearFields` 신설(FE-2) · `AssetListItemDto.region` 추가 · 미구성은 강등이 아니라 `CLOUD_NOT_CONFIGURED` 에러(§1).
+
+## 4. 검증 / 미검증
+
+| 항목 | 상태 |
+|---|---|
+| BE 전체 테스트 | ✅ 1559 / 0 fail (baseline 1477 → +82; `cleanTest test`, 코덱스 반영 후) |
+| BE 런타임(dev 5433, :3001, 실 AWS 1대) | ✅ 배치가 cloud 자산 `ec2-tokyo`(176) 생성 · `/costs/cloud` linked 1 · 소스 3분할 합 80 · 6구간 합 80 · `/costs/hw` 79(=80−cloud) · 품질 태그 cloud 미적용 · 연식 launch_time · 필터 격리 · dirty check 2회차 0. 경합 수정·`clearFields`·`SYNC_FAILED`·`first_seen_at` Z는 재기동 후 런타임 QA에서 |
+| FE tsc / typecheck:contract / eslint | ✅ 0 / 0 / 0(선재 3건 제외) |
+| FE jest | 1450/1452 — 실패 2건 선재(`TriggerFormDrawer`·`AiAssistantPage`, base 재현). QA·코덱스·R2/R3 반영 후 |
+| FE vite build | ✅ |
+| 정적 경계면 QA | ✅ `qa_asset-cloud.md` — PASS 38 / FAIL 8(HIGH 0·MEDIUM 2·LOW 6). MEDIUM: `cloudLinked` 딥링크에 `coverage=monitored` 누락(F1) · 구 경로 리다이렉트가 `CloudInfraGate` 안이라 미구성 사용자는 게이트 카드(F2). 전건 조치 진행(BE F4·F6 → BE, 나머지 FE). 삼자 대조·NON_NULL 0건·판정 규칙 16/16·aws→asset import 0 확인 |
+| 런타임 E2E(:3001 새 코드·:5174·헤드리스 Chrome) | ✅ `e2e_asset-cloud.md` — 12 시나리오 전부 PASS(계약 §6 값 일치, `clearFields`·경합 수정 런타임 확인, 수동 동기화 8회차 dirty check). 결함 4(MEDIUM 2: D1 소스 미선택 시 Zabbix 76건 조용히 동기화 — BE `sources:[]`를 미지정 취급 / D2 cloud 자산에 감가상각 편집 경로 잔존 · LOW 2). 전건 조치 진행. ⚠️ :3001에선 `cloud_snapshot` 배치가 lease 때문에 안 돎(:3000/:3002가 같은 DB lease 보유) — ZM-119 결함 아님 |
+| 수정분 런타임 재검증(2차, :3001 최종·V37) | ✅ 8/8 PASS — 리다이렉트 쿼리 보존·소스 0개 차단(D1)·cloud 상각 화면 차단+EP 미호출(D2)·완성도 모수 제외(avg 41.9→42.3)·실패 UI 3분기(CDP 치환, 빈 표 동반 없음)·낙관적 잠금 순차 정상(충돌은 12회 병렬로도 미재현 — 경합 창 미충족)·7카드 한 줄·중첩 `<a>` 0(D3). 잔여 LOW R2(KRW 잘림 → 7카드 4+3 두 줄 + wrap 스타일)·R3(`first_seen_at` Z 없는 값은 서버 로컬이라 로컬 파싱으로 포맷) 반영 완료(정적 검증, 픽셀 미확인) |
+| 다른 세션 영향 | ✅ 없음(worktree 격리, :3000/:3002/:5173 미접촉). ⚠️ dev DB 공유 — cloud 자산 1행(176)이 생겼고 다른 세션의 구 코드는 이를 모른다(`source=cloud`를 zabbix/custom 2분기로 읽는 곳이 있으면 그쪽 화면에서 custom으로 보일 수 있음 — 병합 전까지의 일시 상태) |
+
+
+- 참고(선재, ZM-119 아님): `GET /costs/hw/{id}`는 존재하지 않는 라우트(PATCH만 있음)인데 `/costs/hw/999999`처럼 405가 **HTTP 500**으로 나간다(`/costs/nope`는 404). 코덱스 🔴4의 `getHwItem`은 PATCH 응답 경로이며 재기동 후 실측: `PATCH /costs/hw/176`·`GET /costs/hw/176/depreciation` 모두 200+`ASSET_COST_NOT_APPLICABLE`.
+
+## 5. 교훈(검수와 무관하지만 기록)
+- 🔴 BE 에이전트가 기동 스크립트를 구 Nest `.env`로 바꿔 놓고 "dev DB 시크릿 복호화 불가 = 선재 문제"로 오진. **"환경이 원래 그렇다"는 내가 환경을 안 바꿨을 때만 유효.** 정본 키는 Spring `.env`.
+- 🔴 첫 실측에서 잡힌 `AWS_UNAVAILABLE`은 자격증명이 아니라 **배치/수동 create 경합**이었다 — 사유 코드가 뭉뚱그려져 원인을 엉뚱한 데서 찾게 했다 → 단계별 사유 분리.
+
+## 6. 커밋 (2026-08-27 승인 후 완료 — BE `81c1999` · FE `1e841b3`)
+- BE `#ZM-119 [FEATURE] 자산×클라우드 통합 — EC2 자산 자동 동기화(source=cloud)·GET /costs/cloud·HW 모집단 개정·연결 해제 -2026-08-26`
+- FE `#ZM-119 [FEATURE] 클라우드 비용을 자산 비용 Cloud 탭으로 이전·클라우드 자산 화면 분기·동기화 소스 선택·연결 해제 -2026-08-26`
+- worktree에서 변경 파일 명시 add, 트레일러 없음, 푸시 안 함. 병합 전 리베이스(메인이 계속 움직임).
+
+---
+
+## 검수 결과 — BE (Codex, 2026-08-26)
+
+### 🔴 lifecycle 복구가 사용자의 `retired` 선택을 5분 뒤 `active`로 덮어쓴다
+
+- 근거: `asset/cloud/CloudAssetDerivation.java:77-82`, `asset/cloud/CloudAssetSyncService.java:317-330`
+- 문제: 정상 EC2 상태에서 현재 lifecycle이 단순히 `retired`이면, 이것이 이전 `terminated/missing`에 의해 시스템이 강제한 값인지 사용자 편집값인지 구분하지 않고 `active`로 바꾼다. 설계의 “직전 강제값일 때만 복구, 그 사이 사용자가 바꿨으면 보존” 규칙을 만족하지 못한다.
+- 실패 시나리오: 사용자가 실행 중인 EC2를 운영 정책상 `retired`로 변경 → 다음 cloud snapshot에서 `lifecycleOverride()`가 `active` 반환 → 사용자 의사가 유실된다.
+
+### 🔴 `manual_cleared` 연결 해제는 배치와 동시에 실행되면 다시 붙거나 표식이 유실될 수 있다
+
+- 근거: `asset/AssetService.java:283-311, 453-488`, `asset/cloud/CloudAssetSyncService.java:306-331, 348-368`, `asset/domain/Asset.java:172-180, 197-209`
+- 문제: cloud upsert 락은 cloud 동기화들끼리만 직렬화한다. `PATCH /assets/{id}`는 이 락·행 잠금·낙관적 버전을 사용하지 않는다. 두 경로 모두 엔티티 전체의 `cloudData`, `linkedHostid`, `coverage`를 저장하므로 마지막 커밋이 앞선 변경을 덮는다.
+- 실패 시나리오: 배치가 기존 IP 연결을 읽은 뒤, 사용자가 `clearFields:["linkedHostid"]`로 `manual_cleared`를 저장 → 배치가 미리 읽은 엔티티를 저장 → `manual_cleared`와 해제가 사라지고 IP 연결이 복구된다. FE-2의 핵심 보장이 깨진다.
+
+### 🔴 수동 동기화에서 모든 리전 조회가 실패해도 `AWS_UNAVAILABLE`이 아니다
+
+- 근거: `aws/CloudSnapshotService.java:150-166`, `asset/cloud/CloudAssetSyncService.java:119-128, 140-151`
+- 문제: 수동 `fetchInstances()`는 모든 리전 실패를 `byRegion={}`, `failedRegions=전체`, `configured=true`로 반환한다. 이후 `sync()`는 `PARTIAL_REGIONS`를 반환한다. 계약의 “리전 조회 전체 실패 = `AWS_UNAVAILABLE`”와 다르다.
+- 실패 시나리오: AWS 권한 폐기 또는 네트워크 단절로 모든 `DescribeInstances`가 실패 → 사용자는 일부 리전 문제로 안내받고 재시도하지만, 실제 자격증명/연결 문제를 식별하지 못한다.
+
+### 🔴 HW 상세 EP가 cloud 자산을 다시 HW 비용 대상으로 노출한다
+
+- 근거: `cost/CostService.java:580-589`, `686-697`
+- 문제: 일반 HW 모집단은 `computeRows()`에서 cloud를 제외하지만, `getHwItem()`은 찾지 못하면 `buildRow(compute(asset,...))`로 직접 fallback 한다. 따라서 `GET /costs/hw/{cloudAssetId}`가 cloud 자산의 감가상각 정보를 만들어 반환한다.
+- 실패 시나리오: cloud 자산 상세에서 과거 URL 또는 직접 호출로 HW 비용 상세 EP 접근 → 결정 #11과 달리 상각 대상처럼 표시된다.
+
+### 🟡 cloud 자산이 품질 태그에서는 제외돼도 완성도 평균은 계속 낮춘다
+
+- 근거: `asset/quality/AssetQualityPolicy.java:147-187, 206-241`, `asset/quality/AssetQualityEvaluator.java:96-105`, `asset/dashboard/AssetDashboardAggregator.java:472-483`
+- 문제: `inventory_*`, `cost_missing` 태그만 cloud에서 제외한다. 하지만 `filledFields()`는 cloud에 없는 Zabbix 인벤토리 5개와 취득가/만료·좌표를 미입력으로 계산하고, 대시보드는 이를 전체 모집단 평균에 포함한다.
+- 실패 시나리오: EC2 대량 등록 후 실제 HW 데이터 품질 변화 없이 `completenessAvgPct`와 인벤토리 필드 충족률이 하락한다. 검수 요청서의 불안 지점 7이 코드상 사실이다.
+
+### 🟡 수동 cloud sync 직후 IP 기반 자동 연결은 cold index에서 수행되지 않는다
+
+- 근거: `aws/CloudSnapshotService.java:150-166`, `aws/Ec2ZabbixMatcher.java:155-167`, `asset/cloud/CloudAssetSyncService.java:348-381`
+- 문제: 수동 경로는 EC2 주소 색인을 갱신하지 않는다. cold 상태에서는 `INSTANCE_ID_EXACT`만 가능하고 IP 기반 매칭은 fail-closed로 비활성화된다.
+- 실패 시나리오: 재기동 직후 사용자가 cloud 수동 동기화 실행 → Zabbix 호스트와 IP가 정확히 일치해도 cloud 자산이 미연결로 생성된다. 다음 자동 snapshot 이후에야 연결될 수 있다.
+
+### 🟢 불안한 지점 1 — 수동 sync ↔ 배치 create 경합
+
+- 근거: `asset/cloud/CloudAssetSyncService.java:171-182`
+- 판정: 단일 JVM에서는 `upsertLock`으로 직렬화되고, 다중 인스턴스의 unique 충돌은 새 `TransactionTemplate`에서 1회 재시도한다. create 경합 자체는 수렴하도록 구현됐다.
+- 단, 위의 사용자 PATCH와의 경합은 별도이며 해결되지 않았다.
+
+### 🟢 불안한 지점 2 — `link_basis=manual_cleared`
+
+- 근거: `asset/AssetService.java:466-486`, `asset/cloud/CloudAssetSyncService.java:348-368`
+- 판정: 정상적인 순차 실행에서는 `manual_cleared`가 IP 기반 재연결을 막고 `INSTANCE_ID_EXACT`만 재연결한다. 다만 동시 PATCH/배치에서는 위 🔴 경합으로 보장이 깨진다.
+
+### 🟢 불안한 지점 3 — `account`·`arn` null
+
+- 근거: `asset/cloud/AssetCloudData.java:126-159, 182-208`
+- 판정: 코드가 계정 ID나 ARN을 추측 생성하지 않으며 null 키를 JSON에 넣지 않는다. 공유 VPC의 잘못된 귀속을 피하는 구현이다.
+
+### 🟢 불안한 지점 4 — `last_synced_at` 벌크 갱신
+
+- 근거: `asset/repository/AssetRepository.java:104-106`, `asset/cloud/CloudAssetSyncService.java:257-261`
+- 판정: `flushAutomatically=true`, `clearAutomatically=true`가 명시되어 있고 upsert·활동 이력 저장 뒤에 호출된다. 관측시각만 갱신하면서 `updated_at`을 건드리지 않는 목적에 부합한다.
+
+### 🟢 불안한 지점 5 — 리스너 예외의 snapshot 영향
+
+- 근거: `aws/CloudSnapshotService.java:110-120, 132-141`
+- 판정: snapshot 저장과 matcher index 갱신 후 리스너를 호출하며, 리스너 예외를 개별적으로 삼킨다. 자산 동기화 실패가 snapshot 적재 결과를 실패로 바꾸지 않는다.
+
+### 🟢 불안한 지점 6 — cloud KPI가 HW 비용 대시보드를 500으로 만들 위험
+
+- 근거: `cost/CostController.java:80-91`, `cost/CostCloudService.java:118-138`
+- 판정: 권한은 controller에서 선확인하고, 자격증명 해석과 AWS 조회 예외는 `dashboardSummary()` 내부에서 `null`로 강등한다. HW 응답을 보존한다.
+
+### 🟢 결정 #11 적용 범위
+
+- 근거: `cost/CostService.java:557-565, 686-697`, `cost/CostBulkUploadService.java:109-115`, `asset/quality/AssetQualityPolicy.java:234-236`
+- 판정: `PATCH /costs/hw/{id}`, HW 목록·대시보드·미입력 큐의 공통 모집단, 업로드 템플릿, 품질 `cost_missing`은 cloud를 제외/거부한다.
+- 예외: 위 🔴 `getHwItem()` fallback은 반드시 막아야 한다.
+
+### 🟢 `GET /costs/cloud` 권한·게이트·필터 격리
+
+- 근거: `cost/CostController.java:93-100`, `cost/CostCloudService.java:57-109, 169-197`
+- 판정: `awsResources.view`와 `requireConfigured()`를 적용했고, summary·filterOptions는 필터 전 모집단, instances와 waste만 계약된 축으로 필터한다. 실청구 조회 실패도 `billingState=unavailable`으로 격리한다.
+
+### 🟢 마이그레이션·인덱스·매칭기 부하
+
+- 근거: `db/migration/V36__asset_cloud.sql:8-14`, `aws/Ec2ZabbixMatcher.java:117-148, 205-255`
+- 판정: 컬럼·부분 unique·jsonb 표현식 인덱스는 멱등적으로 추가된다. matcher는 시스템 컨텍스트와 5분 single-flight cache를 사용하므로 인스턴스별 Zabbix 조회를 하지 않는다.
+
+총평: **조건부 병합 가능**이 아닙니다. 현재는 **병합 불가**입니다.
+
+조건: lifecycle 사용자 소유권 보존, PATCH↔배치 연결 해제 경합 방지, 수동 전체 리전 실패 사유 정정, cloud HW 상세 fallback 차단이 선행돼야 합니다.
+
+### Claude 반영 (BE, 2026-08-26)
+| 항목 | 조치 |
+|---|---|
+| 🔴 lifecycle 복구가 사용자 retired 덮음 | [x] `cloud_data.lifecycle_forced_by_sync` 표식 — 표식 있고 값이 강제값일 때만 복구, 사용자 PATCH 시 표식 제거 |
+| 🔴 PATCH↔배치 경합(`manual_cleared` 유실) | [x] **(a) 낙관적 잠금 채택** — `V37 asset.version` + `@Version`, 충돌은 `ASSET_CONFLICT`(200+409) 전역 핸들러, 명시적 flush. (b) 부분 UPDATE는 jsonb 병합 SQL이 필요해 미채택 |
+| 🔴 전체 리전 실패 = PARTIAL_REGIONS | [x] 성공 0·실패≥1 → `AWS_UNAVAILABLE` |
+| 🔴 `GET /costs/hw/{id}` cloud fallback | [x] `requireDepreciable()` — 상각 스케줄 EP도 cloud면 `ASSET_COST_NOT_APPLICABLE` |
+| 🟡 완성도 평균 하락 | [x] 항목별 채움률 모수까지 제외, cloud 자산을 completeness 집계에서 제외 + `completenessExcludedCount` |
+| 🟡 수동 sync cold index | [x] 수동 경로도 `indexInstances` 갱신 |
+| 🟢 경합(create)·manual_cleared 순차·account/arn·last_synced_at·리스너 격리·대시보드 500 격리·결정 #11 범위·권한/필터·마이그레이션/부하 | 확인 완료 |
+
+## 검수 결과 — FE (Codex, 2026-08-26)
+
+🟡 구 Cloud 비용 URL의 기존 쿼리가 유실됩니다.  
+근거: `src/pages/cloud-infra-monitoring/aws-resources/CloudCostPage.tsx:14`  
+이유: `Navigate` 목적지가 고정된 `"/asset/cost?tab=cloud"`라 기존 `?region=...` 등은 보존하지 않습니다.  
+재현: `/cloud-infra-monitoring/cost?region=ap-northeast-1` 접속 → Cloud 탭은 열리지만 리전 필터가 사라집니다.
+
+🟡 Cloud 비용 API 실패가 빈 표·`-` 값으로 보입니다.  
+근거: `src/pages/asset/cost/CloudCostTab.tsx:68-69, 108-196`, `src/pages/asset/cost/components/CloudAssetCostCard.tsx:43-47, 60-122`  
+이유: `CostService.getCloudCost()`은 HTTP 200 body error도 throw하도록 구현됐지만, 두 소비처 모두 `isError`/`error` 분기가 없습니다. 상태 조회 뒤 자격증명이 변경되거나 `CLOUD_NOT_CONFIGURED`, 권한 오류, 일시 AWS 오류가 나면 데이터가 없는 정상 상태처럼 렌더됩니다.  
+재현: Cloud 탭 진입 후 자격증명을 제거하거나 `/costs/cloud`가 error envelope을 반환 → 안내 없이 빈 테이블과 `-` 요약만 표시됩니다.
+
+🟡 Cloud 자산의 HW 상각 직접 URL에서 차단 전 HW 상세 API를 호출합니다.  
+근거: `src/pages/asset/cost/CostHwDepreciationPage.tsx:60, 69-70, 128-157`  
+이유: `useCostDepreciation(assetId)`가 `useAssetDetail()`보다 먼저 무조건 실행됩니다. 계약상 cloud 자산은 이 EP에서 `ASSET_COST_NOT_APPLICABLE`로 거부되므로, 화면 차단 목적과 달리 매번 불필요한 실패 요청과 재시도가 발생합니다. 자산 상세 응답이 늦으면 일시적으로 “상각 상세 없음” 화면도 노출될 수 있습니다.  
+재현: `/asset/cost/hw/{cloudAssetId}` 직접 접속 → `/costs/hw/{id}/depreciation`가 먼저 호출·실패한 뒤에야 Cloud 차단 화면으로 전환됩니다.
+
+🟡 `completenessExcludedCount` 계약이 FE 타입·픽스처·화면에서 누락됐습니다.  
+근거: `src/types/asset.ts:450-474`, `src/__tests__/fixtures/assetDashboardContractSample.ts:18-44`, `src/pages/asset/dashboard/components/AssetKpiRow.tsx:179-198`  
+이유: 개정 계약의 `kpi.completenessExcludedCount`가 타입에 없으므로 `typecheck:contract`가 이 필드의 누락·변경을 검출하지 못합니다. 또한 Cloud 자산을 완성도 모수에서 제외했다는 화면 부제도 없습니다.  
+재현: BE가 `completenessExcludedCount`를 제거·이름 변경해도 현재 계약 타입 게이트는 통과하며, 사용자는 완성도 지표의 제외 모수를 알 수 없습니다.
+
+🟢 구 경로 리다이렉트의 라우트 배치·게이트 분리는 맞습니다.  
+근거: `src/routes/routes.tsx:502-518, 520-550`  
+이유: 동일 경로가 `CloudInfraGate` 자식에 중복 배치되지 않았고, 최상위 정적 라우트에서 `Navigate replace`로 이동합니다. 미구성·무권한 사용자도 구 게이트 카드에 멈추지 않습니다.  
+재현: `/cloud-infra-monitoring/cost` 직접 접속 → `/asset/cost?tab=cloud`로 대체 이동합니다.
+
+🟢 `clearFields` 동봉 규칙과 해제 버튼 노출 조건은 계약에 맞습니다.  
+근거: `src/pages/asset/components/AssetFormModal.tsx:384-388, 420-430, 798-851`  
+이유: 해제 예약 시 `linkedHostid`를 body에서 제거하고 `clearFields:["linkedHostid"]`만 동봉하며, 이미 미연결이면 버튼을 노출하지 않습니다. 소스별 재연결 안내도 있습니다.  
+재현: 연결된 cloud 자산에서 해제 확인 후 다른 필드를 수정해 저장 → 모순된 `linkedHostid` 없이 단일 PATCH가 전송됩니다.
+
+🟢 동기화 모달의 소스 0개 차단·폴백 제거·오류 코드 분기는 맞습니다.  
+근거: `src/pages/asset/components/SyncOptionsModal.tsx:129-162, 190-205`, `src/pages/asset/components/SyncOptionsModal.tsx:40-52`  
+이유: 선택값이 없으면 실행 버튼이 비활성화되고, 전송 시 `[]`를 Zabbix 기본값으로 바꾸지 않습니다. `ASSET_SYNC_NO_SOURCE`와 `ASSET_INVALID_SYNC_SOURCE`도 별도 안내합니다.  
+재현: 두 체크박스를 모두 해제 → 실행 불가이며 Zabbix 동기화가 조용히 실행되지 않습니다.
+
+🟢 `assetLinked=false`는 boolean `false`로 API에 전달됩니다.  
+근거: `src/constants/cost.ts:407-412`, `src/pages/asset/cost/CloudCostTab.tsx:52-69`  
+이유: 문자열 `unlinked`를 `false`로 명시 변환하며 Axios params 직렬화는 `assetLinked=false`가 됩니다. 정적 구현상 Spring boolean 바인딩 계약과 일치합니다.
+
+🟢 `defaultSources` 의존성 예외는 현재 호출 형태에서 안전합니다.  
+근거: `src/pages/asset/components/SyncOptionsModal.tsx:138-150`  
+이유: 호출부가 리터럴 배열을 전달하므로 배열 참조를 의존성에 넣으면 반복 실행됩니다. `open`, `form`, AWS 선택 가능 상태 변화에는 재설정됩니다.
+
+🟢 비용 대시보드는 KRW와 USD를 합산하지 않고 별도 KPI로 둡니다.  
+근거: `src/pages/asset/cost/CostDashboardTab.tsx:63-75, 276-307`  
+이유: Cloud KPI는 별도 `formatUsd()` 카드이며, Cloud 유무에 따라 6/7 카드 폭을 조정합니다. 금액 합산 경로는 확인되지 않았습니다.
+
+🟢 Cloud 탭의 필터·탭 전환 URL 처리는 맞습니다.  
+근거: `src/pages/asset/AssetCostPage.tsx:27-40`, `src/pages/asset/cost/CloudCostTab.tsx:47-69`  
+이유: Cloud 필터는 URL에 보존되고, 탭 전환 시 다른 탭에 남으면 의미가 달라지는 Cloud 전용 파라미터를 제거합니다. `summary`는 단건 카드에서 사용하지 않고 `instances[0]`·필터된 `waste`만 사용합니다.  
+근거: `src/pages/asset/cost/components/CloudAssetCostCard.tsx:73-106`
+
+🟢 i18n 키와 접근성의 명백한 문제는 찾지 못했습니다.  
+근거: `src/locales/en.json:3470-3503`, `src/locales/kr.json:3470-3503`, `src/pages/cloud-infra-monitoring/components/CloudBillingCard.tsx:73-77, 111-115`  
+이유: `asset_cloud.*` 키는 양 언어에 있고, `Link` 내부에 또 다른 anchor를 중첩하지 않았습니다.
+
+🟢 계약 픽스처 게이트는 실제로 실행됩니다.  
+근거: `tsconfig.contract.json:11-13`, `package.json:17`  
+이유: `src`와 `src/__tests__/fixtures`를 포함하고 테스트 본문만 제외합니다. `npm.cmd run typecheck:contract`는 통과했습니다. 다만 위 `completenessExcludedCount` 누락은 타입 정의 자체의 누락이라 이 게이트가 잡지 못합니다.
+
+🟢 `Z` 없는 구 timestamp는 원문 보존 처리합니다.  
+근거: `src/utils/currency.ts:137-143`, `src/pages/asset/components/AssetDetailFieldGroups.tsx:65-80`  
+이유: timezone suffix가 없는 값은 로컬 시간으로 재해석하지 않습니다.
+
+선별 Jest 실행은 읽기 전용 샌드박스가 Jest haste-map 임시 파일 생성을 막아 실행하지 못했습니다. `typecheck:contract`는 통과했습니다.
+
+총평: **조건부 병합 가능**입니다.  
+조건 1: 구 Cloud 비용 리다이렉트에서 쿼리 보존 여부를 명시적으로 결정·구현할 것.  
+조건 2: Cloud 비용 실패 UI와 `completenessExcludedCount` 계약 반영을 보완할 것.
+
+### Claude 반영 (FE, 2026-08-26)
+| 항목 | 조치 |
+|---|---|
+| 🟡 리다이렉트 쿼리 유실 | [x] `search` 보존(tab만 강제) |
+| 🟡 `/costs/cloud` 실패가 빈 표 | [x] `CloudCostError`(미구성/권한/기타 3분기, 권한엔 재시도 없음), errorCode별 안내 + 재시도 |
+| 🟡 상각 페이지가 차단 전 EP 호출 | [x] 자산 판정 전 `enabled:false`, cloud면 미호출 |
+| 🟡 `completenessExcludedCount` 타입·픽스처·부제 누락 | [x] 필드 제거 시 게이트 실패 실증, 타입·픽스처·KPI 부제 반영 |
+| 🟢 리다이렉트 배치·clearFields·동기화 모달·assetLinked·통화 분리·필터 URL·summary 미사용·i18n/접근성·게이트·Z 없는 값 | 확인 완료 |

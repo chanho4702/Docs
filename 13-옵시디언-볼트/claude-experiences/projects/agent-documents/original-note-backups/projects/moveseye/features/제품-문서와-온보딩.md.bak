@@ -1,0 +1,56 @@
+---
+type: feature-map
+tags: [moveseye, feature-map, docs, onboarding, product]
+updated: 2026-10-19
+---
+
+# 제품 문서·온보딩 — 제품 소개·시작점·최근 작업·설계-구현 지도·가이드·FAQ·릴리스·문서 운영 규칙
+
+> 기능 지도 [[무브스아이-기능-지도]] · 허브 [[moveseye]] · 링크는 `C:\solutions` 로컬 파일(file://)이라 이 PC에서만 열린다. 읽기용 사본은 [[2026-10-07-docs-reading-repo]].
+
+**한 줄** — 제품 개요·소개서, 처음 읽는 순서(start-here), 최근 작업 설명, 설계·구현 지도, 전 제품 문제점 리포트, 사용자·관리자·빠른 시작·문제 해결 가이드, FAQ 90문항, 용어집·문서 인벤토리, 릴리스 노트, 문서 운영 규칙·ADR, 읽기용 사본 저장소.
+
+**상태** — 문서 정본은 `moveseye-docs/`(10-19 기준 한글 파일명 재편 미커밋 다수). 읽기용 사본 GitHub `chanho4702/Docs`(10-07).
+
+## 정본 문서 (moveseye-docs)
+- [moveseye-docs README](file:///C:/solutions/moveseye-docs/README.md)
+- [처음 읽는 순서(start-here)](file:///C:/solutions/moveseye-docs/overview/start-here.md)
+- [최근 작업 설명](file:///C:/solutions/moveseye-docs/overview/recent-work.md)
+- [설계·구현 지도](file:///C:/solutions/moveseye-docs/overview/design-implementation-map.md)
+- [전 제품 문제점 리포트](file:///C:/solutions/moveseye-docs/overview/product-gap-report.md)
+- [제품 개요](file:///C:/solutions/moveseye-docs/product/제품-개요.md)
+- [제품 소개서](file:///C:/solutions/moveseye-docs/product/제품-소개서.md)
+- [기능별 상세 가이드 색인(13종)](file:///C:/solutions/moveseye-docs/guides/features/README.md)
+- [화면별 가이드 색인](file:///C:/solutions/moveseye-docs/guides/pages/README.md)
+- [기능 문서 목록(features)](file:///C:/solutions/moveseye-docs/features/README.md)
+- [사용자 가이드](file:///C:/solutions/moveseye-docs/guides/사용자-가이드.md)
+- [관리자 가이드](file:///C:/solutions/moveseye-docs/guides/관리자-가이드.md)
+- [빠른 시작](file:///C:/solutions/moveseye-docs/guides/빠른-시작.md)
+- [문제 해결](file:///C:/solutions/moveseye-docs/guides/문제-해결.md)
+- [자주 묻는 질문](file:///C:/solutions/moveseye-docs/guides/자주-묻는-질문.md)
+- [용어집](file:///C:/solutions/moveseye-docs/reference/용어집.md)
+- [문서 인벤토리](file:///C:/solutions/moveseye-docs/reference/문서-인벤토리.md)
+- [릴리스 노트](file:///C:/solutions/moveseye-docs/releases/릴리스-노트.md)
+- [문서 운영규칙](file:///C:/solutions/moveseye-docs/문서-운영규칙.md)
+- [ADR-0001 문서 정본과 옵시디언](file:///C:/solutions/moveseye-docs/decisions/ADR-0001-문서-정본과-옵시디언.md)
+- [AGENTS.md](file:///C:/solutions/moveseye-docs/AGENTS.md)
+
+## 설계·기획 (_workspace)
+- [_workspace README](file:///C:/solutions/_workspace/README.md)
+- [tasks_backlog-2026-09-16(백로그 명세)](file:///C:/solutions/_workspace/planning/sprint-zm-151-156/tasks_backlog-2026-09-16.md)
+- [backlog_product-gap-2026-10-06](file:///C:/solutions/_workspace/features/product-docs/product-docs/backlog_product-gap-2026-10-06.md)
+- [faq_event-pitch_moveseye](file:///C:/solutions/_workspace/features/product-docs/product-docs/faq_event-pitch_moveseye.md)
+
+## 보고·검수·QA 증거
+- [review_feature-guides-2026-10-06](file:///C:/solutions/_workspace/features/product-docs/product-docs/review_feature-guides-2026-10-06.md)
+
+## 경험 노트 (Vault)
+[[moveseye-overview]] · [[moveseye-documentation-system]] · [[moveseye-design-qa]] · [[2026-10-05-documentation-apm-overview]] · [[2026-10-06-feature-guides-and-gap-report]] · [[2026-10-07-docs-reading-repo]] · [[2026-09-15-apm-confluence-guide]] · [[license-guide]]
+
+## 열린 항목
+- 기능별 가이드 13종 정정 미착수(재개 시 코덱스 의견 먼저)
+- FAQ `review` 상태(실측 후 current)
+- features 문서 7종 미커밋
+
+## 이웃 영역
+[[홈과-공통-화면-틀]]

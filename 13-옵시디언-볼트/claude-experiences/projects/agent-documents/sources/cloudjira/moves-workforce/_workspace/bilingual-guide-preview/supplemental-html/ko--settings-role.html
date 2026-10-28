@@ -1,0 +1,111 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047571">English</a></p>
+<h2>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「역할 관리」 읽기</td>
+</tr>
+<tr>
+<td>역할 추가·수정·삭제·빠른 추가</td>
+<td>「역할 관리」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>역할 <strong>목록</strong>은 「인력 관리」 읽기로도 조회됩니다(인력 관리·프로젝트 인력 화면의 선택지에 필요). 편집은 「역할 관리」 쓰기만 가능합니다.</li>
+</ul>
+<p><strong>언제 쓰나</strong> — 인력의 <strong>역할(직무)</strong> 을 정의할 때. 예: Data Engineer, DevOps Engineer, QA Engineer.</p>
+<blockquote>
+<p><strong>[이미지 삽입 위치 · 추가 캡처 필요]</strong> 역할 관리 — ① 역할 표 ② 역할 추가 ③ 빠른 추가(프리셋 다중 선택, &quot;이미 존재&quot; 표시).</p>
+</blockquote>
+<h2>등록 방법 두 가지</h2>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>역할 추가</strong></td>
+<td>이름과 설명을 입력해 하나씩 등록</td>
+</tr>
+<tr>
+<td><strong>빠른 추가</strong></td>
+<td>일반적인 직무 프리셋에서 골라 <strong>한 번에 여러 개</strong> 등록. 이미 있는 항목은 &quot;이미 존재&quot;로 표시되고 건너뜁니다</td>
+</tr>
+</tbody></table>
+<p>행에서 수정·삭제할 수 있습니다. 이름·설명은 서버에서도 길이와 형식을 검증합니다.</p>
+<h2>여기서 정의한 값이 쓰이는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>화면</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342810">7.2 인력 관리</a></td>
+<td>사용자의 <strong>직무 역할</strong> 선택지</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256">5.2 프로젝트 인력</a></td>
+<td>프로젝트 멤버의 <strong>역할</strong> 선택지</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178889">5.1 대시보드</a></td>
+<td>역할 분포 차트</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173703169">6.1 인력 현황</a></td>
+<td>직무 필터·표시</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173015041">8. 통합 대시보드</a></td>
+<td>롤/레벨 분포 비교, 역할/레벨별 비용</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172195861">My Work</a></td>
+<td>프로젝트 카드의 내 역할 표시</td>
+</tr>
+</tbody></table>
+<h2>알아두기</h2>
+<ul>
+<li>역할은 <strong>권한과 무관합니다.</strong> 화면 접근 권한은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173244476">7.8 권한 관리</a>에서 따로 정합니다.</li>
+<li>역할을 지정하지 않은 인원은 역할 분포 차트와 직무 필터에서 빠집니다.</li>
+</ul>
+<!-- control-reference:start -->
+
+<h2>버튼·입력 항목과 처리 결과 상세</h2>
+<p>직무 역할은 인력과 프로젝트에서 선택하는 기준 항목입니다. 권한 세트의 역할과 구분합니다.</p>
+<table>
+<thead>
+<tr>
+<th>버튼·입력 항목</th>
+<th>기능·사용 조건·변경 대상</th>
+<th>결과 확인과 문제 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>역할 추가·이름·설명·저장</td>
+<td>조직 직무 이름과 설명을 등록합니다. 이름 중복은 거부될 수 있습니다.</td>
+<td>목록에 저장한 항목이 나타나는지 확인합니다. 권한이 자동 부여되는 등록이 아닙니다.</td>
+</tr>
+<tr>
+<td>Quick Add·전체 선택·추가</td>
+<td>산업별 예시에서 필요한 직무를 선택해 한 번에 추가합니다. 이미 있는 항목은 건너뜁니다.</td>
+<td>추가·건너뜀 건수와 조직에 필요한 이름인지 확인합니다.</td>
+</tr>
+<tr>
+<td>수정·삭제</td>
+<td>이름·설명을 수정하거나 사용하지 않는 역할을 삭제합니다. 사용자 참조가 있으면 삭제가 거부될 수 있습니다.</td>
+<td>사용자·프로젝트의 적용 관계를 확인하고 참조를 정리한 뒤 삭제합니다.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

@@ -1,0 +1,26 @@
+approval | A1 GET 메서드 | 405 | 479ms | - | {"error":{"code":"METHOD_NOT_ALLOWED"},"ok":false}
+approval | A2 JSON 아님 | 400 | 241ms | - | {"error":{"code":"MALFORMED"},"ok":false}
+approval | A3 300KB 대용량 | 413 | 190ms | - | {"error":{"code":"TOO_LARGE"},"ok":false}
+approval | A4 방향 뒤집기(자기 자신이 보낸 척) | 400 | 130ms | - | {"error":{"code":"MALFORMED"},"ok":false}
+approval | A5 만료 iat(10분 전) | 401 | 105ms | - | {"error":{"code":"STALE_REQUEST"},"ok":false}
+approval | A6 미래 iat(10분 뒤) | 401 | 139ms | - | {"error":{"code":"STALE_REQUEST"},"ok":false}
+approval | A7 모르는 kid | 401 | 276ms | - | {"error":{"code":"UNTRUSTED_KID"},"ok":false}
+approval | A8 서명 헤더 없음 | 401 | 109ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+approval | A9 0 바이트 서명(86자) | 401 | 144ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+approval | A10 공격자 키로 서명 + 정상 kid 사칭 | 401 | 174ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+approval | A11 사람 actor 사칭(서명 위조) | 401 | 145ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+approval | A12 다른 사이트 cloudId(서명 위조) | 401 | 138ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+approval | A13 위조 40건 동시 | {"401":40} | 2322ms 전체 | 본문 종류 {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+workforce | A1 GET 메서드 | 405 | 843ms | - | {"error":{"code":"METHOD_NOT_ALLOWED"},"ok":false}
+workforce | A2 JSON 아님 | 400 | 1005ms | - | {"error":{"code":"MALFORMED"},"ok":false}
+workforce | A3 300KB 대용량 | 413 | 1017ms | - | {"error":{"code":"TOO_LARGE"},"ok":false}
+workforce | A4 방향 뒤집기(자기 자신이 보낸 척) | 400 | 401ms | - | {"error":{"code":"MALFORMED"},"ok":false}
+workforce | A5 만료 iat(10분 전) | 401 | 160ms | - | {"error":{"code":"STALE_REQUEST"},"ok":false}
+workforce | A6 미래 iat(10분 뒤) | 401 | 157ms | - | {"error":{"code":"STALE_REQUEST"},"ok":false}
+workforce | A7 모르는 kid | 401 | 117ms | - | {"error":{"code":"UNTRUSTED_KID"},"ok":false}
+workforce | A8 서명 헤더 없음 | 401 | 146ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+workforce | A9 0 바이트 서명(86자) | 401 | 164ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+workforce | A10 공격자 키로 서명 + 정상 kid 사칭 | 401 | 193ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+workforce | A11 사람 actor 사칭(서명 위조) | 401 | 142ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+workforce | A12 다른 사이트 cloudId(서명 위조) | 401 | 145ms | - | {"error":{"code":"BAD_SIGNATURE"},"ok":false}
+workforce | A13 위조 40건 동시 | {"401":40} | 10965ms 전체 | 본문 종류 {"error":{"code":"BAD_SIGNATURE"},"ok":false}

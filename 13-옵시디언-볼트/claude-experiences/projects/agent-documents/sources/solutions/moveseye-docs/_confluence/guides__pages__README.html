@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 화면별 가이드</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 화면별 가이드</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 사용자, 운영자, 관리자, 지원 담당자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> moveseyee_fe/src/layouts/app/SideNav.tsx + 각 page 컴포넌트</div></div>
+<h1>MovesEye 화면별 가이드</h1>
+<p>제품의 <strong>사이드바 메뉴 구조 그대로</strong> 각 화면의 사용법을 정리한 문서 모음이다. 화면을 보면서 해당 문서를 찾을 수 있도록 메뉴 이름과 파일 이름을 일치시켰다.</p>
+<ul>
+<li>전체 흐름과 공통 원칙은 <strong>사용자 가이드</strong></li>
+<li>설정·운영 관점은 <strong>관리자 가이드</strong></li>
+<li>증상별 해결은 <strong>문제 해결 가이드</strong></li>
+</ul>
+<h2>공통 원칙 (모든 화면에 적용)</h2>
+<p>이 다섯 가지는 화면마다 반복하지 않으니 먼저 익혀 둔다.</p>
+<ol>
+<li><strong>메뉴와 데이터는 권한에 따라 달라진다.</strong> 메뉴가 보여도 목록이 비었다면 호스트 그룹 데이터 범위가 없는 것이다.</li>
+<li><strong>빈 값과 0은 다르다.</strong> <code>-</code>, <code>N/A</code>, 빈 차트는 "관측값 없음"일 수 있다.</li>
+<li><strong>성공 메시지가 반영을 보장하지 않는다.</strong> 저장·동기화 후 목록과 상세에서 실제 값을 확인한다.</li>
+<li><strong>기준 시각을 본다.</strong> 화면의 <code>syncTime</code>이나 갱신 시각으로 데이터 신선도를 판단한다.</li>
+<li><strong>조회 기간을 바꾸면 요약과 차트의 집계 구간이 함께 바뀐다.</strong></li>
+</ol>
+<h2>화면 목록</h2>
+<h3>홈</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>문서</th></tr></thead>
+<tbody>
+<tr><td>홈</td><td><strong>홈</strong></td></tr>
+</tbody></table>
+<h3>모니터링</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>문서</th></tr></thead>
+<tbody>
+<tr><td>모니터링 &gt; 호스트 그룹</td><td><strong>호스트 그룹</strong></td></tr>
+<tr><td>모니터링 &gt; 서버 모니터링</td><td><strong>서버 모니터링</strong></td></tr>
+<tr><td>모니터링 &gt; 네트워크 모니터링</td><td><strong>네트워크 모니터링</strong></td></tr>
+<tr><td>〃 &gt; 클라우드 인프라 &gt; AWS 리소스 &gt; VPC 그룹 목록</td><td><strong>VPC 그룹 목록</strong></td></tr>
+<tr><td>〃 &gt; 클라우드 인프라 &gt; AWS 리소스 &gt; EC2 대시보드</td><td><strong>EC2 대시보드</strong></td></tr>
+<tr><td>〃 &gt; 클라우드 인프라 &gt; AWS 리소스 &gt; EC2 목록</td><td><strong>EC2 목록</strong></td></tr>
+<tr><td>〃 &gt; 어플리케이션 모니터링 (APM 개요·서비스·서비스 맵·트레이스 탐색·합성 감시·수집기)</td><td><strong>어플리케이션 모니터링</strong></td></tr>
+<tr><td>〃 &gt; 어플리케이션 모니터링 &gt; 수집기 (온보딩 절차)</td><td><strong>수집기 설치</strong></td></tr>
+<tr><td>〃 &gt; DB / GPU 모니터링</td><td><strong>준비 중인 모니터링</strong></td></tr>
+</tbody></table>
+<h3>자산 관리</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>문서</th></tr></thead>
+<tbody>
+<tr><td>자산 관리 &gt; 자산 목록</td><td><strong>자산 목록</strong></td></tr>
+<tr><td>자산 관리 &gt; 비용</td><td><strong>비용</strong></td></tr>
+<tr><td>자산 관리 &gt; 맵 &gt; 네트워크 맵</td><td><strong>네트워크 맵</strong></td></tr>
+<tr><td>자산 관리 &gt; 맵 &gt; 지리 맵</td><td><strong>지리 맵</strong></td></tr>
+</tbody></table>
+<h3>이벤트/알림</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>문서</th></tr></thead>
+<tbody>
+<tr><td>이벤트/알림 &gt; Problem</td><td><strong>Problem</strong></td></tr>
+<tr><td>이벤트/알림 &gt; 호스트 그룹별</td><td><strong>호스트 그룹별</strong></td></tr>
+</tbody></table>
+<h3>Zabbix 관리</h3>
+<blockquote><p>이 그룹은 <code>ZABBIX_ADMIN</code> 능력을 가진 데이터소스가 연결됐을 때 나타난다. 다른 소스가 추가되면 그 소스에 맞는 관리 화면이 따로 제공된다.</p></blockquote>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>문서</th></tr></thead>
+<tbody>
+<tr><td>Zabbix 관리 &gt; 호스트 관리</td><td><strong>호스트 관리</strong></td></tr>
+<tr><td>Zabbix 관리 &gt; 템플릿 관리</td><td><strong>템플릿 관리</strong></td></tr>
+<tr><td>Zabbix 관리 &gt; 아이템 관리</td><td><strong>아이템 관리</strong></td></tr>
+<tr><td>Zabbix 관리 &gt; 트리거 관리</td><td><strong>트리거 관리</strong></td></tr>
+<tr><td>Zabbix 관리 &gt; 사용자 관리</td><td><strong>사용자 관리</strong></td></tr>
+</tbody></table>
+<h3>설정</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메뉴</th><th>문서</th></tr></thead>
+<tbody>
+<tr><td>설정 &gt; 마이 페이지</td><td><strong>마이 페이지</strong></td></tr>
+<tr><td>설정 &gt; 리포트 관리</td><td><strong>리포트 관리</strong></td></tr>
+<tr><td>설정 &gt; 기기분류 관리</td><td><strong>기기분류 관리</strong></td></tr>
+<tr><td>설정 &gt; 스케줄러</td><td><strong>스케줄러</strong></td></tr>
+<tr><td>설정 &gt; 데이터 소스 관리</td><td><strong>데이터 소스 관리</strong></td></tr>
+<tr><td>설정 &gt; 라이선스</td><td><strong>라이선스</strong></td></tr>
+</tbody></table>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-11</td><td>사이드바 구조 기준 화면별 가이드 25종 신설</td></tr>
+<tr><td>2026-09-01</td><td>어플리케이션 모니터링(APM) 1단계 구현에 따라 <strong>어플리케이션 모니터링</strong>·<strong>수집기 설치</strong> 2종 신설, 준비 중인 모니터링은 DB·GPU만</td></tr>
+</tbody></table>
+</body></html>

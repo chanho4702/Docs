@@ -1,0 +1,112 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173703199">한국어</a></p>
+<h2>Screen-specific access</h2>
+<p>Each setting has its own read and write permission. A user without read access does not see that entry; read-only users cannot edit. Reference lists may also be readable by People management because its forms need role, level, and team choices. This does not grant permission to edit those definitions.</p>
+<table>
+<thead>
+<tr>
+<th>Screen</th>
+<th>Read</th>
+<th>Write</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>General settings</td>
+<td>Settings read</td>
+<td>Settings write</td>
+</tr>
+<tr>
+<td>People management</td>
+<td>People management read</td>
+<td>People management write</td>
+</tr>
+<tr>
+<td>Team management</td>
+<td>Team management read</td>
+<td>Team management write</td>
+</tr>
+<tr>
+<td>Roles</td>
+<td>Role management read</td>
+<td>Role management write</td>
+</tr>
+<tr>
+<td>Levels</td>
+<td>Level management read</td>
+<td>Level management write</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>Skill management read</td>
+<td>Skill management write</td>
+</tr>
+<tr>
+<td>Project statuses</td>
+<td>Project status management read</td>
+<td>Project status management write</td>
+</tr>
+<tr>
+<td>Permissions</td>
+<td>Permission management read</td>
+<td>Permission management write</td>
+</tr>
+<tr>
+<td>Holidays</td>
+<td>The sidebar uses Permission management read</td>
+<td>Public holiday management write</td>
+</tr>
+<tr>
+<td>Storage monitoring</td>
+<td>Storage monitoring read</td>
+<td>Operational details depend on the available action</td>
+</tr>
+</tbody></table>
+<p>Holiday data is read by other screens for working-day calculations. A user with holiday permission alone may need a direct link because sidebar visibility uses a different gate.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Expanded Settings sidebar. Explain that entries vary with permissions.</p>
+</blockquote>
+<h2>Recommended setup order</h2>
+<ol>
+<li>General settings: working hours and salary policy.</li>
+<li>Roles, levels, and skills: reference choices.</li>
+<li>Permissions, then registered people and teams.</li>
+<li>Project statuses and public holidays.</li>
+</ol>
+<p>People need reference values and permission choices. Teams need a permission set; a leader must already be registered and becomes a member of the team they lead. Project creation needs a valid status. Working-day calculations depend on holidays.</p>
+<h2>Effects on other screens</h2>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Effects</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hours per day</td>
+<td>My Work targets, MD/MM conversion, progress, utilization, exports, and issue-panel KPIs</td>
+</tr>
+<tr>
+<td>Salary policy</td>
+<td>Project salary and cost views, dashboards, and portfolio cost axes</td>
+</tr>
+<tr>
+<td>Utilization bands</td>
+<td>People and portfolio load signals</td>
+</tr>
+<tr>
+<td>Progress threshold</td>
+<td>Normal, caution, and delay classification</td>
+</tr>
+<tr>
+<td>Public holidays</td>
+<td>Targets, available capacity, progress working days, bulk worklogs, and calendar labels</td>
+</tr>
+<tr>
+<td>Roles, levels, skills</td>
+<td>Project-member choices and candidate fit</td>
+</tr>
+<tr>
+<td>Permissions and teams</td>
+<td>Menu availability and data visibility</td>
+</tr>
+</tbody></table>
+<p>See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751476">Administrator setup and operational checks</a> for installation, initialization, and operational monitoring. Storage monitoring is outside the ordinary user workflow.</p>

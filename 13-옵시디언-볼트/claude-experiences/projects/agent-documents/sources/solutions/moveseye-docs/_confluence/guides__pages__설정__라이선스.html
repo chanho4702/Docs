@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>라이선스</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>라이선스</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 시스템 관리자, 운영 책임자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/setting/license/LicenseStatusPage.tsx, LicenseApplyPage.tsx</div></div>
+<h1>라이선스</h1>
+<blockquote><p><strong>사이드바</strong> 설정 &gt; 라이선스 <strong>경로</strong> <code>/setting/license</code> → 적용 <code>/setting/license/apply</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>제품 라이선스를 등록·교체·해지하고 현재 상태를 확인하는 화면이다.</p>
+<h2>화면 구성</h2>
+<h3>상태 화면</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>항목</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>라이선스 유형</strong></td><td>기간제 / 영구</td></tr>
+<tr><td><strong>접근 모드</strong></td><td>현재 기능 사용 범위</td></tr>
+<tr><td><strong>실시간 조회</strong></td><td>허용 / 차단</td></tr>
+<tr><td><strong>만료 시각</strong></td><td>기간제인 경우. 영구는 '만료 없음'</td></tr>
+<tr><td><strong>기간제 수명주기</strong></td><td>만료까지 남은 일수</td></tr>
+<tr><td><strong>프리미엄 모듈</strong></td><td>GPU·DB 모니터링·APM의 포함 / 미포함</td></tr>
+</tbody></table>
+<p>동작: <strong>라이선스 적용</strong> · <strong>라이선스 교체</strong> · <strong>라이선스 해지</strong></p>
+<h3>적용 화면</h3>
+<p>두 가지 방법을 지원하며 <strong>같은 검증 절차</strong>를 거친다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>방법</th><th>조건</th></tr></thead>
+<tbody>
+<tr><td><strong>.lic 파일</strong></td><td>UTF-8, 최대 <strong>64KB</strong></td></tr>
+<tr><td><strong>키 붙여넣기</strong></td><td>발급받은 키 전체</td></tr>
+</tbody></table>
+<p>적용하면 <strong>서버 재기동 없이 즉시 반영</strong>된다.</p>
+<h2>온프레미스 신뢰 모델</h2>
+<p>화면에 명시돼 있다.</p>
+<blockquote><p>"라이선스는 <strong>외부 서버 호출 없이</strong> 제품에 포함된 공개키로 검증됩니다."</p></blockquote>
+<p>폐쇄망에서도 문제없이 동작하며, 라이선스 확인을 위해 외부와 통신하지 않는다.</p>
+<h2>유효 기간은 등록일부터</h2>
+<p>기간제 라이선스의 수명은 <strong>발급일이 아니라 등록일</strong>부터 계산된다. 발급받고 며칠 뒤에 등록해도 손해가 없다.</p>
+<h2>만료 시 동작</h2>
+<p>즉시 잠기지 않는다. 운영자가 장애 상황을 볼 수단을 잃으면 안 되기 때문에 단계적으로 좁힌다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>단계</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td>정상</td><td>전 기능</td></tr>
+<tr><td><strong>만료 후 약 30일</strong></td><td><strong>읽기 전용</strong> — 실시간 조회 유지, 쓰기 차단</td></tr>
+<tr><td>그 이후</td><td>저장된 데이터만 조회, 외부 수집 중단</td></tr>
+</tbody></table>
+<p>정리 배치는 어느 단계에서도 계속 돈다.</p>
+<h2>🔴 해지는 즉시 잠금이다</h2>
+<p>"라이선스 해지"를 누르면 확인창이 이렇게 경고한다.</p>
+<blockquote><p>"즉시 <strong>LOCKED</strong> 상태가 되어 라이선스 등록 외 기능을 사용할 수 없습니다."</p></blockquote>
+<p>만료와 달리 <strong>유예 없이 바로 잠긴다.</strong> 교체가 목적이라면 해지 후 등록이 아니라 <strong>"라이선스 교체"</strong> 를 쓴다.</p>
+<h2>사용 흐름</h2>
+<h3>최초 등록</h3>
+<ol>
+<li>발급받은 키 또는 <code>.lic</code> 파일을 준비한다.</li>
+<li><strong>라이선스 적용</strong>에서 파일 업로드 또는 키 붙여넣기.</li>
+<li>상태 화면에서 유형·만료일·프리미엄 모듈 포함 여부를 확인한다.</li>
+</ol>
+<h3>갱신</h3>
+<ol>
+<li>만료 30일 전부터 준비한다 — 상태 화면이 남은 일수를 표시한다.</li>
+<li><strong>라이선스 교체</strong>로 새 키를 적용한다.</li>
+<li>만료 구간에 들어가면 쓰기가 막히므로, 진행 중인 편집 작업을 먼저 마무리한다.</li>
+</ol>
+<h2>등록이 거부될 때</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>원인</th><th>확인</th></tr></thead>
+<tbody>
+<tr><td>키에 줄바꿈·공백이 섞임</td><td>전체를 정확히 복사했는가</td></tr>
+<tr><td>이미 사용된 키</td><td>다른 설치본에서 등록한 키가 아닌가 (재사용 방지)</td></tr>
+<tr><td>파일 크기 초과</td><td>64KB 이하인가</td></tr>
+<tr><td>발급 도구와 제품의 정의 불일치</td><td>공급사에 문의</td></tr>
+</tbody></table>
+<p>상태를 불러오지 못하면 "백엔드 라이선스 API와 네트워크 상태를 확인한 뒤 다시 시도하세요" 안내가 나온다.</p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>제품 소개서 — 에디션</strong></li>
+<li><strong>어플리케이션 모니터링</strong> — 프리미엄 모듈 <code>APM</code>(만료 시 수집 즉시 중단 — <strong>수집기 설치 — 라이선스 만료</strong>)</li>
+<li><strong>준비 중인 모니터링</strong> — 프리미엄 모듈 <code>DB_MONITORING</code>·<code>GPU_MONITORING</code></li>
+<li><strong>관리자 가이드 — 라이선스와 에디션</strong></li>
+</ul>
+</body></html>

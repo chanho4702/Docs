@@ -1,0 +1,184 @@
+Home
+OPERATIONS
+AI Assistant
+Cannot reach the AI server. Check the server status.
+Monitoring
+Watch infrastructure and service health in real time
+Network Maps
+Cloud Infra Monitoring
+Application Monitoring
+APM Overview
+Live monitoring
+Services
+Service Map
+Trace Explorer
+Incidents & Errors
+Synthetic Monitoring
+SLO
+Database Monitoring
+GPU Monitoring
+Event/Alert
+Review active problems and coordinate a response
+ASSETS & CONFIGURATION
+Asset Management
+Manage equipment, costs and topology maps
+DATA SOURCE MANAGEMENT
+Zabbix Management
+Configure monitored targets, templates and alert rules
+A
+admin
+ADMIN
+Home
+/
+Application Monitoring
+/
+Trace Explorer
+/
+GET /diag/slow
+Search screens & hosts
+Ctrl K
+kr
+en
+Your license expires in 0 days. Without renewal the system becomes read-only.
+Manage license
+GET /diag/slow
+Find traces across every service and drill into where a single request spent its time, as a waterfall or a flame graph.
+GET /diag/slow
+Sample
+Start
+2026-10-28 15:38:23
+	
+Latency
+756.4 ms
+	
+Spans
+1 / 18 stored
+
+
+Trace ID
+22fee9e9cf76b5f3dbf950585ed9245f
+Still ingesting
+Time by service
+?
+Sum of self time (time not covered by children). The share denominator is the sum drawn in this bar.
+Waterfall
+Flame
+Diagnostics
+Target SERVER request
+diagnostics-r0 · ed86934e92483537
+?
+Retry
+Service
+diagnostics-r0
+	
+Instance
+fixture-01
+	
+Process run ID
+bf4051bd-0c48-4a18-9ba9-b0960cf9137e
+
+
+Start
+2026-10-28 15:38:23
+	
+Latency
+756.4 ms
+Direct observation
+Data received
+Request connection acquisition
+?
+Direct observation
+Partial data
+Detail intervals for acquisitions below the threshold were not stored.
+Some intervals were omitted because of the detail limit.
+Acquisition attempts
+40
+	
+Observed interval union
+565.7 ms
+	
+Completed attempt total
+725.8 ms
+	
+Maximum acquisition
+89.6 ms
+
+
+Intervals intended for delivery
+16
+	
+Received intervals
+16
+	
+Below threshold
+20
+	
+Details omitted
+4
+
+
+Unfinished attempts
+0
+	
+Detail threshold
+10 ms
+Omitted or missing intervals, or incomplete request coverage, make the union duration a lower bound.
+These observations cover supported hooks, not every database path. Concurrent acquisitions may have a cumulative duration longer than the request.
+0 ms
+756.4 ms
+6ed0e886-b123-4263-a0ee-1590d84119e6
+89.6 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+54.8 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+26.9 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+26 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+29.8 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+26.1 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+25.6 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+28.9 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+25.6 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+49.8 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+41.9 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+25.5 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+27.4 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+35.4 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+26.8 ms · Acquired
+6ed0e886-b123-4263-a0ee-1590d84119e6
+25.9 ms · Acquired
+Request SQL and external HTTP calls
+Direct observation
+Data received
+CLIENT intervals attributed to the selected SERVER. SQL and HTTP durations do not isolate database execution or network waiting.
+No SQL or HTTP intervals are present in the received scope.
+Instance context
+Surrounding context
+Partial data
+Runtime before and after process restarts cannot be separated.
+Memory and thread totals cannot be reconstructed accurately from stored one-minute data, so they have been excluded.
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+2026-10-28 15:36:23 — 2026-10-28 15:40:24
+CPU utilization (%)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+GC duration (ms)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+Investigation candidates
+Evidence-based investigation candidates from rule version 1. Surrounding conditions do not establish a sole cause.
+Connection acquisition observed · 565.7 ms
+View evidence: Request connection acquisition
+Connection acquisition delay candidate · 565.7 ms
+View evidence: Request connection acquisition

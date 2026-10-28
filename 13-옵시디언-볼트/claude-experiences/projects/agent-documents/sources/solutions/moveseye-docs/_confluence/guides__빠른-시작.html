@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 빠른 시작 가이드</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 빠른 시작 가이드</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 운영자, 관리자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-05</div><div><strong>정본 위치:</strong> FE SideNav/routes + Spring settings/host/event APIs</div></div>
+<h1>MovesEye 빠른 시작 가이드</h1>
+<h2>1. 시작 전 확인</h2>
+<ul>
+<li>접근 가능한 MovesEye URL과 사용자 계정이 있어야 한다.</li>
+<li>관리자는 연결할 Zabbix API URL과 수행할 작업에 맞는 전용 계정을 준비한다. 조회만 할 계정과 Host·Template·Item·Trigger를 변경할 계정의 권한을 분리한다.</li>
+<li>브라우저가 MovesEye와 같은 운영 환경의 cookie 정책을 허용해야 한다.</li>
+<li>실제 비밀번호와 token을 문서·메신저·스크린샷에 남기지 않는다.</li>
+</ul>
+<blockquote><p>변경 안전장치: 아래의 Host 생성, 자산 동기화, acknowledge는 외부 구성이나 운영 상태를 바꾼다. sandbox 또는 사전 지정된 test Host/Problem에서만 수행한다. 운영 대상에서는 변경 승인, 영향 범위, rollback 계획이 없으면 실행하지 않는다.</p></blockquote>
+<h2>2. 관리자 — 첫 데이터 확인까지</h2>
+<h3>1단계. 로그인과 권한 확인</h3>
+<p>로그인 후 홈이 열리는지 확인한다. 메뉴가 보이지 않으면 사용자 Role과 User Group–Host Group 할당을 먼저 점검한다.</p>
+<h3>2단계. Zabbix 연결 정보 확인</h3>
+<p><code>Zabbix 관리 &amp;gt; 연동 정보</code>에서 API URL과 관리 계정을 등록·검증한다. 연결 검증이 실패하면 새 설정을 활성화하지 않고 기존 정상 설정을 유지해야 한다. Zabbix version과 site 정책에 따라 필요한 최소 권한이 달라질 수 있으므로, 실제 변경 작업 전에 전용 계정의 read/write 범위를 별도 권한표로 승인받는다.</p>
+<p>현재 <strong>Credential 보호 정책</strong>은 <code>draft</code>다. 암호화·masking·회전 방식이 확정되고 정책이 <code>current</code>가 되기 전에는 production credential을 등록하지 않는다.</p>
+<h3>3단계. 호스트 확인 또는 등록</h3>
+<p><code>Zabbix 관리 &amp;gt; 호스트 관리</code>에서 기존 호스트가 보이는지 확인한다. 새 호스트를 등록할 때는 다음을 최소 확인한다.</p>
+<ul>
+<li>Host name과 표시명</li>
+<li>Host Group</li>
+<li>Interface(IP 또는 DNS, port)</li>
+<li>Template</li>
+<li>monitored by: Server, Proxy 또는 Proxy Group</li>
+</ul>
+<p>등록 직후 live check 결과와 자산 자동 연결 여부를 확인한다.</p>
+<h3>4단계. 사용자와 조회 범위 확인</h3>
+<p>사용자·Role·User Group을 확인하고, User Group에 허용할 Host Group을 연결한다. 관리자가 아닌 계정으로 다시 접속해 허용된 그룹만 보이는지 검증한다.</p>
+<h3>5단계. 모니터링 화면 확인</h3>
+<p><code>모니터링 &amp;gt; 호스트 그룹</code>에서 그룹을 열고 다음을 확인한다.</p>
+<ul>
+<li>KPI와 상태 집계</li>
+<li>CPU·메모리·디스크·트래픽 추이</li>
+<li>상위 호스트와 호스트 목록</li>
+<li>데이터가 없을 때 0으로 오인시키지 않는 빈 상태</li>
+</ul>
+<h3>6단계. 장애 흐름 확인</h3>
+<p><code>이벤트·알림 &amp;gt; 문제</code>에서 활성 Problem을 열어 severity, 발생 시각, host, acknowledge 상태를 확인한다. 권한이 있다면 acknowledge 후 목록과 상세가 함께 갱신되는지 확인한다.</p>
+<h2>3. 일반 사용자 — 5분 탐색</h2>
+<ol>
+<li>홈에서 전체 상태와 주요 요약을 본다.</li>
+<li><code>모니터링 &amp;gt; 호스트 그룹</code>에서 담당 그룹을 선택한다.</li>
+<li>문제가 있는 호스트를 열어 CPU·메모리·디스크·네트워크 상세를 본다.</li>
+<li><code>이벤트·알림</code>에서 같은 host의 Problem과 이력을 확인한다.</li>
+<li>장비 맥락이 필요하면 <code>자산 관리</code>에서 자산 상세·비용·맵을 확인한다.</li>
+</ol>
+<h2>4. 첫 점검 체크리스트</h2>
+<ul>
+<li>☐ 로그인과 refresh가 정상이다.</li>
+<li>☐ Zabbix 연결 정보가 유효하다.</li>
+<li>☐ 최소 1개 Host Group과 Host가 보인다.</li>
+<li>☐ 사용자별 조회 범위가 기대와 같다.</li>
+<li>☐ 모니터링 상세에서 최근 데이터와 <code>syncTime</code>을 확인했다.</li>
+<li>☐ Problem 목록과 상세가 연결된다.</li>
+<li>☐ 자산 동기화 후 Zabbix host와 자산이 중복되지 않는다.</li>
+<li>☐ 운영 로그나 화면에 credential이 노출되지 않는다.</li>
+</ul>
+<h2>5. 자주 막히는 지점</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>증상</th><th>먼저 확인할 것</th></tr></thead>
+<tbody>
+<tr><td>로그인이 반복해서 풀림</td><td>FE/BE origin, cookie <code>Secure</code>/<code>SameSite</code>, refresh 응답</td></tr>
+<tr><td>메뉴가 보이지 않음</td><td>Role permission, User Group–Host Group 범위</td></tr>
+<tr><td>모든 모니터링 데이터가 비어 있음</td><td>Zabbix URL·계정, host/template 연결, 조회 기간</td></tr>
+<tr><td>특정 metric만 비어 있음</td><td>해당 host의 item key, history type, trend 보존 기간</td></tr>
+<tr><td>자산 지도 후보가 없음</td><td>자산–host 연결과 Zabbix inventory 좌표</td></tr>
+<tr><td>관리 작업이 성공처럼 보이나 반영 안 됨</td><td>HTTP status만 보지 말고 <code>ApiResult.status</code>, <code>code</code>, <code>errorCode</code> 확인</td></tr>
+</tbody></table>
+<p>로컬 기동과 검증 환경 진단은 <strong>로컬·검증 Runbook</strong>을 따른다. <strong>Production Runbook</strong>은 아직 실행 불가 <code>draft</code>이므로 current로 승격되기 전에는 이 문서로 production 절차를 대체하지 않는다.</p>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-05</td><td>현재 SideNav와 Spring 관리 흐름을 기준으로 최초 작성</td></tr>
+</tbody></table>
+</body></html>

@@ -1,0 +1,11 @@
+검수 결과 4건입니다.
+
+R1 · 필수 · `engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/timeseries/trend/ZabbixTrendServiceImpl.java:46-53` · `expectedRows`를 `maxTotalRows` override로 사용해 작은 요청은 정상 분할을 예산 초과로 오판하고, 큰 요청은 전역 행 상한을 우회한다 · `ZabbixQueryExecutor.Budget`은 override를 전역 `zabbix.call.max-total-rows` 대신 사용한다. 예를 들어 1,000아이템×30일은 override가 약 144만 행이라 기본 전역 상한 50만을 무력화한다. 반대로 `max-rows=1`, 1아이템·3시간 버킷은 재분할 중 버린 페이지까지 `rowsSeen`에 더해져 예상 예산 6행보다 7행을 소비하고 정상 조회가 `ApiError`가 된다. 또한 소비 콜백 결과를 `points`에 전부 쌓아 `max-held-rows=10,000`도 적용되지 않는다 · 요청 예상량을 hard cap override로 쓰지 말고 전역 상한은 항상 유지해야 한다. 목록 반환 API에는 보유 행 상한을 적용하거나, 어댑터가 페이지를 즉시 집계하는 streaming API로 바꾸는 것을 제안한다.
+
+R2 · 필수 · `src/main/java/com/dmove/moveseye/aws/Ec2ZabbixMatcher.java:77,328-332`, `src/main/java/com/dmove/moveseye/common/metric/ResourceTrendQuery.java:66-70` · 새 호스트 청크가 내부 `item.get`의 설정 기반 ID 상한을 지키지 않는다 · 기본 `zabbix.call.policy.item.get.max-ids`는 50인데 AWS 신선도는 500호스트, CPU·메모리 집계는 200호스트를 한 번의 `MetricPort` 호출에 넣는다. `ZabbixMetricAdapter.buildResolver()`는 이 hostids를 그대로 `ZabbixItemService.get()`에 전달하므로 실제 `item.get`도 각각 500/200 ID 한 번이다. 신규 테스트는 `MetricPort`를 mock하여 이 실제 RPC 크기를 검증하지 않는다 · 논리 청크 크기는 유지하되 `ZabbixMetricAdapter.buildResolver()`와 `fetchFamilyItems()` 내부에서 `ZabbixCallLimits`의 `item.get.max-ids`에 맞춰 hostids를 재분할하고 itemid로 병합해야 한다.
+
+R3 · 필수 · `src/main/java/com/dmove/moveseye/host/hostinterface/InterfaceService.java:115-133` · 6시간 이하 또는 trends가 비어 있는 경로는 여전히 모든 인터페이스의 RAW history를 한 번에 조회해 H7 절단이 재현된다 · 500포트에서 oper/admin 1,000개 항목을 1분 주기로 2시간만 조회해도 약 12만 행으로 `ZabbixHistoryServiceImpl`의 10만 행 상한을 넘는다. 6시간이면 약 36만 행이며, 7일 trends가 비어 RAW 폴백하면 약 1,008만 행이다. 현재 테스트는 인터페이스 1개만 사용해 이 경계를 고정하지 않는다 · duration 고정 문턱만 사용하지 말고 RAW도 itemid 청크×기간 창으로 나눠 즉시 집계하거나, 예상 행 수가 상한을 넘으면 trends를 사용하고 불완전성을 명시해야 한다.
+
+R4 · 권장 · `src/main/java/com/dmove/moveseye/aws/Ec2ZabbixMatcher.java:125-128,243-285` · EC2 색인 갱신과 호스트 스냅샷 적재 사이에 캐시 무효화 유실 경합이 있다 · `hosts()`가 이전 색인으로 후보·신선도를 계산하는 동안 `indexInstances()`가 새 색인을 저장하고 `cache.set(null)`을 실행한 뒤, 진행 중이던 `hosts()`가 이전 계산 결과를 `cache.set(fresh)`로 다시 넣을 수 있다. 이후 새 IP 후보는 매칭되더라도 CPU 신선도가 null이 되어 TTL 5분 동안 불필요하게 CloudWatch로 폴백한다 · 색인 갱신과 스냅샷 게시를 같은 lock으로 직렬화하거나 generation을 캡처해 계산 종료 시 generation이 달라졌으면 결과를 게시하지 않도록 해야 한다.
+
+파일은 수정하지 않았습니다.

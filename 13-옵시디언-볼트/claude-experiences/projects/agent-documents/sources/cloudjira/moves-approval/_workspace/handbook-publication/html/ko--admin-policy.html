@@ -1,0 +1,100 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832821">English</a></p>
+<p>사이트의 요청 기본값, 알림과 결정 확인 규칙을 정합니다. 마감 같은 요청 기본값을 스페이스별로 정하려면 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832787">스페이스 정책</a>을 사용합니다. 현재 PIN·위임·서명 동작은 전역 정책을 기준으로 합니다.</p>
+<p><strong>경로:</strong> 설정 → <strong>전역 정책</strong>.</p>
+<h2>정책 바꾸기</h2>
+<ol>
+<li>현재 값과 적용 범위를 확인합니다. 예를 들어 PIN 필수 전환은 사용자의 PIN 등록 준비와 함께 진행합니다.</li>
+<li>바꿀 항목을 입력하고 <strong>정책 저장</strong>을 누릅니다.</li>
+<li>저장 안내를 확인한 뒤 화면을 다시 열어 값이 유지되는지 확인합니다.</li>
+<li>새 요청을 열어 기본 마감과 결재란 옵션을 확인합니다. 기존 요청의 마감이나 결재선까지 바뀌었다고 가정하지 않습니다.</li>
+</ol>
+<blockquote>
+<p><strong>화면 위치 · MA-15</strong> — 마감·알림 정책과 서명·접근 정책을 두 장으로 나누어 보여 줍니다.</p>
+</blockquote>
+<h2>요청과 결정</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>기본값</th>
+<th>사용과 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 마감일수</td>
+<td>7일</td>
+<td>새 요청 폼의 기본값. 0이면 마감 없이 시작하며 요청자가 건별로 바꿀 수 있습니다.</td>
+</tr>
+<tr>
+<td>반려 사유 필수</td>
+<td>켬</td>
+<td>반려 확정에 사유 입력이 필요합니다.</td>
+</tr>
+<tr>
+<td>요청 시 승인자의 페이지 접근 권한 확인</td>
+<td>켬</td>
+<td>요청 생성 시 접근 불가능한 승인자가 있으면 거절합니다.</td>
+</tr>
+<tr>
+<td>결재란 자동 추가</td>
+<td>켬</td>
+<td>페이지 요청의 자동 삽입 옵션 기본값입니다.</td>
+</tr>
+<tr>
+<td>서명·도장 표시</td>
+<td>켬</td>
+<td>결정과 결재란의 표시 방식을 정합니다.</td>
+</tr>
+<tr>
+<td>서명 PIN 요구</td>
+<td>끔</td>
+<td>켜면 결정 전에 사용자가 PIN을 등록해야 합니다.</td>
+</tr>
+<tr>
+<td>결재 위임 허용</td>
+<td>끔</td>
+<td>꺼져 있으면 등록된 위임도 동작하지 않습니다.</td>
+</tr>
+</tbody>
+</table>
+<h2>알림과 접근</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>기본값</th>
+<th>사용과 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앱 내 알림</td>
+<td>켬</td>
+<td>업무함 알림 생성 여부입니다.</td>
+</tr>
+<tr>
+<td>Confluence 알림</td>
+<td>켬</td>
+<td>대상 페이지에 @멘션 댓글을 남깁니다.</td>
+</tr>
+<tr>
+<td>마감 임박 기준</td>
+<td>24시간</td>
+<td>하루 한 번 점검하므로 더 짧게 정해도 최대 하루 전에 알릴 수 있습니다.</td>
+</tr>
+<tr>
+<td>독촉</td>
+<td>끔, 첫 3일·반복 3일</td>
+<td>지금 차례인 승인자에게 앱 내 알림으로 알립니다.</td>
+</tr>
+<tr>
+<td>등록된 사용자만 앱 사용</td>
+<td>끔</td>
+<td>명부·관리자 등록을 완료한 뒤 켭니다. 사이트 전체에 적용됩니다.</td>
+</tr>
+</tbody>
+</table>
+<h2>상태 표시명</h2>
+<p>흐름도에서 상태를 선택해 조직 용어로 바꿉니다. 비워 두면 사용자 언어별 기본 이름을 사용하고, 입력한 조직 이름은 자동 번역되지 않습니다. 이름을 바꿔도 승인·반려·회수의 처리 규칙은 바뀌지 않습니다. 검토 단계 이름은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832795">결재선</a>에서 정합니다.</p>
+<p>저장 결과는 <strong>변경 이력</strong>에서 확인할 수 있습니다. 특정 스페이스만 값이 다르면 전역 저장을 반복하기 전에 해당 스페이스의 재정의 값을 확인하세요.</p>

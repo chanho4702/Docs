@@ -1,0 +1,15 @@
+## 프로젝트 상세에서 할 수 있는 일
+
+프로젝트 목록·칸반·My Work에서 프로젝트를 선택해 상세 화면으로 이동합니다. 각 탭은 별도의 읽기·쓰기 권한을 따르며, 프로젝트 조회 범위 밖의 항목은 직접 주소로도 열 수 없습니다.
+
+- [화면과 접근 권한](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172195879)
+- [프로젝트 대시보드](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178889)
+- [인력과 인건비](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256)
+- [작업과 일정](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881)
+- [프로젝트 캘린더](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173113349)
+- [분석 및 리포트](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178897)
+- [Confluence 문서 연결](https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718778)
+
+## 처음 구성하는 순서
+
+인력을 등록하고 기존 Jira 작업을 연결한 뒤 일정과 계획 공수를 확인합니다. 설계서·회의록은 문서 관리에서 프로젝트 또는 작업에 연결합니다. 주간 보고에는 진척률과 대시보드를 활용합니다.

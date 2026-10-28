@@ -1,0 +1,56 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173015059">한국어</a></p>
+<h2>Access and source amounts</h2>
+<p>Cost read and project access are required. The screen summarizes labor cost by person and issue using the amounts and policy configured in project salary management. Users without financial access do not see the cost tab or amounts.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Cost summary, budget comparison, unpriced members, member costs, and issue costs. Use fictitious amounts.</p>
+</blockquote>
+<h2>Check the results</h2>
+<ul>
+<li>Review total labor cost and the unpriced-member indicator.</li>
+<li>Investigate people with zero calculated cost: missing salary or grade value, missing project dates, or an intentionally zero project amount can produce different outcomes.</li>
+<li>Distinguish the project&#39;s entered budget from calculated labor cost. They are different values.</li>
+<li>Monthly cost-consumption widgets on the dashboard provide an additional view with the budget line.</li>
+</ul>
+<h2>Interpret with the salary policy</h2>
+<p>Individual policy uses the configured project amount or prorated annual salary. Level-band policy uses the level&#39;s representative annual amount, or a valid midpoint where applicable. Missing price information is a configuration gap, not proof that the work is free.</p>
+<p>See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046716">project people and labor cost</a> for calculation details and troubleshooting. App estimates are not a record of approved accounting payments.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Cost is estimated from salary policy and project dates, not approved accounting payments or a simple worklog-time total.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Budget / planned labor / actual incurred cost</td>
+<td>Entered budget differs from salary-based planned labor. Incurred cost applies schedule elapsed to planned labor, so it is not simply actual logged time.</td>
+<td>Check project dates, salary basis, and unpriced members. Missing pricing is not proof of free work.</td>
+</tr>
+<tr>
+<td>Monthly burn / planned-actual / EVM</td>
+<td>Compare schedule-based cost trends, plan, and progress. Chart/table switching changes presentation.</td>
+<td>Distinguish cumulative from single-month amounts and check metric numerators/denominators.</td>
+</tr>
+<tr>
+<td>Issue cost / estimated cost / cost per MD</td>
+<td>Issue cost allocates incurred cost by worklog share; estimated cost applies a daily rate to actual effort days. These are distinct measures.</td>
+<td>Distinguish an issue without worklogs from missing salary basis. Do not add cost and estimated cost together.</td>
+</tr>
+<tr>
+<td>Role / level / team cost / chart-table</td>
+<td>Switch role/level/team axes to compare planned labor, incurred cost, and headcount. Chart/table displays the same aggregation in a different format.</td>
+<td>Teams follow current membership. Distinguish unready aggregation from zero cost; check financial access, policy, and aggregation time.</td>
+</tr>
+<tr>
+<td>Issue row / member-cost drawer / Close</td>
+<td>Click a row in the issue-cost table to open a side drawer with each member’s effort MD, cost, and share. Close dismisses the viewing panel.</td>
+<td>Check the issue key/member and distinguish whole-project amounts from issue-level allocations.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

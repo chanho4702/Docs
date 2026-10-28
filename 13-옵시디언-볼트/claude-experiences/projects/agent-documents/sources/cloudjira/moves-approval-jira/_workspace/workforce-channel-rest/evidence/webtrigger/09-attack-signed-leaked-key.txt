@@ -1,0 +1,12 @@
+B0 정상 서명 sys.ping(기준) | 200 240ms sig:O {"data":{"app":"approval","linkEnabled":true,"ops":["cert.query","change.notify","flows.list","issue.control","pair.complete","period.status","sys.ping","sys.rekey","sys.unpair","write.commit","write.judge"],"proto":1,"version":"5.2.0"},"ok":true}
+B1 같은 요청 재전송(직후) | 409 144ms sig:- {"error":{"code":"REPLAYED"},"ok":false}
+B1b 같은 요청 8건 동시 | 200,409,200,409,200,200,200,409
+B2 서명 뒤 본문 1바이트 변조 | 400 138ms sig:- {"error":{"code":"MALFORMED"},"ok":false}
+B3 다른 사이트 cloudId(유효 서명) | 403 97ms sig:- {"error":{"code":"SITE_MISMATCH"},"ok":false}
+B4 다른 linkId(STALE_LINK) | 409 110ms sig:- {"error":{"code":"STALE_LINK"},"ok":false}
+B5 만료 iat(유효 서명, 5분 전) | 401 121ms sig:- {"error":{"code":"STALE_REQUEST"},"ok":false}
+B6 승인 앱이 받지 않는 작업(link.resolve) | 400 318ms sig:O {"error":{"code":"OP_UNKNOWN","retryable":false},"ok":false}
+B7 SYSTEM 사유 미허용(cert.query, pair-verify) | 403 532ms sig:O {"error":{"code":"ACTOR_NOT_ALLOWED","retryable":false},"ok":false}
+B8 없는 사람 actor 사칭(cert.query) | 200 810ms sig:O {"error":{"code":"ACTOR_INACTIVE","retryable":false},"ok":false}
+B9 닫힌 스키마 위반(모르는 필드) | 400 336ms sig:O {"error":{"code":"MALFORMED","retryable":false},"ok":false}
+after revert wf-atk-1: 401 {"error":{"code":"UNTRUSTED_KID"},"ok":false}

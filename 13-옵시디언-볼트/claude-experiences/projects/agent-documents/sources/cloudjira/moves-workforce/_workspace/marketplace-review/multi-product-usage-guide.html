@@ -1,0 +1,131 @@
+<h2>Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Required?</th>
+<th>What the app does there</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Jira</strong></td>
+<td><strong>Required</strong></td>
+<td>The whole app runs here. All screens are inside Jira.</td>
+</tr>
+<tr>
+<td><strong>Confluence</strong></td>
+<td>Optional</td>
+<td><strong>No screen inside Confluence.</strong> Jira uses Confluence only to search pages and link them to projects and work items (the <strong>Document Management</strong> tab in Jira).</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Please open the app from Jira.</strong> If you install the app only on Confluence, nothing appears there, because the app adds no Confluence module. Confluence is used only as a document source for the Jira screens.</p>
+</blockquote>
+<hr>
+<h2>1. Installation</h2>
+<ol>
+<li>Install <strong>Moves Workforce for Jira</strong> on the <strong>Jira</strong> site.</li>
+<li>(Optional) To use the document features, also add the app to <strong>Confluence on the same site</strong>.<ul>
+<li>Without Confluence, every feature still works except linking new documents. The Document Management tab shows a &quot;Not connected to Confluence&quot; notice and runs in read-only mode.</li>
+</ul>
+</li>
+<li>The Jira administrator who installs the app gets full permissions in the app automatically.</li>
+</ol>
+<hr>
+<h2>2. Using the app in Jira</h2>
+<h3>2.1 Opening the app</h3>
+<p><strong>Jira top navigation → Apps → Moves Workforce</strong></p>
+<p>The app opens as a full Jira page with a left sidebar. The default page is <strong>My Work</strong> (my worklogs).</p>
+<p>Sidebar menus: <strong>My Work</strong>, <strong>My Page</strong>, <strong>Portfolio Dashboard</strong>, <strong>Project Management</strong>, <strong>Resource</strong>, <strong>Worklog Export</strong>, and <strong>Settings</strong> (administration).</p>
+<h3>2.2 Quick start for reviewers (about 5 minutes)</h3>
+<ol>
+<li><strong>Create a project</strong>
+Sidebar → <strong>Project Management</strong> → create a project (name, dates, status).</li>
+<li><strong>Add members</strong>
+Open the project → <strong>User Management → Members</strong> → <strong>Add User</strong> to add Jira users as project members.</li>
+<li><strong>Connect Jira work items</strong>
+Open the project → <strong>Work Management</strong> tab → <strong>Add work</strong> → choose a Jira space (project) or individual work items.<ul>
+<li>Optional: subscribe to a Jira space so its new work items join the project automatically.</li>
+</ul>
+</li>
+<li><strong>Log work in Jira</strong>
+Log work on one of those work items in Jira. The app reads Jira worklogs, so it creates no separate time records.</li>
+<li><strong>View the results</strong><ul>
+<li>Project → <strong>Dashboard</strong>, <strong>Progress</strong>, <strong>Cost</strong>, <strong>Project Calendar</strong>, <strong>Analysis &amp; Report</strong> tabs: effort (man-day/man-month), utilization, progress, and cost.</li>
+<li>Sidebar → <strong>Portfolio Dashboard</strong>: a view across all projects.</li>
+<li>Sidebar → <strong>Resource</strong>: staffing status, project assignments, and team analysis.</li>
+</ul>
+</li>
+</ol>
+<h3>2.3 Inside a Jira work item</h3>
+<p>Jira work-item panels depend on the installed app version and the work item&#39;s project link. If a panel is unavailable, use <strong>Jira → Apps → Moves Workforce → My Work</strong> to record time and the project screens to review results. Panel availability is not a prerequisite for testing the Confluence document workflow below.</p>
+<h3>2.4 Administration</h3>
+<p>Sidebar → <strong>Settings</strong> (Jira administrators and users given permission):
+general settings, users, teams, roles, levels, skills, project statuses, permission sets, public holidays, and storage usage.</p>
+<hr>
+<h2>3. Using Confluence with the app (optional)</h2>
+<p>Confluence has <strong>no app screen</strong>. The Confluence features live in the <strong>Document Management</strong> tab of a Jira project.</p>
+<h3>3.1 Where</h3>
+<p><strong>Jira → Apps → Moves Workforce → Project Management → (a project) → Document Management tab</strong></p>
+<h3>3.2 What you can do</h3>
+<ol>
+<li>Click <strong>Link documents</strong>.</li>
+<li>Search Confluence pages (filter by space, optionally search page content). Select one or more pages.</li>
+<li>(Optional) Choose the project work items to link them to. If you choose none, the pages are linked to the project itself as &quot;Project documents&quot;.</li>
+<li>(Optional) Choose a category (for example &quot;Design&quot; or &quot;Test plan&quot;) and save.</li>
+<li>The tab then shows:<ul>
+<li><strong>Documents view</strong>: linked pages with space, category, linked work items, last modified date, and status.</li>
+<li><strong>Work items view</strong>: each work item with its linked documents. You can filter work items that have no documents.</li>
+<li><strong>Summary cards</strong>: number of linked documents, work items without documents, outdated documents, broken links, and missing required categories.</li>
+</ul>
+</li>
+</ol>
+<p>Categories and the &quot;outdated document&quot; threshold are set in <strong>Settings → General Settings → Documents</strong>.</p>
+<h3>3.3 Access requirements</h3>
+<ul>
+<li>Use an account with access to the Jira site and the source Confluence pages on that same site.</li>
+<li>App Project read permission allows viewing project documents. Project write permission is required to link, classify, or unlink them.</li>
+<li>Linking to a Jira work item also requires permission to edit that item.</li>
+<li>Publishing this guide in a documentation site does not connect that site to another Jira site&#39;s app. Search uses the Confluence product associated with the app&#39;s Jira site.</li>
+</ul>
+<h3>3.4 Reviewer walkthrough and expected results</h3>
+<p>Use a test project, a Jira work item linked to that project, and a Confluence page you can view on the same site.</p>
+<ol>
+<li>Open <strong>Document Management → Link documents</strong>. Search by space, title, or page URL. Enable page-content search if needed. The results contain pages accessible to the current user.</li>
+<li>Select a page, leave <strong>Work items</strong> empty, choose a category, and save. The page appears as a project document.</li>
+<li>Link a page again, this time selecting a work item. Check <strong>Work items</strong> view and confirm that the selected item has a document link. For a multiple-item operation, inspect the individual success and failure results.</li>
+<li>Open the document link. It opens the original Confluence page; the app has not created a copy or edited the page.</li>
+<li>Change its category or unlink it using an account with the required write permission. The app relationship changes; unlinking does not delete the original Confluence page.</li>
+<li>With an account that lacks project write permission, verify the document list is readable where project read is allowed and editing actions are unavailable. Confluence page visibility still follows that user&#39;s Confluence permissions.</li>
+</ol>
+<p>The screenshots below show the Document Management list, the three-part linking dialog, and its work-item picker. They use the English app interface and demonstration data; available projects and pages vary by site.</p>
+<h3>3.5 Status and connection troubleshooting</h3>
+<ul>
+<li><strong>Healthy</strong>: the page is currently accessible to you.</li>
+<li><strong>Stale</strong>: the last update exceeds the administrator&#39;s configured threshold.</li>
+<li><strong>Broken</strong>: the page may have been deleted or may be inaccessible to the current user; check the original page before assuming deletion.</li>
+<li><strong>Unknown</strong>: current metadata could not be checked. It does not mean the document is healthy or absent.</li>
+<li>If Confluence is unavailable, saved document titles may still be visible. Searching and new linking are unavailable; ask the site administrator to check the same-site Confluence installation and user access.</li>
+<li>If only some Jira work-item updates fail, check editing permission and document limits for each failed item before retrying.</li>
+</ul>
+<h3>3.6 How the app accesses Confluence</h3>
+<ul>
+<li>Scope: <code>search:confluence</code> only. The app calls only the Confluence search API (<code>/wiki/rest/api/search</code>).</li>
+<li>Calls run <strong>as the current user</strong>. Users see only the pages they already have permission to view in Confluence.</li>
+<li>The app does <strong>not</strong> write to Confluence. Link information is stored on the Jira side: as Jira issue properties, or in Forge storage for project-level documents.</li>
+<li>Without Confluence on the site: existing links remain visible, and searching or adding new links is disabled with a notice.</li>
+</ul>
+<hr>
+<h2>4. Data and hosting</h2>
+<ul>
+<li>The application backend runs on Atlassian Forge. Workforce data and document-link records use Forge SQL, Forge Key-Value Store, and Jira issue properties.</li>
+<li>Confluence access is read-only: the app does not create, edit, or delete Confluence pages. It stores link metadata and saved page details for displaying relationships and checking status.</li>
+<li>Client error monitoring can use Sentry when configured. The app manifest allows Sentry endpoints, and the client disables default PII collection. See the <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931/Privacy+Security+Policy">Privacy &amp; Security Policy</a> for the published policy; this walkthrough is not a substitute for that policy.</li>
+<li>No separate third-party account is needed for this document workflow. Reviewers need their own Jira and Confluence access and the app permissions described above.</li>
+</ul>
+<h2>5. Documentation and support</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/folder/204046344/User+Guide">English user guide</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/folder/171573307">Korean user guide</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943/Product+Support+service+level+agreement+SLA">Support service level agreement</a></li>
+</ul>

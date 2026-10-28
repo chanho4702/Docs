@@ -1,0 +1,80 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cc and notifications · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/notifications.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a class="active" aria-current="page" href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; User guides</div><h1>Cc and notifications</h1><p class="lede">Cc recipients follow requests without deciding. Notifications announce requests and results. Being copied or notified does not grant access to the source page.</p>
+<h2 id="section-0">Follow a copied request</h2>
+<p>Find it under <strong>Approval inbox → Cc</strong>. A copied group expands to its members when the request is saved. People joining the group later are not added automatically.</p>
+<p>Cc recipients receive in-app notices for creation, final approval, rejection, withdrawal, and expiry. Intermediate step approvals are different from final approval.</p>
+<h2 id="section-1">Notification channels</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Location and behavior</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>In-app</td>
+<td><strong>Notifications</strong> in the inbox</td>
+<td>Policy controls request, result, reminder, and due-soon notices.</td>
+</tr>
+<tr>
+<td>Confluence</td>
+<td>@mention comments on the target page</td>
+<td>Requires comment permission for the user performing the action.</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>Sent by Confluence according to personal notification settings</td>
+<td>The app does not send email directly.</td>
+</tr>
+</tbody>
+</table></div>
+<p><img src="../assets/ma-13-notifications.jpg" alt="Request and result notifications in the approval inbox"></p>
+<p><em>MA-13 · In-app notices collect request and decision results. Confluence comment notices also require the policy and comment permission.</em></p>
+<h2 id="section-2">Recipients by event</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Event</th>
+<th>In-app</th>
+<th>@mention comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request created</td>
+<td>All approvers and Cc</td>
+<td>First-step approvers</td>
+</tr>
+<tr>
+<td>Next step opens</td>
+<td>Distinguish from the creation notice</td>
+<td>New-step approvers</td>
+</tr>
+<tr>
+<td>Final approval</td>
+<td>Requester and Cc</td>
+<td>Requester and Cc</td>
+</tr>
+<tr>
+<td>Rejection</td>
+<td>Requester, undecided approvers, Cc</td>
+<td>Requester</td>
+</tr>
+<tr>
+<td>Expiry</td>
+<td>Requester, undecided approvers, Cc</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Reminder / due soon</td>
+<td>Current-step approvers; due soon also includes requester</td>
+<td>None</td>
+</tr>
+</tbody>
+</table></div>
+<p>People are not notified about their own action. Withdrawal notifies undecided approvers and Cc in the app, and also the requester if someone else withdrew it.</p>
+<h2 id="section-3">Missing notifications</h2>
+<p>Check in-app policy → event and recipient role → active step → comment permission → personal Confluence settings. A comment failure does not necessarily mean approval failed; inspect the actual decision record.</p>
+<p>Reminder and deadline checks run once a day. Decisions after the deadline are blocked without waiting for that job. Administrators configure channels and timing in <a href="admin-policy.html">global policy</a>.</p>
+<div class="pager"><a href="certificate.html"><small>← PREVIOUS</small>Approval certificate PDF</a><a href="admin-setup.html"><small>NEXT →</small>Administrator setup</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">Follow a copied request</a><a href="#section-1">Notification channels</a><a href="#section-2">Recipients by event</a><a href="#section-3">Missing notifications</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

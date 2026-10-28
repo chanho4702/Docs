@@ -1,0 +1,43 @@
+# ZM-139 구현 보고서 — 모니터링 차트 증분 조회
+
+작성일: 2026-09-07  
+상태: 구현 및 단위 테스트 완료
+
+## 문제
+
+상대 기간 차트는 갱신할 때마다 최근 1시간처럼 이미 받은 표시 구간 전체를 다시 Zabbix에 조회했다. 새 데이터만 요청하는 기준점과 긴 유휴 시간 뒤의 조회 폭을 제한하는 규칙이 없었다.
+
+## 변경
+
+- 기존 `GET /host/{id}/{cpu|memory|network}/line-charts` 응답과 동작을 유지했다.
+- 다음 증분 전용 API를 추가했다.
+  - `GET /host/{id}/cpu/line-charts/incremental`
+  - `GET /host/{id}/memory/line-charts/incremental`
+  - `GET /host/{id}/network/line-charts/incremental`
+- `knownThrough`가 있으면 실제 조회 시작을 `max(from, knownThrough - 120초)`로 계산한다.
+- 새로 전진하는 폭은 한 호출에 최대 30분이다. 목표 `to`까지 남으면 `hasMore=true`와 다음 `nextKnownThrough`를 반환한다.
+- 응답에는 `requested`, `covered`, `coverage`, `hasMore`, `nextKnownThrough`, 기존 형식의 `series`를 포함한다.
+- Network의 명시적 `ifaces` 및 기존 `SUM` series 규칙을 보존했다.
+
+## 완전성의 현재 한계
+
+`MetricPort`와 `AdaptiveSeriesQuery`는 Zabbix RAW 결과가 상한으로 잘렸는지 전달하지 않는다. 따라서 이번 구현의 `coverage=COMPLETE`는 **백엔드 조회 호출이 성공한 경우**이며, 원본 데이터가 상한 없이 모두 왔다는 증명은 아니다. 포트가 `truncated` 같은 메타데이터를 제공하는 후속 변경에서만 `PARTIAL`을 신뢰성 있게 반환할 수 있다.
+
+잘못된 범위(`from >= to`, `knownThrough > to`)는 기존 `INVALID_DATE` 오류 계약으로 HTTP 200/body code 400을 반환한다.
+
+## 검증
+
+다음 대상 테스트 28건이 통과했다.
+
+```text
+IncrementalChartQueryTest: 3
+CpuServiceTest: 6
+MemoryServiceTest: 8
+NetworkServiceTest: 11
+```
+
+`compileJava`, `compileTestJava`도 동일 Gradle 실행에서 통과했다. 전체 테스트는 동시 진행 중인 APM 작업과 겹치지 않도록 실행하지 않았다.
+
+## 다음 작업 입력
+
+ZM-140~142는 [contract_monitoring_chart_incremental.md](../06-API-%EA%B3%84%EC%95%BD/solutions--ZM-138-API-%EA%B3%84%EC%95%BD-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EC%B0%A8%ED%8A%B8-%EC%9E%90%EB%8F%99-%EA%B0%B1%EC%8B%A0-%EC%A6%9D%EB%B6%84-%EC%A1%B0%ED%9A%8C.md)의 응답을 사용한다. `coverage=PARTIAL`은 아직 발생하지 않으므로, FE는 현재 `COMPLETE` 응답의 `nextKnownThrough`만 저장하면 된다. `PARTIAL` 처리 규칙은 포트 완전성 메타데이터가 추가되는 시점에 활성화한다.

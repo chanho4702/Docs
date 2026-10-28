@@ -1,0 +1,17 @@
+---
+tags: [moveseye, apm, retention, design]
+updated: 2026-09-17
+---
+
+# APM 보존 정책 후속 설계
+
+사용자 요청으로 설계만 작성하고 구현을 보류했다. 정본: `C:/solutions/_workspace/designs/devdesign_apm-retention-policy.md`, 재개 카드: `_workspace/planning/deferred_apm-retention-policy.md`.
+
+- 제안: 메트릭 7/30/400일 유지, 온라인 trace 7일 + 정상 표본 총 30일/중요 표본 총 90일 아카이브 검색·복원. 기간은 고객 요구·용량 시험 후 확정.
+- 기존 ZM-156은 restore를 제외하므로 파일 보관 완료와 장기 상세 조회 완료를 구분한다.
+- 보존 등급별 파일, 늦은 span/등급 승격 delta, 최종 coverage 검증과 DROP fencing, pin 복사/삭제 경쟁 제어가 필요하다.
+- 오류 폭증 예산·선별 손실 표시, 메트릭과 표본 trace 통계 분리. trace별 탈락 증거 없이 “샘플링 제외”로 단정하지 않는다.
+- 아카이브 실패는 PRESERVE 기본 제안, BEST_EFFORT 명시 선택. 이전 설계의 7일 유예 후 DROP은 미확정안이며 자동 승계하지 않는다.
+- S0에서 최신 COLLAB과 공용 아카이브 진행 상태 확인 후 재개. 코드/DB 설정 변경 없음.
+
+관련: [[projects/moveseye/2026-09-02-apm-p2-traces|2026-09-02-apm-p2-traces]], [[projects/moveseye/2026-08-31-apm-p1-implementation|2026-08-31-apm-p1-implementation]]

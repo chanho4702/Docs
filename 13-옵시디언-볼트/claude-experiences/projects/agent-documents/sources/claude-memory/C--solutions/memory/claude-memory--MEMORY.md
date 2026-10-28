@@ -1,0 +1,138 @@
+# Memory Index
+- [서버 페이지네이션 표는 maxPageSize+capPage](claude-memory--fe-dmovetable-maxpagesize.md) — 10-26 18곳 수정·푸시. 🔴새 목록 표도 적용
+- [PC 교체 인계 10-28](claude-memory--pc-migration-2026-10-28.md) — 옵시디언 `_pc-migration-2026-10-28/`·인계 노트. 🔴.env·라이선스 개인키·도커 DB는 Vault에 없음
+- [Zabbix 프록시·프록시 그룹 관리 10-28](claude-memory--zabbix-proxy-mgmt.md) — 기본 기능, 워크트리 zbx-proxy-be/fe 미커밋, BE 검수 승인·FE 검수 중. 🔴PSK는 결과 TLS에서 빠지면 Zabbix가 지움
+- [Zabbix Web 시나리오 관리(유료) 10-27](claude-memory--zabbix-web-scenario-mgmt.md) — ZM-175 푸시 완료(BE 21358d8·FE edf667c·발급기 44bb3e0), 실측 통과. 🔴이력에 비밀값 금지·대상 필터 하나
+- [Zabbix 일반 그래프 관리 10-26](claude-memory--zabbix-graph-mgmt.md) — 호스트·템플릿 그래프 탭, master 병합·실측 통과(10-26). C2도 병합. 🔴새 Zabbix 메서드는 조사표 json에도
+- [전반 검수 R1~R8 나중 목록 10-21](claude-memory--moveseye-wide-review-backlog-2026-10-21.md) — R1~R8 전부 종료·푸시(ZM-157), Bitbucket 배포 개선은 보류. BE 전체 테스트 OOM 10-25 해소(ArchUnit 그래프 공유). 🔴새 ArchUnit은 ProductionClasses.get()
+- [DB 모니터링 설계 v2.3 + ZM-172 P0 착수](claude-memory--db-monitoring-design.md) — 🔴다른 세션 담당(zm-172 워크트리 손대지 말 것) · 2차 커밋 BE 94c9115·발급기 16cfa81(미푸시) · 로컬 Docker PG16(5436) · R1-PG 실측 통과 · 계약 시험본·코어 폴러 프레임 · **10-26 코어를 Gradle 모듈 `dbm-collector-core`로 분리(프로덕션 의존 0), 8차 gpt-6-astra 보류→V8-1~4 전건 반영(128 테스트), 3차 커밋 → master rebase 완료(HEAD `ad29023`, 미푸시) → **J1 PG lease/writer/checkpoint + V90 `dbm_core` + IT 7건 → 4차 커밋 `c3f3068`(미푸시) → **10-27 보존 v2.5: APM/Zabbix 계단(원본 2일·1m 7일·5m 30일·1h 400일·사건 400일), §6.3 디스크 예산 삭제, APM 파티션·보존 구현체를 `premium.common`으로 추출(APM 껍데기) + `dbm_retention` V91, 5차 커밋 `75ace5e`(미푸시) → **WS-2 잔여 J1 구동 조립(DbmPollerManager 레인 스레드·PgConfigSource 30s+라이선스 거부·CodecSecretResolver·GET /dbm/poller/status, IT 12 → DBM 42건) 6차 커밋 `5e33e0e` → **WS-3 1단계 PG 어댑터(S·L·C·Q, 실 PG16 end-to-end 한 tick 적재) 7차 `b576f18` → **WS-3 2단계 typed 파티션 표 V92(차원 3·사실 4, DbmPartitionService·PgTypedRowStore, dbm_sample_row 제거, 보존 키 6) 8차 `a0d28d6`**(미푸시, 8커밋) → **10-28 WS-1 대상 관리 API(DbmTargetAdminService·admission·enc:v2 DbmSecretCodec·LicenseStatus.maxDbTargets, 110 테스트 통과) + 코덱스 9차 🔴 N1~N9 → 사용자 A 결정 → **9차 `b6f622f` 안정화(N2·N3·N4·N5·N8·N9) · 10차 `b8c528c` WS-1 커밋 → **10-28 master rebase·ff 병합 완료(master HEAD `b8c528c`, 미푸시; 해시는 rebase 뒤 값)**. 이월 N1(계약 전제)·N6·N7(WS-10 V93). 다음은 WS-10 롤업 또는 WS-4 FE. 시간순 이력 정본 `features/premium/db-monitoring/history_zm172-worklog.md`. 🔴사실 표 FK 없음→IT 전역 count 금지. 🔴S↔Q 연결은 query_id(fingerprint 아님). 🔴레인 스레드 실기동 미실측(재기동 지시 시). 🔴테스트 JVM OOM(native)이면 외부 폭주 프로세스 먼저 확인. 🔴ArchUnit이 javadoc의 "DROP TABLE" 문구도 잡음. 🔴루트 테스트 필터는 `:test`(콜론). 🔴원자성은 시그니처로 강제 · 같은 epoch 재획득 시 seq 유지 · V90 비어 있음 · 시험 서버 10.220.0.13 금지 · 코어 테스트는 `:dbm-collector-core:test`
+- [APM 오늘 사용자 수(IP 해시) 검토](claude-memory--apm-daily-users-ip-hash.md) — 10-12 구현 보류. 🔴수집기가 IP 삭제+샘플링 → 샘플링 전 집계 통로 필요
+- [APM 알림 창구·이력 보존 결정 10-10](claude-memory--apm-alert-channel-decision-2026-10-10.md) — 독자 알림 창구만 대기·이력 보존, 10-21 master rebase·V83~V87 재부여·6c bb14c07(V88)·7b 1a36632(V89), 10-22 BE·FE master ff 병합·A5/B12/B13-① ce9e662·a06d1f8(미푸시, B13-② 보류). 🔴자동 item.delete 금지(비활성화만)
+- [FE jest 무한 루프·고아 워커](claude-memory--fe-jest-mock-searchparams-loop.md) — mock이 매 렌더 새 URLSearchParams → 무한 setState. 🔴고아 워커 먼저 정리
+- [워크트리 제거가 node_modules 정션을 따라 원본 삭제](claude-memory--worktree-remove-junction-node-modules.md) — 🔴제거 전 정션을 rmdir로 끊기
+- [검수 반려 반복 시 멈춤](claude-memory--review-loop-stop-rule.md) — 🔴같은 기능 2회 연속 반려면 범위·필요성부터 묻기
+- [커밋 메시지에 검수 출처 금지](claude-memory--commit-message-no-review-source.md) — 절차 표현 말고 작업 내용 요약만
+- [커밋 태그는 [FEAT]](commit-tag-feat.md) — `[FEATURE]` 아님. `#ZM-nnn [FEAT] 요약 -날짜`
+- [APM '장애 및 에러' 메뉴 신설](claude-memory--apm-incidents-menu.md) — 10-10 커밋(미푸시), incidents 3탭. 🔴규칙·서비스 삭제=이력 CASCADE(결정 대기)
+- [APM 알람 원자성 결정·커밋](claude-memory--apm-alert-atomicity-decisions.md) — 1차 V74 커밋, 2차 outbox는 지시 전 금지. 🔴새 Flyway는 V90부터(10-22 7b 뒤)
+- [APM 잔여 작업 인수 10-07~08](claude-memory--apm-remaining-work-2026-10-07.md) — 순위별 커밋(미푸시). 🔴BE는 워크트리+rebase+ff-only
+- [archify showcase 배치 규칙](claude-memory--archify-showcase-layout-rules.md) — APM 도식. 🔴viewBox 폭 ≤1020·비율 ≥1.55
+- [문서 읽기용 사본 저장소](claude-memory--docs-reading-repo.md) — GitHub 비공개 Docs·로컬 C:\solutions\Docs. 🔴평문 비밀번호 마스킹
+- [기능별 상세 가이드 13종+전 제품 문제점 리포트](claude-memory--feature-guides-bundle.md) — 정정 미착수. 🔴재개 시 코덱스 의견 먼저
+- [APM 수집기·알람 규칙 → 관리 콘솔](claude-memory--apm-collectors-to-admin-console.md) — /setting/apm/** 이동. 🔴apmHelpContent 3건 기존 실패
+- [ZM-156 APM 콜드 아카이브](claude-memory--apm-cold-archive-decisions.md) — S6 실측 10-28 통과(NFS·컨테이너·다중 노드 제외). 🔴docker run 볼륨 선행·감사 user=null은 df1b39f로 수정(미푸시)
+- [GPU 수집 경로 설계·구현](claude-memory--gpu-collection-paths-design.md) — ZM-78 1·2차 master 병합·푸시 완료, 정리 끝(dev74 DB·시험 서버 잔존물은 결정 대기). 🔴시험 서버 10.220.0.13 재부팅·부하 금지
+- [SSE 끊김 ERROR 디스패치 인가 제외](claude-memory--sse-error-dispatch-permit.md) — ASYNC+ERROR permitAll. 🔴직접 GET /error는 401
+- [옵시디언 Vault 싱크 09-28·10-19·10-28](claude-memory--obsidian-vault-sync-2026-09-28.md) — 10-28까지 반영 + 기능 지도 MOC 15노드(`projects/moveseye/features/`). 🔴INDEX 머리·꼬리에 덧붙이지 말 것·새 설계는 기능 노드에 링크 한 줄
+- [APM 1m 배치 UPSERT 데드락 수정](claude-memory--apm-metric1m-deadlock-fix.md) — 배치를 PK 순으로 정렬해 교착 제거
+- [APM 개선 백로그 + RUM·수집기로그 데드락 형제](claude-memory--apm-domain-improvements-backlog.md) — A1·A2 완료, B·C 남음. 🔴코덱스는 unelevated
+- [APM 수집 회복력 ZM-122](claude-memory--apm-ingest-resilience-design.md) — master 반영(미푸시). 🔴Ctrl+C는 JVM 무시→JMX shutdown.jsh
+- [수집기 redaction이 로그 본문 13자리 숫자를 가린다](claude-memory--apm-collector-redaction-log-body.md) — 🔴로그 본문에 epoch ms 금지
+- [호스트 등록 중복 이름 안내](claude-memory--host-duplicate-name-fix.md) — ZM-166. 🔴중복 판정은 기술명, 검색은 표시명
+- [ZM-167 리포트 관리 APM 탭 분리+APM 보존 설정](claude-memory--report-management-apm-split.md) — V66·/retention/apm
+- [ZM-161 설정 메뉴 → 관리 콘솔 분리](claude-memory--zm-161-admin-console.md) — 같은 SPA·/setting 유지
+- [APM 규모 관측 공백](claude-memory--apm-scale-observability-gap.md) — 고객 APM 데이터량을 볼 채널 없음(보류)
+- [Redis 캐시 공통화+스탬피드 방어](claude-memory--redis-improvement-backlog.md) — ZM-168 종료. 🔴IT DB 공유라 동시 실행 금지
+- [코덱스 모델 선택](claude-memory--codex-model-choice.md) — 10-19 갱신: 검수는 gpt-6.1-sol(high), astra 금지
+- [성능 부하 테스트 설계(합성 mock)](claude-memory--load-test-synthetic-mock-design.md) — mock+k6 설계만 확정
+- [ZM-159 대용량 호출 방어](claude-memory--zm-159-scale-call-guard.md) — 종료(미푸시). 🔴인터페이스 차트 실물 미확인
+- [권한 로직 전면 수정 ZM-157](claude-memory--zm-157-permission-fix.md) — 병합(미푸시). 🔴Redis 버전 가정 금지(Lua)
+- [대용량 전수 감사(호스트 5천·아이템 1천만)](claude-memory--scale-5000-hosts-audit.md) — 감사만. 🔴미연결 사용자=system 토큰
+- [백로그 스프린트 ZM-151~156](claude-memory--zm-151-156-backlog-sprint.md) — **전부 종료·기능 문서 6종 작성 완료**(151~154·156 푸시 완료, 155는 master 병합 BE `a9080eb`(V81)→후속 `1d50f6e`(V82)·FE `258d747`→후속 `080bc20` 미푸시). 🔴155 상한은 DB 자리 원장이 정본·칸 정렬 서버 TZ·"일단 하자" 오독 교훈. 155 런타임 실측 10-28 통과. 남은 것: docs 변경 커밋 승인
+- [메뉴 진입점 전수 확인](claude-memory--verify-all-nav-entry-points.md) — 🔴"없다" 전에 진입점 5곳 grep
+- [설정 스케줄러 표 뭉개짐 수정](claude-memory--scheduler-table-layout.md) — 🔴잡 이름은 SCHEDULER_JOB_CATALOG에
+
+- [APM 대시보드+홈 APM 카드](claude-memory--apm-dashboards-feature.md) — 위젯 인프라 일반화(V58). 🔴홈 노출=apmView AND apmLicensed
+- [APM 설치 가이드 경로 입력·문구 정리 등](claude-memory--apm-install-paths.md) — APM은 ZM-122로 커밋. 🔴고객 문구에 검수번호 금지
+- [Collector 설정 프로세서 상세·포트 가이드](claude-memory--apm-collector-config-processors.md) — 🔴기본제외+추가없음=프로세서 제거
+- [APM 설치 가이드 macOS 지원](claude-memory--apm-install-macos.md) — LaunchDaemon root. 🔴런타임 미검증
+- [APM 설치 가이드 가독성](claude-memory--apm-install-guide-readability.md) — 🔴긴 안내는 ApmGuideText로
+- [사이드 패널 공통화 ResizableDrawer](claude-memory--resizable-drawer-common.md) — 🔴새 패널은 ResizableDrawer만
+- [자빅스 성능 문서 지도] — 정본·증거 전체 인덱스는 `_workspace/features/events/zabbix-load-relief/INDEX_zabbix-performance.md`(ZM-123·93·136)
+- [APM 이해도 개선·AI 접목 백로그](claude-memory--apm-comprehension-backlog.md) — 미착수. 🔴빈 값 이유 표시가 AI보다 먼저
+- [자빅스 메트릭 데이터 아카이빙](claude-memory--zabbix-data-archiving-backlog.md) — 설계 초안만. 🔴V41 번호 낡음
+- [클라우드 스냅샷 리전 팬아웃](claude-memory--cloud-snapshot-region-fanout.md) — ZM-151·153로 해소, 스냅샷 누적만 남음
+- [자체 점검(셀프 APM) 백로그](claude-memory--self-monitoring-backlog.md) — 보류, 실증은 끝남
+- [ZM-136 차트 증분 에픽](claude-memory--zm136-chart-incremental-doc-todo.md) — ZM-144만 대기. 🔴single-flight 키에 principal
+- [LLD 검수 R1~R7 반영](claude-memory--lld-review-fixes.md) — 커밋(미푸시). 🔴lifetime 1=하지 않음·2=즉시
+- [네트워크 맵 archify식 개선](claude-memory--network-map-archify-reskin.md) — 푸시 완료. 🔴BE dev CORS 5173~5175만
+- [자빅스 부하 절감 ZM-123 에픽](claude-memory--zabbix-load-relief.md) — master 병합(미푸시), ZM-134 보류
+- [APM 구현 진행](claude-memory--apm-implementation-progress.md) — 커밋(미푸시)·실측 통과. 🔴09-28 검토 🔴6 백로그
+- [플릿 지표 확장](claude-memory--cloud-fleet-extras.md) — 🔴Nitro는 EBS 지표로 교체
+- [현대캐피탈 요구사항 13건](claude-memory--hyundai-capital-requirements.md) — 현행 대조만(구현 0)
+- [이벤트 현황 차트·해소 시각 복구](claude-memory--event-stats-and-resolution-fix.md) — 🔴해소 정보 0건이라 MTTR 가짜였음
+- [자빅스 구성 현황 대시보드](claude-memory--zabbix-config-overview.md) — 🔴countRaw는 countOutput 미포함
+- [FE 계약 픽스처 게이트는 실제로 안 돌았다](claude-memory--fe-contract-fixture-gate.md) — 게이트 `npm run typecheck:contract`
+- [차트 공용 드릴다운](claude-memory--chart-drilldown-feature.md) — 툴팁은 appendToBody라 위임 클릭
+- [자산×클라우드 통합](claude-memory--asset-cloud-integration.md) — 🔴KRW/USD 합산 금지
+- [자산 현황 대시보드](claude-memory--asset-dashboard-feature.md) — 🔴BE 로컬 master 정체
+- [APM 설계](claude-memory--apm-design.md) — v3.1 확정(OTel Collector)
+- [AI 계정 모니터링](claude-memory--ai-account-monitoring-design.md) — 보류(숨김), 복구는 플래그 한 줄
+- [아키텍처 설치형·스케일아웃 진단](claude-memory--architecture-onprem-scaleout-audit.md) — 설치 번들 부재가 최대 공백
+- [디자인 시스템·화면 도움말](claude-memory--design-system-and-help.md) — 🔴절대경로 자식 라우트 주의
+- [AI 쓰기 반영·접근 통제](claude-memory--ai-write-invalidation-and-gate.md) — 무효화 힌트 계약. 런타임 미검증
+- [AI 어시스턴트](claude-memory--ai-assistant-design.md) — moveseye-ai. 🔴gradlew --stop 금지
+- [이벤트/알림 이력 모드](claude-memory--event-alert-history-mode.md) — 🔴이력은 event.get. 미커밋 중단
+- [Zabbix 래핑 커버리지·후순위](claude-memory--zabbix-wrapper-gaps.md) — "남은 작업" 질문 시 꺼낼 것
+- [액션 filter round-trip·전역 승격 함정](claude-memory--zabbix-action-filter-roundtrip.md) — get 응답 되돌리면 -32602
+- [Zabbix 래핑 원칙](claude-memory--zabbix-wrapper-principle.md) — 첫 질문 "Zabbix에 있나?"
+- [수집 엔진 방향 확정](claude-memory--collector-engine-direction.md) — Phase1 완료, 스텝6 보류
+- [자산 비용 탭 설계](claude-memory--asset-cost-design.md) — 🔴컬럼 존재≠값 존재
+- [프리미엄 라이선스 설계](claude-memory--premium-license-design.md) — v4. 🔴라이선스는 인증 뒤
+- [라이선스 커널 구현 진행](claude-memory--license-kernel-progress.md) — 🔴상수 4파일 동일 사본
+- [BE 패키지 구조 정리](claude-memory--be-package-structure.md) — 🔴대량 이동 후 clean test
+- [에이전트 설치 가이드](claude-memory--agent-install-guide-design.md) — 🔴{major}-latest 별칭
+- [클라우드(AWS) 설정 기반 활성화](claude-memory--cloud-aws-gating.md) — 미커밋. 런타임 미검증
+- [AWS 상태 차트화·과금 0 제약](claude-memory--aws-zero-cost-charting.md) — 스냅샷+예산 가드
+- [유료 API 옵트인 원칙](claude-memory--cloud-paid-api-optin.md) — 기본 잠금, P2·P3 미착수
+- [EC2 모니터링 소스 매트릭스](claude-memory--ec2-monitoring-sources.md) — 🔴상세 URL ?region= 필수
+- [heredoc이 백슬래시를 삼킨다](claude-memory--bash-heredoc-eats-backslash.md) — 스크립트 파일로 실행
+- [미추적 파일 0바이트 복구](claude-memory--untracked-file-recovery-tsjest-cache.md) — ts-jest 캐시로 복원
+- [Chrome MCP 탭은 rAF가 멈춤](claude-memory--chrome-mcp-hidden-tab-no-raf.md) — 렌더 버그 오진 주의
+- [curl 한글 → cp949 → 가짜 500](claude-memory--curl-hangul-cp949-false-500.md) — 파일·fetch로 재확인
+- [dev 런타임 기동법](claude-memory--dev-runtime-startup.md) — 🔴BE는 _tools/run_be_3000_dev.ps1
+- [기기분류 DB 관리형 전환](claude-memory--device-classification-feature.md) — 호스트 태그가 진실
+- [RGL useContainerWidth ref 첫 렌더 필수](claude-memory--fe-rgl-usecontainerwidth-ref-first-render.md) — div 항상 렌더
+- [DmoveTable loading 무한스피너](claude-memory--fe-dmovetable-loading-spinner.md) — 기본값 false
+- [역할 편집 브레드크럼 + 잔여 2건](claude-memory--user-management-breadcrumb-and-pending.md) — 401 무한로딩 보류
+- [전파 가시성·엔티티 렌즈](claude-memory--propagation-lens-feature.md) — 미커밋·런타임 미검증
+- [Zabbix 구성 드릴다운 재구성](claude-memory--zabbix-config-drilldown-restructure.md) — A안, 미커밋
+- [트리거 관리](claude-memory--trigger-management-feature.md) — 생성 대상은 expression
+- [호스트 분류·태그 관리](claude-memory--host-classification-tags-feature.md) — 🔴tags는 전체 교체
+- [FE 페이지 navigate 리마운트](claude-memory--fe-page-remount-on-navigate.md) — 상태는 URL query로
+- [아이템·템플릿 관리](claude-memory--item-template-management-feature.md) — link/unlink는 host-side
+- [내비 개편: 설정=헤더 ⚙·로그인 카드=사이드바 하단](claude-memory--nav-settings-header-user-card.md) — ZM-111
+- [홈 위젯 대시보드](claude-memory--home-widget-dashboard.md) — 🔴from/to 없으면 0건
+- [홈(랜딩) 페이지](claude-memory--home-landing-page.md) — E2E 재검증 잔여
+- [Codex 검수 인계](claude-memory--codex-review-handoff.md) — 작업 끝나면 review_*.md
+- [_workspace 정리 규칙·10-19 기능 폴더 재편](claude-memory--workspace-tidy-rule.md) — 🔴문서는 `features/<영역>/<기능>/`, 흔적은 `_archive/features/`, 옛 경로는 `_moved.tsv`·하드링크(DB 모니터링만 남음)
+- [BE 재기동은 명시 요청 시에만](claude-memory--no-be-restart-without-ask.md) — 🔴따로 물을 것
+- [커밋 전 승인 필수](claude-memory--commit-requires-approval.md) — 🔴푸시 금지·git add -A 금지
+- [커밋 트레일러 금지](claude-memory--no-coauthored-by-trailer.md) — Co-Authored-By 금지
+- [사용자 관리 재구성](claude-memory--user-management-restructure.md) — 설계 확정(구현 전)
+- [호스트 등록 관리](claude-memory--host-registration-feature.md) — 병합 완료(미푸시)
+- [지리 맵(Geo Maps)](claude-memory--geo-maps-feature.md) — 🔴배포 전 자산 동기화
+- [QA 스크린샷 최소화](claude-memory--qa-minimize-screenshots.md) — API·DOM 어서션 우선
+- [네트워크 맵](claude-memory--network-maps-design.md) — React Flow, saveAndFlush 필수
+- [내비게이션 개편](claude-memory--nav-restructure-2026-07-13.md) — 대시보드 삭제·자산 재편
+- [Assets 자산관리 기능](claude-memory--assets-core-devdesign.md) — 구현·전수검사 완료
+- [시크릿 관리 — Vault 미사용](claude-memory--vault-secrets-management.md) — 정본 .env
+- [moveseye Spring 변환](claude-memory--moveseye-spring-conversion.md) — 변환 결정사항
+- [BE Spring 단일 채택](claude-memory--be-dual-maintenance.md) — 새 BE는 Spring만
+- [커스텀 대시보드 기획](claude-memory--custom-dashboard-plan.md) — 기획·계약 진행
+- [호스트 그룹 모니터링 기획](claude-memory--hostgroup-monitoring-plan.md) — 시계열 4탭
+- [호스트 그룹 리포트 기능](claude-memory--hostgroup-report-feature.md) — 주/월 리포트 탭
+- [FE useDmoveQuery 언랩 깊이](claude-memory--fe-usedmovequery-unwrap.md) — 2겹 언랩
+- [recently-viewed excludeId 빈값 허용](claude-memory--recently-viewed-excludeid-optional.md) — @IsNotEmpty 금지
+- [FE 테스트 실행 npx jest](claude-memory--fe-test-runner-npx-jest.md) — npm test 동작
+- [리포트 관리 기능](claude-memory--report-management-feature.md) — retention 배치(V4)
+- [useTableColumns title i18n](claude-memory--fe-usetablecolumns-title-i18n.md) — t()는 ...item 뒤
+- [트래픽은 bps(byte 아님)](claude-memory--fe-traffic-bps-not-bytes.md) — formatBitrate 사용
+- [디스크 상세 아이템 계열 폴백](claude-memory--disk-detail-item-family-fallback.md) — size 폴백
+- [호스트 라이브체크 기능](claude-memory--host-livecheck-feature.md) — ping charset 주의
+- [swap 사용률 pused 키 수정](claude-memory--swap-usage-pused-fix.md) — 되돌리지 말 것
+- [AWS 자격증명 하이브리드](claude-memory--aws-cred-single-source.md) — DB→.env→IAM 체인
+- [노션 포트폴리오 페이지](claude-memory--notion-portfolio-page.md) — 작성 완료
+- [실서버 배포 구조·함정](claude-memory--deploy-server-topology.md) — 🔴HTTP면 COOKIE_SECURE 끄기
+- [MovesEye FAQ 문서](claude-memory--moveseye-faq-doc.md) — review 상태, 실측 후 current
+- [코드 그래프 도구 시험·OpenMontage](claude-memory--code-graph-tools-trial.md) — Graft·CBM 미도입

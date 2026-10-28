@@ -1,0 +1,110 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>문서 근거 — 현재 실행 코드</title><style>body{margin:0;background:#f5f7fa;color:#172b4d;font:16px/1.75 system-ui,-apple-system,"Malgun Gothic",sans-serif}main{max-width:1000px;margin:32px auto;padding:40px 48px;background:white;border:1px solid #dfe4eb;border-radius:12px}h1{font-size:30px;line-height:1.3;border-bottom:3px solid #1868db;padding-bottom:22px}h2{margin-top:36px;font-size:22px}a{color:#0c66e4}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dfe4eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eef3fa}img{max-width:100%;height:auto;border:1px solid #dfe4eb}code{background:#eef1f6;padding:2px 4px;border-radius:3px}li{margin:7px 0}blockquote{border-left:4px solid #1868db;padding-left:16px;color:#44546f}@media(max-width:700px){main{margin:0;padding:20px}table{display:block;overflow:auto}h1{font-size:25px}}@media print{body{background:white}main{border:0;margin:0;padding:0}h2{break-after:avoid}table,img{break-inside:avoid}}</style><main><h1>문서 근거 — 현재 실행 코드</h1>
+<p>기준: 2026-10-20 작업 트리. 기존 미커밋 구현이 다수 있으므로 Git HEAD나 실제 배포본과 동일하다고 간주하지 않는다. 설계서·주석만으로 기능 제공을 확정하지 않고 실제 렌더링·라우팅·서버 조건을 대조했다.</p>
+<table>
+<thead>
+<tr>
+<th>문서 주장</th>
+<th>확인한 실행 코드</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>현재 메뉴·관리자 메뉴</td>
+<td><code>static/ui/src/features/inbox/InboxPage.jsx</code>의 <code>TAB_LABEL_KEYS</code>, <code>visibleTabKeys</code>, <code>navigationGroups</code> 구성</td>
+</tr>
+<tr>
+<td>타임시트 메뉴·직접 URL 미제공</td>
+<td><code>static/ui/src/features/inbox/inboxUrl.js</code>의 <code>INBOX_VIEWS</code>, <code>parseInboxSearch</code>; <code>TIMESHEET_VIEWS</code>는 허용 목록에 포함되지 않음</td>
+</tr>
+<tr>
+<td>직접 인증 메뉴 숨김</td>
+<td><code>InboxPage.jsx</code>의 <code>key !== 'teamCertification'</code> 필터. 내부 URL·코드 잔존과 메뉴 제공은 구분</td>
+</tr>
+<tr>
+<td>상태 변경 서버 기본 꺼짐</td>
+<td><code>src/resolver/settings/SettingsRepository.js</code>의 <code>statusChangeApprovalEnabled: false</code>, <code>isStatusChangeApprovalEnabled()</code></td>
+</tr>
+<tr>
+<td>상태 변경 설정 UI 미연결</td>
+<td><code>FeatureSelectionSettings.jsx</code>는 <code>WorklogApprovalSettings</code>만 렌더; 후자는 <code>worklogAutoRequest</code>, <code>timesheetAutoCloseDays</code>만 저장</td>
+</tr>
+<tr>
+<td>프로젝트 규칙 화면 미연결</td>
+<td><code>static/ui/src/entries/projectSettings.jsx</code>는 <code>IssueExceptionList</code>만 렌더; 파일 머리 주석과 실제 동작이 다름</td>
+</tr>
+<tr>
+<td>일반 이슈·필드 신규 승인 차단</td>
+<td><code>SettingsRepository.isIssueApprovalEnabled()</code>의 <code>false</code>, <code>src/domain/settings/features.js</code>, <code>ApprovalService.createForTarget()</code></td>
+</tr>
+<tr>
+<td>자동 요청 기본 켬·자동 마감 0</td>
+<td><code>SettingsRepository.js</code>의 <code>worklogAutoRequest: true</code>, <code>timesheetAutoCloseDays: 0</code>; <code>WorklogApprovalSettings.jsx</code>의 0 경고 및 0~90 검사</td>
+</tr>
+<tr>
+<td>연동은 스위치와 PAIRED 모두 필요</td>
+<td><code>src/resolver/channel/ChannelState.js</code>의 <code>isLinked()</code></td>
+</tr>
+<tr>
+<td>연동 중 연결 이슈만 승인 대상</td>
+<td><code>src/domain/worklogCertification/eligibility.js</code>의 <code>worklogApprovalScopeOf()</code></td>
+</tr>
+<tr>
+<td>상위 팀장 우선·팀장 자기 승인 조건</td>
+<td><code>WorklogRequestService.candidates/create</code>, <code>eligibility.js</code>의 <code>worklogSelfApprovalOf()</code></td>
+</tr>
+<tr>
+<td>저장 결과와 요청 결과 분리</td>
+<td><code>static/ui/src/features/worklog/WorklogDialog.jsx</code>, <code>WorklogApprovalPanel.jsx</code>; <code>WorklogRequestService.requestAutomatically()</code></td>
+</tr>
+<tr>
+<td>대기 중 미결정 요청만 승인자 변경</td>
+<td><code>WorklogRequestService.get()</code>의 <code>canChangeApprover</code> 및 변경 처리 경로</td>
+</tr>
+<tr>
+<td>승인 잠금·소명</td>
+<td><code>WorklogRequestService.get/create/appealBaseline</code>, <code>WorklogControlService.js</code>, <code>WorklogApprovalPanel.jsx</code></td>
+</tr>
+<tr>
+<td>규칙 위반 소명과 승인 후 재검토는 별개</td>
+<td><code>WorklogRequestService</code>의 <code>explanationRequired</code>, <code>canAppeal</code>, <code>create({appeal})</code></td>
+</tr>
+<tr>
+<td>연결 코드와 비밀 표시</td>
+<td><code>static/ui/src/features/settings/WorkforceLinkSettings.jsx</code>의 CreateCodeBlock·입력·상태 섹션, <code>src/resolver/channel/PairingService.js</code></td>
+</tr>
+<tr>
+<td>설명·이력 보관 기본값</td>
+<td><code>SettingsRepository.js</code>: <code>worklogHistoryKeepComment:false</code>, 일반 12개월·연동 36개월·인증/통제 0</td>
+</tr>
+<tr>
+<td>보호 원장 정리 제외</td>
+<td><code>src/resolver/retention/RetentionService.js</code>, <code>RetentionRepository.js</code></td>
+</tr>
+<tr>
+<td>해제 시작과 완료는 별개</td>
+<td><code>WorklogControlService.release()</code> 및 <code>static/ui/src/features/worklogControl/ControlStatusPanel.jsx</code>의 RELEASE 확인·잔여 표시</td>
+</tr>
+<tr>
+<td>시간 추적 설정 안내 경로</td>
+<td><code>locales/kr/timesheet.json</code>, <code>locales/en/timesheet.json</code>의 provider 안내; 실제 모듈은 <code>manifest.yml</code></td>
+</tr>
+<tr>
+<td>서버의 자동 전환 결과 불명 재전송 금지</td>
+<td><code>src/resolver/transition/TransitionExecutor.js</code>의 <code>postStartedAt</code>/<code>UNKNOWN</code> 조기 분기</td>
+</tr>
+<tr>
+<td>요청자 권한으로 전환</td>
+<td><code>TransitionOfflineGateway.js</code>의 <code>asUserOffline</code> 사용</td>
+</tr>
+<tr>
+<td>라이선스·dynamic webtrigger·egress</td>
+<td><code>manifest.yml</code>, <code>src/utils/license/LicenseGuard.js</code>, <code>static/ui/src/features/license/LicenseGate.jsx</code></td>
+</tr>
+</tbody>
+</table>
+<h2>독립 독자 검토</h2>
+<p>문서 전용 검토자가 한·영 28개를 코드와 대조했다. 타임시트 진입·상태 변경 설정 미연결, 제공자 안내 경로, RELEASE·잔여 0 확인, 규칙 위반 소명 구분을 반영했다. 주요 질문(설치·접수 실패·승인 후 변경·연동 장애·제거)에 문서만으로 답할 수 있는지 확인했다.</p>
+<h2>실제 화면 관찰</h2>
+<p>개발 사이트에서 승인 이력·기본 승인 규칙·Workforce 연결 화면을 캡처했다. 배포 artifact 식별자는 브라우저 iframe의 <code>0bcb5352-98a9-416f-a52e-f26efba6afbb</code>였으며 이를 Forge 출시 버전이라고 부르지 않는다.</p>
+<p>승인 상세에서 승인 완료·감사 타임라인과 함께 “예상하지 못한 오류”가 표시되는 사례를 확인했다. 원인은 이 문서 작업에서 확정하지 않았다. <a href="evidence/ko-detail-error-live.jpg">오류 증빙</a>을 정상 동작 캡처로 분류하지 않는다.</p>
+</main></html>

@@ -1,0 +1,244 @@
+<h1 id="overview-and-key-concepts">Overview and key concepts</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">English Guide</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570662">한국어</a></p>
+<p>Moves Approval adds <strong>sequential approval</strong> to Confluence Cloud content. Who approved which version, and in what order, is recorded next to the page, and approvers handle everything waiting on them in one place: the approval inbox.</p>
+<h2 id="features">Features</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Page approval</td>
+<td>Approve an entire page against a specific version.</td>
+</tr>
+<tr>
+<td>Area approval</td>
+<td>Approve only the content wrapped in the <strong>Moves Approval Region</strong> macro. A page can contain several areas.</td>
+</tr>
+<tr>
+<td>Approval stamps</td>
+<td>The <strong>Moves Approval Stamps</strong> macro shows steps, approvers, and stamps inside the page, like a paper approval form. It can be added to the top of the page automatically when approval is requested (on by default).</td>
+</tr>
+<tr>
+<td>Multi-step approval lines</td>
+<td>Steps run in order. Each step can have a name (for example, &quot;Legal review&quot;) and a number of approvals required to pass.</td>
+</tr>
+<tr>
+<td>Approval groups</td>
+<td>Add a Confluence group or an app-only group as a single step, with &quot;All must approve&quot; or &quot;Any one&quot;.</td>
+</tr>
+<tr>
+<td>Saved approval lines</td>
+<td>Administrators predefine common approval orders so requesters just pick one.</td>
+</tr>
+<tr>
+<td>Cc</td>
+<td>Copy people who should follow the request and get notified without deciding.</td>
+</tr>
+<tr>
+<td>Deadlines</td>
+<td>From three days before the deadline a <code>D-n</code> or <code>Due today</code> badge appears, and <code>Overdue</code> once it passes; overdue requests can no longer be approved or rejected. Overdue requests are expired by a once-a-day check.</td>
+</tr>
+<tr>
+<td>Approval inbox</td>
+<td>My turn, In progress, My requests, Handled, and Cc in one view, with filters, Excel export, and bulk approval.</td>
+</tr>
+<tr>
+<td>Signatures and PIN</td>
+<td>Stamp a signature next to each decision, and optionally require a signature PIN to confirm decisions.</td>
+</tr>
+<tr>
+<td>Delegation</td>
+<td>Hand your approvals to a delegate for a set period while you are away.</td>
+</tr>
+<tr>
+<td>Reminders and due-soon notices</td>
+<td>Re-notify the approvers whose turn it is when a request sits too long.</td>
+</tr>
+<tr>
+<td>Audit records</td>
+<td>Per-request audit timeline, approval history by version, and a settings change log. Users cannot edit them; they are removed only according to the retention period and cleanup policy.</td>
+</tr>
+<tr>
+<td>Approval certificate (PDF)</td>
+<td>Download one PDF with the approval line, stamps, history, and a <strong>document fingerprint</strong> (the SHA-256 of the approved version's body) for a finished approval. Anyone who can view the page can download it.</td>
+</tr>
+<tr>
+<td>Data management</td>
+<td>Administrators check the app's storage usage and set a retention period for finished approval records (3 years by default); records past it are exported to Excel and then deleted.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-find-things">Where to find things</h2>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Item below the page title (byline)</td>
+<td>Shows the current approval status (for example <code>⏳ Legal review · step 2 of 3</code>). Select it to open the approval dialog to view details, request, or decide. Without a request it reads <strong>Request approval</strong>.</td>
+</tr>
+<tr>
+<td>Page <code>•••</code> menu → <strong>Request approval</strong></td>
+<td>Request entry point, shown only to users who can edit the page.</td>
+</tr>
+<tr>
+<td><strong>Approval stamps</strong> in the page body</td>
+<td>Shows the steps, approvers, and stamps of the page approval inside the page. <strong>Open approval details</strong> opens the approval dialog. The same stamps also appear below each area approval box.</td>
+</tr>
+<tr>
+<td><strong>Approval certificate (PDF)</strong> next to the approval dialog title</td>
+<td>Downloads the certificate of a finished approval (Approved, Rejected, Expired, or Withdrawn).</td>
+</tr>
+<tr>
+<td>Top <strong>Apps</strong> menu → <strong>Moves Approval</strong></td>
+<td>The approval inbox. Notifications, My signature, and My delegation open from here too. Select a document name to go to that page; select anywhere else in the row to open the approval dialog.</td>
+</tr>
+<tr>
+<td>Space sidebar → <strong>Moves Approval</strong></td>
+<td>The approval inbox for that space.</td>
+</tr>
+<tr>
+<td>Confluence home, right panel</td>
+<td>A summary of approvals waiting on you.</td>
+</tr>
+<tr>
+<td><strong>Confluence settings</strong> → <strong>Moves Approval</strong></td>
+<td>Administrator settings (also reachable from the <strong>Settings</strong> link in the inbox). Storage and record retention live on the <strong>Data management</strong> tab.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Screenshot placement · 01-page-status</strong></p>
+<p>Approval status below the page title and the stamp box</p>
+<p>File: <code>ma-01-page-status-en.png</code> · Alt text: Approval status below the page title and the stamp box</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="how-a-request-flows">How a request flows</h2>
+<pre><code>Request ─▶ Step 1 ─▶ Step 2 ─▶ … ─▶ Approved
+              │         │
+              └─ Reject ┴─▶ Rejected        (one rejection ends the request immediately)
+  Any time while open ─ requester withdraws ─▶ Withdrawn
+  Deadline passes ───────────────────────────▶ Expired   (checked once a day; &quot;Overdue&quot; until then)
+  Resubmit for the new version ──────────────▶ earlier request closes, a new one starts
+</code></pre>
+<ul>
+<li>A step opens only after the previous step passes. Approvers in later steps cannot decide yet.</li>
+<li>Each target (a page or an area) can have <strong>only one open request</strong> at a time.</li>
+<li>A finished request (approved, rejected, expired, or withdrawn) cannot be reopened. Create a new request if needed.</li>
+<li>Once the deadline passes, the Approve and Reject buttons disappear, and the server also refuses late decisions and expires the request on the spot. If you request approval again on a page whose request is overdue, the earlier request is expired automatically and the new one starts.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 02-workflow</strong></p>
+<p>Approval progress and decision history</p>
+<p>File: <code>ma-02-workflow-en.png</code> · Alt text: Approval progress and decision history</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="statuses">Statuses</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pending approval</td>
+<td>Waiting for decisions. With step names it reads like &quot;Legal review · step 2 of 3&quot;.</td>
+</tr>
+<tr>
+<td>Approved</td>
+<td>Every step approved. The approved <strong>version</strong> is recorded.</td>
+</tr>
+<tr>
+<td>Rejected</td>
+<td>An approver rejected it. The reason is recorded.</td>
+</tr>
+<tr>
+<td>Expired</td>
+<td>Closed because the deadline passed. For up to a day after the deadline, until it turns to Expired, it shows as &quot;Overdue&quot;.</td>
+</tr>
+<tr>
+<td>Withdrawn</td>
+<td>Withdrawn by the requester (or a Confluence administrator).</td>
+</tr>
+</tbody>
+</table>
+<p>Administrators can rename these <strong>labels</strong> to match your organization's terms. The workflow itself does not change.</p>
+<h2 id="glossary">Glossary</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requester</td>
+<td>The person who requests approval. Needs edit permission on the page.</td>
+</tr>
+<tr>
+<td>Approver</td>
+<td>A person on the approval line who approves or rejects.</td>
+</tr>
+<tr>
+<td>Approval line</td>
+<td>The ordered steps and approvers. Build one when requesting, or pick one an administrator registered.</td>
+</tr>
+<tr>
+<td>Step</td>
+<td>One row of the approval line. Approvers in a step decide in parallel; once enough approvals arrive, the next step opens.</td>
+</tr>
+<tr>
+<td>Approval group</td>
+<td>A group that forms one step. Its passing rule is &quot;All must approve&quot; or &quot;Any one&quot;.</td>
+</tr>
+<tr>
+<td>Cc</td>
+<td>People who can view and get notified, but not decide.</td>
+</tr>
+<tr>
+<td>Delegate</td>
+<td>A person deciding on behalf of another approver.</td>
+</tr>
+<tr>
+<td>Approval inbox</td>
+<td>The screen that gathers your approval work.</td>
+</tr>
+<tr>
+<td>Approval stamps</td>
+<td>The macro (<strong>Moves Approval Stamps</strong>) that shows steps, approvers, and stamps inside the page.</td>
+</tr>
+<tr>
+<td>Document fingerprint</td>
+<td>The SHA-256 of the approved version's body. Recompute it from the same version to confirm the content is unchanged.</td>
+</tr>
+<tr>
+<td>Settings administrator</td>
+<td>A person registered to manage app settings without being a Confluence administrator.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notifications-instead-of-email">Notifications instead of email</h2>
+<p>Moves Approval does not send email itself. It uses two channels:</p>
+<ol>
+<li><strong>In-app notifications</strong> — collected under <strong>Notifications</strong> in the approval inbox.</li>
+<li><strong>Confluence notifications</strong> (when enabled by an administrator; on by default) — the app leaves a comment on the page that @mentions the people involved. Confluence then delivers the mention according to each person's Confluence notification and email settings.</li>
+</ol>
+<p>See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537962">Administrator guide — Notifications</a> for details.</p>
+<h2 id="languages">Languages</h2>
+<p>The interface is available in English and Korean and follows each user's Confluence language setting. Other languages fall back to English.</p>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">FAQ and troubleshooting</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">Marketplace review guide</a></li>
+</ul>

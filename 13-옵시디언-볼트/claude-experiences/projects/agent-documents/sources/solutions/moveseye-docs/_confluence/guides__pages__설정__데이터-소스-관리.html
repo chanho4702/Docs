@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>데이터 소스 관리</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>데이터 소스 관리</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 시스템 관리자, 도입 담당자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/setting/integrations/DataSourceSettingsPage.tsx, DataSourceWorkspacePage.tsx</div></div>
+<h1>데이터 소스 관리</h1>
+<blockquote><p><strong>사이드바</strong> 설정 &gt; 데이터 소스 관리 <strong>경로</strong> <code>/setting/integrations</code> → 소스별 워크스페이스 <code>/setting/integrations/:provider</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>관측 데이터를 제공하는 외부 시스템을 <strong>한곳에서 구성</strong>하는 화면이다. MovesEye가 다중 데이터소스 제품으로 가는 관문이다.</p>
+<h2>화면 구성</h2>
+<h3>소스 목록</h3>
+<p>네 개 소스가 카드로 표시된다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>소스</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td><strong>Zabbix</strong></td><td><strong>런타임 어댑터 설치됨 — 실제 설정 가능</strong></td></tr>
+<tr><td>Prometheus</td><td>어댑터 미설치</td></tr>
+<tr><td>Elasticsearch</td><td>어댑터 미설치</td></tr>
+<tr><td>Datadog</td><td>어댑터 미설치</td></tr>
+</tbody></table>
+<p>각 카드에 상태 배지가 붙는다: <code>런타임 준비됨</code> / <code>런타임 미설치</code>, <code>설정됨</code> / <code>설정 가능</code> / <code>어댑터 미설치</code>.</p>
+<h3>Zabbix 연결 설정</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>항목</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><strong>API Endpoint</strong></td><td>비워 두면 서버에 설정된 기본 URL 사용</td></tr>
+<tr><td><strong>API 사용자</strong></td><td>전용 계정</td></tr>
+<tr><td><strong>API 비밀번호</strong></td><td>비워 두면 <strong>현재 저장된 값 유지</strong></td></tr>
+</tbody></table>
+<h3>연동 상태</h3>
+<p>설정 상태, 자격증명 만료, 비밀값 정책(응답 비노출 · 입력 시에만 교체)을 표시한다.</p>
+<h3>소스별 워크스페이스</h3>
+<p>카드에서 들어가면 소스 고유의 관리 영역이 나온다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>소스</th><th>워크스페이스 모듈</th></tr></thead>
+<tbody>
+<tr><td>Zabbix</td><td>호스트 · 템플릿 · 아이템 · 트리거</td></tr>
+<tr><td>Prometheus</td><td>타깃 · 서비스 디스커버리 · 규칙 · 레이블</td></tr>
+<tr><td>Elasticsearch</td><td>인덱스 · 파이프라인 · 스트림 · 질의</td></tr>
+<tr><td>Datadog</td><td>통합 · 모니터 · 호스트 · 태그</td></tr>
+</tbody></table>
+<h2>🔴 화면에 보이는 것 ≠ 사용할 수 있는 것</h2>
+<p><strong>가장 중요한 안내다.</strong> 네 소스가 모두 화면에 나오지만, <strong>실제로 연결되는 것은 Zabbix 하나</strong>다.</p>
+<p>나머지 셋의 워크스페이스에 들어가면 화면이 직접 이렇게 알린다.</p>
+<blockquote><p>"{공급자} 관리 화면은 <strong>UI 미리보기</strong>입니다. 공급자 고유 운영 개념과 화면 구조만 먼저 확인할 수 있습니다. 실제 조회·저장·연결 성공 처리는 <strong>백엔드 어댑터가 준비될 때</strong> 활성화됩니다."</p></blockquote>
+<p>목록 화면에도 명시돼 있다 — "<strong>런타임 어댑터가 설치된 소스만 실제 저장할 수 있습니다.</strong>"</p>
+<p>고객 시연에서 오해가 생기기 쉬운 지점이므로, 담당자는 이 차이를 먼저 설명한다.</p>
+<h2>왜 억지로 통합하지 않는가</h2>
+<p>워크스페이스 화면의 설명이 설계 의도를 그대로 담고 있다.</p>
+<blockquote><p>"공급자마다 다른 운영 모델을 억지로 통합하지 않고, MovesEye 안에서 일관된 진입 경험만 제공합니다."</p></blockquote>
+<p>메트릭·인벤토리·알람 같은 <strong>공통 도메인은 정규화</strong>하지만, 소스 고유의 관리 개념(Zabbix 템플릿, Prometheus 서비스 디스커버리)은 각자의 모습으로 둔다. 억지로 하나로 만들면 어느 쪽에서도 정확하지 않은 화면이 된다.</p>
+<h2>주의할 점</h2>
+<h3>비밀번호는 화면에 다시 나오지 않는다</h3>
+<p>저장된 비밀값은 응답에 실리지 않는다. 수정 시 <strong>비워 두면 기존 값이 유지</strong>되고, 입력했을 때만 교체된다. 다른 항목만 고치려고 비밀번호 칸을 비워도 기존 연결이 끊기지 않는다.</p>
+<h3>전용 계정을 쓴다</h3>
+<p>사람이 함께 쓰는 계정을 넣지 않는다. 비밀번호가 바뀌면 제품 전체가 멈추고, 감사 로그에서 행위자를 구분할 수 없다.</p>
+<h3>연결이 끊기면 전 화면이 영향받는다</h3>
+<p>이 설정이 잘못되면 모니터링·이벤트·자산 화면이 <strong>동시에</strong> 비게 된다. 특정 화면만 비는 것과 구분되는 증상이다.</p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>제품 소개서 — 지원 데이터소스</strong></li>
+<li><strong>아키텍처 — 수집 엔진 경계</strong></li>
+<li><strong>Zabbix 관리 화면들</strong></li>
+</ul>
+</body></html>

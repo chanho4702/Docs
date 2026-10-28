@@ -5,9 +5,38 @@ updated: 2026-10-28
 
 # APM 심층 진단 격리 구현
 
+> 정본 가이드: [APM 심층 진단 구현·운영 가이드](C:/solutions/_workspace/features/apm/deep-diagnostics/guide_apm-deep-diagnostics.md)
+
 - 사용자 지시로 [[2026-10-28-apm-deep-diagnostics-design]]의 R0~M1b를 BE·FE·Java 확장 전용 worktree 세 곳에 구현했다. master 병합·push·배포는 하지 않았다.
 - 정본 산출물: `C:/solutions/_workspace/features/apm/deep-diagnostics/`의 계약·BE/FE/OTel 보고·정적 QA·E2E.
-- 첫 결과는 trace 상세 진단 탭, 같은 instance의 CPU·GC·pool 1분 문맥, 요청별 Hikari connection acquire 구간·summary, 근거/완전성 상태다.
+- 첫 결과는 trace 상세 진단 탭, 같은 instance/process run의 CPU·GC·pool 1분 문맥, 요청별 Hikari connection acquire 구간·summary, 근거/완전성 상태다.
+
+## 사용자가 얻는 결과
+
+- 기존 trace 상세의 `SERVER` span을 선택하면 별도 상위 메뉴 없이 `진단` 탭에서 요청별 Hikari connection acquire를 확인한다.
+- 직접 측정한 요청 구간과 같은 instance의 상관 문맥을 분리하며, `0`, `NOT_RECEIVED`, `PARTIAL`을 서로 다른 상태로 표시한다.
+- `POOL_ACQUIRE`는 순수 queue wait가 아니라 `getConnection()` 전체 경과다. 이 경계를 UI와 API에서 명시한다.
+- 초기 runtime 문맥은 정확히 복원 가능한 CPU·GC·pool 6개 값만 제공한다. dimension이 이미 소실된 memory/thread는 포함하지 않는다.
+
+## 구조와 안전장치
+
+`Java application → OTel Agent/extension → Collector → Spring ingest/storage → diagnostics API → React trace 상세` 순서다.
+
+- Java 수집과 BE query는 각각 기본 OFF다.
+- 10ms 이상 획득 중 요청 진입 순서상 16건만 상세 보존하고, 나머지도 summary에는 누적한다.
+- active token·TTL·rate·burst·byte budget을 두고 초과 시 애플리케이션 처리는 유지한다.
+- 민감한 pool/JDBC/user/password/SQL/exception message는 진단 속성으로 만들지 않는다.
+- 진단 span은 기존 waterfall·flame·critical path와 일반 span 5,000개 한도에서 분리한다.
+
+## 구현 위치
+
+| 영역 | 격리 worktree | commit |
+|---|---|---|
+| Spring BE | `C:/worktrees/apm-deep-be` | `b92311a` |
+| React FE | `C:/worktrees/apm-deep-fe` | `060ad4d` |
+| OTel extension | `C:/worktrees/apm-deep-otel` | `cfef319` |
+
+세 영역 모두 `codex/apm-deep-diagnostics-20261028` branch에 있으며 master 병합·push·배포 전 상태다. 로컬 branch 정리에서는 안전하게 병합되고 참조되지 않은 35개를 삭제했고 복구용 JSON을 `_workspace/features/apm/deep-diagnostics/branch-cleanup-20261028.json`에 남겼다.
 
 ## 검증
 
@@ -29,5 +58,21 @@ updated: 2026-10-28
 - 3회 이상 동일 부하 OFF/ON, 30분 부하, 8시간 안정성, CPU/p95/live heap 목표.
 - 실제 고객 workload의 SDK queue/Collector drop 증가 여부, WebFlux·가상 thread·다른 Hikari/JDK/OS.
 - 실제 archive ZIP 생성·복원 왕복. M2 JFR, M3 logs/DBM, M4 profiling은 범위 밖.
+
+## 병합 전 확인
+
+1. `COLLAB.md`의 현재 status와 repo 소유권을 재확인한다.
+2. Flyway `V93` 번호가 대상 branch와 충돌하지 않는지 확인한다.
+3. Collector의 정확한 키·형식 기반 redaction 예외를 실제 환경에서 재검증한다.
+4. OFF/ON 반복 성능, 30분 부하, 8시간 안정성 게이트 전에는 운영 지원 완료로 선언하지 않는다.
+
+## 상세 산출물
+
+- [통합 가이드](C:/solutions/_workspace/features/apm/deep-diagnostics/guide_apm-deep-diagnostics.md)
+- [설계](C:/solutions/_workspace/features/apm/deep-diagnostics/devdesign_apm-deep-diagnostics.md)
+- [API 계약](C:/solutions/_workspace/features/apm/deep-diagnostics/contract_apm-deep-diagnostics.md)
+- [구현 진행](C:/solutions/_workspace/features/apm/deep-diagnostics/progress_apm-deep-diagnostics-implementation.md)
+- [정적 QA](C:/solutions/_workspace/features/apm/deep-diagnostics/qa_apm-deep-diagnostics-contract.md)
+- [E2E](C:/solutions/_workspace/features/apm/deep-diagnostics/e2e_apm-deep-diagnostics.md)
 
 관련: [[moveseye]], [[2026-10-28-apm-functional-assessment]], [[2026-10-28-apm-deep-diagnostics-design]], [[shared-it-db-worktree-collision]].

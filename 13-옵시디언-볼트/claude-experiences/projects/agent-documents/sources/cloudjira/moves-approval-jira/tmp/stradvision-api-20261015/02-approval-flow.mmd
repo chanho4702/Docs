@@ -1,0 +1,6 @@
+flowchart LR
+    A[기록 등록·출처 확인] --> B[팀장 승인·대상 재확인]
+    B --> C[Approval 원장 확정·승인 값 고정]
+    C --> D[Jira 통제 적용]
+    C --> E[Workforce 이벤트 API 전송]
+    E --> F[승인 결과 조회·집계 대사]

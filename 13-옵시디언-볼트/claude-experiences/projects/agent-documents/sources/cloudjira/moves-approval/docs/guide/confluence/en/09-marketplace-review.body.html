@@ -1,0 +1,198 @@
+<h1 id="marketplace-review-guide">Marketplace review guide</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">English Guide</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394">한국어</a></p>
+<blockquote>
+<p>For: Atlassian Marketplace reviewers and submission owners
+Baseline: the Confluence Cloud implementation in this repository on 2026-10-05. The steps below are review scenarios to execute, not a report of completed tests.</p>
+</blockquote>
+<h2 id="app-introduction-and-listing-copy">App introduction and listing copy</h2>
+<p><strong>App name:</strong> Moves Approval for Confluence</p>
+<p><strong>Short description:</strong> Manage step-by-step document approvals, stamp boxes, and version history in Confluence.</p>
+<p><strong>Detailed description:</strong> Moves Approval adds sequential approval to Confluence Cloud pages and selected regions within a page. Requesters choose approvers and approval steps; approvers handle requests awaiting their decision in the approval inbox. A stamp box displays steps, approvers, and stamps inside the document, and finished requests can be downloaded as approval certificate PDFs. The app supports saved approval flows, approval groups, Cc recipients, time-limited delegation, signatures and PINs, bulk approval, Excel exports, and record retention settings. The interface and user guides are available in Korean and English.</p>
+<table>
+<thead>
+<tr>
+<th>Highlight</th>
+<th>Description</th>
+<th>Suggested screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approval visible in the document</td>
+<td>Page and region approval status, stamp boxes, and the version being approved</td>
+<td>Stamp box and approval details on a test page</td>
+</tr>
+<tr>
+<td>One place to handle approvals</td>
+<td>Requests awaiting your decision, your requests, Cc lists, filters, and bulk approval</td>
+<td>Approval inbox</td>
+</tr>
+<tr>
+<td>Retain decisions and their history</td>
+<td>Decisions by step, audit timeline, Excel exports, and certificate PDFs</td>
+<td>Finished request details and certificate</td>
+</tr>
+</tbody>
+</table>
+<p>The supported product is <strong>Confluence Cloud</strong>. Do not claim Jira or Confluence Data Center support for the app in this repository. Customers do not need a separate external account or a server they operate. Prices and trial terms in the public listing must match the actual Marketplace configuration.</p>
+<h2 id="installation-and-usage-documentation">Installation and usage documentation</h2>
+<p>Start review and customer guidance at <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Documentation home</a>. The <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">Korean documentation</a> provides the same structure.</p>
+<table>
+<thead>
+<tr>
+<th>Review topic</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Features and entry points</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472404">Overview and key concepts</a></td>
+</tr>
+<tr>
+<td>Installation, setup, updates, and uninstall</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181">Installation and first-time setup</a></td>
+</tr>
+<tr>
+<td>Requests, withdrawal, and resubmission for a new version</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472413">Requester guide</a></td>
+</tr>
+<tr>
+<td>Approval, rejection, signatures, PINs, and delegation</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537945">Approver guide</a></td>
+</tr>
+<tr>
+<td>Cc, viewing, and certificates</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570724">Cc recipient and viewer guide</a></td>
+</tr>
+<tr>
+<td>Policies, flows, groups, and data management</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537962">Administrator guide</a></td>
+</tr>
+<tr>
+<td>Errors and information for support requests</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">FAQ and troubleshooting</a></td>
+</tr>
+<tr>
+<td>Data categories, retention, and permissions</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427">Data, security, and privacy</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="permissions-and-data-handling">Permissions and data handling</h2>
+<p>The app runs on Atlassian Forge and stores approval data in Forge SQL and the Key-Value Store. The current manifest declares no data egress permissions for external services or remote configuration. Excel and PDF downloads are copies retained by the customer.</p>
+<p>Stored data includes account IDs, page identifiers, titles and versions, approval decisions, timestamps and reasons, request notes, signature images, delegation, notifications, and settings. The app does not retain names, email addresses, profile pictures, or page bodies in its storage. PINs are stored as salted PBKDF2 hashes. <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427">Data, security, and privacy</a> documents retention and the purpose of every requested scope.</p>
+<p>Confluence access for user actions uses <code>asUser()</code>. Automatic stamp box insertion increments the page version with the requester's permissions; optional @mention comments use the permissions of the user performing the action. App-context reads in page update triggers and scheduled checks without user context are used only for version and hash checks; the page bodies read this way are not returned to users.</p>
+<p>Finished approval records have a default retention period of three years and are not automatically deleted when that period passes. Administrators can delete only the range for which they confirm an Excel export. Notifications are cleaned up after 180 days and settings audit history after one year through scheduled checks. Retention and deletion after uninstall follow Forge platform policy; the app does not promise immediate permanent deletion itself.</p>
+<h2 id="review-procedure">Review procedure</h2>
+<h3 id="preparation">Preparation</h3>
+<ol>
+<li>Prepare a Confluence Cloud test site that can install the submitted version. Before public listing, the submission owner supplies installation and access instructions in the review ticket.</li>
+<li>Prepare a site administrator, requester A, approvers B and C, and restricted-access test user D. A has edit permission on the test page, B and C have view permission, and D cannot view that page.</li>
+<li>Initially disable app access restriction and leave the approver registry empty. Confirm that the test space is enabled.</li>
+<li>Use test data only. Enable the corresponding policies when checking signatures, PINs, and delegation. Do not include account passwords or API tokens in documents or screenshots.</li>
+<li>Before checking successful comment creation, confirm that A, B, and C can add comments to the test page. When an actor cannot add comments, check that the approval outcome is still recorded even though no comment is created.</li>
+<li>The submission owner prepares overdue and past-retention test records in advance and supplies page links, request identifiers, deadlines, completion dates, and the applicable retention period in the review ticket. Reviewers must be able to locate those records without manipulating data themselves.</li>
+</ol>
+<h3 id="scenarios-and-expected-results">Scenarios and expected results</h3>
+<p>Use a separate request for each terminal outcome. Restore the initial conditions before the next scenario if you change a policy.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Procedure</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Open the app menu, settings, and approval item below the test page title.</td>
+<td>The inbox, administrator settings, and approval dialog load; Confluence's normal edit and share functions still work.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>A requests page approval with B in step 1 and C in step 2, selecting automatic stamp box insertion.</td>
+<td>One open request is created. If insertion increments the page version, that resulting version is the approval target.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Check whether C can decide first, then have B approve and C approve.</td>
+<td>C cannot decide before their turn. B's approval opens C's step; the final approval completes the request.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>B rejects a new request with a reason. A withdraws another new request.</td>
+<td>Each request ends in its respective rejected or withdrawn state, with the decision and reason in its history.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Edit a page with an open request, then have A resubmit for the new version.</td>
+<td>Editing alone does not close the request. Resubmission supersedes the previous request and starts a request for the new version.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Add and publish an approval region macro, then request approval for that region.</td>
+<td>Region and page approvals are separate targets. Delete the region macro and check that its request is automatically withdrawn.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>D accesses the inbox and the restricted page or request details.</td>
+<td>Information about the inaccessible page is excluded from the inbox and detail access is denied.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Try approving, rejecting, and creating a new request for an overdue test request.</td>
+<td>The overdue indication appears and decisions on the old request are refused. Creating a new request expires the overdue open request. Scheduled state cleanup runs once a day.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>B registers a signature and PIN, then decides under a PIN-required policy. Also handle a separate request delegated to C within the delegation period.</td>
+<td>A decision requires successful PIN verification. Delegated decisions record both the original approver and the actual actor.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Check in-app notifications and optional Confluence comments for a request with a Cc recipient.</td>
+<td>Cc recipients cannot decide. Comments depend on the acting user's permissions and ability to add comments. Reminders and due-soon alerts are in-app notifications; the app does not send email directly.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Download a finished request's certificate PDF and export the inbox to Excel.</td>
+<td>Decisions and history are available. The PDF includes a SHA-256 fingerprint when the target version can be read, and omits it otherwise.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>An administrator exports and deletes finished records past the retention period in data management.</td>
+<td>Only the confirmed export range is deleted; open requests are excluded. If there are no records for that period, no eligible records are shown.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Set A's and B's Confluence languages to Korean and English and inspect the same views.</td>
+<td>Views follow each user's language setting.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Access the paid release configuration with an inactive license.</td>
+<td>New requests and decisions are blocked; administrator settings remain accessible. The development license exception does not substitute for this test.</td>
+</tr>
+</tbody>
+</table>
+<p>The submission owner prepares test records for deadline and retention checks; do not alter dates on production records. Do not rely solely on automation reporting successful iframe button clicks: also inspect resulting states, decision history, and downloaded files.</p>
+<h2 id="items-to-finalize-before-submission">Items to finalize before submission</h2>
+<p>Writing source documents is separate from publishing them and obtaining approval. Complete these items only after obtaining actual values and evidence. Finalize a public privacy policy covering the operator, contact details, processing purposes, retention, and rights request procedures; feature descriptions alone do not replace it. Check against <a href="https://developer.atlassian.com/platform/marketplace/data-privacy-guidelines/">Atlassian's data privacy guidelines</a>.</p>
+<ul>
+<li>[ ] Publish Korean and English user guides and register a public Documentation URL accessible without signing in. Convert relative links for the publishing destination.</li>
+<li>[ ] Finalize the legal operator name, support URL and email, support hours and time zone, and privacy contact.</li>
+<li>[ ] Finalize a public Privacy policy URL and customer terms or EULA.</li>
+<li>[ ] Register the actual release logo, screenshots, pricing, and trial terms.</li>
+<li>[ ] Complete the Forge app and partner security questionnaires, the Cloud app Privacy &amp; Security tab, required partner identity verification, and vulnerability tickets. Consult the <a href="https://developer.atlassian.com/platform/marketplace/app-approval-security-workflow/">approval security workflow</a>.</li>
+<li>[ ] For a paid release, verify license configuration and inactive-license behavior. Also review the release licensing display-condition notes in the current manifest.</li>
+<li>[ ] Execute the scenarios against the submitted deployment and attach the date, version, tester, outcomes, and screenshots to the review ticket.</li>
+</ul>
+<p>Check setup and usage documentation and advertised behavior against the <a href="https://developer.atlassian.com/platform/marketplace/app-approval-guidelines/">Atlassian app approval guidelines</a>. Do not claim a <code>Runs on Atlassian</code> badge, security certifications, or legal electronic-signature validity without verified approval or supporting evidence.</p>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181">Installation and first-time setup</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427">Data, security, and privacy</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">FAQ and troubleshooting</a></li>
+</ul>

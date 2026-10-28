@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>지리 맵</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>지리 맵</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 운영자, 자산 관리자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/asset/geomaps/GeoMapClusteringPage.tsx, GeoMapClusterDetailPage.tsx</div></div>
+<h1>지리 맵</h1>
+<blockquote><p><strong>사이드바</strong> 자산 관리 &gt; 맵 &gt; 지리 맵 <strong>경로</strong> <code>/asset/geo-map</code> → 상세 <code>/:id</code> → 편집 <code>/:id/edit</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>지도 위에 사업장·데이터센터 단위로 장비를 배치해 <strong>물리적 분포와 상태</strong>를 보는 화면이다. 여러 지역에 인프라가 흩어져 있을 때 "어느 지역에 문제가 있는지"를 한눈에 파악한다.</p>
+<h2>화면 구성</h2>
+<h3>클러스터 목록 (지도)</h3>
+<p>지도 위에 클러스터가 표시된다. 클러스터는 호스트를 묶는 위치 단위다(예: 본사, 대전 IDC).</p>
+<h3>클러스터 상세</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>영역</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td>가용성</td><td>클러스터 내 호스트 정상 비율</td></tr>
+<tr><td>문제</td><td>활성 장애 수</td></tr>
+<tr><td>위도 · 경도</td><td>좌표</td></tr>
+<tr><td>호스트그룹 · 호스트</td><td>포함 대상</td></tr>
+</tbody></table>
+<h3>편집</h3>
+<p>클러스터를 만들고 호스트를 배치하며, <strong>호스트 좌표를 직접 편집</strong>할 수 있다.</p>
+<h2>좌표의 원천</h2>
+<p>🔴 <strong>좌표는 데이터소스 인벤토리에 저장된다.</strong> 제품이 별도 좌표를 복제해 갖고 있지 않다.</p>
+<p>즉 지리 맵에서 좌표를 편집하면 <strong>원천 시스템(Zabbix 인벤토리)에 기록된다.</strong> 제품 안에서만 바뀌는 것이 아니므로, 다른 시스템이 같은 인벤토리 필드를 쓰고 있다면 영향을 검토한다.</p>
+<h2>사용 흐름</h2>
+<ol>
+<li>클러스터를 만든다.</li>
+<li>호스트를 클러스터에 배치한다.</li>
+<li>좌표가 없는 호스트는 편집으로 좌표를 넣는다.</li>
+<li>대표 지도라면 메인으로 지정한다.</li>
+</ol>
+<h2>주의할 점</h2>
+<h3>호스트 후보가 0건일 때</h3>
+<p><strong>자산 동기화를 한 번도 실행하지 않은 것이다.</strong> 동기화 전에는 자산과 호스트의 연결(<code>linked_hostid</code>)이 비어 있어 후보가 잡히지 않는다.</p>
+<p><strong>자산 목록</strong>에서 동기화를 실행한 뒤 다시 시도한다. <strong>기능 고장으로 오인하기 가장 쉬운 지점이다.</strong></p>
+<h3>좌표 없는 호스트</h3>
+<p>클러스터에 속해 있어도 좌표가 없으면 지도에 표시되지 않는다. 화면 하단에 안내가 나온다.</p>
+<blockquote><p>"N개 호스트는 인벤토리 좌표가 없어 지도에 표시되지 않습니다."</p></blockquote>
+<p><strong>클러스터에 배치했는데 좌표를 잃으면 지도에서 접근할 수 없게 된다.</strong> 목록을 통해 찾아 좌표를 다시 넣어야 한다.</p>
+<h3>지도 표시</h3>
+<p>지도 타일은 외부 지도 서비스에서 가져온다. <strong>폐쇄망에서는 지도 배경이 표시되지 않을 수 있다.</strong></p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>자산 목록</strong></li>
+<li><strong>네트워크 맵</strong></li>
+</ul>
+</body></html>

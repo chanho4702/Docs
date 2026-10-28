@@ -1,0 +1,209 @@
+<h2>요약</h2>
+<table>
+<thead>
+<tr>
+<th>제품</th>
+<th>필수 여부</th>
+<th>앱이 하는 일</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Jira</strong></td>
+<td><strong>필수</strong></td>
+<td>앱 전체가 Jira에서 동작합니다. 모든 화면이 Jira 안에 있습니다.</td>
+</tr>
+<tr>
+<td><strong>Confluence</strong></td>
+<td>선택</td>
+<td><strong>Confluence 안에는 앱 화면이 없습니다.</strong> Jira 화면(<strong>문서 관리</strong> 탭)이 Confluence 페이지를 검색해 프로젝트·작업에 연결할 때만 Confluence를 사용합니다.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>앱은 Jira에서 여세요.</strong> Confluence에만 설치하면 아무 화면도 나타나지 않습니다. 앱이 Confluence에 화면을 추가하지 않고, Confluence는 Jira 화면의 문서 출처로만 쓰이기 때문입니다.</p>
+</blockquote>
+<hr>
+<h2>1. 설치</h2>
+<ol>
+<li><strong>Jira</strong> 사이트에 <strong>Moves Workforce for Jira</strong>를 설치합니다.</li>
+<li>(선택) 문서 기능을 쓰려면 <strong>같은 사이트의 Confluence</strong>에도 앱을 추가합니다.<ul>
+<li>Confluence가 없어도 새 문서 연결을 제외한 모든 기능이 동작합니다. 이 경우 문서 관리 탭에 「Confluence에 연결되지 않았습니다」 안내가 뜨고 읽기 전용으로 동작합니다.</li>
+</ul>
+</li>
+<li>앱을 설치한 Jira 관리자는 앱 안에서 모든 권한을 자동으로 가집니다.</li>
+</ol>
+<hr>
+<h2>2. Jira에서 사용하기</h2>
+<h3>2.1 앱 열기</h3>
+<p><strong>Jira 앱(Apps) 메뉴 → Moves Workforce</strong></p>
+<p>왼쪽 사이드바가 있는 Jira 전체 페이지로 열립니다. 처음 화면은 <strong>My Work</strong>(내 워크로그)입니다.</p>
+<p>사이드바 메뉴: <strong>My Work</strong>, <strong>마이페이지</strong>, <strong>통합 대시보드</strong>, <strong>프로젝트 관리</strong>, <strong>자원관리</strong>, <strong>워크로그 추출</strong>, <strong>Settings</strong>(관리 메뉴)</p>
+<h3>2.2 심사 준비와 Jira 실행 절차</h3>
+<p>변경 권한이 있는 테스트 사이트와 데이터를 사용합니다. 아래 이름은 설명용 예시이며 기본 제공 데이터 또는 검증 완료 기록이 아닙니다. 실제 사용할 값으로 바꾸세요.</p>
+<table>
+<thead>
+<tr>
+<th>준비 대상</th>
+<th>필요한 접근 또는 설정</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>관리자와 일반 사용자</td>
+<td>앱에 접근할 수 있는 Jira 계정. 일반 사용자는 프로젝트에 추가하기 전에 설정에서 앱 사용자로 등록합니다.</td>
+</tr>
+<tr>
+<td>프로젝트 기준 항목</td>
+<td>사용할 프로젝트 상태·역할·레벨. 일반 설정에서 근무 시간과 통화도 확인합니다.</td>
+</tr>
+<tr>
+<td>Jira 이슈(예: DEMO-12)</td>
+<td>조회 가능한 이슈. 시간 기록에는 시간 추적과 Work On Issues 권한이 필요합니다.</td>
+</tr>
+<tr>
+<td>Confluence 페이지(선택, 예: Demo release design)</td>
+<td>같은 사이트의 Confluence에서 접근 가능한 페이지와 앱의 Confluence 연결이 필요합니다.</td>
+</tr>
+</tbody></table>
+<p>준비되지 않은 항목은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173506595">관리자 초기 설정</a>을 먼저 진행합니다. 프로젝트 인력 등록, Jira 담당자 지정, 작업의 프로젝트 연결은 별개입니다.</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>실행할 동작과 예시</th>
+<th>예상 결과</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 앱 프로젝트 생성</td>
+<td>프로젝트 관리 → 프로젝트 추가. Demo website launch, 등록된 시작 상태, 2026-10-05~2026-10-30 또는 실제 기간을 입력하고 저장합니다.</td>
+<td>목록에서 검색하고 이름을 열어 저장한 기간·상태를 확인합니다. Jira 스페이스를 생성하는 동작은 아닙니다.</td>
+</tr>
+<tr>
+<td>2. 인력 추가</td>
+<td>프로젝트 → User Management → Members → Add User. 등록된 일반 사용자를 추가한 뒤 구성원 목록에서 프로젝트 역할·레벨을 확인하거나 편집합니다.</td>
+<td>구성원이 프로젝트 목록에 보입니다. Jira 이슈 담당자를 지정하는 동작은 아닙니다.</td>
+</tr>
+<tr>
+<td>3. 작업 연결</td>
+<td>프로젝트 → 작업 관리 → 작업 추가. 준비한 이슈의 현재 프로젝트 연결을 확인하고 선택·추가합니다.</td>
+<td>프로젝트 작업 목록에 이슈 키가 보입니다. 다른 앱 프로젝트에 속한 경우 이동 안내부터 확인합니다.</td>
+</tr>
+<tr>
+<td>4. 시간 기록</td>
+<td>추가한 일반 사용자 본인 계정으로 전환한 뒤 My Work → 워크로그 추가. 연결한 이슈, 실제 업무 날짜, 09:00–12:30과 설명을 입력하고 등록합니다.</td>
+<td>앱과 Jira에 해당 사용자가 기록자인 같은 3시간 30분 기록이 보입니다. 같은 업무를 Jira에서 다시 기록하지 않습니다.</td>
+</tr>
+<tr>
+<td>5. 분석 확인</td>
+<td>기록 날짜를 포함하는 기간으로 프로젝트 대시보드·분석 보고서를 엽니다. 비용은 비용 권한과 급여 기준이 준비된 경우 확인합니다.</td>
+<td>기간·인력 및 작업 범위·집계 시각을 확인한 뒤 수치를 비교합니다. 입력 예산과 계산 인건비는 다릅니다.</td>
+</tr>
+</tbody></table>
+<p>동작이 없으면 앱 읽기·쓰기와 해당 Jira 권한을 확인합니다. 시간 저장에 실패하면 오류와 기존 기록을 확인한 뒤 재시도합니다. <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172457998">상세 빠른 시작</a>에서 입력값과 완료 기준을 확인할 수 있습니다.</p>
+<h3>2.3 Jira 작업 화면 안에서</h3>
+<p>Jira 작업 패널은 설치된 앱 버전과 작업의 프로젝트 연결 상태에 따라 달라집니다. 패널이 보이지 않으면 <strong>Jira → 앱 → Moves Workforce → My Work</strong>에서 시간을 기록하고 프로젝트 화면에서 결과를 확인합니다. 아래 Confluence 문서 연결 기능을 시험하는 데 작업 패널은 필수 조건이 아닙니다.</p>
+<h3>2.4 관리</h3>
+<p>사이드바 → <strong>Settings</strong> (Jira 관리자와 권한을 받은 사용자):
+일반 설정, 인력, 팀, 역할, 직급, 스킬, 프로젝트 상태, 권한 세트, 공휴일, 저장 공간 사용량</p>
+<hr>
+<h2>3. Confluence와 함께 쓰기 (선택)</h2>
+<p>Confluence에는 <strong>앱 화면이 없습니다.</strong> Confluence 관련 기능은 Jira 프로젝트의 <strong>문서 관리</strong> 탭에 있습니다.</p>
+<h3>3.1 위치</h3>
+<p><strong>Jira → 앱(Apps) → Moves Workforce → 프로젝트 관리 → (프로젝트) → 문서 관리 탭</strong></p>
+<h3>3.2 할 수 있는 일</h3>
+<ol>
+<li><strong>문서 연결</strong>을 누릅니다.</li>
+<li>Confluence 페이지를 검색해(스페이스로 거르거나 본문까지 검색 가능) 한 개 이상 고릅니다.</li>
+<li>(선택) 연결할 프로젝트 작업을 고릅니다. 고르지 않으면 프로젝트 자체에 「프로젝트 문서」로 연결됩니다.</li>
+<li>(선택) 분류(예: 「설계」, 「테스트 계획」)를 고르고 저장합니다.</li>
+<li>탭에서 다음을 볼 수 있습니다.<ul>
+<li><strong>문서 보기</strong>: 연결한 페이지별 스페이스, 분류, 연결된 작업, 최종 수정일, 상태</li>
+<li><strong>작업 보기</strong>: 작업별로 연결된 문서. 문서가 없는 작업만 걸러 볼 수 있습니다.</li>
+<li><strong>요약 카드</strong>: 연결 문서 수, 문서 없는 작업, 오래된 문서, 끊긴 링크, 누락된 필수 분류</li>
+</ul>
+</li>
+</ol>
+<p>분류와 「오래된 문서」 기준 일수는 <strong>Settings → 일반 설정 → 문서</strong>에서 정합니다.</p>
+<h3>3.3 필요한 접근 권한</h3>
+<ul>
+<li>앱을 사용하는 Jira 사이트와 같은 사이트의 Confluence 원본 페이지에 접근할 수 있는 계정을 사용합니다.</li>
+<li>앱의 Project 읽기 권한으로 프로젝트 문서를 조회합니다. 연결·분류 변경·연결 해제에는 Project 쓰기 권한이 필요합니다.</li>
+<li>Jira 작업에 문서를 연결하려면 해당 작업의 편집 권한도 필요합니다.</li>
+<li>가이드를 별도의 문서 사이트에 게시해도 다른 Jira 사이트의 앱과 연결되지는 않습니다. 검색 대상은 앱이 설치된 Jira 사이트에 연결된 Confluence입니다.</li>
+</ul>
+<h3>3.4 심사자가 따라 할 절차와 예상 결과</h3>
+<p>준비한 프로젝트, 프로젝트에 연결된 Jira 이슈와 같은 사이트의 Confluence 페이지로 진행합니다. 별도 문서 사이트에만 있는 페이지는 검색 대상으로 사용하지 않습니다.</p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>실행할 동작</th>
+<th>예상 결과와 확인</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 페이지 찾기</td>
+<td>프로젝트 → 문서 관리 → 문서 연결. 문서 영역에서 스페이스·제목 또는 페이지 URL로 검색하고 결과를 선택합니다.</td>
+<td>접근 가능한 페이지가 검색되고 선택 수·제목이 의도와 맞습니다. 결과가 없으면 같은 계정으로 원본을 직접 엽니다.</td>
+</tr>
+<tr>
+<td>2. 프로젝트 연결</td>
+<td>작업을 비워 두고 준비된 분류를 선택하거나 미분류로 저장합니다.</td>
+<td>문서 보기에 특정 이슈 링크가 아닌 프로젝트 문서로 나타납니다.</td>
+</tr>
+<tr>
+<td>3. 이슈 연결</td>
+<td>다시 문서 연결을 열어 페이지와 준비한 작업을 선택해 저장합니다.</td>
+<td>작업 보기의 해당 이슈에 링크가 보입니다. 여러 작업을 처리했다면 작업별 성공·실패를 확인합니다.</td>
+</tr>
+<tr>
+<td>4. 원본 열기</td>
+<td>문서 제목을 누릅니다.</td>
+<td>원래 Confluence 페이지가 열립니다. 앱이 복사하거나 본문을 편집한 것이 아닙니다.</td>
+</tr>
+<tr>
+<td>5. 분류 변경</td>
+<td>문서 행의 분류 변경에서 대상 프로젝트·작업 연결을 선택해 저장합니다.</td>
+<td>선택한 연결의 분류가 변경됩니다. 다른 연결은 따로 확인합니다.</td>
+</tr>
+<tr>
+<td>6. 테스트 연결 해제</td>
+<td>연결 해제에서 대상 연결을 확인한 뒤 저장합니다.</td>
+<td>해당 대상에서 링크가 사라지고 Confluence 원본은 그대로 존재합니다.</td>
+</tr>
+<tr>
+<td>7. 일반 사용자 확인</td>
+<td>프로젝트 읽기는 있고 쓰기는 없는 사용자의 본인 계정으로 조회합니다.</td>
+<td>허용된 문서는 조회 가능하고 변경 동작은 사용할 수 없습니다. 원본 공개 범위는 해당 사용자의 Confluence 권한을 따릅니다.</td>
+</tr>
+</tbody></table>
+<p>실패한 이슈 연결은 Edit Issues와 문서 개수 제한을 확인한 뒤 해당 대상만 재시도합니다. 정상·오래됨·끊김·확인 불가는 현재 사용자의 문서 정보 확인 상태이며 끊김만으로 삭제를 단정하지 않습니다. <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718778">문서 가이드</a>에 프로젝트 문서와 작업 문서의 별도 예시가 있습니다.</p>
+<h3>3.5 문서 상태와 연결 문제 확인</h3>
+<ul>
+<li><strong>Healthy</strong>: 현재 사용자에게 접근 가능한 페이지입니다.</li>
+<li><strong>Stale</strong>: 관리자가 정한 기준 기간보다 오래 갱신되지 않았습니다.</li>
+<li><strong>Broken</strong>: 삭제되었거나 현재 사용자가 접근할 수 없는 페이지일 수 있습니다. 삭제로 단정하기 전에 원본 페이지를 확인합니다.</li>
+<li><strong>Unknown</strong>: 최신 정보를 확인하지 못했습니다. 정상 또는 문서 없음이라는 뜻이 아닙니다.</li>
+<li>Confluence를 사용할 수 없으면 저장된 문서 제목은 보일 수 있지만 검색과 신규 연결은 사용할 수 없습니다. 같은 사이트의 Confluence 설치와 사용자 접근 권한을 관리자에게 확인합니다.</li>
+<li>일부 Jira 작업만 실패하면 실패한 작업의 편집 권한과 문서 수 제한을 확인한 뒤 재시도합니다.</li>
+</ul>
+<h3>3.6 앱이 Confluence에 접근하는 방식</h3>
+<ul>
+<li>권한 범위: <code>search:confluence</code> 하나뿐입니다. 앱은 Confluence 검색 API(<code>/wiki/rest/api/search</code>)만 호출합니다.</li>
+<li>호출은 <strong>현재 사용자의 권한으로</strong> 실행됩니다. 사용자는 Confluence에서 원래 볼 수 있는 페이지만 봅니다.</li>
+<li>앱은 Confluence에 아무것도 <strong>쓰지 않습니다.</strong> 연결 정보는 Jira 쪽에 저장됩니다(Jira 이슈 속성, 프로젝트 문서는 Forge 저장소).</li>
+<li>사이트에 Confluence가 없으면 기존 연결은 계속 보이고, 검색과 새 연결은 안내와 함께 비활성화됩니다.</li>
+</ul>
+<hr>
+<h2>4. 데이터·호스팅</h2>
+<ul>
+<li>앱 백엔드는 Atlassian Forge에서 동작합니다. 인력 관리 데이터와 문서 연결 기록은 Forge SQL, Forge Key-Value Store와 Jira 이슈 속성을 사용합니다.</li>
+<li>Confluence 접근은 읽기 전용입니다. 앱은 Confluence 페이지를 생성·수정·삭제하지 않습니다. 연결 표시와 상태 확인을 위해 연결 메타데이터와 저장된 페이지 정보를 보관합니다.</li>
+<li>설정에 따라 클라이언트 오류 모니터링에 Sentry를 사용할 수 있습니다. manifest에 Sentry 주소가 허용되어 있으며 클라이언트의 기본 PII 수집은 꺼져 있습니다. 공식 정책은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931/Privacy+Security+Policy">Privacy &amp; Security Policy</a>를 참고합니다. 이 사용 안내가 정책을 대신하지는 않습니다.</li>
+<li>이 문서 연결 절차에 별도의 타사 계정은 필요하지 않습니다. 심사자는 본인의 Jira·Confluence 접근 권한과 위에 설명한 앱 권한이 필요합니다.</li>
+</ul>
+<h2>5. 가이드와 지원</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">영어 사용자 가이드</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">한국어 사용자 가이드</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943/Product+Support+service+level+agreement+SLA">지원 서비스 수준 안내</a></li>
+</ul>

@@ -1,0 +1,361 @@
+Browser tab: 961899698, Title: "Moves Approval - Moves Approval - Confluence", URL: "https://dmove-addons.atlassian.net/wiki/spaces/MA/overview".
+1 AXWebArea Moves Approval - Moves Approval - Confluence, URL: dmove-addons.atlassian.net/wiki/spaces/MA/overview
+	2 container com-atlassian-confluence
+		3 container full-height-container
+			4 container confluence-ui
+				57 container
+					58 text Skip to:
+					59 content list
+						60 link Description: Top Bar, Value: dmove-addons.atlassian.net/wiki/spaces/MA/overview#_r62_
+						61 link Description: Sidebar, Value: dmove-addons.atlassian.net/wiki/spaces/MA/overview#side-navigation
+						62 link Description: Main Content, Value: dmove-addons.atlassian.net/wiki/spaces/MA/overview#AkMainContent
+				5 container unsafe-design-system-page-layout-root
+					63 container
+						64 button 사이드바 접기
+						65 pop up button (collapsed) 사이트 또는 앱 전환, Secondary Actions: Expand
+						66 link Description: Confluence, Value: dmove-addons.atlassian.net/wiki
+						67 container
+							68 combo box (collapsed, settable) Description: 검색, Secondary Actions: Expand
+							69 text 텍스트 쿼리를 사용하는 고급 검색으로 이동하려면 검색 후에 Enter를 누르세요
+							70 button 앱 연결 열기
+						71 pop up button (collapsed) Description: 만들기, Secondary Actions: Expand
+						72 container Actions
+							73 content list
+								74 button Rovo에게 질문하기
+									75 text Rovo에게 질문하기
+								76 pop up button (collapsed) 알림, Secondary Actions: Expand
+								77 button 도움말
+								78 pop up button (collapsed) tom@dmove.kr, Secondary Actions: Expand
+									79 text tom@dmove.kr
+					80 container Description: Sidebar, ID: side-navigation
+						81 content list
+							82 container
+								83 link Description: 추천, Value: dmove-addons.atlassian.net/wiki/home
+							84 container
+								85 pop up button (collapsed) 최근, Secondary Actions: Expand
+							86 container
+								87 pop up button (collapsed) 별표 표시, Secondary Actions: Expand
+							88 container
+								89 pop up button (collapsed) 스페이스, Secondary Actions: Expand
+							90 container
+								91 button (collapsed) 앱, ID: :r78:, Secondary Actions: Expand
+						92 container
+							93 link Description: Moves Approval, Value: dmove-addons.atlassian.net/wiki/spaces/MA/overview?homepageId=203818508
+							94 pop up button (collapsed) 추가 작업, Secondary Actions: Expand
+							95 button 맨 위로, ID: scroll-to-top-button
+							96 button (expanded) 콘텐츠, ID: :r7h:, Secondary Actions: Collapse
+							97 pop up button (collapsed) 만들기 만들기, ID: contextual-create-content-button, Secondary Actions: Expand
+								98 image 만들기
+								99 text 만들기
+							100 pop up button (collapsed) 보기 변경, Secondary Actions: Expand
+							101 content list
+								102 container contentTreeSearch
+									103 text field (settable) 제목으로 검색
+									104 text 입력하는 대로 결과가 업데이트됩니다.
+								105 content list
+									106 link Description: English Guide, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643/English+Guide
+									107 link Description: 한국어 가이드, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241
+									108 link Description: p 초안, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/edit-v2/204537917?draftShareId=14c29e9c-fb57-4483-9b85-8001677d7a54
+								109 container
+									110 container
+										111 button 만들기
+						112 content list
+							113 container
+								114 link Description: Company hub , (opens new window), Value: dmove-addons.atlassian.net/wiki/company-hub
+								115 container Hub
+							116 container
+								117 link Description: 팀 , (opens new window), Value: home.atlassian.com/o/de9f907e-4da9-477e-a3f8-913524242dcb/people?cloudId=e5ae7a68-7ea0-4167-b829-cd3d0b230ac4&xpis=eyJicmlkZ2UiOiJnbG9iYWxTaG9ydGN1dHMiLCJpZCI6IjE3OTEyNjMyODk2MjQiLCJzb3VyY2UiOiJjb25mbHVlbmNlIn0%3D
+								118 pop up button (collapsed) 메뉴 열기, Secondary Actions: Expand
+							119 container
+								120 pop up button (collapsed) 더 보기, Secondary Actions: Expand
+						121 container
+							122 slider (settable, integer) 사이드 탐색 드래그 핸들, Value: 420
+							123 text 사이드 탐색 드래그 핸들
+					124 container content-body
+						125 container object-header-container-id
+							238 pop up button (collapsed) Description: 이동 경로, ID: breadcrumbs-dropdown-chevron-button, Secondary Actions: Expand
+								239 text Moves Approval
+							322 container 페이지의 활성 사용자
+								323 content list 페이지의 활성 사용자
+									324 button Tom Kim (보는 중)
+										325 image Tom Kim
+							240 link Description: 이 콘텐츠 편집, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/edit-v2/203818508, ID: editPageLink
+							126 container
+								326 button 공유, 공개 - 이 스페이스의 모든 사용자가 편집 가능
+								128 button 링크 복사
+							129 pop up button (collapsed) 추가 작업, ID: more-actions-trigger, Secondary Actions: Expand
+						130 container
+							131 heading Moves Approval 팀 버튼, Value: 1, ID: title-text
+								132 text Moves Approval
+								241 pop up button 팀 버튼
+									242 image 팀 버튼
+							133 container content
+								327 container main-content
+									328 container
+										329 heading Moves Approval 가이드 · Documentation, Value: 2, ID: Moves-Approval-가이드-·-Documentation
+											330 text Moves Approval 가이드 · Documentation
+										331 button a24cd1f8-d1dd-48b0-9272-5933dfcd31e4
+											332 image 복사
+										333 text Confluence 문서의 검토 순서를 정하고, 승인한 버전과 결정 이력을 함께 남기세요. Organize document reviews in Confluence and keep the approved version and decision history together.
+										334 heading 사용자 가이드 · User guides, Value: 2, ID: 사용자-가이드-·-User-guides
+											335 text 사용자 가이드 · User guides
+										336 button 0a70fbde-6e80-434f-ac9a-f3216160920a
+											337 image 복사
+										338 table
+											339 row
+												340 cell
+													341 text 한국어
+													342 button 열에 적용한 정렬이 없습니다
+												343 cell
+													344 text English
+													345 button 열에 적용한 정렬이 없습니다
+											346 row
+												347 cell
+													348 container
+														349 link Description: 한국어 가이드, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241
+														350 text  — 시작부터 운영까지
+												351 cell
+													352 container
+														353 link Description: English Guide, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643
+														354 text  — from first approval to administration
+											355 row
+												356 cell
+													357 container
+														358 link Description: 빠른 시작, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205225985, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205225985
+														359 text  — 첫 문서를 두 단계로 승인하기
+												360 cell
+													361 container
+														362 link Description: Quick start, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205389825, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205389825
+														363 text  — complete a two-step approval
+											364 row
+												365 cell
+													366 link Description: 설치와 사용 준비, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122
+												367 cell
+													368 link Description: Installation and readiness, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181
+										369 heading 자주 찾는 업무 · Common tasks, Value: 2, ID: 자주-찾는-업무-·-Common-tasks
+											370 text 자주 찾는 업무 · Common tasks
+										371 button fdfb246e-7b64-4598-a916-3265d5187dca
+											372 image 복사
+										373 table
+											374 row
+												375 cell
+													376 text 하고 싶은 일 · Task
+													377 button 열에 적용한 정렬이 없습니다
+												378 cell
+													379 text 한국어
+													380 button 열에 적용한 정렬이 없습니다
+												381 cell
+													382 text English
+													383 button 열에 적용한 정렬이 없습니다
+											384 row
+												385 cell
+													386 text 문서 승인 요청 · Request review
+												387 cell
+													388 link Description: 페이지 승인 요청, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570674, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570674
+												389 cell
+													390 link Description: Request page approval, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472413, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472413
+											391 row
+												392 cell
+													393 text 내 차례 처리 · Handle my turn
+												394 cell
+													395 link Description: 승인 업무함, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832779, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832779
+												396 cell
+													397 link Description: Approval inbox, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832803, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832803
+											398 row
+												399 cell
+													400 text 문서에 결과 표시 · Show results in the page
+												401 cell
+													402 link Description: 문서의 결재란, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570692, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570692
+												403 cell
+													404 link Description: Approval stamp box, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570724, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570724
+											405 row
+												406 cell
+													407 text 결정 증빙 보관 · Keep decision evidence
+												408 cell
+													409 link Description: 결재 증명서 PDF, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204538048, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204538048
+												410 cell
+													411 link Description: Approval certificate PDF, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205357104, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205357104
+										412 heading 관리자 가이드 · Administration, Value: 2, ID: 관리자-가이드-·-Administration
+											413 text 관리자 가이드 · Administration
+										414 button 010d02eb-8be9-4aa0-ad96-dae09caf3713
+											415 image 복사
+										416 text 새 사이트는 초기 설정부터 시작하고, 필요한 설정의 상세 문서로 이동하세요. Start with setup for a new site, then open the guide for the setting you need.
+										417 content list
+											418 container
+												419 AXListMarker • 
+												420 link Description: 관리자 초기 설정, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570700, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570700
+												421 text  · 
+												422 link Description: Administrator setup, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537962, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537962
+											423 container
+												424 AXListMarker • 
+												425 link Description: 전역 정책, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205193221, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205193221
+												426 text  · 
+												427 link Description: Global policy, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832821, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832821
+											428 container
+												429 AXListMarker • 
+												430 link Description: 적용 스페이스, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832787, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832787
+												431 text  · 
+												432 link Description: Enabled spaces, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205389833, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205389833
+											433 container
+												434 AXListMarker • 
+												435 link Description: 결재선, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832795, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832795
+												436 text  · 
+												437 link Description: Approval lines, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205160463, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205160463
+											438 container
+												439 AXListMarker • 
+												440 link Description: 사용자와 관리자, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472480, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472480
+												441 text  · 
+												442 link Description: Users and administrators, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205488131, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205488131
+											443 container
+												444 AXListMarker • 
+												445 link Description: 데이터 보관과 내보내기, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205357057, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205357057
+												446 text  · 
+												447 link Description: Retention and export, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205422605, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205422605
+										448 heading 지원과 심사 · Support and review, Value: 2, ID: 지원과-심사-·-Support-and-review
+											449 text 지원과 심사 · Support and review
+										450 button 6447e2b2-92bf-4bac-966c-a0f4a83f1640
+											451 image 복사
+										452 content list
+											453 container
+												454 AXListMarker • 
+												455 link Description: 문제 해결과 지원, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378
+												456 text  · 
+												457 link Description: Troubleshooting and support, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741
+											458 container
+												459 AXListMarker • 
+												460 link Description: 데이터·보안·개인정보, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386
+												461 text  · 
+												462 link Description: Data, security, and privacy, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427
+											463 container
+												464 AXListMarker • 
+												465 link Description: Marketplace 심사 안내, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394
+												466 text  · 
+												467 link Description: Marketplace reviewer walkthrough, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751
+										468 heading 기존 안내와 공간 활동 · Previous guide and space activity, Value: 2, ID: 기존-안내와-공간-활동-·-Previous-guide-and-space-activity
+											469 text 기존 안내와 공간 활동 · Previous guide and space activity
+										470 button d7cbfdbf-1c4d-411f-a899-1c5d3513d741
+											471 image 복사
+										472 text User guides · 사용자 가이드
+										473 text Moves Approval helps Confluence Cloud teams request and record page or content approvals. Select a language to open the guides you need.
+										474 content list
+											475 container
+												476 AXListMarker • 
+												477 link Description: English guide, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643
+											478 container
+												479 AXListMarker • 
+												480 link Description: 한국어 가이드, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241
+										481 heading Installation and Marketplace review · 설치와 심사, Value: 3, ID: Installation-and-Marketplace-review-·-설치와-심사
+											482 text Installation and Marketplace review · 설치와 심사
+										483 content list
+											484 container
+												485 AXListMarker • 
+												486 link Description: English installation and setup, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181
+											487 container
+												488 AXListMarker • 
+												489 link Description: English Marketplace review guide, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751
+											490 container
+												491 AXListMarker • 
+												492 link Description: 한국어 설치 가이드, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122
+											493 container
+												494 AXListMarker • 
+												495 link Description: 한국어 Marketplace 심사 안내, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394
+										496 heading Security and support · 보안과 지원, Value: 3, ID: Security-and-support-·-보안과-지원
+											497 text Security and support · 보안과 지원
+										498 content list
+											499 container
+												500 AXListMarker • 
+												501 link Description: Data, security, and privacy, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427
+											502 container
+												503 AXListMarker • 
+												504 link Description: FAQ and troubleshooting, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741
+											505 container
+												506 AXListMarker • 
+												507 link Description: 데이터·보안·개인정보, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386
+											508 container
+												509 AXListMarker • 
+												510 link Description: FAQ와 문제 해결, Help: https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378
+												511 text d content
+										512 text This list below will automatically update each time somebody in your space creates or updates content.
+										513 content list
+											514 container
+												515 AXListMarker • 
+												516 link Description: English Guide, Help: Moves Approval, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643/English+Guide
+												517 text 2026년 10월 6일
+												518 link Description: Tom Kim, Value: dmove-addons.atlassian.net/wiki/display/~712020%3A4c9f849c-2c82-49af-8dc9-568b8156c2ae
+												519 text  님이 기여함
+											520 container
+												521 AXListMarker • 
+												522 link Description: Moves Approval, Value: dmove-addons.atlassian.net/wiki/spaces/MA/overview
+												523 text 2026년 10월 6일
+												524 link Description: Tom Kim, Value: dmove-addons.atlassian.net/wiki/display/~712020%3A4c9f849c-2c82-49af-8dc9-568b8156c2ae
+												525 text  님이 기여함
+											526 container
+												527 AXListMarker • 
+												528 link Description: 한국어 가이드, Help: Moves Approval, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241
+												529 text 2026년 10월 6일
+												530 link Description: Tom Kim, Value: dmove-addons.atlassian.net/wiki/display/~712020%3A4c9f849c-2c82-49af-8dc9-568b8156c2ae
+												531 text  님이 기여함
+											532 container
+												533 AXListMarker • 
+												534 link Description: Approval stamp box, Help: Moves Approval, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570724/Approval+stamp+box
+												535 text 2026년 10월 6일
+												536 link Description: Tom Kim, Value: dmove-addons.atlassian.net/wiki/display/~712020%3A4c9f849c-2c82-49af-8dc9-568b8156c2ae
+												537 text  님이 기여함
+											538 container
+												539 AXListMarker • 
+												540 link Description: Changes, withdrawal, resubmission, and version history, Help: Moves Approval, Value: dmove-addons.atlassian.net/wiki/spaces/MA/pages/205193233/Changes+withdrawal+resubmission+and+version+history
+												541 text 2026년 10월 6일
+												542 link Description: Tom Kim, Value: …
+												543 text  님이 기여함
+											544 container
+												545 AXListMarker • 
+												546 link Description: Approval inbox, Help: Moves Approval, Value: …
+												547 text 2026년 10월 6일
+												548 link Description: Tom Kim, Value: …
+												549 text  님이 기여함
+											550 container
+												551 AXListMarker • 
+												552 link Description: Quick start — approve your first page, Help: Moves Approval, Value: …
+												553 text 2026년 10월 6일
+												554 link Description: Tom Kim, Value: …
+												555 text  님이 기여함
+											556 container
+												557 AXListMarker • 
+												558 link Description: 결재 증명서 PDF, Help: Moves Approval, Value: …
+												559 text 2026년 10월 6일
+												560 link Description: Tom Kim, Value: …
+												561 text  님이 기여함
+											562 container
+												563 AXListMarker • 
+												564 link Description: 승인·반려와 일괄 승인, Help: Moves Approval, Value: …
+												565 text 2026년 10월 6일
+												566 link Description: Tom Kim, Value: …
+												567 text  님이 기여함
+											568 container
+												569 AXListMarker • 
+												570 link Description: 영역 승인, Help: Moves Approval, Value: …
+												571 text 2026년 10월 6일
+												572 link Description: Tom Kim, Value: …
+												573 text  님이 기여함
+										574 button 최근 업데이트 더 보기
+										575 heading Contributors, Value: 2
+											576 text Contributors
+										577 button 08a64e1e-0fdd-40f8-aac1-048c955f1f5a
+											578 image 복사
+										579 image info panel
+										580 text This list below will automatically update each time somebody in your space creates or updates content.
+										581 link Description: Tom Kim , (opens new window), Value: …
+							582 button 모든 댓글 보기
+							583 button 세부 정보 패널 열기
+							319 container
+								320 button Rovo Chat 열기
+									321 text Rovo Chat 열기
+		50 container
+			51 heading Flag notifications. Press Escape to dismiss., Value: 2
+				52 text Flag notifications. Press Escape to dismiss.
+			53 container
+				54 heading 콘텐츠 삭제됨, Value: 2
+					55 text 콘텐츠 삭제됨
+				56 button Dismiss
+
+The focused UI element is 1 AXWebArea Moves Approval - Moves Approval - Confluence, URL: dmove-addons.atlassian.net/wiki/spaces/MA/overview

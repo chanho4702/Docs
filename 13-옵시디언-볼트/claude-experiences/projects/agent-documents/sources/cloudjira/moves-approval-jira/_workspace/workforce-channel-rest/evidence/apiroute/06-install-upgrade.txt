@@ -1,0 +1,11 @@
+
+Upgrading your app on the Atlassian site.
+
+Your app will be upgraded and additionally exchange data with the following urls:
+- 1bd06760-bb28-4180-a231-23e9029c7ea7.hello.atlassian-dev.net
+- 1bd06760-bb28-4180-a231-23e9029c7ea7.hello.atlassian.net
+
+Upgrading your app in DEV moves-rms...
+✔ Upgrade complete!
+
+Your app in the DEV moves-rms environment is now the latest in Jira on ]8;;tom-chkim-dev.atlassian.nettom-chkim-dev.atlassian.net]8;;.

@@ -1,0 +1,209 @@
+<h2>Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Required?</th>
+<th>What the app does there</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Jira</strong></td>
+<td><strong>Required</strong></td>
+<td>The whole app runs here. All screens are inside Jira.</td>
+</tr>
+<tr>
+<td><strong>Confluence</strong></td>
+<td>Optional</td>
+<td><strong>No screen inside Confluence.</strong> Jira uses Confluence only to search pages and link them to projects and work items (the <strong>Document Management</strong> tab in Jira).</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Please open the app from Jira.</strong> If you install the app only on Confluence, nothing appears there, because the app adds no Confluence module. Confluence is used only as a document source for the Jira screens.</p>
+</blockquote>
+<hr>
+<h2>1. Installation</h2>
+<ol>
+<li>Install <strong>Moves Workforce for Jira</strong> on the <strong>Jira</strong> site.</li>
+<li>(Optional) To use the document features, also add the app to <strong>Confluence on the same site</strong>.<ul>
+<li>Without Confluence, every feature still works except linking new documents. The Document Management tab shows a &quot;Not connected to Confluence&quot; notice and runs in read-only mode.</li>
+</ul>
+</li>
+<li>The Jira administrator who installs the app gets full permissions in the app automatically.</li>
+</ol>
+<hr>
+<h2>2. Using the app in Jira</h2>
+<h3>2.1 Opening the app</h3>
+<p><strong>Jira Apps menu → Moves Workforce</strong></p>
+<p>The app opens as a full Jira page with a left sidebar. The default page is <strong>My Work</strong> (my worklogs).</p>
+<p>Sidebar menus: <strong>My Work</strong>, <strong>My Page</strong>, <strong>Portfolio Dashboard</strong>, <strong>Project Management</strong>, <strong>Resource</strong>, <strong>Worklog Export</strong>, and <strong>Settings</strong> (administration).</p>
+<h3>2.2 Reviewer preparation and Jira walkthrough</h3>
+<p>Use a test site and data you are authorized to change. The names below are examples, not preloaded data or a report of completed testing. Replace them with your own values.</p>
+<table>
+<thead>
+<tr>
+<th>Prepare</th>
+<th>Required access or configuration</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Administrator and ordinary user</td>
+<td>Jira accounts with app access; register the ordinary user in Settings before adding them to a project.</td>
+</tr>
+<tr>
+<td>Project reference options</td>
+<td>A usable project status, role, and level; review working hours and currency in General Settings.</td>
+</tr>
+<tr>
+<td>Jira issue, such as DEMO-12</td>
+<td>The tester can browse it; time tracking and Work On Issues are available for worklogging.</td>
+</tr>
+<tr>
+<td>Confluence page, such as Demo release design (optional)</td>
+<td>An accessible page in Confluence on the same site, with the app connected to Confluence.</td>
+</tr>
+</tbody></table>
+<p>Follow the <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751476">administrator setup guide</a> if these prerequisites are missing. Keep member registration, Jira assignment, and issue-to-project linking separate.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Action and example</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Create the app project</td>
+<td>Project Management → add project. Enter Demo website launch, a configured starting status, and 2026-10-05 through 2026-10-30, or your own dates. Save.</td>
+<td>Search the list, open the project name, and verify its saved dates and status. This does not create a Jira space.</td>
+</tr>
+<tr>
+<td>2. Add a member</td>
+<td>Project → User Management → Members → Add User. Add the registered ordinary user, then check or edit the project role/level in the member list.</td>
+<td>The member appears in the project list. This does not assign a Jira issue.</td>
+</tr>
+<tr>
+<td>3. Link work</td>
+<td>Project → Work Management → Add work. Select the prepared Jira issue and review its current project relationship before adding it.</td>
+<td>Its key appears in the project&#39;s work list. Review any move notice when an issue belongs to another app project.</td>
+</tr>
+<tr>
+<td>4. Record time</td>
+<td>Switch to the added member&#39;s own account, then My Work → add worklog. Select the linked issue, actual work date, 09:00–12:30, and an activity description; submit.</td>
+<td>The app and Jira show that member as the author of the same 3 hours 30 minutes entry. Do not enter the same work again in Jira.</td>
+</tr>
+<tr>
+<td>5. Review analysis</td>
+<td>Open the project dashboard and analysis/report views with a period covering the entry. Use cost views only with cost access and a configured salary basis.</td>
+<td>Check period, member/issue scope, and aggregation time before comparing figures. A saved budget is distinct from calculated labor cost.</td>
+</tr>
+</tbody></table>
+<p>If an action is missing, check app read/write access and the relevant Jira permission. If saving time fails, check the error and existing records before retrying. The <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751497">detailed quick start</a> explains the input fields and completion checks.</p>
+<h3>2.3 Inside a Jira work item</h3>
+<p>Jira work-item panels depend on the installed app version and the work item&#39;s project link. If a panel is unavailable, use <strong>Jira → Apps → Moves Workforce → My Work</strong> to record time and the project screens to review results. Panel availability is not a prerequisite for testing the Confluence document workflow below.</p>
+<h3>2.4 Administration</h3>
+<p>Sidebar → <strong>Settings</strong> (Jira administrators and users given permission):
+general settings, users, teams, roles, levels, skills, project statuses, permission sets, public holidays, and storage usage.</p>
+<hr>
+<h2>3. Using Confluence with the app (optional)</h2>
+<p>Confluence has <strong>no app screen</strong>. The Confluence features live in the <strong>Document Management</strong> tab of a Jira project.</p>
+<h3>3.1 Where</h3>
+<p><strong>Jira → Apps → Moves Workforce → Project Management → (a project) → Document Management tab</strong></p>
+<h3>3.2 What you can do</h3>
+<ol>
+<li>Click <strong>Link documents</strong>.</li>
+<li>Search Confluence pages (filter by space, optionally search page content). Select one or more pages.</li>
+<li>(Optional) Choose the project work items to link them to. If you choose none, the pages are linked to the project itself as &quot;Project documents&quot;.</li>
+<li>(Optional) Choose a category (for example &quot;Design&quot; or &quot;Test plan&quot;) and save.</li>
+<li>The tab then shows:<ul>
+<li><strong>Documents view</strong>: linked pages with space, category, linked work items, last modified date, and status.</li>
+<li><strong>Work items view</strong>: each work item with its linked documents. You can filter work items that have no documents.</li>
+<li><strong>Summary cards</strong>: number of linked documents, work items without documents, outdated documents, broken links, and missing required categories.</li>
+</ul>
+</li>
+</ol>
+<p>Categories and the &quot;outdated document&quot; threshold are set in <strong>Settings → General Settings → Documents</strong>.</p>
+<h3>3.3 Access requirements</h3>
+<ul>
+<li>Use an account with access to the Jira site and the source Confluence pages on that same site.</li>
+<li>App Project read permission allows viewing project documents. Project write permission is required to link, classify, or unlink them.</li>
+<li>Linking to a Jira work item also requires permission to edit that item.</li>
+<li>Publishing this guide in a documentation site does not connect that site to another Jira site&#39;s app. Search uses the Confluence product associated with the app&#39;s Jira site.</li>
+</ul>
+<h3>3.4 Reviewer walkthrough and expected results</h3>
+<p>Continue with the prepared project, linked Jira issue, and same-site Confluence page. Do not use a page hosted only on a separate documentation site.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Action</th>
+<th>Expected result and check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Find the page</td>
+<td>Project → Document Management → Link documents. In Documents, search by space/title or page URL and check the result.</td>
+<td>An accessible page appears and its selected count/title matches your intention. If empty, open the original page using the same account.</td>
+</tr>
+<tr>
+<td>2. Link to the project</td>
+<td>Leave Work items empty; choose an available category or leave uncategorized, then save.</td>
+<td>Documents view shows the page as a project document, rather than as an issue-specific link.</td>
+</tr>
+<tr>
+<td>3. Link to the issue</td>
+<td>Reopen Link documents, select the page, and choose the prepared issue in Work items before saving.</td>
+<td>Work items view shows a document link on that issue. Inspect per-issue success/failure results for multi-item operations.</td>
+</tr>
+<tr>
+<td>4. Open the source</td>
+<td>Click the document title.</td>
+<td>The original Confluence page opens; the app has not created a copy or edited its content.</td>
+</tr>
+<tr>
+<td>5. Change the category</td>
+<td>Use the row&#39;s category action and select the intended project/issue relationship. Save.</td>
+<td>The selected relationship displays the new category. Other relationships must be checked separately.</td>
+</tr>
+<tr>
+<td>6. Unlink a test relationship</td>
+<td>Use Unlink and confirm the target relationship before saving.</td>
+<td>That link disappears from its target; the original page still exists in Confluence.</td>
+</tr>
+<tr>
+<td>7. Check ordinary-user access</td>
+<td>Repeat viewing with project read but without project write; use that user&#39;s own account.</td>
+<td>Permitted documents are readable, mutation actions are unavailable, and Confluence visibility still follows that user&#39;s source-page access.</td>
+</tr>
+</tbody></table>
+<p>For failed issue links, check Edit Issues and per-issue document limits before retrying only those targets. Healthy/Stale/Broken/Unknown describe the current user&#39;s metadata check; Broken alone is not proof of deletion. The <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751465">document guide</a> includes separate worked examples for project and work-item documents.</p>
+<h3>3.5 Status and connection troubleshooting</h3>
+<ul>
+<li><strong>Healthy</strong>: the page is currently accessible to you.</li>
+<li><strong>Stale</strong>: the last update exceeds the administrator&#39;s configured threshold.</li>
+<li><strong>Broken</strong>: the page may have been deleted or may be inaccessible to the current user; check the original page before assuming deletion.</li>
+<li><strong>Unknown</strong>: current metadata could not be checked. It does not mean the document is healthy or absent.</li>
+<li>If Confluence is unavailable, saved document titles may still be visible. Searching and new linking are unavailable; ask the site administrator to check the same-site Confluence installation and user access.</li>
+<li>If only some Jira work-item updates fail, check editing permission and document limits for each failed item before retrying.</li>
+</ul>
+<h3>3.6 How the app accesses Confluence</h3>
+<ul>
+<li>Scope: <code>search:confluence</code> only. The app calls only the Confluence search API (<code>/wiki/rest/api/search</code>).</li>
+<li>Calls run <strong>as the current user</strong>. Users see only the pages they already have permission to view in Confluence.</li>
+<li>The app does <strong>not</strong> write to Confluence. Link information is stored on the Jira side: as Jira issue properties, or in Forge storage for project-level documents.</li>
+<li>Without Confluence on the site: existing links remain visible, and searching or adding new links is disabled with a notice.</li>
+</ul>
+<hr>
+<h2>4. Data and hosting</h2>
+<ul>
+<li>The application backend runs on Atlassian Forge. Workforce data and document-link records use Forge SQL, Forge Key-Value Store, and Jira issue properties.</li>
+<li>Confluence access is read-only: the app does not create, edit, or delete Confluence pages. It stores link metadata and saved page details for displaying relationships and checking status.</li>
+<li>Client error monitoring can use Sentry when configured. The app manifest allows Sentry endpoints, and the client disables default PII collection. See the <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931/Privacy+Security+Policy">Privacy &amp; Security Policy</a> for the published policy; this walkthrough is not a substitute for that policy.</li>
+<li>No separate third-party account is needed for this document workflow. Reviewers need their own Jira and Confluence access and the app permissions described above.</li>
+</ul>
+<h2>5. Documentation and support</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">English user guide</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">Korean user guide</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943/Product+Support+service+level+agreement+SLA">Support service level agreement</a></li>
+</ul>

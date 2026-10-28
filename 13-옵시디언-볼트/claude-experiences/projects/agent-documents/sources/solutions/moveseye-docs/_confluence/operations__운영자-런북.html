@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 로컬·검증 Runbook</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 로컬·검증 Runbook</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 개발 운영자, 시스템 관리자</div><div><strong>문서 상태:</strong> review</div><div><strong>기준일:</strong> 2026-08-05</div><div><strong>정본 위치:</strong> application.yml + build scripts + FE package.json</div></div>
+<h1>MovesEye 로컬·검증 Runbook</h1>
+<h2>1. 목적과 원칙</h2>
+<p>로컬·검증 환경에서 서비스를 기동하고, 장애가 났을 때 원인 구간을 좁히는 기본 절차다. <strong>production 배포·백업·복구에는 사용할 수 없다.</strong> <strong>Production Runbook</strong>은 owner와 실제 절차가 미확정된 실행 불가 <code>draft</code>다.</p>
+<ul>
+<li>비밀값을 command history, 문서, screenshot, log에 남기지 않는다.</li>
+<li>shared dev DB를 대상으로 destructive sync나 migration 실험을 하지 않는다.</li>
+<li>HTTP 200만으로 성공을 판정하지 않고 response envelope와 실제 반영을 확인한다.</li>
+<li>BE 기동 전 port·DB·Redis·Zabbix 연결 대상을 명시적으로 확인한다.</li>
+</ul>
+<h2>2. 서비스 의존성</h2>
+<pre>Browser
+  └─ FE Vite (:5173, 사용 중이면 5174/5175로 증가)
+       └─ Spring app (:3000)
+            ├─ PostgreSQL
+            ├─ Redis
+            ├─ Zabbix JSON-RPC
+            ├─ AWS API (해당 메뉴)
+            └─ SMTP (메일 기능)</pre>
+<h2>3. 백엔드 사전 점검</h2>
+<ul>
+<li>JDK 17과 <code>JAVA_HOME</code></li>
+<li>PostgreSQL 접속 정보와 schema 대상</li>
+<li>Redis host/port</li>
+<li>충분히 긴 <code>JWT_SECRET</code></li>
+<li>Zabbix API URL과 관리 계정</li>
+<li>FE origin이 <code>CORS_ALLOWED_ORIGINS</code>에 포함됨</li>
+<li>local HTTP라면 cookie <code>Secure</code> 설정이 local 정책과 일치함</li>
+</ul>
+<p><code>.env</code> 파일은 Spring이 자동으로 읽지 않는다. 환경변수는 승인된 secret 주입 방식으로 현재 process에 제공한다. 저장소의 예제 값이나 공유 문서에서 credential을 복사하지 않는다.</p>
+<h2>4. 백엔드 빌드·검증·기동</h2>
+<p><code>C:\solutions\moveseye-be-spring</code>에서 실행한다.</p>
+<pre>.\gradlew.bat test
+.\gradlew.bat build
+.\gradlew.bat bootRun</pre>
+<p><code>test</code>와 <code>build</code>는 exit code 0이어야 다음 단계로 간다. 실패하면 기동하지 않고 첫 실패 test 또는 compile error를 해결한다. <code>bootRun</code>은 <code>Started</code> log와 port 3000 bind를 확인하고, application startup 실패나 Flyway error가 있으면 FE를 기동하지 않는다.</p>
+<p>dev profile을 사용할 때는 대상 DB와 Zabbix가 sandbox인지 확인한 뒤 <code>SPRING_PROFILES_ACTIVE=dev</code>를 환경변수로 주입한다.</p>
+<pre>$env:SPRING_PROFILES_ACTIVE = 'dev'
+.\gradlew.bat bootRun</pre>
+<p>명령이 두 번 제시된 것은 일반 기동과 dev profile 기동 중 하나를 선택하라는 뜻이다. 두 process를 동시에 띄우지 않는다.</p>
+<p>기동 확인:</p>
+<ul>
+<li>dev Swagger UI: <code>http://localhost:3000/api</code></li>
+<li>dev OpenAPI JSON: <code>http://localhost:3000/v3/api-docs</code></li>
+<li>운영 기본값은 Springdoc disabled다.</li>
+</ul>
+<p>dev profile에서는 <code>/v3/api-docs</code>가 HTTP 200이고 JSON 최상위에 <code>openapi</code>와 <code>paths</code>가 있어야 한다. 404면 dev profile·Springdoc 설정을 먼저 확인하고 smoke test를 중단한다.</p>
+<h2>5. 프론트엔드 빌드·기동</h2>
+<p><code>C:\solutions\moveseyee_fe</code>에서 실행한다.</p>
+<pre>npm ci
+npm run build
+npm run lint
+npm test
+npm run dev</pre>
+<p><code>npm ci</code>, build, lint, Jest는 모두 exit code 0이어야 한다. 하나라도 실패하면 <code>npm run dev</code>로 넘어가지 않는다. 마지막 <code>npm run dev</code>는 blocking process이므로 검증 명령 뒤에 실행한다. 로컬 연결은 FE <code>.env</code>의 <code>VITE_API_URL=http://localhost:3000</code>을 기준으로 하되, 실제 환경 설정과 repository package-manager 정책을 우선한다. Vite는 기본 port가 사용 중이면 다음 port로 증가할 수 있으므로, 실제 terminal 출력과 BE CORS allowlist를 함께 확인한다. 종료할 때는 각 foreground process에서 <code>Ctrl+C</code>를 사용하고 port가 해제됐는지 확인한다.</p>
+<h2>6. 시작 순서</h2>
+<ol>
+<li>PostgreSQL과 Redis가 준비됐는지 확인한다.</li>
+<li>Zabbix API endpoint가 대상 환경과 일치하는지 확인한다.</li>
+<li>Spring app을 기동하고 Flyway 결과를 확인한다.</li>
+<li>dev OpenAPI 또는 인증 endpoint로 BE를 확인한다.</li>
+<li>FE를 기동하고 실제 port를 확인한다.</li>
+<li>로그인 → 홈 → Host Group → Host detail → Problem 순으로 smoke test한다.</li>
+</ol>
+<p>이 smoke test는 유효 계정, 최소 1개 Host Group과 Host, 확인할 수 있는 metric이 있다는 전제다. 빈 sandbox라면 먼저 승인된 test Host를 등록하고, active Problem이 없을 때는 Problem 빈 상태가 오류 없이 표시되는지를 기대 결과로 삼는다.</p>
+<h2>7. 장애 구간 좁히기</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>증상</th><th>확인</th><th>조치·중단 조건</th><th>escalation</th></tr></thead>
+<tbody>
+<tr><td>BE가 시작되지 않음</td><td>JDK 17 → env placeholder → DB → Flyway → Redis → port 3000</td><td>첫 startup error에서 중단하고 target DB/환경변수를 교정한다. Flyway 오류를 우회 기동하지 않는다.</td><td>BE owner</td></tr>
+<tr><td>FE에서 network error</td><td><code>VITE_API_URL</code> → BE port → CORS origin → TLS/cookie</td><td>실제 Vite port와 allowlist를 맞춘다. CORS를 wildcard로 낮추지 않는다.</td><td>FE owner, CORS면 BE owner</td></tr>
+<tr><td>401 반복</td><td>access expiry → refresh cookie 저장/전송 → Redis session → 서버 시간</td><td>refresh response와 cookie 속성을 기록하고 반복 retry를 중단한다. local session만 폐기한 뒤 재로그인한다.</td><td>Auth owner</td></tr>
+<tr><td>body는 error인데 HTTP 200</td><td><code>ApiResult.status/code/errorCode/message</code></td><td>성공 처리하지 말고 <code>errorCode</code> 기준으로 원인을 분류한다. 실제 반영 전 다음 작업을 중단한다.</td><td>해당 domain owner</td></tr>
+<tr><td>Zabbix 전체 조회 실패</td><td>Setting URL → 전용 계정 → JSON-RPC error → Redis auth cache</td><td>write 작업을 중단하고 endpoint·account를 검증한다. 해결 목적으로 권한을 임의 확대하지 않는다.</td><td>Zabbix owner + BE owner</td></tr>
+<tr><td>특정 host/metric만 실패</td><td>Host 권한 → Item key → value type → History/Trend 기간</td><td>같은 Host의 원천 Item을 비교한다. 데이터 없음과 0을 구분하고 임의 fallback을 넣지 않는다.</td><td>Monitoring owner</td></tr>
+<tr><td>migration 실패</td><td>적용 DB → <code>flyway_schema_history</code> → checksum → quoted identifier</td><td>기동을 중단한다. 적용 migration을 수정하지 말고 전용 DB에서 forward-fix를 검증한다.</td><td>DB owner + BE owner</td></tr>
+<tr><td>scheduler가 멈춤</td><td>enabled/cron → thread pool → run log → 이전 실행 heartbeat</td><td>중복 수동 실행을 금지한다. 필요하면 해당 job을 비활성화하고 마지막 run evidence를 보존한다.</td><td>Scheduler owner</td></tr>
+<tr><td>bulk upload가 끝나지 않음</td><td>current job → status/heartbeat → expiry → active unique constraint</td><td>새 upload를 제출하지 않는다. stale 판정과 cleanup은 승인된 절차로만 수행한다.</td><td>Cost owner + DB owner</td></tr>
+</tbody></table>
+<h2>8. 데이터 보호</h2>
+<ul>
+<li><code>SYNC_ENABLED</code>의 기본값이 false인 이유는 Zabbix에 없는 로컬 사용자를 제거할 수 있는 파괴적 동기화이기 때문이다.</li>
+<li>수동 sync도 대상 Zabbix와 DB snapshot을 확인한 뒤 실행한다.</li>
+<li>Flyway를 끄거나 baseline을 바꾸기 전에 실제 적용 이력을 백업한다.</li>
+<li>자산 삭제는 원천과 <code>excluded</code> semantics를 확인하고, 물리 삭제를 우회 경로로 사용하지 않는다.</li>
+<li>Zabbix update의 tags·template link처럼 배열 전체 교체가 가능한 필드는 현재값을 보존해 보낸다.</li>
+<li><strong>Credential 보호 정책</strong>이 <code>current</code>로 승격되기 전에는 production credential을 등록하거나 log로 출력하지 않는다.</li>
+</ul>
+<h2>9. 배포 전 최소 검증</h2>
+<ul>
+<li>☐ BE unit/integration test와 build 통과</li>
+<li>☐ FE Jest, lint, build 통과</li>
+<li>☐ 빈 DB 또는 전용 검증 DB에서 Flyway V1→latest 통과</li>
+<li>☐ 로그인·refresh·logout smoke test</li>
+<li>☐ 권한이 다른 2개 계정으로 Host Group 범위 검증</li>
+<li>☐ 실제 Zabbix 기반 Host/metric/Problem 조회</li>
+<li>☐ 변경 기능의 <code>_workspace/contract_*.md</code>와 runtime 응답 일치</li>
+<li>☐ 로그·artifact에 secret/개인정보가 없음</li>
+<li>☐ <code>releases/릴리스-노트.md</code>와 영향 문서 갱신</li>
+</ul>
+<h2>10. 복구와 보고</h2>
+<p>장애 보고에는 시간, 환경, 영향 사용자, 실패 구간, correlation 가능한 request 정보, 최근 변경, 우회책을 포함한다. credential과 원본 개인정보는 제거한다. schema 또는 데이터 변경을 되돌릴 때는 코드 rollback과 DB forward-fix 순서를 별도로 검토한다.</p>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-05</td><td>현재 Spring/FE 설정 기준 최초 작성</td></tr>
+</tbody></table>
+</body></html>

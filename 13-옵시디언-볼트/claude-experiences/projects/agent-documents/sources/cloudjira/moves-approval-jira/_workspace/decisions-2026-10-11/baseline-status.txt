@@ -1,0 +1,101 @@
+﻿ M AGENTS.md
+ M docs/DESIGN.md
+ M locales/en/audit.json
+ M locales/en/data.json
+ M locales/en/workforce.json
+ M locales/en/worklog.json
+ M locales/en/worklogCert.json
+ M locales/en/worklogControl.json
+ M locales/en/worklogPolicy.json
+ M locales/kr/audit.json
+ M locales/kr/data.json
+ M locales/kr/workforce.json
+ M locales/kr/worklog.json
+ M locales/kr/worklogCert.json
+ M locales/kr/worklogControl.json
+ M locales/kr/worklogPolicy.json
+ M src/index.js
+ M src/integration/workforce/__test__/certificationDoc.test.js
+ M src/integration/workforce/__test__/signature.test.js
+ M src/integration/workforce/certificationDoc.js
+ M src/integration/workforce/contract.js
+ M src/integration/workforce/vectors.json
+ M src/permission/PermissionMap.js
+ M src/rdb/schema/__test__/migrate.test.js
+ M src/rdb/schema/ddl/worklogControl.sql.js
+ M src/rdb/schema/migrate.js
+ M src/resolver/retention/RetentionRepository.js
+ M src/resolver/retention/RetentionService.js
+ M src/resolver/settings/SettingsRepository.js
+ M src/resolver/settings/SettingsService.js
+ M src/resolver/workforce/WorkforceInbound.js
+ M src/resolver/workforce/WorkforceLinkRepository.js
+ M src/resolver/workforce/WorkforceOutbox.js
+ M src/resolver/workforce/WorkforcePublisher.js
+ M src/resolver/worklog/WorklogService.js
+ M src/resolver/worklog/__test__/WorklogServiceControl.test.js
+ M src/resolver/worklogControl/ControlLinkJudge.js
+ M src/resolver/worklogControl/WorklogControlContext.js
+ M src/resolver/worklogControl/WorklogControlController.js
+ M src/resolver/worklogControl/WorklogControlDetector.js
+ M src/resolver/worklogControl/WorklogControlGateway.js
+ M src/resolver/worklogControl/WorklogControlRepository.js
+ M src/resolver/worklogControl/WorklogControlService.js
+ M src/resolver/worklogControl/__test__/WorklogControlContext.test.js
+ M src/resolver/worklogHistory/WorklogHistoryRepository.js
+ M src/resolver/worklogHistory/WorklogHistoryRetentionService.js
+ M src/resolver/worklogHistory/WorklogHistoryService.js
+ M src/resolver/worklogHistory/__test__/WorklogHistoryRetentionService.test.js
+ M src/resolver/worklogHistory/__test__/WorklogHistoryService.test.js
+ M src/resolver/worklogPolicy/WorklogPolicyAuthority.js
+ M src/resolver/worklogPolicy/__test__/WorklogPolicyAuthority.test.js
+ M src/trigger/__test__/idleSqlBudget.test.js
+ M src/trigger/__test__/runSweep.test.js
+ M src/trigger/sweepJobs.js
+ M static/ui/src/features/audit/AuditPage.jsx
+ M static/ui/src/features/audit/__test__/AuditTrail.test.jsx
+ M static/ui/src/features/settings/DataSettings.jsx
+ M static/ui/src/features/settings/WorklogHistoryAuditSettings.jsx
+ D static/ui/src/features/settings/WorklogHistoryRetentionSection.jsx
+ M static/ui/src/features/settings/__test__/WorklogHistorySettings.test.jsx
+ M static/ui/src/features/settings/exportRetentionExcel.js
+ M static/ui/src/features/settings/worklogHistoryAuditModel.js
+ M static/ui/src/features/worklog/WorklogDialog.jsx
+ M static/ui/src/features/worklog/WorklogTab.jsx
+ M static/ui/src/features/worklog/__test__/WorklogTab.test.jsx
+ M static/ui/src/features/worklogControl/ForeignWorklogList.jsx
+ M static/ui/src/features/worklogControl/WorklogControlSettings.jsx
+ M static/ui/src/features/worklogControl/__test__/WorklogControlSettings.test.jsx
+ M static/ui/src/features/worklogControl/__test__/worklogControlModel.test.js
+ M static/ui/src/features/worklogControl/worklogControlModel.js
+ M static/ui/src/features/worklogHistory/WorklogHistoryList.jsx
+ M static/ui/src/features/worklogHistory/__test__/worklogHistoryI18n.test.js
+ M static/ui/src/features/worklogHistory/exportWorklogHistoryExcel.js
+ M static/ui/src/utils/queryKey/approvalKeys.js
+?? docs/APP-MANAGED-WORKLOG-DESIGN.md
+?? docs/WORKLOG-IDENTITY-PROPERTIES-DESIGN.md
+?? docs/WORKLOG-TRUST-DESIGN.md
+?? src/domain/retention/
+?? src/domain/worklogControl/__test__/journal.test.js
+?? src/domain/worklogControl/journal.js
+?? src/integration/workforce/__test__/contractSelfContained.test.js
+?? src/resolver/retention/CertRetentionRepository.js
+?? src/resolver/retention/RecordRetentionController.js
+?? src/resolver/retention/RecordRetentionService.js
+?? src/resolver/retention/__test__/RecordRetentionService.test.js
+?? src/resolver/workforce/WorkforceCertWake.js
+?? src/resolver/workforce/__test__/WorkforceCertWake.test.js
+?? src/resolver/worklogControl/IssueSignalRefresher.js
+?? src/resolver/worklogControl/WorklogControlJournal.js
+?? src/resolver/worklogControl/WorklogControlLogRepository.js
+?? src/resolver/worklogControl/__test__/IssueSignalRefresher.test.js
+?? src/resolver/worklogControl/__test__/WorklogControlJournal.test.js
+?? src/resolver/worklogHistory/__test__/WorklogHistoryControlMerge.test.js
+?? src/resolver/worklogHistory/__test__/WorklogHistoryLinkedRetention.test.js
+?? static/ui/src/features/settings/RecordRetentionSection.jsx
+?? static/ui/src/features/settings/__test__/RecordRetention.test.jsx
+?? static/ui/src/features/settings/exportRecordArchive.js
+?? static/ui/src/features/settings/recordRetentionModel.js
+?? static/ui/src/features/worklogControl/CapabilityRefresh.jsx
+?? static/ui/src/features/worklogControl/ReasonModal.jsx
+?? static/ui/src/features/worklogHistory/controlLogFormat.js

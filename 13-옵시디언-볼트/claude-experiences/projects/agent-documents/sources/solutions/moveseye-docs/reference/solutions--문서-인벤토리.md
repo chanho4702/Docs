@@ -1,0 +1,179 @@
+---
+title: MovesEye 문서 인벤토리
+doc_type: reference
+audience: [문서 관리자, 개발 리더, 운영 리더]
+status: current
+owner: MovesEye 팀
+baseline: 2026-08-11
+source_of_truth: C:/solutions/moveseye-docs
+reviewed_at: 2026-09-07
+review_cycle: monthly
+---
+
+# MovesEye 문서 인벤토리
+
+## 최근 작업과 APM 안내 묶음
+
+기존 안내 묶음은 2026-10-05 소스 대조 기준이며 `review` 상태입니다. 대규모 운영 준비 상태는 2026-10-06 작업 트리 보완·선별 시험을 따로 기록합니다. 기존 문서 전체의 기준선을 갱신하거나 배포를 확인한 것은 아닙니다.
+
+| 문서 | 독자 질문 | 상태 |
+|---|---|---|
+| [읽기 안내](../overview/solutions--start-here.md) | 어디부터 읽는가 | review / source |
+| [최근 작업](../overview/solutions--recent-work.md) | 무엇이 왜 바뀌었는가 | review / source |
+| [APM 설명](../overview/solutions--apm-explained.md) | 지표와 화면을 어떻게 읽는가 | review / source |
+| [OpenTelemetry 설명](../overview/solutions--opentelemetry-explained.md) | 수집 구성 요소는 어떻게 연결되는가 | review / source |
+| [설계·구현 지도](../overview/solutions--design-implementation-map.md) | 설계가 어느 구현으로 이어졌는가 | review / source |
+| [APM 부족점 리포트](../overview/solutions--apm-gap-report.md) | 현재 무엇이 부족하고 무엇부터 검증하는가 | review / source |
+| [APM 대규모 운영 준비 상태](../overview/solutions--apm-scale-readiness.md) | 10월 6일 수정 전후·파일별 변경·적용 방법과 대규모 대응 한계는 무엇인가 | current / source · BE e55948c · 선별 시험·독립 독자 검증 |
+| [APM 전반 완성도와 개선 우선순위](../overview/solutions--apm-overall-assessment.md) | 전체 수준은 어떻고 어떤 문제부터 해결해야 하는가 | current / source · BE e55948c · 직접 클래스 재현·Claude 검토·독립 독자 검증 |
+| [APM 우선순위별 보완 이력](../overview/solutions--apm-priority-fixes.md) | 감사 이후 어떤 결함을 어떻게 고쳤고 무엇을 검증했는가 | current / source · 원문 정책 BE aab73fc · 79개 시험·독립 QA |
+
+## 기능별 상세 가이드 묶음
+
+2026-10-06 소스 정적 대조 기준이며 전부 `review` 상태입니다(BE `e55948c`, FE `9dfcbe8`, AI `6eef23c`). 런타임 검증은 포함하지 않습니다. 화면별 가이드(U5)와 달리 영역 단위로 동작 원리와 문제점·보완점을 함께 적습니다.
+
+| ID | 문서 | 독자 질문 | 상태 | 다음 review trigger |
+|---|---|---|---|---|
+| FG0 | [기능별 상세 가이드 색인](../guides/features/solutions--README.md) | 어느 영역 문서에 무엇이 있는가 | review / source | 영역 문서 추가·분할 |
+| FG1 | [홈과 공통 화면 틀](../guides/features/solutions--%ED%99%88%EA%B3%BC-%EA%B3%B5%ED%86%B5-%ED%99%94%EB%A9%B4-%ED%8B%80.md) | 홈 위젯과 메뉴는 어떤 조건으로 보이는가 | review / source | SideNav·관리 콘솔·위젯 카탈로그 변경 |
+| FG2 | [인프라 모니터링](../guides/features/solutions--%EC%9D%B8%ED%94%84%EB%9D%BC-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81.md) | 차트와 리포트의 값은 어디서 어떻게 오는가 | review / source | 지표 키·차트 조회 방식·리포트 배치 변경 |
+| FG3 | [이벤트와 알림](../guides/features/solutions--%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%99%80-%EC%95%8C%EB%A6%BC.md) | 알람 사본·동기화·SSE는 어떻게 동작하는가 | review / source | 동기화 주기·상한·권한 재현 방식 변경 |
+| FG4 | [자산과 비용](../guides/features/solutions--%EC%9E%90%EC%82%B0%EA%B3%BC-%EB%B9%84%EC%9A%A9.md) | 자산 소유권과 감가상각은 어떤 규칙인가 | review / source | 자산 모델·동기화·비용 계산 변경 |
+| FG5 | [네트워크 맵과 지리 맵](../guides/features/solutions--%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%A7%B5%EA%B3%BC-%EC%A7%80%EB%A6%AC-%EB%A7%B5.md) | 맵 편집·상태 표시·타일은 어떻게 동작하는가 | review / source | 맵 편집기·타일 원천 변경 |
+| FG6 | [Zabbix 구성 관리](../guides/features/solutions--Zabbix-%EA%B5%AC%EC%84%B1-%EA%B4%80%EB%A6%AC.md) | 호스트·템플릿·아이템 쓰기는 Zabbix에 무엇을 보내는가 | review / source | zabbixadmin 쓰기 경로·폼 변경 |
+| FG7 | [Zabbix 운영 관리](../guides/features/solutions--Zabbix-%EC%9A%B4%EC%98%81-%EA%B4%80%EB%A6%AC.md) | 알림·점검·스크립트·디스커버리는 어디까지 지원하는가 | review / source | 알림 관리 탭·래핑 범위 변경 |
+| FG8 | [클라우드 AWS](../guides/features/solutions--%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-AWS.md) | AWS 호출·과금·수집 범위는 어떻게 통제되는가 | review / source | aws 패키지·유료 스위치·스냅샷 배치 변경 |
+| FG9 | [APM 조회와 분석](../guides/features/solutions--APM-%EC%A1%B0%ED%9A%8C%EC%99%80-%EB%B6%84%EC%84%9D.md) | APM 화면의 수치와 상한은 무엇을 뜻하는가 | review / source | APM 조회 EP·화면 구성 변경 |
+| FG10 | [APM 수집과 운영](../guides/features/solutions--APM-%EC%88%98%EC%A7%91%EA%B3%BC-%EC%9A%B4%EC%98%81.md) | 수신·알람·보존·아카이브는 어떻게 동작하는가 | review / source | 수신 경로·알람 평가·보존 정책 변경 |
+| FG11 | [AI 어시스턴트와 MCP](../guides/features/solutions--AI-%EC%96%B4%EC%8B%9C%EC%8A%A4%ED%84%B4%ED%8A%B8%EC%99%80-MCP.md) | 툴·확인 게이트·MCP 연결은 어떻게 통제되는가 | review / source | 툴 추가, OAuth 흐름·LLM 설정 변경 |
+| FG12 | [인증·권한·라이선스](../guides/features/solutions--%EC%9D%B8%EC%A6%9D-%EA%B6%8C%ED%95%9C-%EB%9D%BC%EC%9D%B4%EC%84%A0%EC%8A%A4.md) | 누가 무엇을 볼 수 있고 BE는 어디서 막는가 | review / source | 권한 키·세션 구조·라이선스 정책 변경 |
+| FG13 | [설정과 운영 기반](../guides/features/solutions--%EC%84%A4%EC%A0%95%EA%B3%BC-%EC%9A%B4%EC%98%81-%EA%B8%B0%EB%B0%98.md) | 배치·설정 키·캐시·배포는 어떻게 구성되는가 | review / source | 스케줄러 잡·설정 키·배포 스크립트 변경 |
+| FG-R | [전 제품 문제점·보완점 종합 리포트](../overview/solutions--product-gap-report.md) | 전 영역에서 무엇을 먼저 고치고 무엇을 결정해야 하는가 | review / source | 높음 항목 처리, 영역 문서 4절 갱신 |
+
+이 묶음이 확인한 기존 문서의 낡은 서술은 종합 리포트 6절에 모았습니다. 화면별 가이드(U5)의 `current` 표기는 해당 정리가 끝날 때까지 재검토 대상입니다.
+
+## 1. 현재 문서 세트
+
+| ID | 문서 | 대상 | 상태 | 다음 review trigger |
+|---|---|---|---|---|
+| H1 | `README.md` 문서 허브 | 전체 | current | 문서 추가·경로 변경 |
+| G1 | `문서-운영규칙.md` 운영 규칙 | 작성자 | current | 역할·정본 정책 변경 |
+| P1 | `product/제품-개요.md` 제품 개요 | 도입·신규 | current | capability·edition 변경 |
+| P2 | `product/제품-소개서.md` 제품 소개서 | 고객·영업 | current | 기능 제공 범위·edition 변경 |
+| U1 | `guides/빠른-시작.md` 빠른 시작 | 신규 사용자 | current | 메뉴·초기 설정 변경 |
+| U2 | `guides/사용자-가이드.md` 사용자 가이드 | 사용자·관리자 | current | route·SideNav 변경 |
+| U3 | `guides/관리자-가이드.md` 관리자 가이드 | 시스템 관리자 | current | 권한 키·scheduler job·license 정책 변경 |
+| U4 | `guides/문제-해결.md` 문제 해결 가이드 | 사용자·지원 | current | 신규 알려진 이슈·오진 사례 |
+| U5 | `guides/pages/` 화면별 가이드 27종 + 색인 | 사용자·운영·지원 | current | **SideNav 메뉴 추가·삭제·이름 변경**, 화면 구성 변경 |
+| U5-APM | `guides/pages/모니터링/애플리케이션-모니터링.md`, `수집기-설치.md` | 사용자·관리자·설치·지원 | review | APM 브라우저 렌더·배포 검증 완료 시 `current`. `ApmInstallGuideService` 문구·`ApmInstallVersions` 버전 변경 시 수집기 설치 문서 동기화 |
+| U7 | `guides/MCP-연결-가이드.md` MCP 연결 가이드(사용자편·관리자편) | 사용자·관리자·설치 | review (source, 2026-09-17) | MCP 설정·OAuth 흐름·툴 등급·`ai.mcp.*` 변경, 외부 앱 메뉴 변경, ZM-157 배포·런타임 확인 시 `current` |
+| U5-MCP | `guides/pages/설정/연결된-앱.md` 연결된 앱 화면 | 전체 사용자 | review (source, 2026-09-17) | 연결된 앱 화면 구성 변경(안내 강화 작업 진행 중) |
+| U6 | `guides/자주-묻는-질문.md` FAQ | 고객·사용자·관리자·지원 | review | 신규 반복 문의, 기능 제공 상태([제공]/[개발 중]/[예정]) 변경 |
+| T1 | `technical/아키텍처.md` 아키텍처 | 개발·운영 | current | module·인증·data flow 변경 |
+| T2 | `technical/데이터-모델.md` 데이터 모델 | BE·운영 | current | Flyway migration 추가 |
+| T3 | `technical/API-카탈로그.md` API 카탈로그 | 개발·연동 | current | controller 추가·응답 규약 변경 |
+| T4 | [모니터링 갱신과 SSE](../technical/solutions--%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EA%B0%B1%EC%8B%A0%EA%B3%BC-SSE.md) | 기획·개발·QA·운영 | current (source, 2026-09-07) | polling·SSE·시계열 조회 범위 변경. 증분 조회는 미구현 제안 |
+| T5 | [모니터링 데이터 처리 핵심 개념](../technical/solutions--%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%B2%98%EB%A6%AC-%EA%B0%9C%EB%85%90.md) | 기획·개발·QA·운영 | current (source, 2026-09-07) | cache·SSE·증분 조회·집계·원천 보호 방식 변경 |
+| O0 | `operations/설치-배포-가이드.md` 설치·배포 가이드 | 설치·인프라 | review | env 변수·Dockerfile·Flyway 최신 버전 변경 |
+| O1 | `operations/운영자-런북.md` 로컬·검증 Runbook | 개발 운영 | review | env·기동 변경, runtime 재현 검토 |
+| O2 | `operations/프로덕션-런북.md` Production Runbook | 운영 책임자 | draft/실행 금지 | owner·pipeline·backup/restore·rollback·escalation 확정 |
+| O3 | `operations/시크릿-보호-정책.md` Credential 정책 | 보안·운영 | draft/production 차단 | secret store·masking·권한·rotation 검증 |
+| FH1 | `features/README.md` 기능 문서 hub | 기능 담당 | review | 첫 stable 기능 문서 승격 |
+| DH1 | `decisions/README.md` ADR hub | 기술 리더 | current | ADR 추가·대체 |
+| D1 | `decisions/ADR-0001-문서-정본과-옵시디언.md` | 문서 관리자 | current/accepted | 정본 platform 변경 |
+| F1 | `features/권한-강제와-세션-회수.md` 역할 권한 BE 강제·세션 회수(ZM-157) | 개발·QA·운영 | review (source, 2026-09-17) | ZM-157 master 병합·런타임 검증 시 `current`. 권한 키·공유 EP 정책·Redis 세션 구조 변경 |
+| D2 | `decisions/ADR-0002-역할-권한-BE-강제와-세션-세대.md` | 기술 리더·개발·운영 | current/accepted (source) | 공유 EP 권한 적용, Redis Cluster·AI 다중 인스턴스 전환, 감사 로그 도입 |
+| R1 | `reference/용어집.md` 용어집 | 전체 | current | 도메인 용어·계약 변경 |
+| R2 | 이 문서 인벤토리 | 문서 관리자 | current | 문서 상태 변경 |
+| L1 | `releases/릴리스-노트.md` 릴리스 노트 | 전체 | draft | 실제 배포 기준 확정 |
+
+### 1.0.1 ZM-157 반영 후 baseline 점검 (2026-09-17)
+
+ZM-157(권한·세션)은 소스 기준으로만 반영했다. 아래 문서는 **해당 절만** 2026-09-17 코드로 확인했고 frontmatter `baseline`·`reviewed_at`은 올리지 않았다. 문서 전체를 재검토할 때 함께 갱신한다.
+
+| 문서 | 반영 절 | baseline·reviewed_at |
+|---|---|---|
+| `guides/관리자-가이드.md` | §3-2 주석, §3-4, §3-6~§3-11, §9 | 유지(2026-08-11). 병합·배포 후 §3 전체 재검토 필요 |
+| `guides/사용자-가이드.md` | §7.1 | 유지(2026-08-11) |
+| `guides/문제-해결.md` | §1-A~1-G, §2-2, §2-2A, §4 | 유지(2026-08-11) |
+| `guides/자주-묻는-질문.md` | §3·§4·§7·§9 문항 11개 | 유지(2026-09-01, review) |
+| `guides/pages/모니터링/서버-모니터링.md`, `네트워크-모니터링.md`, `자산-관리/지리-맵.md`, `설정/마이-페이지.md` | "권한" 절 | 유지(2026-08-11) |
+| `operations/운영자-런북.md` | §11 | 유지(2026-08-05, review) |
+| `operations/프로덕션-런북.md` | §3 주의 한 줄 | 유지(draft) |
+| `releases/릴리스-노트.md` | "미배포 (소스 기준선)" | 유지(draft) |
+| `reference/용어집.md` | 제품 데이터·권한 용어 추가 | 유지(2026-08-11) |
+| `technical/API-카탈로그.md` | §1-5, §3-1 | 유지(2026-08-11) |
+| `technical/아키텍처.md` | §7 | 유지(2026-08-11) |
+| `operations/설치-배포-가이드.md` | §3 Flyway 추가 사항, §5-4, §7-1 | 유지(2026-08-11, review). 최신 Flyway 표기(`V20`) 갱신 필요 |
+| `guides/pages/README.md` | 설정 표에 연결된 앱 행 | 유지(2026-08-11) |
+
+## 1.1 템플릿과 작업 규칙
+
+| 문서 | 용도 | 상태 |
+|---|---|---|
+| `AGENTS.md` | 문서 저장소 작업 규칙 | current |
+| `templates/기능-문서-템플릿.md` | 기능 문서 | template |
+| `templates/ADR-템플릿.md` | ADR | template |
+| `templates/런북-템플릿.md` | 운영 절차 | template |
+| `templates/릴리스-템플릿.md` | 릴리스 | template |
+
+## 2. 기존 문서
+
+| 경로 | 현재 역할 | 상태·조치 |
+|---|---|---|
+| `C:\solutions\제품소개_신규입사자.md` | 상세 제품 온보딩 | 유지. P1과 중복되는 부분은 차기 review에서 통합 |
+| `C:\solutions\moveseye_개발자_온보딩.md` | 개발자 입문 | 유지. 최근 cost/scheduler/engine 변화 월간 점검 필요 |
+| 각 repo `README.md` | build·module 설명 | repo 정본으로 유지 |
+| 각 repo `AGENTS.md`/`CLAUDE.md` | 작업 규칙 | 문서 세트로 복사하지 않음 |
+| `_workspace/design_*.md`, `devdesign_*.md` | 진행 중·과거 설계 | 기능 완료 시 핵심만 `features/`로 승격 |
+| `_workspace/contract_*.md` | BE↔FE 경계 계약 | 코드와 OpenAPI 반영 후 기능 문서에 결과 연결 |
+| `_workspace/e2e_*.md` | runtime QA 증거 | 기능 문서의 검증 근거로 연결 |
+
+## 3. 다음 작성 우선순위
+
+| 우선 | 문서 | 완료 조건 |
+|---:|---|---|
+| 1 | Production Runbook draft 승격 | 환경별 배포 경로, owner, backup restore, rollback 검증 포함 |
+| 2 | Credential 정책 draft 승격 | secret store, masking, rotation, 최소권한 검증 포함 |
+| 3 | 설치·배포 가이드 `review` → `current` | 실제 신규 환경 설치 1회 수행으로 절차 검증 |
+| 4 | 라이선스 기능 문서 승격 | 구현 완료 후 `_workspace/features/auth-license/license/devdesign_premium-edition.md`에서 핵심 승격 |
+| 5 | 기능 문서 승격 | 자산·비용·맵·Zabbix 관리·scheduler부터 작성 |
+| 6 | 릴리스 기준선 | 배포 version·commit·migration·검증 evidence 연결 |
+| 7 | 사용자 매뉴얼 screenshot | 안정화된 화면만 task별 보조 이미지 추가 |
+
+> 완료: API 카탈로그(T3, 2026-08-11). 자동 생성이 아니라 수기 작성이므로 controller 추가 시 갱신이 필요하다.
+
+## 3.1 파일명 규칙
+
+문서 파일명은 **한글 케밥 표기**를 쓴다(`관리자-가이드.md`). 예외는 도구·플랫폼이 파일명으로 인식하는 것뿐이다.
+
+| 유지하는 파일 | 이유 |
+|---|---|
+| `README.md`(루트·각 하위 디렉터리) | git 호스팅이 디렉터리 진입 시 자동 렌더링한다 |
+| `AGENTS.md` | 에이전트 도구가 파일명으로 찾는다 |
+| `.gitignore` | 도구 규약 |
+
+## 4. 분기별 감사 질문
+
+1. 현재라고 쓴 기능이 실제 배포 환경에서 동작하는가?
+2. route가 있지만 placeholder인 기능을 제품 기능처럼 설명하지 않았는가?
+3. 최신 Flyway version과 데이터 모델 baseline이 같은가?
+4. OpenAPI와 FE service path가 일치하는가?
+5. secret·실계정·운영 URL이 문서에 들어가지 않았는가?
+6. `_workspace`에서 완료됐지만 stable 문서로 승격되지 않은 기능이 있는가?
+7. Obsidian의 결정 노트와 current 문서가 서로 연결되는가?
+8. 마지막 review 이후 독자 질문이 문서에 반영됐는가?
+
+## 변경 이력
+
+| 날짜 | 변경 |
+|---|---|
+| 2026-08-05 | 최초 인벤토리와 작성 backlog 생성 |
+| 2026-08-11 | 신규 5종 등록(제품 소개서·관리자 가이드·문제 해결·API 카탈로그·설치 배포 가이드). 문서 파일명 한글화 및 규칙 명문화 |
+| 2026-08-11 | **제품 포지셔닝 리뉴얼** — 다중 데이터소스(Zabbix·Prometheus·Datadog·Elastic) 종합 모니터링 기준으로 8개 문서 갱신 |
+| 2026-08-11 | 화면별 가이드 25종 신설(U5) — SideNav 구조 그대로 디렉터리 구성 |
+| 2026-09-01 | FAQ 신설(U6, `guides/자주-묻는-질문.md`) — 13영역 90문항, 2026-08-11 이후 기능 반영. 사실 검증 전이라 `review` |
+| 2026-10-06 | **기능별 상세 가이드 묶음 신설**(FG0~FG13, FG-R) — `guides/features/` 13종 + 색인, `overview/product-gap-report.md`. 소스 정적 대조 기준, 문제점 309건(높음 28) 기록 |
+| 2026-09-01 | **APM 고객 문서 신설**(U5-APM) — `애플리케이션-모니터링.md`(화면·상태 5종·알람 규칙·Zabbix 액션 연결)·`수집기-설치.md`(온보딩 3단계·60초 검증·문제 해결, `ApmInstallGuideService` 문구와 동일). 정정: `준비-중인-모니터링.md`에서 APM 절 제거·"Prometheus·Datadog 소스 필요" 문구 삭제, 제품 소개서 "Datadog: APM"→"외부 APM 읽기 연동(P4 후보)"·"APM [예정]"→"[제공(P1)]·트레이스/서비스 맵 [P2]", FAQ·사용자 가이드·라이선스 문서 링크 갱신 |
+| 2026-09-17 | ZM-157 반영 — 신규 F1(기능 문서)·D2(ADR-0002) 등록, 수정 문서의 baseline 점검표(§1.0.1) 추가. 소스 기준·미배포 |
+| 2026-09-17 | MCP 연결 가이드(U7)·연결된 앱 화면 가이드(U5-MCP) 신설, 설치·배포 가이드 §5-4 등 점검표 2행 추가 |

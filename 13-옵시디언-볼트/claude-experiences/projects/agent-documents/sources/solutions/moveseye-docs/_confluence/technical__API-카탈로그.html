@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye API 카탈로그</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye API 카탈로그</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 백엔드 개발자, 프론트엔드 개발자, 연동 담당자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> moveseye-be-spring Controller/DTO + dev OpenAPI(/v3/api-docs)</div></div>
+<h1>MovesEye API 카탈로그</h1>
+<blockquote><p><strong>정본은 코드와 OpenAPI다.</strong> 이 문서는 도메인 지도와 <strong>개별 엔드포인트 문서에 드러나지 않는 계약 규칙</strong>을 설명한다. 정확한 요청·응답 스키마는 dev 환경의 <code>/v3/api-docs</code>(Swagger UI <code>/api</code>)에서 확인한다. 운영에서는 Springdoc이 꺼져 있다.</p>
+<p>기준: 2026-08-11 소스, 컨트롤러 32개.</p></blockquote>
+<h2>1. 반드시 먼저 읽을 공통 계약</h2>
+<h3>1-1. HTTP 200이 성공이 아니다</h3>
+<blockquote><p>🔴 <strong>가장 중요한 규칙.</strong> 응답은 <code>ApiResult</code> 봉투로 감싸지며, <strong>실패도 HTTP 200으로 내려올 수 있다.</strong> HTTP 상태 코드만 보고 성공 처리하면 조용히 잘못된 동작을 한다.</p></blockquote>
+<pre>{
+  "status": "SUCCESS | ERROR",
+  "code": 200,
+  "errorCode": "…",
+  "message": "…",
+  "data": { }
+}</pre>
+<p>성공 판정은 <strong><code>status</code> 필드</strong>로 한다. 오류 분류는 <code>errorCode</code>로 한다. <code>null</code> 필드는 응답에서 생략된다(<code>NON_NULL</code>).</p>
+<p>이 설계는 NestJS 시절의 계약을 Spring으로 옮기면서 의도적으로 보존한 것이다. 클라이언트를 깨뜨리지 않기 위한 선택이며, 임의로 바꾸지 않는다.</p>
+<h3>1-2. syncTime</h3>
+<p>일부 응답은 봉투에 <code>syncTime</code>을 실어 <strong>데이터의 신선도</strong>를 알린다. 화면은 이 값으로 "언제 기준 데이터인지"를 표시한다. 값이 오래됐다면 수집·동기화 쪽을 의심한다.</p>
+<h3>1-3. 이중 언랩 주의 (FE)</h3>
+<p>FE는 axios 인터셉터와 <code>useDmoveQuery</code>가 <strong>봉투를 두 겹 벗긴다.</strong> 훅 소비자는 <code>data.data</code>가 아니라 <strong>payload를 직접</strong> 받는다. 테스트 목도 payload를 직접 주입해야 한다. 여기서 한 겹 더 벗기면 <code>undefined</code>가 된다.</p>
+<h3>1-4. 인증</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>요소</th><th>방식</th></tr></thead>
+<tbody>
+<tr><td>액세스 토큰</td><td><code>Authorization: Bearer &amp;lt;token&amp;gt;</code></td></tr>
+<tr><td>리프레시</td><td><strong>HttpOnly 쿠키</strong></td></tr>
+<tr><td>세션 검증</td><td><code>x-visitor-id</code> 헤더 ↔ Redis 세션 대조</td></tr>
+</tbody></table>
+<blockquote><p><code>x-visitor-id</code>는 선택 헤더처럼 선언돼 있지만 <strong>실질적으로 필요하다.</strong> 인터셉터가 이 값과 Redis 세션을 대조한다. 직접 API를 호출해 테스트할 때 이 헤더를 빠뜨리면 인증이 통과하지 않는 경우가 있다.</p></blockquote>
+<p>리프레시가 쿠키 기반이므로 크로스 도메인 배포에서는 <code>COOKIE_SECURE</code>·<code>COOKIE_SAME_SITE</code>가 맞아야 로그인 상태가 유지된다.</p>
+<h3>1-5. 권한 검증</h3>
+<p>기능 권한과 호스트 그룹 데이터 범위를 <strong>서버에서 다시 검증</strong>한다. FE의 메뉴 숨김은 편의일 뿐 보안 경계가 아니다. 권한 없는 호스트 그룹은 목록뿐 아니라 <strong>집계 수치에서도 제외</strong>되어야 한다.</p>
+<h3>1-6. 라이선스 게이트</h3>
+<p>라이선스 판정은 <strong>인증 뒤</strong>에 놓인다. 앞에 두면 401 리프레시 흐름이 라이선스 잠금 화면으로 잘못 표시된다. 만료 시 읽기는 유지하고 쓰기를 차단하는 단계적 정책을 따른다(<strong>관리자 가이드 §7</strong>).</p>
+<h2>2. 도메인 지도</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>도메인</th><th>베이스 경로</th><th>주요 컨트롤러</th></tr></thead>
+<tbody>
+<tr><td>인증</td><td><code>/auth</code></td><td>AuthController</td></tr>
+<tr><td>세션</td><td><code>/session</code></td><td>SessionController</td></tr>
+<tr><td>홈</td><td><code>/home</code></td><td>HomeController</td></tr>
+<tr><td>호스트·그룹 모니터링</td><td><code>/hosts</code>, <code>/host</code></td><td>HostController, HostEventController</td></tr>
+<tr><td>리소스 메트릭</td><td><code>/host</code> 하위</td><td>CpuController, MemoryController, DiskController, NetworkController, InterfaceController, ResponseTimeController, ItemsController, WidgetsController</td></tr>
+<tr><td>이벤트·알람</td><td><code>/event</code></td><td>EventController</td></tr>
+<tr><td>자산</td><td><code>/assets</code></td><td>AssetController</td></tr>
+<tr><td>비용·감가상각</td><td><code>/costs</code></td><td>CostController</td></tr>
+<tr><td>네트워크 맵</td><td><code>/network-architectures</code></td><td>NetworkArchitectureController</td></tr>
+<tr><td>지리 맵</td><td><code>/geo-clusters</code></td><td>GeoClusterController</td></tr>
+<tr><td>클라우드(AWS)</td><td><code>/cloud-infras</code></td><td>CloudInfraController</td></tr>
+<tr><td>Zabbix 호스트 관리</td><td><code>/hosts/manage</code></td><td>HostManageController</td></tr>
+<tr><td>Zabbix 아이템</td><td><code>/zabbix-manage/items</code></td><td>ZabbixItemManageController</td></tr>
+<tr><td>Zabbix 트리거</td><td><code>/zabbix-manage/triggers</code></td><td>ZabbixTriggerManageController</td></tr>
+<tr><td>Zabbix 템플릿</td><td><code>/zabbix-manage</code></td><td>ZabbixTemplateManageController, ZabbixTemplateGroupManageController</td></tr>
+<tr><td>Zabbix 사용자</td><td><code>/admin/users</code></td><td>AdminUserController, AdminUsrgrpController</td></tr>
+<tr><td>사용자·권한</td><td><code>/users</code></td><td>UserController</td></tr>
+<tr><td>설정</td><td><code>/settings</code></td><td>SettingController</td></tr>
+<tr><td>장비 분류</td><td><code>/settings/device-classifications</code></td><td>DeviceClassificationController</td></tr>
+<tr><td>스케줄러</td><td><code>/settings/schedulers</code></td><td>SchedulerSettingController</td></tr>
+<tr><td>라이선스</td><td><code>/features</code>, <code>/settings/license</code></td><td>LicenseController</td></tr>
+<tr><td>리포트 관리</td><td><code>/admin/reports</code></td><td>ReportManagementController</td></tr>
+</tbody></table>
+<h2>3. 도메인별 계약</h2>
+<h3>3-1. 인증 <code>/auth</code></h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>메서드·경로</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td><code>POST /auth/login</code></td><td>로그인. 리프레시 쿠키 발급</td></tr>
+<tr><td><code>POST /auth/refresh</code></td><td>액세스 토큰 재발급</td></tr>
+<tr><td><code>POST /auth/logout</code></td><td>세션 종료</td></tr>
+<tr><td><code>POST /auth/forgot-password</code></td><td>재설정 메일 발송</td></tr>
+<tr><td><code>POST /auth/resend</code></td><td>메일 재발송</td></tr>
+<tr><td><code>POST /auth/reset-password</code></td><td>비밀번호 재설정</td></tr>
+<tr><td><code>GET /auth/verify</code></td><td>토큰 검증</td></tr>
+</tbody></table>
+<p>로그인·리프레시는 <code>x-visitor-id</code>를 함께 받는다.</p>
+<h3>3-2. 호스트·모니터링 <code>/hosts</code></h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>경로</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td><code>GET /hosts/hostgroups</code></td><td>호스트 그룹 목록</td></tr>
+<tr><td><code>GET /hosts/server</code></td><td>서버 목록</td></tr>
+<tr><td><code>GET /hosts/hosts-network</code></td><td>네트워크 장비 목록</td></tr>
+<tr><td><code>GET /hosts/detail/{hostid}</code></td><td>호스트 상세</td></tr>
+<tr><td><code>GET /hosts/{hostid}/collected-info</code></td><td>수집 정보</td></tr>
+<tr><td><code>GET /hosts/{hostid}/livecheck</code></td><td>라이브 헬스체크</td></tr>
+<tr><td><code>GET /hosts/{groupid}/resource-trend</code></td><td>그룹 리소스 추이</td></tr>
+<tr><td><code>GET /hosts/{groupid}/alert-trend</code></td><td>그룹 알람 추이</td></tr>
+<tr><td><code>GET /hosts/{groupid}/top-hosts</code></td><td>상위 호스트</td></tr>
+<tr><td><code>GET /hosts/hostgroup-problems</code></td><td>그룹별 문제 집계</td></tr>
+</tbody></table>
+<p><strong>라이브체크의 두 축은 성격이 다르다.</strong> <code>ping</code>은 BE 서버가 직접 OS ping을 실행한 결과이고, <code>agent</code>는 Zabbix가 보고하는 인터페이스 가용성이다. Zabbix의 <code>icmpping</code> 아이템은 일부 호스트에만 있어서 직접 ping이 필요했다. 포트 probe 방식은 Zabbix 서버 제한 때문에 오판이 생겨 채택하지 않았다.</p>
+<h3>3-3. 메트릭 조회</h3>
+<p>CPU·메모리·디스크·네트워크·인터페이스·응답시간이 각각 컨트롤러로 나뉜다. 공통 규칙:</p>
+<ul>
+<li><strong>관측값 없음과 0을 구분한다.</strong> 아이템이 없거나 수집이 안 되는 것과 실제 값 0은 다르다. 임의 폴백으로 메우지 않는다.</li>
+<li><strong>트래픽은 bps다.</strong> <code>net.if.in/out</code>은 Zabbix가 bps 원값으로 준다. 바이트 포매터를 쓰면 약 940만 배 부풀려진다. 비트레이트 포매터(SI 1000 단위)를 쓴다.</li>
+<li>디스크는 아이템 계열이 둘이다(<code>vfs.fs.size</code> / <code>vfs.fs.dependent</code>). 호스트에 따라 한쪽만 존재해 "차트엔 있는데 상세는 빈" 현상이 생겨서, 상세 조회에 계열 폴백이 들어 있다.</li>
+</ul>
+<blockquote><p>🔴 <strong>폴백 체인은 응답 값을 바꿀 수 있다.</strong> 과거 메모리 사용률에서 폴백 때문에 값이 달라진 사례가 있었다(0 → 11). 폴백 없는 전용 키를 쓰는 것이 원칙이고, 폴백을 추가할 때는 값 변화를 실측한다.</p></blockquote>
+<h3>3-4. 이벤트 <code>/event</code></h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>경로</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td><code>GET /event/problems</code></td><td>활성 문제 목록</td></tr>
+<tr><td><code>GET /event/problems/{id}</code></td><td>문제 상세</td></tr>
+<tr><td><code>GET /event/{id}</code></td><td>이벤트 상세</td></tr>
+<tr><td><code>GET /event/{id}/list-previous</code></td><td>이전 이벤트</td></tr>
+<tr><td><code>PUT /event/{id}/acknowledge</code></td><td>인지 처리</td></tr>
+<tr><td><code>GET /event/bells</code></td><td>알림 벨</td></tr>
+<tr><td><code>PUT /event/isRead</code></td><td>읽음 처리</td></tr>
+</tbody></table>
+<p>acknowledge는 <strong>장애 해소가 아니라 인지 기록</strong>이다. Problem과 Event는 다른 개념이므로 <strong>용어집</strong>을 확인한다.</p>
+<blockquote><p>알림 벨은 주기적으로 폴링한다. 세션 만료 시 이 폴링이 401을 반복해 무한 로딩처럼 보일 수 있다(알려진 이슈).</p></blockquote>
+<h3>3-5. 자산 <code>/assets</code></h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>경로</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td><code>GET /assets</code></td><td>목록</td></tr>
+<tr><td><code>GET /assets/summary</code></td><td>요약</td></tr>
+<tr><td><code>GET /assets/{id}</code></td><td>상세</td></tr>
+<tr><td><code>GET /assets/{id}/activities</code></td><td>변경 이력</td></tr>
+<tr><td><code>PATCH /assets/{id}</code></td><td>수정</td></tr>
+<tr><td><code>DELETE /assets/{id}</code></td><td>soft delete(<code>excluded</code>)</td></tr>
+<tr><td><code>PATCH /assets/{id}/restore</code></td><td>복구</td></tr>
+<tr><td><code>POST /assets/sync</code></td><td>Zabbix 동기화</td></tr>
+</tbody></table>
+<p>편집 소유권이 분리돼 있다 — Zabbix 원천 필드는 동기화가 덮어쓰고, MovesEye 소유 보강 필드만 영구 유지된다.</p>
+<h3>3-6. 비용 <code>/costs</code></h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>경로</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td><code>GET /costs/dashboard</code></td><td>비용 대시보드</td></tr>
+<tr><td><code>GET /costs/hw</code></td><td>HW 비용 목록</td></tr>
+<tr><td><code>GET /costs/hw/incomplete</code></td><td>미입력 큐</td></tr>
+<tr><td><code>GET /costs/hw/{assetId}/depreciation</code></td><td>감가상각 계산 결과</td></tr>
+<tr><td><code>PATCH /costs/hw/{assetId}</code></td><td>비용 정보 수정</td></tr>
+<tr><td><code>GET /costs/hw/template</code></td><td>CSV 템플릿</td></tr>
+<tr><td><code>POST /costs/hw/bulk-upload</code></td><td>CSV 일괄 업로드(비동기)</td></tr>
+<tr><td><code>GET /costs/hw/bulk-upload/current</code></td><td>진행 중 작업</td></tr>
+<tr><td><code>GET /costs/hw/bulk-upload/{jobId}</code></td><td>작업 상세</td></tr>
+</tbody></table>
+<p><strong>업로드 계약의 함정:</strong> 파일 상한은 10MB인데 요청 상한은 11MB다. 같게 두면 multipart 경계·헤더가 더해져 "정확히 10MB인 파일"이 요청 상한에 먼저 걸려 거부된다. 이 여유는 의도된 것이므로 같은 값으로 맞추지 않는다.</p>
+<p>업로드는 <strong>접수와 완료가 분리</strong>된다. <code>POST</code> 성공은 접수일 뿐이며, 완료는 job 상태로 확인한다. 동시에 여러 작업이 돌지 않도록 활성 작업 유니크 제약이 있고, 멈춘 작업 판정을 위한 heartbeat가 있다(<code>V19</code>).</p>
+<h3>3-7. Zabbix 관리 계열</h3>
+<p><strong>쓰기 계약의 원칙 두 가지:</strong></p>
+<ol>
+<li><strong>대상은 식별자로만 지정한다.</strong> 필터 조건으로 대량 대상을 지정하는 쓰기는 허용하지 않는다 — 필터가 의도보다 넓게 걸리면 되돌릴 수 없다.</li>
+<li><strong>배열 필드는 전체 교체다.</strong> tags, template link 등은 보낸 값으로 통째 대체된다. 부분 수정하려면 현재 값을 읽어 포함시킨다.</li>
+</ol>
+<p>오류 매핑에 주의할 점이 있다. Zabbix의 <code>-32602</code>(파라미터 오류)는 <strong><code>create</code>/<code>update</code>에서만 400으로 매핑</strong>한다. 과거 이를 401로 처리해 "인증 오류"로 오인시킨 회귀가 있었다.</p>
+<p>부분 수정에서 clearable 필드는 <strong>빈 문자열이 "값 지우기"</strong> 를 뜻한다. 필드 미포함(변경 없음)과 빈 문자열(클리어)을 구분해 보낸다.</p>
+<p>트리거 생성은 <code>hostid</code>를 넘기지 않는다 — expression의 <code>/host/key</code>가 대상을 결정한다.</p>
+<h3>3-8. 렌즈 조회의 페이지네이션</h3>
+<p>Zabbix API에는 offset이 없다. 그래서 렌즈 조회는 <strong>ID만 먼저 조회 → 슬라이스 → 해당 페이지만 상세 하이드레이트</strong> 방식으로 임의 페이지 이동을 구현했다. 페이지당 0.4~1.3초가 든다. <code>LENS_CAP</code>으로 상한을 조정할 수 있다.</p>
+<h3>3-9. 스케줄러 <code>/settings/schedulers</code></h3>
+<p>job 목록·활성 토글·주기 변경·수동 실행·실행 로그 조회를 제공한다. <code>jobKey</code>는 코드의 잡 레지스트리와 1:1이며 DB <code>scheduler_setting.job_key</code>와 일치해야 한다. job 목록과 각 job의 성격은 <strong>관리자 가이드 §5</strong>에 있다.</p>
+<h3>3-10. 라이선스</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>경로</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td><code>GET /features</code></td><td>현재 활성 기능·라이선스 상태</td></tr>
+<tr><td><code>POST /settings/license</code> (JSON)</td><td>키 문자열 등록</td></tr>
+<tr><td><code>POST /settings/license</code> (multipart)</td><td>키 파일 등록</td></tr>
+<tr><td><code>DELETE /settings/license</code></td><td>해제</td></tr>
+</tbody></table>
+<p>키는 <strong>RS256 서명 JWT</strong>이며, 만료를 <code>exp</code>가 아니라 <code>durationDays</code>로 싣는다 — 유효 기간이 <strong>등록 시점부터</strong> 계산되기 때문이다. <code>jti</code>로 재사용을 막는다.</p>
+<p>오류는 HTTP 상태가 아니라 <strong>200 + 바디의 코드</strong>로 전달한다(§1-1).</p>
+<blockquote><p>🔴 라이선스 클레임 상수(<code>LicenseClaims</code>·<code>Edition</code>·<code>Feature</code>·<code>LicenseType</code>)는 제품과 발급 도구(<code>moveseye-license-issuer</code>)에 <strong>동일한 사본</strong>으로 존재한다. 저장소가 분리돼 있어 코드를 공유하지 않는다. <strong>한쪽만 고치면 "발급은 되는데 제품이 거부"</strong> 하는 상태가 된다. 양쪽 <code>LicenseContractTest</code>가 이를 잡으므로 변경 시 두 테스트를 모두 돌린다.</p></blockquote>
+<h2>4. 수집 엔진 포트 경계</h2>
+<p>제품은 <strong>다중 데이터소스(Zabbix·Prometheus·Datadog·Elasticsearch)</strong> 를 지향하며, 모니터링 읽기는 특정 소스를 직접 호출하지 않고 <strong>capability port</strong>를 거친다. 2026-08-11 현재 구현된 어댑터는 Zabbix 하나다.</p>
+<pre>app ──(compile)──▶ engine-api ◀──(구현, runtimeOnly)── engine-zabbix
+                   중립 계약 + 소스 전용 계약              (향후: prometheus, datadog, …)</pre>
+<p><code>app</code>은 어댑터 모듈에 <strong>컴파일 의존할 수 없다</strong>(빌드가 강제). 새 데이터소스를 붙일 때 앱 코드를 고치지 않기 위한 구조다.</p>
+<p>중립 계약과 전용 계약을 가르는 기준은 <strong>"값이 답하는 질문이 무엇인가"</strong> 다. 어느 데이터소스에서도 같은 질문에 답하는 값이면 중립, 특정 소스 개념에만 존재하는 값이면 전용이다.</p>
+<h3>4-1. 포트</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>포트</th><th>담당</th></tr></thead>
+<tbody>
+<tr><td><code>MetricPort</code></td><td>시계열·최신값·트렌드</td></tr>
+<tr><td><code>InventoryPort</code></td><td>호스트·그룹·인터페이스</td></tr>
+<tr><td><code>AlertPort</code></td><td>알람 조회·이력·인지 처리</td></tr>
+</tbody></table>
+<p>포트 시그니처에 <strong>인증 토큰이 관통하지 않는다.</strong> 토큰 획득·갱신은 어댑터 내부 책임이며, 서비스 레이어는 어느 소스가 응답했는지 알지 못한다.</p>
+<h3>4-2. capability</h3>
+<p><code>DataSourceRegistry</code>가 소스와 능력을 관리한다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>capability</th><th>의미</th></tr></thead>
+<tbody>
+<tr><td><code>METRICS</code></td><td>시계열 메트릭 조회</td></tr>
+<tr><td><code>INVENTORY</code></td><td>감시 대상 목록·속성</td></tr>
+<tr><td><code>ALERTS</code></td><td>알람·이벤트 조회</td></tr>
+<tr><td><code>ALERT_ACK</code></td><td>알람 인지 처리</td></tr>
+<tr><td><code>LOGS</code></td><td>로그 조회 (로그 도메인, 계획)</td></tr>
+<tr><td><code>ZABBIX_ADMIN</code></td><td>Zabbix 전용 대상 관리</td></tr>
+</tbody></table>
+<p>미지 소스는 <code>NOT_FOUND</code>, 미구현 포트는 <code>UNSUPPORTED</code>로 응답한다. Phase 1은 소스 1개(<code>zabbix-default</code>)를 하드와이어했고, Phase 2에서 datasource 테이블과 소스 조회 엔드포인트가 추가되면 <strong>FE가 capability로 메뉴를 게이팅</strong>한다.</p>
+<h3>4-3. 쓰기 계약 원칙</h3>
+<p>포트를 통한 쓰기(예: 알람 인지)는 <strong>명령은 서술적으로, 대상은 명시적 식별자로</strong> 표현한다. 필터 조건으로 대량 대상을 지정하는 쓰기는 허용하지 않는다 — 필터가 의도보다 넓게 걸리면 되돌릴 수 없다.</p>
+<h3>4-4. 어댑터를 추가할 때</h3>
+<p>새 소스를 붙이는 작업은 다음으로 한정된다. 서비스·컨트롤러·FE는 원칙적으로 손대지 않는다.</p>
+<ol>
+<li>어댑터 모듈 신설, <code>engine-api</code> 포트 구현</li>
+<li>소스 고유 식별자·메트릭 키를 중립 모델로 번역하는 카탈로그 작성</li>
+<li>레지스트리에 소스와 capability 등록</li>
+<li>기존 화면이 그대로 동작하는지 런타임 동등성 확인</li>
+</ol>
+<p><strong>폴백 체인을 임의로 넣지 않는다.</strong> 값이 없을 때 다른 키로 대체하면 응답 값 자체가 바뀔 수 있다(§3-3 참조).</p>
+<h2>5. 클라이언트 구현 시 체크리스트</h2>
+<ul>
+<li>☐ <code>status</code> 필드로 성공을 판정하는가 (HTTP 200 아님)</li>
+<li>☐ <code>errorCode</code>로 오류를 분류하는가</li>
+<li>☐ <code>Authorization</code> + <code>x-visitor-id</code>를 보내는가</li>
+<li>☐ 리프레시 쿠키가 전송되도록 credentials 설정이 됐는가</li>
+<li>☐ 빈 값과 0을 구분해 표시하는가</li>
+<li>☐ 트래픽 단위에 비트레이트 포매터를 쓰는가</li>
+<li>☐ 비동기 작업(업로드·동기화)의 접수와 완료를 구분하는가</li>
+<li>☐ Zabbix 쓰기에서 배열 필드의 현재 값을 보존하는가</li>
+</ul>
+<h2>6. 관련 문서</h2>
+<ul>
+<li><strong>아키텍처</strong></li>
+<li><strong>데이터 모델</strong></li>
+<li><strong>관리자 가이드</strong></li>
+<li><strong>용어집</strong></li>
+<li>진행 중 계약: <code>C:\solutions\_workspace\contract_*.md</code></li>
+</ul>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-11</td><td>최초 작성. 컨트롤러 32개 도메인 지도, ApiResult 200-오류 규약, 도메인별 특이 계약 정리</td></tr>
+<tr><td>2026-08-11</td><td>수집 엔진 포트 경계(§4) 확장 — 포트 3종·capability 6종·쓰기 원칙·어댑터 추가 절차</td></tr>
+</tbody></table>
+</body></html>

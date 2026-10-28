@@ -1,0 +1,40 @@
+# 작업 가이드
+
+APM 핸드북과 해설·운영 가이드 · 문서 31개
+
+[← 전체 목차](../solutions--README.md)
+
+- [APM 코드 산책 쉽게 읽는 해설 (강화판)](solutions--APM-%EC%BD%94%EB%93%9C-%EC%82%B0%EC%B1%85-%EC%89%BD%EA%B2%8C-%EC%9D%BD%EB%8A%94-%ED%95%B4%EC%84%A4-%28%EA%B0%95%ED%99%94%ED%8C%90%29.md)
+- [APM 화면별 차트별 상세 설명 정본 (v1.4 2026 09 14 P4 RUM](solutions--APM-%ED%99%94%EB%A9%B4%EB%B3%84-%EC%B0%A8%ED%8A%B8%EB%B3%84-%EC%83%81%EC%84%B8-%EC%84%A4%EB%AA%85-%EC%A0%95%EB%B3%B8-%28v1.4-2026-09-14-P4-RUM.md)
+- [DMOVE 라이선스 동작 원리와 운영 가이드](solutions--DMOVE-%EB%9D%BC%EC%9D%B4%EC%84%A0%EC%8A%A4-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC%EC%99%80-%EC%9A%B4%EC%98%81-%EA%B0%80%EC%9D%B4%EB%93%9C.md)
+- [MovesEye APM Collector 설정 파일(config.yaml) 한 줄씩 설명](solutions--MovesEye-APM-Collector-%EC%84%A4%EC%A0%95-%ED%8C%8C%EC%9D%BC%28config.yaml%29-%ED%95%9C-%EC%A4%84%EC%94%A9-%EC%84%A4%EB%AA%85.md)
+- [MovesEye APM 종합 안내서 분책됨 apm handbook](solutions--MovesEye-APM-%EC%A2%85%ED%95%A9-%EC%95%88%EB%82%B4%EC%84%9C-%EB%B6%84%EC%B1%85%EB%90%A8-apm-handbook.md)
+- [MovesEye APM 통합 가이드](solutions--MovesEye-APM-%ED%86%B5%ED%95%A9-%EA%B0%80%EC%9D%B4%EB%93%9C.md)
+- [MovesEye 올인원 통합 모니터링 플랫폼](solutions--MovesEye-%EC%98%AC%EC%9D%B8%EC%9B%90-%ED%86%B5%ED%95%A9-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%ED%94%8C%EB%9E%AB%ED%8F%BC.md)
+- [MovesEye 제품 정리](solutions--MovesEye-%EC%A0%9C%ED%92%88-%EC%A0%95%EB%A6%AC.md)
+- [OpenTelemetry와 MovesEye APM 기술 해설 도입 배경 설계 기록](solutions--OpenTelemetry%EC%99%80-MovesEye-APM-%EA%B8%B0%EC%88%A0-%ED%95%B4%EC%84%A4-%EB%8F%84%EC%9E%85-%EB%B0%B0%EA%B2%BD-%EC%84%A4%EA%B3%84-%EA%B8%B0%EB%A1%9D.md)
+- [Redis 읽기 통과 캐시 사용 가이드 common redis RedisCache (ZM 168)](solutions--Redis-%EC%9D%BD%EA%B8%B0-%ED%86%B5%EA%B3%BC-%EC%BA%90%EC%8B%9C-%EC%82%AC%EC%9A%A9-%EA%B0%80%EC%9D%B4%EB%93%9C-common-redis-RedisCache-%28ZM-168%29.md)
+- [Zabbix 관리 메뉴 하위 페이지별 기능 안내](solutions--Zabbix-%EA%B4%80%EB%A6%AC-%EB%A9%94%EB%89%B4-%ED%95%98%EC%9C%84-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%B3%84-%EA%B8%B0%EB%8A%A5-%EC%95%88%EB%82%B4.md)
+- [Zabbix 아이템 키 카탈로그 원본 (사용자 제공 2026 07 21) Zabbix 7.0 기준](solutions--Zabbix-%EC%95%84%EC%9D%B4%ED%85%9C-%ED%82%A4-%EC%B9%B4%ED%83%88%EB%A1%9C%EA%B7%B8-%EC%9B%90%EB%B3%B8-%28%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%A0%9C%EA%B3%B5-2026-07-21%29-Zabbix-7.0-%EA%B8%B0%EC%A4%80.md)
+
+## APM 핸드북
+
+- [00 MovesEye APM 종합 안내서 목차 읽는 순서 용어 요약판 전체 지도](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--00-MovesEye-APM-%EC%A2%85%ED%95%A9-%EC%95%88%EB%82%B4%EC%84%9C-%EB%AA%A9%EC%B0%A8-%EC%9D%BD%EB%8A%94-%EC%88%9C%EC%84%9C-%EC%9A%A9%EC%96%B4-%EC%9A%94%EC%95%BD%ED%8C%90-%EC%A0%84%EC%B2%B4-%EC%A7%80%EB%8F%84.md)
+- [01 APM으로 무엇을 보나 봐야 하는 것 볼 수 있는 것 우리가 해결한 것](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--01-APM%EC%9C%BC%EB%A1%9C-%EB%AC%B4%EC%97%87%EC%9D%84-%EB%B3%B4%EB%82%98-%EB%B4%90%EC%95%BC-%ED%95%98%EB%8A%94-%EA%B2%83-%EB%B3%BC-%EC%88%98-%EC%9E%88%EB%8A%94-%EA%B2%83-%EC%9A%B0%EB%A6%AC%EA%B0%80-%ED%95%B4%EA%B2%B0%ED%95%9C-%EA%B2%83.md)
+- [02 배경지식 이 제품이 서 있는 땅](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--02-%EB%B0%B0%EA%B2%BD%EC%A7%80%EC%8B%9D-%EC%9D%B4-%EC%A0%9C%ED%92%88%EC%9D%B4-%EC%84%9C-%EC%9E%88%EB%8A%94-%EB%95%85.md)
+- [03 구현 조건 전제 우리가 지키기로 한 것](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--03-%EA%B5%AC%ED%98%84-%EC%A1%B0%EA%B1%B4-%EC%A0%84%EC%A0%9C-%EC%9A%B0%EB%A6%AC%EA%B0%80-%EC%A7%80%ED%82%A4%EA%B8%B0%EB%A1%9C-%ED%95%9C-%EA%B2%83.md)
+- [04 무엇을 만들었나 메뉴 14 단계 P1 P5 데이터 모델](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--04-%EB%AC%B4%EC%97%87%EC%9D%84-%EB%A7%8C%EB%93%A4%EC%97%88%EB%82%98-%EB%A9%94%EB%89%B4-14-%EB%8B%A8%EA%B3%84-P1-P5-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%AA%A8%EB%8D%B8.md)
+- [05 메뉴 탭 사전 이 화면은 무슨 질문에 답하나](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--05-%EB%A9%94%EB%89%B4-%ED%83%AD-%EC%82%AC%EC%A0%84-%EC%9D%B4-%ED%99%94%EB%A9%B4%EC%9D%80-%EB%AC%B4%EC%8A%A8-%EC%A7%88%EB%AC%B8%EC%97%90-%EB%8B%B5%ED%95%98%EB%82%98.md)
+- [06 어떻게 데이터가 지나가는 길](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--06-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EA%B0%80-%EC%A7%80%EB%82%98%EA%B0%80%EB%8A%94-%EA%B8%B8.md)
+- [07 단계별 상세 P1 메트릭 알람 ( P1.5 실시간 Live)](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--07-%EB%8B%A8%EA%B3%84%EB%B3%84-%EC%83%81%EC%84%B8-P1-%EB%A9%94%ED%8A%B8%EB%A6%AD-%EC%95%8C%EB%9E%8C-%28-P1.5-%EC%8B%A4%EC%8B%9C%EA%B0%84-Live%29.md)
+- [08 단계별 상세 P2 트레이스 서비스 맵 에러 DB 의존 배포](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--08-%EB%8B%A8%EA%B3%84%EB%B3%84-%EC%83%81%EC%84%B8-P2-%ED%8A%B8%EB%A0%88%EC%9D%B4%EC%8A%A4-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%A7%B5-%EC%97%90%EB%9F%AC-DB-%EC%9D%98%EC%A1%B4-%EB%B0%B0%ED%8F%AC.md)
+- [09 단계별 상세 권한 옵션 전환 (DMOVE 권한 applicationMonitoring apm)](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--09-%EB%8B%A8%EA%B3%84%EB%B3%84-%EC%83%81%EC%84%B8-%EA%B6%8C%ED%95%9C-%EC%98%B5%EC%85%98-%EC%A0%84%ED%99%98-%28DMOVE-%EA%B6%8C%ED%95%9C-applicationMonitoring-apm%29.md)
+- [10 단계별 상세 P3 SLO 합성 감시 메시징 배치 리포트 AI 설치 출처](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--10-%EB%8B%A8%EA%B3%84%EB%B3%84-%EC%83%81%EC%84%B8-P3-SLO-%ED%95%A9%EC%84%B1-%EA%B0%90%EC%8B%9C-%EB%A9%94%EC%8B%9C%EC%A7%95-%EB%B0%B0%EC%B9%98-%EB%A6%AC%ED%8F%AC%ED%8A%B8-AI-%EC%84%A4%EC%B9%98-%EC%B6%9C%EC%B2%98.md)
+- [11 단계별 상세 P4 RUM(브라우저) K8s 컨텍스트](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--11-%EB%8B%A8%EA%B3%84%EB%B3%84-%EC%83%81%EC%84%B8-P4-RUM%28%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%29-K8s-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8.md)
+- [12 운영 배포 조건 고객이 실제로 해야 하는 것](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--12-%EC%9A%B4%EC%98%81-%EB%B0%B0%ED%8F%AC-%EC%A1%B0%EA%B1%B4-%EA%B3%A0%EA%B0%9D%EC%9D%B4-%EC%8B%A4%EC%A0%9C%EB%A1%9C-%ED%95%B4%EC%95%BC-%ED%95%98%EB%8A%94-%EA%B2%83.md)
+- [13 검증 현황과 남은 것 방법론 QA 수치 미검증 열린 결정 정본 불일치 14](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--13-%EA%B2%80%EC%A6%9D-%ED%98%84%ED%99%A9%EA%B3%BC-%EB%82%A8%EC%9D%80-%EA%B2%83-%EB%B0%A9%EB%B2%95%EB%A1%A0-QA-%EC%88%98%EC%B9%98-%EB%AF%B8%EA%B2%80%EC%A6%9D-%EC%97%B4%EB%A6%B0-%EA%B2%B0%EC%A0%95-%EC%A0%95%EB%B3%B8-%EB%B6%88%EC%9D%BC%EC%B9%98-14.md)
+- [14 부록 A. 용어 사전(전체)](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--14-%EB%B6%80%EB%A1%9D-A.-%EC%9A%A9%EC%96%B4-%EC%82%AC%EC%A0%84%28%EC%A0%84%EC%B2%B4%29.md)
+- [15 부록 B. 이 프로젝트가 뒤집은 가정 실측 검수가 설계를 바꾼 36가지](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--15-%EB%B6%80%EB%A1%9D-B.-%EC%9D%B4-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EA%B0%80-%EB%92%A4%EC%A7%91%EC%9D%80-%EA%B0%80%EC%A0%95-%EC%8B%A4%EC%B8%A1-%EA%B2%80%EC%88%98%EA%B0%80-%EC%84%A4%EA%B3%84%EB%A5%BC-%EB%B0%94%EA%BE%BC-36%EA%B0%80%EC%A7%80.md)
+- [16 부록 C. 자주 하는 질문](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--16-%EB%B6%80%EB%A1%9D-C.-%EC%9E%90%EC%A3%BC-%ED%95%98%EB%8A%94-%EC%A7%88%EB%AC%B8.md)
+- [17 부록 D. 출처 목록 외부 공식 문서 내부 정본](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--17-%EB%B6%80%EB%A1%9D-D.-%EC%B6%9C%EC%B2%98-%EB%AA%A9%EB%A1%9D-%EC%99%B8%EB%B6%80-%EA%B3%B5%EC%8B%9D-%EB%AC%B8%EC%84%9C-%EB%82%B4%EB%B6%80-%EC%A0%95%EB%B3%B8.md)
+- [18 P5 실시간 관제 지금 이 순간을 보는 길(라이브 스팬 X View 요청 관제 비동기)](APM-%ED%95%B8%EB%93%9C%EB%B6%81/solutions--18-P5-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EA%B4%80%EC%A0%9C-%EC%A7%80%EA%B8%88-%EC%9D%B4-%EC%88%9C%EA%B0%84%EC%9D%84-%EB%B3%B4%EB%8A%94-%EA%B8%B8%28%EB%9D%BC%EC%9D%B4%EB%B8%8C-%EC%8A%A4%ED%8C%AC-X-View-%EC%9A%94%EC%B2%AD-%EA%B4%80%EC%A0%9C-%EB%B9%84%EB%8F%99%EA%B8%B0%29.md)

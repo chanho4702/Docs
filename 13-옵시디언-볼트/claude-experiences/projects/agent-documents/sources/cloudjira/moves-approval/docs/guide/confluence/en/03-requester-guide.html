@@ -1,0 +1,160 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Moves Approval documentation</title><style>body{font:16px/1.7 system-ui,sans-serif;max-width:1080px;margin:40px auto;padding:0 24px;color:#172b4d}h1{font-size:34px}h2{margin-top:36px;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;margin:24px 0}td,th{border:1px solid #dfe1e6;padding:10px;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:24px 0;padding:12px 20px;background:#f1f6ff;border-left:4px solid #579dff}code{background:#f4f5f7;overflow-wrap:anywhere}pre{padding:16px;background:#f4f5f7;overflow:auto}.status{background:#fff4d5;padding:12px}</style></head><body><p class="status">Local publication draft · This revision has not been published to Confluence · Screenshots are placement markers</p><h1 id="requester-guide">Requester guide</h1>
+<p><a href="00-index.html">English Guide</a> · <a href="../ko/03-requester-guide.html">한국어</a></p>
+<blockquote>
+<p>For: people who need their content approved (page editors)</p>
+</blockquote>
+<h2 id="what-you-need">What you need</h2>
+<ul>
+<li><strong>Edit permission</strong> on the page</li>
+<li>The page must be in an <strong>enabled space</strong> (if an administrator limited approvals to certain spaces)</li>
+<li>If &quot;Only registered users can use the app&quot; is on, you must be on the approver list or a settings administrator</li>
+<li>Every approver must be <strong>able to view</strong> the page (default policy)</li>
+</ul>
+<h2 id="request-page-approval">Request page approval</h2>
+<ol>
+<li>Open the <strong>published</strong> page you want approved.</li>
+<li>Select the <strong>Request approval</strong> item below the page title. You can also use <strong>Request approval</strong> in the <code>•••</code> menu.</li>
+<li>In <strong>Request page approval</strong>, set up the approval line in one of two ways:
+<ul>
+<li><strong>Pick approvers</strong> — Search by name or account and add approvers. Use <strong>Advanced search</strong> to select many people at once. Switch <strong>Search approvers in</strong> to <strong>Groups</strong> to add an approval group as one step.</li>
+<li><strong>Use an approval line</strong> — Choose a line registered by an administrator; its steps and approvers are filled in for you.</li>
+</ul>
+</li>
+<li>Refine the steps (when picking approvers yourself):
+<ul>
+<li><strong>Add step</strong> adds a step; <strong>Move up</strong> / <strong>Move down</strong> reorders them.</li>
+<li>An optional <strong>Step name</strong> makes the pending status read like &quot;Legal review&quot;.</li>
+<li><strong>Approvals required to pass this step</strong> sets rules such as &quot;2 of 3 must approve&quot;.</li>
+<li>A group must be the only selection in its step; you cannot mix it with other people or groups.</li>
+</ul>
+</li>
+<li>Fill in the optional fields:
+<ul>
+<li><strong>Deadline</strong> — Prefilled from the policy default (for example, 7 days after the request). Leave it empty for no deadline. You can set a time (HH:MM) as well.</li>
+<li><strong>Cc</strong> — People or groups who can view and get notified only. Groups are expanded to their members when saved.</li>
+<li><strong>Request note</strong> — What approvers should know (up to 500 characters).</li>
+<li><strong>Add a stamp box to the top of the page</strong> — Inserts the stamp box macro with the request. It is pre-checked according to the administrator's policy (on by default), and you can turn it off for this request only. See <a href="#adding-the-stamp-box-automatically">Adding the stamp box automatically</a> below.</li>
+</ul>
+</li>
+<li>Select <strong>Request approval</strong>.</li>
+</ol>
+<p>When the request is created, approvers on the line and Cc recipients get an in-app notification (if Confluence notifications are on, step 1 approvers are also @mentioned in a page comment), and the item below the title changes to <code>⏳ Pending approval · Step 1 of N in progress</code>.</p>
+<h3 id="adding-the-stamp-box-automatically">Adding the stamp box automatically</h3>
+<p>If you request approval with <strong>Add a stamp box to the top of the page</strong> checked, the <strong>Moves Approval Stamps</strong> macro is added to the top of the page, so anyone who opens it sees the steps, approvers, and stamps right away.</p>
+<ul>
+<li><strong>The page version goes up by one.</strong> The page is edited with your own permissions, so the page history shows the change under your name with the version message &quot;Moves Approval&quot;. The request is made against that new version, so it does not immediately show &quot;The page changed after this request&quot;.</li>
+<li>If the page already has a stamp box, no new one is added (and the version does not change).</li>
+<li>If the stamp box cannot be added (for example, you lost edit permission or someone else saved the page in the meantime), <strong>the request still goes ahead without it.</strong> Add one yourself as described below if needed.</li>
+<li>Area approval requests do not have this option. Area approval boxes come with their own stamps.</li>
+</ul>
+<h3 id="inserting-the-stamp-box-yourself-or-in-a-template">Inserting the stamp box yourself or in a template</h3>
+<p>You can insert the stamp box at any time.</p>
+<ol>
+<li>Edit the page, insert <strong>Moves Approval Stamps</strong> with the <code>/</code> command or the <strong>+</strong> menu, and publish. Place it anywhere you like.</li>
+<li>While there is no request yet, the stamp box shows &quot;No approval request yet.&quot; and a <strong>Request approval</strong> button (if you can edit the page). You can request approval from there.</li>
+<li>For document types that always need approval, <strong>put the stamp box in the page template.</strong> Pages created from the template already have one, so requesting approval adds nothing and does not raise the version.</li>
+</ol>
+<p>To read a stamp box, see <a href="05-cc-and-viewer-guide.html#reading-the-approval-stamps-on-a-page">Cc recipient and viewer guide — Reading the approval stamps on a page</a>.</p>
+<blockquote>
+<p><strong>Screenshot placement · 05-request</strong></p>
+<p>Request dialog with approval steps, deadline, Cc, and note</p>
+<p>File: <code>ma-05-request-en.png</code> · Alt text: Request dialog with approval steps, deadline, Cc, and note</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="request-approval-for-part-of-a-page-area-approval">Request approval for part of a page (area approval)</h2>
+<p>Use the <strong>Moves Approval Region</strong> macro when only part of a page needs approval.</p>
+<ol>
+<li>Edit the page and insert <strong>Moves Approval Region</strong> with the <code>/</code> command or the <strong>+</strong> menu.</li>
+<li>Put or move the content to approve <strong>inside</strong> the macro.</li>
+<li><strong>Publish the page.</strong> A newly inserted area may show &quot;Edit and save this area once before requesting approval.&quot; Edit the macro once and save it to record the area identifier.</li>
+<li>On the published page, open <strong>Request area approval</strong> in that area and set up the approval line the same way as for a page.</li>
+</ol>
+<p>Good to know:</p>
+<ul>
+<li>Each area has its own request and status. A page can contain several areas.</li>
+<li>If an area's content changes, the area shows <strong>Content changed</strong>, but the request continues.</li>
+<li><strong>Deleting</strong> the macro automatically <strong>withdraws</strong> that area's open request.</li>
+<li>Copying and pasting the macro can duplicate its identifier. If you see &quot;This page contains duplicate area identifiers, so approval is blocked,&quot; delete the later macro and insert a new one.</li>
+<li>The approval dialog previews the area's text. Images, attachments, and other macros are omitted from the preview — check them on the page.</li>
+<li>Once requested, the area's approval stamps appear at the bottom of the area approval box. Use <strong>Hide stamps</strong> / <strong>Show stamps</strong> to collapse or expand them (expanded by default).</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 06-region</strong></p>
+<p>An approval area inside a page</p>
+<p>File: <code>ma-06-region-en.png</code> · Alt text: An approval area inside a page</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="follow-progress">Follow progress</h2>
+<ul>
+<li><strong>On the page</strong> — If the page has a stamp box, stamps appear in it as decisions are made. Select the item below the title, or <strong>Open approval details</strong> in the stamp box, to see the <strong>Progress</strong> stepper, the <strong>Approval order and decisions</strong> table (who decided when, with signature stamps), and the <strong>Audit timeline</strong>.</li>
+<li><strong>In the inbox</strong> — The <strong>My requests</strong> tab in the approval inbox lists every request you created. Select a document name to go to that page (Ctrl/Cmd/Shift-click or middle-click opens a new tab); select anywhere else in the row to open the approval dialog.</li>
+<li><strong>Deadline</strong> — From three days before the deadline, a badge such as <code>D-3</code> or <code>Due today</code> appears in the approval dialog and in the inbox deadline column; once the deadline passes it changes to <code>Overdue</code>.</li>
+<li>In-app notifications tell you about final approval, rejection, and expiry.</li>
+</ul>
+<h2 id="withdraw-a-request">Withdraw a request</h2>
+<p>To cancel an open request, select <strong>Withdraw request</strong> in the approval dialog and optionally add a <strong>Reason for withdrawing</strong> (up to 200 characters).</p>
+<ul>
+<li>Only the requester and Confluence administrators can withdraw.</li>
+<li>Withdrawing voids all decisions collected so far and <strong>cannot be undone.</strong></li>
+</ul>
+<h2 id="if-you-edited-the-page-after-requesting">If you edited the page after requesting</h2>
+<p>Editing does not stop the request. Instead, the approval dialog shows <strong>The page changed after this request</strong> (for example, requested against v5, now v7) with a <strong>View changes v5 → v7</strong> link.</p>
+<ul>
+<li>If the edits need approval too, select <strong>Resubmit for the new version</strong>. The earlier request closes and a new one starts for the current version. The approval line is carried over, but <strong>review the deadline, Cc, and request note again.</strong></li>
+<li>Resubmitting for a new version requires current edit permission on the target page. This also applies to the original requester.</li>
+<li>Decisions and history from the earlier request stay in <strong>Approval history by version</strong>.</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 07-resubmit</strong></p>
+<p>Requested and current versions, and resubmission</p>
+<p>File: <code>ma-07-resubmit-en.png</code> · Alt text: Requested and current versions, and resubmission</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="if-you-edited-the-page-after-approval">If you edited the page after approval</h2>
+<p>An approval applies to the <strong>version</strong> that was approved. If the page is edited afterward, the dialog shows &quot;Approved at v5 · current version not approved.&quot; Create a new request if the current version needs approval; the previous approval line is prefilled for reuse.</p>
+<h2 id="if-the-request-was-rejected-or-expired">If the request was rejected or expired</h2>
+<ul>
+<li><strong>Rejected</strong> — Read the reason in the dialog or notification, update the page, and create a new request.</li>
+<li><strong>Overdue</strong> — The deadline has passed, but the request has not been expired yet. The app expires overdue requests once a day, so it can look like this for up to a day (the item below the title reads <code>⌛ Overdue</code>). From this point approvers can no longer approve or reject it.</li>
+<li><strong>Expired</strong> — The deadline passed and the request closed. Create a new request if it is still needed.</li>
+<li><strong>Requesting again after the deadline</strong> — When you request again, the overdue earlier request is expired automatically and the new request starts. Once the deadline passes, the approval dialog shows the <strong>Request approval</strong> button even before the request is expired. If you edited the page, you can also use <strong>Resubmit for the new version</strong>.</li>
+</ul>
+<h2 id="common-messages">Common messages</h2>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An approval request is already open.</td>
+<td>Only one request can be open per target. Review the existing request, or withdraw it and request again.</td>
+</tr>
+<tr>
+<td>Someone on the approval line cannot view this page.</td>
+<td>Remove that approver, or grant them page and space view permission, then request again.</td>
+</tr>
+<tr>
+<td>Only registered approvers can be placed on the line.</td>
+<td>An administrator maintains an approver list. Pick someone on the list or ask to be registered.</td>
+</tr>
+<tr>
+<td>Approvals are not enabled in this space.</td>
+<td>Ask an administrator to enable the space.</td>
+</tr>
+<tr>
+<td>The approval line is invalid.</td>
+<td>Check for empty steps and make sure required approvals do not exceed the number of approvers in a step.</td>
+</tr>
+</tbody>
+</table>
+<p>For more, see <a href="07-faq-troubleshooting.html">FAQ and troubleshooting</a>.</p>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="01-overview.html">Overview and key concepts</a></li>
+<li><a href="07-faq-troubleshooting.html">FAQ and troubleshooting</a></li>
+<li><a href="09-marketplace-review.html">Marketplace review guide</a></li>
+</ul>
+</body></html>

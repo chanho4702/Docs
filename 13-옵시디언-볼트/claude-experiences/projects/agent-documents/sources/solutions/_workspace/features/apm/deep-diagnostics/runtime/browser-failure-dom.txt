@@ -1,0 +1,156 @@
+Home
+OPERATIONS
+AI Assistant
+Cannot reach the AI server. Check the server status.
+Monitoring
+Watch infrastructure and service health in real time
+Network Maps
+Cloud Infra Monitoring
+Application Monitoring
+APM Overview
+Live monitoring
+Services
+Service Map
+Trace Explorer
+Incidents & Errors
+Synthetic Monitoring
+SLO
+Database Monitoring
+GPU Monitoring
+Event/Alert
+Review active problems and coordinate a response
+ASSETS & CONFIGURATION
+Asset Management
+Manage equipment, costs and topology maps
+DATA SOURCE MANAGEMENT
+Zabbix Management
+Configure monitored targets, templates and alert rules
+A
+admin
+ADMIN
+Home
+/
+Application Monitoring
+/
+Trace Explorer
+/
+GET /multi
+Search screens & hosts
+Ctrl K
+kr
+en
+Your license expires in 0 days. Without renewal the system becomes read-only.
+Manage license
+GET /multi
+Find traces across every service and drill into where a single request spent its time, as a waterfall or a flame graph.
+GET /multi
+Slow (inferred)
+Start
+2026-10-28 16:08:04
+	
+Latency
+3.00 s
+	
+Spans
+3 / 5 stored
+
+
+Trace ID
+d561cc2070e8487095b7d01a317ac5ec
+Still ingesting
+Time by service
+?
+Sum of self time (time not covered by children). The share denominator is the sum drawn in this bar.
+Waterfall
+Flame
+Diagnostics
+Target SERVER request
+apm-diagnostics-runtime-fixture · 1111111111111111
+?
+Retry
+Service
+apm-diagnostics-runtime-fixture
+	
+Instance
+qa-instance-A
+	
+Process run ID
+00000000-0000-4000-8000-000000000101
+
+
+Start
+2026-10-28 16:08:04
+	
+Latency
+3.00 s
+Direct observation
+Partial data
+Part of the request tree is missing or truncated.
+Request connection acquisition
+?
+Direct observation
+Partial data
+Part of the request tree is missing or truncated.
+Acquisition attempts
+0
+	
+Observed interval union
+0 ms
+	
+Completed attempt total
+0 ms
+	
+Maximum acquisition
+0 ms
+
+
+Intervals intended for delivery
+0
+	
+Received intervals
+0
+	
+Below threshold
+0
+	
+Details omitted
+0
+
+
+Unfinished attempts
+0
+	
+Detail threshold
+10 ms
+Omitted or missing intervals, or incomplete request coverage, make the union duration a lower bound.
+These observations cover supported hooks, not every database path. Concurrent acquisitions may have a cumulative duration longer than the request.
+A valid received summary reports zero acquisition attempts in the supported hooks.
+No acquisition detail intervals are available. Missing or omitted details do not mean zero attempts.
+Request SQL and external HTTP calls
+Direct observation
+Partial data
+Part of the request tree is missing or truncated.
+CLIENT intervals attributed to the selected SERVER. SQL and HTTP durations do not isolate database execution or network waiting.
+No SQL or HTTP intervals are present in the received scope.
+Instance context
+Surrounding context
+Partial data
+Runtime before and after process restarts cannot be separated.
+Memory and thread totals cannot be reconstructed accurately from stored one-minute data, so they have been excluded.
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+2026-10-28 16:06:04 — 2026-10-28 16:10:07
+Active connections (count)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+Maximum connections (count)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+CPU utilization (%)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+GC duration (ms)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+Investigation candidates
+Evidence-based investigation candidates from rule version 1. Surrounding conditions do not establish a sole cause.
+No investigation candidate was produced from the available data. This does not establish normal operation.

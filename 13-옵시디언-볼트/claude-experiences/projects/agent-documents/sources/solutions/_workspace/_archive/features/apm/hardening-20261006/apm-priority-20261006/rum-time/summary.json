@@ -1,0 +1,45 @@
+{
+  "base": "22eeff8",
+  "worktree": "C:\\solutions\\_workspace\\worktrees\\apm-rum-time-20261006",
+  "scope": "RUM time and span partition policy (7 files)",
+  "suites": [
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ApmRumIngestMvcTest",
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.61"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumParserTest",
+      "tests": "14",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.001"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumSchemaIT",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "22.952"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumStoreTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.05"
+    }
+  ],
+  "totals": {
+    "tests": 53,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Project calendar</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Project calendar</h1>
+<p><a href="index.html">Guide home</a> · <a href="../ko/calendar.html">한국어</a></p>
+<blockquote>
+<p>Review draft: the screens and deployed version on the designated staging site have not yet been verified.</p>
+</blockquote>
+<p>Use the project calendar to review participants&#39; worklogs and the schedules of linked issues by date. Use My Work when reviewing only your own work.</p>
+<h2>Review the calendar</h2>
+<ol>
+<li>Open the calendar in the project details. You need Project read and access to this project within your visibility scope.</li>
+<li>Move to the required month or week.</li>
+<li>Narrow the results using person and task filters.</li>
+<li>Select worklog or issue display mode.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Worklogs</td>
+<td>Time actually recorded and daily totals</td>
+</tr>
+<tr>
+<td>Issues</td>
+<td>Schedules shown from start date to due date</td>
+</tr>
+</tbody></table>
+<p>You can also review holidays and project events. Check unscheduled work in the unscheduled-issues list and set its dates in <a href="project-work.html">work management</a>.</p>
+<h2>When results differ from expectations</h2>
+<ul>
+<li>For missing worklogs, check the period, author, and issue links.</li>
+<li>For missing issue bars, check issue mode and whether dates are set.</li>
+<li>Editing a worklog requires the author&#39;s own editing access.</li>
+<li>For multi-day events, check both the start date and the last displayed date.</li>
+</ul>
+<p>These are the same worklogs used in Jira and My Work. Use <a href="analytics.html">people analysis</a> for individual effort trends. The mode comparison is explained in text; a separate screenshot is not mandatory.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>The project calendar shows project-scoped schedules/records, with a different population from personal My Work.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Today / previous-next / month-week</td>
+<td>Change the displayed date/scale without editing project or issue dates.</td>
+<td>Check the heading&#39;s period and selected project.</td>
+</tr>
+<tr>
+<td>Worklog / issue display</td>
+<td>Worklogs use actual logged dates/time; issue schedules use start/due dates. The same issue can appear at different dates by mode.</td>
+<td>Distinguish out-of-period records from issues lacking schedule dates.</td>
+</tr>
+<tr>
+<td>Issue/entry details / unscheduled list</td>
+<td>Select a target to inspect key/name/period/time. Check the unscheduled list for work missing start or due dates.</td>
+<td>An authorized user can set planning dates in the Work Management Gantt. Do not confuse calendar viewing with logging time.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

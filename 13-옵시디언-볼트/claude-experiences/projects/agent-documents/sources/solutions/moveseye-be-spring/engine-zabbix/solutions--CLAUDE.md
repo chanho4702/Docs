@@ -1,0 +1,129 @@
+# CLAUDE.md — engine-zabbix 작업 가이드
+
+Zabbix 어댑터. **소스의 온갖 사정을 여기서 흡수하고 계약 밖으로 새지 않게 한다.** 스펙은 [README.md](solutions--README.md).
+
+---
+
+## 🔴 §D7 — 응답 불변이 최우선
+
+Phase 1의 절대 원칙: **포트로 갈아타도 REST 응답이 바뀌면 안 된다.** FE가 깨진다.
+
+### "값이 더 정확해지는 것"도 계약 변경이다
+
+폴백 체인을 쓰자 legacy 키만 가진 호스트에서 실값을 찾아 `memoryUsage 0 → 11`이 됐다.
+버그 수정처럼 보이지만 **화면 숫자가 바뀐다**. 리팩터링 커밋에 값 변경을 섞으면 나중에 어느 커밋이
+무엇을 바꿨는지 추적이 불가능하다. → 폴백 **없는** 카탈로그 항목을 따로 만들어 해결했다.
+
+### 응답에는 영속 데이터도 포함된다
+
+배치가 DB에 쓰는 값도 §D7 대상이다. `event_problems`가 Zabbix 표기 `r_event_id="0"`을 저장해 왔고
+**기존 행과 섞이므로**, 모델의 null 정규화를 쓰기 직전에 되돌린다.
+
+### 응답 배열 **순서**도 계약이다
+
+- `getActions`의 if 순서(비트순도 enum 선언순도 아님)가 그대로 응답 배열이었다 → 서비스가 명시 고정
+- 정렬 계약(최신순)이 소비자의 **동점 처리**를 뒤집은 적이 있다 → 소비자가 역순 순회로 복원
+- **중립 모델을 써도 순서는 위임 못 한다.**
+
+### "항상 0"이라도 이유가 다르면 처리가 다르다
+
+- `getHostItems.cpuUsage` — 원본이 **키가 어긋나** 논리적으로 항상 0 → **조회 자체를 제거**(콜 낭비)
+- 서버 목록 트래픽 — dev에 `[...,bytes]` 아이템이 **없어서** 0. 다른 환경엔 있을 수 있다 → **조회 유지**
+
+---
+
+## 🔴 카탈로그(`ZabbixMetricCatalog`)가 키 매핑 정본
+
+**도메인 서비스에 아이템 키 리터럴이 남으면 안 된다.** 여기에 등재한다.
+
+### 축적된 교훈(되돌리지 말 것)
+
+| 항목 | 내용 |
+|---|---|
+| swap 사용률 | `system.swap.size[,pused]` — `vm.memory.pused` 아님 |
+| net.if.in/out | **bps 원값**(bytes 아님). `formatBytes` 쓰면 ~940만배 부풀림 |
+| 디스크 | `vfs.fs.size` ↔ `vfs.fs.dependent.size`가 **호스트별 상호배타** → 체인 필수 |
+| `PING:alive` | 반드시 `filter`(정확 일치) — `search`면 `icmppingsec`/`icmppingloss`가 섞인다 |
+
+### `ChainMode` — 패턴 목록의 의미를 사양에 명시한다
+
+| 모드 | 의미 |
+|---|---|
+| `FALLBACK`(기본) | "철자 **하나**를 고른다" — 앞 패턴부터 첫 히트 |
+| `UNION` | "**모든 철자를 합친다**" |
+
+🔴 **여러 엔티티를 가로지르는 계열 조회에는 UNION이 필요하다.** 폴백은 "1차 패턴이 **전 엔티티에서**
+비었을 때"만 넘어가므로, 그룹에 두 철자가 섞여 있으면 1차를 쓰는 호스트가 하나만 있어도
+나머지가 **통째로 누락**된다(dev 실측: size 27키 / dependent 32키 공존).
+
+⚠️ **UNION은 중복 제거를 하지 않는다**(원본 concat과 1:1). 패턴이 상호 배타여야 하며,
+새 UNION 사양 등록 시 **배타성 확인이 선결**이다.
+
+### GPU(ZM-78) — 기존 도메인과 규칙이 다르다
+
+| 항목 | 내용 |
+|---|---|
+| 키 정본 | `gpu/GpuKeyFamily` 하나. 카탈로그(시계열)와 스냅샷 어댑터가 같은 표를 쓴다 |
+| 숫자 | `GpuValues` 엄격 해석 — 빈 값·N/A·NaN·Infinity는 0이 아니다. 🔴 `parseDoubleOrZero`를 GPU에 쓰지 말 것 |
+| 최신값 | `GpuInventoryPort`만. `MetricPort.queryLatest`에 GPU를 주면 BAD_QUERY(값 상태가 0으로 뭉개지므로) |
+| 🔴 이력 0 원문 | 프리셋의 `*.raw`·`*.parsed`는 이력 0이라 Zabbix가 lastclock을 주지 않는다(항상 0). 원문 수집 시각으로 판정하면 **모든 자식이 MASTER_NO_DATA**가 된다 — `GpuIntervals.keepsHistory`로 거른다 |
+| 🔴 발견 | 프리셋 1.0의 `moveseye.gpu.discovery`는 **LLD 규칙**이다(item.get에 안 나온다). 규칙 상태 + 아이템 `itemDiscovery.status`(1=더 이상 발견 안 됨)로 판정. 이 경로는 모델명을 모른다 |
+| 🔴 공식 플러그인 | 7.4.15 템플릿 실측 확정(10-08). `nvml.device.get`은 이력 0 → 발견은 LLD `nvml.device.discovery`. 단위 문자열은 `watts`·`Hz`·`C`·`bps`(PCIe **bps 표기지만 bytes/s** — 재변환 금지)만 허용 |
+| 🔴 매크로 주기 | 원문 주기가 `{$MOVESEYE.GPU.INTERVAL}`이다. 못 풀면 전부 STALE — 호스트 → 연결 템플릿 → 전역 순으로 푼다(중첩 템플릿은 미지원) |
+
+### 계열 프리픽스의 `[` 하나가 계약이다
+
+`net.if.in`(search)은 `net.if.in.discards[…]`·`net.if.in.errors[…]`까지 걸린다(**실재한다**).
+`net.if.in[`으로 물어야 인터페이스별 아이템만 잡힌다.
+
+---
+
+## 🔴 실 데이터를 먼저 훑어라 — 추측한 규칙은 틀린다
+
+원본의 **키 문자열 정규식**을 차원(`dims`) 조건으로 옮길 때, 순진한 규칙(`sub==null`)이었다면
+`net.if.in.discards[…]` 100건이 트래픽에 섞일 뻔했다. 실 키 집합을 훑어 동치를 검증하고 넘어갔다
+(트래픽 51/51 ×2, 디스크 17/17 완전 일치).
+
+**단위 테스트는 내가 믿는 규칙만 확인한다. 소스의 실제 규칙은 실데이터가 알려준다.**
+- Zabbix 정렬은 **대소문자를 구분하는 코드포인트 순**이다(`Haley` H=72 < `gab-…` g=103).
+  `CASE_INSENSITIVE_ORDER`로 짰다가 런타임 비교에서 순서 뒤집힘으로 발견했다.
+
+---
+
+## 🟡 Zabbix API 함정
+
+1. **JSON-RPC 본문은 직렬화 문자열로** — `.body(객체)`면 chunked 스트리밍 → `Invalid JSON(-32700)`
+2. `trigger.get`의 `time_from`/`time_till`은 **Zabbix가 무시한다**(정식은 `lastChangeSince/Till`) — 실증됨
+3. `event.get`의 `source`·`object` **기본값이 둘 다 0**(트리거) — 파라미터 유무가 무관하다
+4. `problem.get`은 **활성 알람만** 준다 → 해소 시각을 읽으려면 `event.get`
+5. `-32602`(검증 실패)는 `create`/`update`에서만 400으로 매핑(그 외 401)
+6. 제한된 계정(guest 등)은 `problem.get`에 `No permissions` → 401 매핑. **버그 아님**
+7. `Map.of()`는 `get(null)`에서 **NPE**(HashMap과 다름) — 빈 기본값 쓰는 자리마다 키 null 확인
+8. `suppress_until`은 "필드 없음"→0, `"0"`(무기한)→null로 **직관과 반대**. 경로마다 조건이 달라 **통일 금지**
+
+### 미사용 요청이 자주 발견된다
+
+`selectAcknowledges`·`selectSuppressionData`·`dns`/`port`/`useip`/`details` 등 **요청만 하고 안 쓰던**
+파라미터가 전환하며 여러 번 드러났다. 없애도 응답이 같으면 지운다.
+
+---
+
+## 🟢 작업 방식
+
+1. **원본 서비스를 정독**하고 소비 지점까지 본다 — 요청 파라미터가 아니라 **어디서 읽는지**가 기준이다
+   (`getHostNetwork`가 `status`를 output에 넣어 놓고 안 쓰던 사례).
+2. 전환 후 **`gradlew test` 전 스위트 확인**. 과거 테스트 미갱신 상태로 푸시해 전 스위트가 안 돌아간 적 있다.
+3. **런타임 전/후 비교**가 최종 그물이다 — `_workspace`에 인프라가 있다
+   (`_5c_run.ps1` JAR 기동 · `_4*_collect.mjs` 채집 · `_4*_diff.py` 비교).
+   - before/after JAR: `git stash push -u` → `bootJar` → `stash pop` → `bootJar`
+   - ⚠️ 서버는 `Start-Process -WindowStyle Hidden`으로(PowerShell `Start-Job`은 툴 호출 종료 시 죽는다)
+   - ⚠️ 로그가 UTF-16이라 grep이 안 먹는다 → 기동 대기는 `curl` 폴링
+   - ⚠️ **캐시·스냅샷이 낀 경로는 먼저 비운다**(리포트 `host_group_report` truncate, Redis 캐시 키 삭제).
+     안 그러면 **전환 경로를 타지 않은 채 identical**이 나온다.
+4. 런타임 비교가 불가능한 경로(스케줄러 배치, 데이터 부재)는 **단위 테스트가 유일한 그물**이다.
+   ⚠️ Mockito `anyString()`은 **null을 매칭하지 않는다**(실패가 원인에서 두 단계 떨어져 나타난다).
+
+## ⚠️ 환경
+
+전역 `JAVA_HOME`이 corretto-1.8이라 gradle이 거부한다 — **매번 지정**:
+`$env:JAVA_HOME="C:\Program Files\Java\jdk-17"`

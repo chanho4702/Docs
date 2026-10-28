@@ -1,0 +1,7 @@
+flowchart LR
+    A[Approval 원장 결정] --> B[아웃박스·eventId·revision]
+    B --> C[Workforce 이벤트 수신 API]
+    C --> D[내구성 확보·ACK]
+    C --> E[Approval 결과 API 조회]
+    E --> F[cursor·동일 snapshot 완전 조회]
+    F --> G[건수·시간 대사 후 집계 반영]

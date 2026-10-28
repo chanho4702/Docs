@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Request page approval · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/page-approval.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a class="active" aria-current="page" href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; User guides</div><h1>Request page approval</h1><p class="lede">Request approval for an entire published page. Choose the review order, deadline, Cc recipients, and note. For only part of a page, use <a href="area-approval.html">area approval</a>.</p>
+<p><strong>Location:</strong> Published page → <strong>Request approval</strong> below the title. You can also open it from the page's <code>•••</code> menu.</p>
+<h2 id="section-0">Before requesting</h2>
+<p>You need page edit permission and must satisfy the app's enabled-space and access policies. Approvers must be able to view the page under the default policy. If the same target already has an open request, review <a href="history-resubmit.html">how to handle that request</a> first.</p>
+<h2 id="section-1">Submit a two-step request</h2>
+<ol>
+<li>Choose <strong>Pick approvers</strong> and search by name or account to add the first approver.</li>
+<li>Select <strong>Add step</strong> if another person should review after the first person. Adding another person to the same step has a different effect.</li>
+<li>Review the step name and required approval count. Three people with a required count of two need two approvals to pass that step.</li>
+<li>Use <strong>Move up</strong> and <strong>Move down</strong> to arrange steps. An approval group must occupy a step on its own.</li>
+<li>Check the deadline, Cc, note, and stamp box option, then submit the request.</li>
+<li>Confirm the steps, target version, and deadline on the created request.</li>
+</ol>
+<p>If an administrator has prepared an approval line, select it under <strong>Use an approval line</strong>. Check its members, steps, and default deadline before submitting.</p>
+<h2 id="section-2">Fields and results</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>How to use it</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approver search / detailed search</td>
+<td>Search by name or account, or select several people in detailed search</td>
+<td>Check the account when names are similar.</td>
+</tr>
+<tr>
+<td>Add step / order</td>
+<td>A step opens after the previous step finishes</td>
+<td>Separate review turns belong in separate steps.</td>
+</tr>
+<tr>
+<td>Required approvals</td>
+<td>Number of approvals needed to pass the step</td>
+<td>Cannot exceed the step's member count.</td>
+</tr>
+<tr>
+<td>Step name</td>
+<td>Enter a purpose such as <code>Legal review</code></td>
+<td>The name identifies the review stage.</td>
+</tr>
+<tr>
+<td>Deadline</td>
+<td>Enter date and time; leave empty for no deadline</td>
+<td>Review any policy or approval-line default.</td>
+</tr>
+<tr>
+<td>Cc</td>
+<td>Choose users or groups</td>
+<td>Receives information, without decision permission.</td>
+</tr>
+<tr>
+<td>Request note</td>
+<td>Optional, up to 500 characters</td>
+<td>Explain what needs review.</td>
+</tr>
+<tr>
+<td>Add a stamp box to the top of the page</td>
+<td>Adds one if the page does not already contain it</td>
+<td>If inserted, the new page version becomes the target.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-3">After submission</h2>
+<p>Only one request can be open for the same target. A request can succeed even if stamp insertion fails, so do not submit again just because the stamp box is missing. Use <a href="stamp-box.html">manual insertion</a> if needed.</p>
+<h2 id="section-4">Troubleshooting</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check in order</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cannot find an approver</td>
+<td>Search term and account status → approver list → group settings</td>
+</tr>
+<tr>
+<td>An approver cannot view the page</td>
+<td>That user's direct page access → space and page restrictions</td>
+</tr>
+<tr>
+<td>No saved approval line</td>
+<td>Whether the line is enabled → its space assignment</td>
+</tr>
+<tr>
+<td>A request is already open</td>
+<td>Existing request status and deadline → withdrawal or resubmission</td>
+</tr>
+</tbody>
+</table></div>
+<p>Submitting a request does not approve the page. Follow its result in the <a href="inbox.html">approval inbox</a> and stamp box.</p>
+<div class="pager"><a href="glossary.html"><small>← PREVIOUS</small>Concepts and status reference</a><a href="area-approval.html"><small>NEXT →</small>Area approval</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">Before requesting</a><a href="#section-1">Submit a two-step request</a><a href="#section-2">Fields and results</a><a href="#section-3">After submission</a><a href="#section-4">Troubleshooting</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>
