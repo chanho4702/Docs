@@ -1,0 +1,31 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Frequently asked questions</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Frequently asked questions</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/faq.html">한국어</a></p>
+<blockquote>
+<p>Review draft: the screens and deployed version on the designated staging site have not yet been verified.</p>
+</blockquote>
+<p>Use these checks when something goes wrong. A symptom can have several causes, so avoid drawing conclusions from one setting alone.</p>
+<h2>A menu is missing</h2>
+<p>Check the feature&#39;s read permission in My Page. Ask an administrator to verify your user registration, permission set, and team inheritance, then refresh. My Team also requires an actual team-leader relationship.</p>
+<h2>A colleague can see a project or person that I cannot</h2>
+<p>Accounts can have different visibility. Compare project membership, team membership and leadership, responsible teams, and organizational access. If only a particular Jira issue is missing, check whether you can open it directly in Jira.</p>
+<h2>Does adding work create a new Jira issue?</h2>
+<p>Including existing work links Jira issues to the app project. Create issue in Work Management creates a new Jira issue and requires Jira Create Issues plus required fields. Removing work from the app project does not delete its Jira issue.</p>
+<h2>I selected a responsible team, but no members appeared</h2>
+<p>A responsible team defines ownership. Register actual participants using Add User or Pick members from an assigned team. Jira issue assignment is also separate from project membership.</p>
+<h2>I cannot save or edit a worklog</h2>
+<p>Check issue access, time tracking, and the author&#39;s Jira permissions. Creating requires Work On Issues, editing your own entry requires Edit Own Worklogs, and deleting it requires Delete Own Worklogs. After a save error, check whether the entry was already saved before retrying.</p>
+<h2>Labor cost is zero or hidden</h2>
+<p>For hidden fields, check cost access and salary policy first. For an actual zero, check allocation mode, personal or level amounts, and project dates. Also distinguish an intentional zero project allocation. See <a href="./project-people.html">labor-cost guidance</a>.</p>
+<h2>I logged work, but the dashboard has not changed</h2>
+<p>Check the last aggregation time and partial-failure notices. An authorized user can request reaggregation when needed. Align period, people, and issues when comparing project and organization-wide analysis.</p>
+<h2>Does the Excel file contain every worklog?</h2>
+<p>It contains successfully collected records. Records omitted because of search limits, cancellation, failures, or Jira permissions are not included. Check both the file summary and the collection status.</p>
+<h2>A Confluence document is marked broken</h2>
+<p>The page may have been deleted, or you may lack access. Try opening the source URL directly and check the same-site Confluence connection. Unknown status does not confirm deletion.</p>
+<h2>I cannot move a person to another team</h2>
+<p>Check whether the person is currently a team leader. Change or remove the leader assignment before moving them, then verify inherited permissions after the move.</p>
+<h2>Does deleting an app project delete its Jira issues?</h2>
+<p>The Jira issues remain; app project data and relationships are cleaned up. For interrupted deletion, inspect the failure in the progress dialog and retry. Deleted app-project data cannot be restored, so verify the target first.</p>
+<h2>What should I include in a support request?</h2>
+<p>Include the site, time and timezone, screen path, steps taken, expected and actual results, and error message. When useful, include a sample issue key and a screenshot with personal information hidden. Do not include passwords or API tokens.</p>
+</body></html>

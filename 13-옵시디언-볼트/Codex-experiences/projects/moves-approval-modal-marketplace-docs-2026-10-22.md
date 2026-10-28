@@ -1,0 +1,12 @@
+# 모달 폭·실화면 Marketplace 문서 정비 — 2026-10-22
+
+- Confluence Forge 모달의 `large`(약 800px) 폭에서 3단계 진행선·이력·결정 버튼이 눌리는 현상을 확인했다. Custom UI `Modal` 호출은 `xlarge`로 통일하고, manifest의 byline·content action 진입점은 현행 Forge CLI schema가 문자열 `xlarge`를 받지 않아 공식 크기와 같은 `968px × 90vh` custom viewport로 지정했다.
+- staging 4.6.0에 최종 코드를 배포한 뒤 실제 dialog와 modal iframe 폭이 모두 약 968px임을 DOM과 화면으로 확인했다. 백엔드 248개, UI 88개 테스트, UI build, `forge lint`를 통과했다. build에는 기존 `postcss-calc` lexical warning이 남지만 산출물 생성과 lint는 성공했다.
+- 문서용 staging 화면 17장을 촬영해 한·영 24쌍 중 17개 소스 파일, 36개 위치에 실제 이미지를 넣었다. 렌더·검증 결과는 preview 49페이지, 로컬 링크 152개, 렌더 링크·anchor 1,779개, 한영 쌍 24개, 오류 0이다. 영역 macro, PDF, 설치 화면 등 5개 장면 10개 위치는 실제 증거가 없어 placeholder로 남겼다.
+- 공개 MA 공간의 기존 개인정보·보안 정책이 `Moves Signature for Jira and JSM`을 설명하고 PII 미저장·제거 즉시 삭제를 주장해 실제 Moves Approval의 account ID, Forge SQL/KVS, 보관 정책과 충돌했다. Moves Approval 전용 한영 정책 초안을 마련했다. 공개 SLA에는 지원 목표가 있었지만 `Adaptavist` 오기가 있어 제품별 한영 SLA 초안으로 교체할 준비를 했다.
+- reviewer guide에 공개 문서·이미지의 로그아웃 검증, Privacy & Security tab의 storage·egress·PAT·scope 근거, 신규 앱/partner 설문·partner 검증·자동 scan·수동 review, blocking 취약점 조치, review ticket 증빙, 제출 중단 조건을 반영했다. EULA는 임의로 새로 쓰지 않고 Marketplace 버전 Links에서 Atlassian Standard Agreement를 선택하거나 법률 검토한 자체 URL을 제공하도록 명시했다.
+- 데모 페이지의 programmatic bodied area macro 두 개는 host spinner에서 멈추고 resolver가 호출되지 않았다. theme/i18n 가설 수정은 효과가 없어 모두 원복했다. 깨진 화면은 문서에 쓰지 않고 Marketplace 제출 중단 조건으로 남겼다. programmatic ADF를 Confluence 편집기에서 열고 다시 저장해 정상화되는지 확인하는 후속 실측이 필요하다.
+- 사용자 확인 뒤 공개 Confluence에 가이드 38페이지와 법률 문서 2페이지를 갱신하고, 17개 원본 화면을 36개 첨부·본문 위치에 게시했다. 공개 검증은 가이드 48/48, 내부 링크 300개, 첨부 36개, 누락·깨진 링크 0개를 통과했다. Quick Start를 새로고침해 실제 첨부 이미지(1185×528)와 캡션 렌더링을 육안 확인했고, 개인정보 정책의 제품명·Forge SQL·Sentry 설명과 SLA의 Dmove 표기도 확인했다.
+- 브라우저에서 게시 직후 열린 기존 탭은 갱신 전 DOM을 유지할 수 있다. REST의 `body.storage`와 `body.view`에 이미지가 있어도 화면에서 보이지 않으면 페이지를 새로고침한 뒤 본문 DOM과 실제 렌더 화면을 함께 확인한다.
+
+관련: [[moves-approval-handbook-publication-2026-10-06]], [[moves-approval-marketplace-review-docs-2026-10-05]], [[../topics/confluence-cloud-documentation-publishing]]

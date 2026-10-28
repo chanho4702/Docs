@@ -1,0 +1,162 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Project dashboard</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Project dashboard</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/project-dashboard.html">한국어</a></p>
+<blockquote>
+<p>Review draft: English screenshots were captured on the designated staging site on 2026-10-04 and are shared by both language guides. The deployed version and role-specific access and save operations remain under review.</p>
+</blockquote>
+<p>The project dashboard brings together summaries and charts for one project. Use it to arrange the measures your team reviews regularly.</p>
+<h2>Required access</h2>
+<p>Dashboard read allows viewing; Dashboard write allows widget and layout editing. Analytical widgets additionally require Report read, and cost information requires Cost read. Some amount-based widgets also depend on salary policy.</p>
+<h2>Set up the dashboard</h2>
+<ol>
+<li>Open the project&#39;s dashboard.</li>
+<li>Review its summary and existing widgets.</li>
+<li>If you have editing access, enter edit mode and open the chart selection.</li>
+<li>Choose widgets for your review and adjust their size and position.</li>
+<li>Save, then check the layout and filters in viewing mode.</li>
+</ol>
+<p>Start with widgets that support decisions, such as work status, planned versus actual effort, and progress trends. If a widget has no data, check issue links, estimates, and worklogs.</p>
+<h2>Before interpreting measures</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Project, period, and filters</td>
+<td>The same measure can differ when its population changes</td>
+</tr>
+<tr>
+<td>Cost access and salary policy</td>
+<td>A hidden amount does not mean zero cost</td>
+</tr>
+<tr>
+<td>Planned effort</td>
+<td>It supplies the basis for progress and plan comparisons</td>
+</tr>
+<tr>
+<td>Widget explanation</td>
+<td>It identifies the calculation and scope</td>
+</tr>
+</tbody></table>
+<p>Custom-filter widgets collect issues matching conditions such as assignee, status, and type. If too few issues appear, remove filters one at a time to identify the cause.</p>
+<p><img src="../images/en/05-dashboard-overview.jpg" alt="Sample project dashboard with workforce and duration summaries and distribution widgets."></p>
+<p>Sample project dashboard with workforce and duration summaries and distribution widgets.</p>
+<p>Use <a href="./analytics.html">Analysis and reports</a> for detail, or the <a href="./portfolio.html">Portfolio dashboard</a> for comparisons across projects.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>The project dashboard manages widget data and layouts. Removing a chart differs from deleting issues/worklogs.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Edit / Finish Editing</td>
+<td>Change widget position/size in edit mode and save the changed layout when finishing. This saves the project dashboard configuration.</td>
+<td>Check the success notice and layout after reopening. Distinguish a moved on-screen item from a confirmed saved layout.</td>
+</tr>
+<tr>
+<td>Add Chart: Recommended / Custom / Add all</td>
+<td>Choose recommended layouts or specify data/chart type/name. Add all adds currently visible widgets and skips existing ones.</td>
+<td>Unavailable cost widgets need not indicate an error. Heavy marks widgets that can load slowly on large projects.</td>
+</tr>
+<tr>
+<td>Chart name / filter editing</td>
+<td>Save that widget&#39;s title and supported filters such as assignee/status/type/priority/due/estimate.</td>
+<td>Distinguish resetting conditions from saving them. Supported filters vary by widget, so populations can differ within one dashboard.</td>
+</tr>
+<tr>
+<td>Remove widget</td>
+<td>Remove the chart configuration from the dashboard, not Jira work, salary, or worklogs.</td>
+<td>Add the widget again if needed; its former title, filters, and layout may need reconfiguration.</td>
+</tr>
+<tr>
+<td>Expand chart / table view / tooltip</td>
+<td>Use supported widgets&#39; expanded/table views. Tooltips help inspect values, units, and populations.</td>
+<td>Check period, filters, and formula before comparing numbers. Distinguish an empty chart from a loading error.</td>
+</tr>
+<tr>
+<td>Role Distribution</td>
+<td>Analyze the composition of project members based on their roles.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Level Distribution</td>
+<td>Understand team capability and balance by analyzing the distribution of skill levels.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Salary Distribution</td>
+<td>Analyze cost structure and spending concentration through salary range distribution.</td>
+<td>Requires cost read and a policy permitting personal amounts. Individual salary-distribution widgets cannot be added under level-based policy.</td>
+</tr>
+<tr>
+<td>Issues by Assignee</td>
+<td>Analyze how issues are distributed among assignees.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Issue Distribution</td>
+<td>Analyze the distribution of participants involved in issues.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Worklog</td>
+<td>Analyze workload concentration based on issue status or time period.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Team mix</td>
+<td>Breaks project members down by the team they belong to, showing how much each team is committed.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Status Distribution</td>
+<td>Splits issues into Done / In Progress / To Do to show the current progress mix. Switch between issue count and effort.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Planned vs Actual</td>
+<td>Compares total planned effort (MD) with actual effort spent to reveal under- or over-estimation.</td>
+<td>Requires Report read. Check hours per MD and missing estimates.</td>
+</tr>
+<tr>
+<td>Relation Topology</td>
+<td>Shows issues linked to the project along with sub-task, issue-link and workforce-parent relations. Circle size is time spent, so costly issues stand out.</td>
+<td>Requires Project read. Check relation types; edit relationships in Work Management.</td>
+</tr>
+<tr>
+<td>Overdue &amp; Upcoming</td>
+<td>Lists unfinished issues that are past due or due soon, ordered by risk.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Issue Size</td>
+<td>Compares which issues take the largest share of work by area. Switch between time spent and planned effort.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+<tr>
+<td>Progress Trend</td>
+<td>Compares planned and actual cumulative effort over time (S-curve). Uses the same data as the Progress tab.</td>
+<td>Requires Report read. Check project dates/plans and distinguish cumulative effort from completed deliverables.</td>
+</tr>
+<tr>
+<td>Cost Burn-up</td>
+<td>Compares cumulative monthly labor cost against the budget line. Uses the same data as the Cost tab.</td>
+<td>Requires cost read. This is estimated monthly cost, distinct from accounting payments.</td>
+</tr>
+<tr>
+<td>Custom Filter</td>
+<td>Pick assignee, status, type, priority, due and estimate conditions to gather exactly the issues you want.</td>
+<td>Check title, legend, and units. People counts, issue counts, and effort are distinct measures even in one project.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

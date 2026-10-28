@@ -1,0 +1,67 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173473809">한국어</a></p>
+<h2>Purpose and access</h2>
+<p>Public holidays determine working days and available MD. The sidebar currently uses Permission management read to show this entry; holiday changes require Public holiday management write. Holiday data itself is readable by screens needing working-day calculations.</p>
+<p>A user with holiday access alone may not see the sidebar entry. Ask an administrator for a direct link rather than assuming the write permission is missing.</p>
+<h2>Register a holiday</h2>
+<p>Add a name, date, and work ratio. The table provides edit and delete actions. The monthly 1MM working-day and hour basis is calculated from weekdays and public holidays and updates after changes.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Monthly 1MM basis, holiday rows, and Add holiday with name, date, and work ratio.</p>
+</blockquote>
+<h2>Understand the work ratio</h2>
+<table>
+<thead>
+<tr>
+<th>Ratio</th>
+<th>Meaning</th>
+<th>Capacity deduction</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Full day off</td>
+<td>1MD</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>Half working day</td>
+<td>0.5MD</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Normal working day</td>
+<td>None</td>
+</tr>
+</tbody></table>
+<p>Weekend holidays do not create an extra deduction because weekends are already excluded. Personal leave is handled separately: full-day leave deducts 1MD, half-day leave 0.5MD, and an entry with a work ratio of 1 does not reduce capacity. Overlapping leave should not deduct more than the available day.</p>
+<h2>Affected screens</h2>
+<p>Holidays affect My Work targets and calendar labels, project calendar labels, people-analysis capacity, schedule progress, the exclude-holidays option for period worklogs, and the issue panel&#39;s monthly MM conversion.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Holidays affect availability and monthly MM calculations. Organizational holidays and personal leave schedules are different data.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Year / monthly 1MM table</td>
+<td>Review monthly working days/hours from that year&#39;s holidays/weekdays. Monthly 1MM is automatically calculated.</td>
+<td>Do not assume 1MM is an arbitrary entered constant; check the year and daily hours together.</td>
+</tr>
+<tr>
+<td>Add Holiday / name / date / work ratio</td>
+<td>Set the organizational date and available work ratio: 0 full day off, 0.5 half-day availability, 1 normal working day.</td>
+<td>Review duplicate-date/name notices and save. Do not interpret work ratio as time already logged.</td>
+</tr>
+<tr>
+<td>Edit / Delete / verify monthly basis</td>
+<td>Editing/deleting changes the organizational holiday and monthly workday calculations.</td>
+<td>Check the holiday list/monthly MM table after saving; also check aggregation time for aggregated targets/utilization.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

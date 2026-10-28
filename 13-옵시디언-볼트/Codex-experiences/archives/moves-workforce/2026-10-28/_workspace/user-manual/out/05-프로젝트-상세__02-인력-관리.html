@@ -1,0 +1,232 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>인력 목록 조회</td>
+<td>「프로젝트 관리」 읽기</td>
+</tr>
+<tr>
+<td>인력 추가·삭제, 역할·등급 수정</td>
+<td>「프로젝트 관리」 쓰기 또는 「자원관리」 쓰기</td>
+</tr>
+<tr>
+<td>담당 팀 조회</td>
+<td>「프로젝트 관리」 읽기 또는 「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>담당 팀 편집·팀 전체 추가</td>
+<td>「프로젝트 관리」 쓰기 또는 「자원관리」 쓰기</td>
+</tr>
+<tr>
+<td><strong>급여 관리</strong> 서브탭</td>
+<td>「비용」 읽기 (없으면 <strong>서브탭 자체가 보이지 않음</strong>)</td>
+</tr>
+<tr>
+<td>급여 금액 수정</td>
+<td>「비용」 쓰기</td>
+</tr>
+<tr>
+<td><strong>작업 배정</strong> 서브탭</td>
+<td>「프로젝트 관리」 읽기 또는 「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>배정 실행</td>
+<td>「프로젝트 관리」 쓰기 또는 「자원관리」 쓰기 <strong>+ Jira 담당자 지정 권한</strong></td>
+</tr>
+</tbody></table>
+<ul>
+<li>개인 금액이 보이려면 「비용」 읽기 <strong>와</strong> 급여 정책 <strong>인원별</strong>이 <strong>둘 다</strong> 충족돼야 합니다. 등급 기반 정책에서는 권한이 있어도 개인 금액이 숨겨집니다.</li>
+<li>팀 구성 자체(팀 생성·팀원 배치)는 「팀 관리」 권한이며 <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3]]></ac:plain-text-link-body></ac:link>에서 합니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 이 프로젝트에 <strong>누가 참여하는지</strong>, <strong>인건비를 얼마로 잡을지</strong>, <strong>누구에게 무엇을 맡길지</strong> 정할 때.</p>
+<p>세 개의 서브탭으로 구성됩니다: <strong>인력 목록 / 급여 관리 / 작업 배정</strong></p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 5-4 인력 목록과 담당 팀</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 5-4 인력 목록과 담당 팀"><ri:attachment ri:filename="05-user-list-teams.png" /></ac:image><p><em>그림 5-4. 인력 목록 — ① 담당 팀 카드(주 담당 팀 표시, 투입/직속 인원) ② 팀 전체 추가 ③ + 사용자 추가 ④ 인력 표(팀장 배지, 역할·등급 인라인 편집) ⑤ 서브탭.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">521-담당-팀</ac:parameter></ac:structured-macro>5.2.1 담당 팀</h2>
+<p>인력 목록 상단에서 <strong>담당 팀 여러 개</strong>와 <strong>주 담당 팀 하나</strong>를 지정할 수 있습니다.</p>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>담당 팀과 프로젝트 인력은 별개 축입니다.</strong> 팀을 지정해도 인력이 자동으로 추가되지 않습니다. 인력으로 넣으려면 <strong>팀 전체 추가</strong> 또는 <strong>팀원 골라 담기</strong>를 실행해야 합니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ul>
+<li>팀 카드에는 <code>이미 투입된 인원 / 팀 직속 인원</code>이 표시됩니다.</li>
+<li><strong>팀 전체 추가</strong>는 이미 투입된 인원을 건너뛰고 나머지만 등록합니다. 결과는 &quot;N명 추가, M명 건너뜀&quot;으로 안내됩니다. 이 프로젝트의 담당 팀이 아닌 팀은 추가할 수 없습니다.</li>
+<li>담당 팀을 모두 해제하면 이 프로젝트의 팀 배정이 사라진다는 경고가 표시됩니다.</li>
+</ul>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>팀 구성 자체는 <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 팀 관리]]></ac:plain-text-link-body></ac:link>에서 합니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">522-인력-목록</ac:parameter></ac:structured-macro>5.2.2 인력 목록</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>사용자</td>
+<td>멤버 이름/아바타. 그 사람이 소속 팀의 팀장이면 <strong>팀장</strong> 배지가 붙습니다</td>
+</tr>
+<tr>
+<td>역할</td>
+<td>예: DevOps Engineer, Data Engineer (<ac:link><ri:page ri:content-title="7.4 역할 관리" /><ac:plain-text-link-body><![CDATA[7.4에서 정의]]></ac:plain-text-link-body></ac:link>)</td>
+</tr>
+<tr>
+<td>등급</td>
+<td>예: Junior / Mid-level / Senior / Lead (<ac:link><ri:page ri:content-title="7.5 등급 관리" /><ac:plain-text-link-body><![CDATA[7.5에서 정의]]></ac:plain-text-link-body></ac:link>)</td>
+</tr>
+<tr>
+<td>급여</td>
+<td>인원별 정책에서 쓰는 금액. 등급 기반 정책에서는 등급 급여 범위 표시</td>
+</tr>
+<tr>
+<td>추가 작업</td>
+<td>삭제</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">인력-추가하기</ac:parameter></ac:structured-macro>인력 추가하기</h3>
+<ol>
+<li>우측 위 <strong>+ 사용자 추가</strong>를 누릅니다.</li>
+<li>Jira 사용자를 <strong>이름 또는 이메일로 검색</strong>합니다.</li>
+<li>추가 후 <strong>역할 / 등급 셀을 클릭</strong>해 그 자리에서 지정합니다.</li>
+</ol>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>급여 수정은 「비용」 권한이 있는 사용자가 <strong>급여 관리</strong> 서브탭에서 수행합니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>여기 등록해야 집계에 들어갑니다.</strong> 이슈 담당자로만 지정된 사람은 인건비·가동률 집계에 포함되지 않습니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">523-급여-관리</ac:parameter></ac:structured-macro>5.2.3 급여 관리</h2>
+<p>이 화면에서 정한 금액이 <strong>비용 탭 · 대시보드 총 인건비 · 전사 대시보드 비용 축</strong>의 원천이 됩니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 5-5 급여 관리 서브탭</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 5-5 급여 관리 서브탭"><ri:attachment ri:filename="05-salary-management.png" /></ac:image><p><em>그림 5-5. 급여 관리(인원별 정책) — ① 인원별 투입 유형(프로젝트/연봉) ② 투입 급여·개인 연봉 ③ 계산된 인건비 ④ 정책 안내. 금액은 예시 데이터로 캡처.</em></p></ac:rich-text-body></ac:structured-macro>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">금액이-저장되는-세-곳</ac:parameter></ac:structured-macro>금액이 저장되는 세 곳</h3>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력 화면</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>개인 연봉</strong></td>
+<td><ac:link><ri:page ri:content-title="7.2 인력 관리" /><ac:plain-text-link-body><![CDATA[설정 &gt; 인력 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>그 사람의 연봉. 프로젝트와 무관한 인사 정보</td>
+</tr>
+<tr>
+<td><strong>투입 급여</strong></td>
+<td>프로젝트 상세 &gt; 인력 &gt; <strong>급여 관리</strong></td>
+<td><strong>이 프로젝트에</strong> 그 사람을 쓰는 데 잡는 금액</td>
+</tr>
+<tr>
+<td><strong>등급 급여 밴드</strong></td>
+<td><ac:link><ri:page ri:content-title="7.5 등급 관리" /><ac:plain-text-link-body><![CDATA[설정 &gt; 등급 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>등급별 가격표(하한·상한·대표값). 개인이 아니라 직급에 값을 매김</td>
+</tr>
+</tbody></table>
+<p>세 곳이 나뉜 이유는 조직마다 인건비를 잡는 방식이 다르기 때문입니다. 사람별로 잡는 곳도 있고, 직급 테이블로 일괄 산정하는 곳도 있습니다.</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">계산-방식은-급여-정책이-결정합니다</ac:parameter></ac:structured-macro>계산 방식은 급여 정책이 결정합니다</h3>
+<p>전역 설정(<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[설정 &gt; 일반 설정 &gt; 급여 정책]]></ac:plain-text-link-body></ac:link>)에서 조직 전체가 쓸 방식을 하나 고릅니다.</p>
+<h4><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">①-인원별기본값</ac:parameter></ac:structured-macro>① 인원별(기본값)</h4>
+<p>사람별 금액을 그대로 씁니다. 프로젝트 인력마다 <strong>투입 유형</strong>을 다시 고릅니다.</p>
+<table>
+<thead>
+<tr>
+<th>투입 유형</th>
+<th>계산</th>
+<th>언제 쓰나</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>프로젝트</strong> (기본)</td>
+<td>투입 급여를 <strong>그대로</strong> 인정</td>
+<td>&quot;이 프로젝트에 3,000만원어치 투입&quot; 같은 계약 단위</td>
+</tr>
+<tr>
+<td><strong>연봉</strong></td>
+<td>연봉을 <strong>투입 기간만큼 잘라서</strong> 인정</td>
+<td>정규 인력을 기간 비례로 배분할 때</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>두 금액(투입 급여·개인 연봉)이 모두 저장돼 있어도 <strong>선택한 투입 유형에 해당하는 금액만</strong> 계산에 씁니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h4><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">②-등급-기반</ac:parameter></ac:structured-macro>② 등급 기반</h4>
+<p>개인 금액을 <strong>아예 읽지 않고</strong> 그 사람의 등급 대표값으로 계산합니다. 개인 연봉을 노출하지 않으면서 원가를 산출하고 싶을 때 사용하며, 이 정책에서는 개인 금액 편집이 잠깁니다.</p>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>저장된 개인 금액을 <strong>지우지는 않습니다.</strong> 정책을 되돌리면 원래 숫자가 그대로 살아납니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">계산식</ac:parameter></ac:structured-macro>계산식</h3>
+<p><strong>연봉</strong> 유형과 <strong>등급 기반</strong> 정책은 <strong>같은 식</strong>을 씁니다. 연봉을 어디서 가져오는지만 다릅니다.</p>
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[투입 개월수 = 총 달력일수(종료일 포함) ÷ 30.4375
+인건비      = (연봉 ÷ 12) × 투입 개월수
+]]></ac:plain-text-body></ac:structured-macro>
+<ul>
+<li>연봉 유형은 <strong>개인 연봉</strong>에서, 등급 기반은 <strong>등급 대표값</strong>에서 연봉을 가져옵니다.</li>
+<li>프로젝트 유형은 환산 없이 투입 급여를 그대로 씁니다.</li>
+<li><strong>30.4375</strong>는 365.25 ÷ 12로, 윤년까지 반영한 평균 월 길이입니다.</li>
+</ul>
+<p><strong>근무일이 아니라 달력일을 쓰는 이유</strong> — 공휴일과 연차에도 급여는 지급되기 때문입니다. 실제 지급 방식과 맞추기 위해 달력일 기준을 사용합니다.</p>
+<table>
+<thead>
+<tr>
+<th>프로젝트 기간</th>
+<th>달력일</th>
+<th>투입 개월수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1/1 ~ 12/31</td>
+<td>365일</td>
+<td>11.99 (≈ 12개월)</td>
+</tr>
+<tr>
+<td>15일간</td>
+<td>15일</td>
+<td>0.49</td>
+</tr>
+<tr>
+<td>하루 (시작일 = 종료일)</td>
+<td>1일</td>
+<td>0.03</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">인건비가-0원으로-나올-때</ac:parameter></ac:structured-macro>인건비가 0원으로 나올 때</h3>
+<p><ac:link ac:anchor="555-비용"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[비용 화면]]></ac:plain-text-link-body></ac:link>의 <strong>미산정 인원</strong> 지표로 확인할 수 있습니다.</p>
+<table>
+<thead>
+<tr>
+<th>정책</th>
+<th>0원이 되는 조건</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>인원별</td>
+<td>투입 유형이 <strong>연봉</strong>인데 <strong>개인 연봉이 등록되지 않음</strong></td>
+</tr>
+<tr>
+<td>등급 기반</td>
+<td>등급 미지정 / 등급에 밴드 미설정 / 대표값이 0</td>
+</tr>
+<tr>
+<td>공통</td>
+<td><strong>프로젝트 기간이 설정되지 않음</strong> → 투입 개월수 0 → 결과 0</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>프로젝트 유형의 0원은 미산정으로 세지 않습니다. &quot;무상 투입&quot;이라는 정상적인 배정일 수 있기 때문입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">누가-볼-수-있나</ac:parameter></ac:structured-macro>누가 볼 수 있나</h3>
+<p>급여 금액이 보이려면 <strong>두 조건이 모두</strong> 충족돼야 합니다.</p>
+<ol>
+<li>「비용」 <strong>읽기 권한</strong>이 있을 것</li>
+<li>급여 정책이 <strong>인원별</strong>일 것 (등급 기반에서는 개인 금액이 숨겨집니다)</li>
+</ol>
+<p>권한이 없으면 금액이 <strong>0원으로 표시되는 것이 아니라 항목 자체가 나타나지 않습니다.</strong> 대시보드의 총 인건비 카드도 마찬가지입니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">524-작업-배정</ac:parameter></ac:structured-macro>5.2.4 작업 배정</h2>
+<p>&quot;이 사람에게 무엇을 맡길까&quot;를 정하는 화면입니다. 좌우 패널은 접거나 폭을 조절할 수 있습니다.</p>
+<ul>
+<li>프로젝트 인력 후보의 <strong>스킬 적합도</strong>와 <strong>현재 부하</strong>를 함께 보고 이슈 또는 프로젝트에 배정합니다.</li>
+<li>배정할 이슈가 없으면 확인 후 <strong>프로젝트 인력으로만 추가</strong>할 수도 있습니다.</li>
+</ul>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>담당자·동료를 지정하는 세 가지 경로의 차이는 <ac:link ac:anchor="지정하는-세-가지-경로"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 담당자·동료 관리]]></ac:plain-text-link-body></ac:link>를 참고하세요.
+전사 범위로 사람을 찾아 배정하려면 <ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[6.4 프로젝트 배정]]></ac:plain-text-link-body></ac:link>을 사용합니다.</p>
+</ac:rich-text-body></ac:structured-macro>

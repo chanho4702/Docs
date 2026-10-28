@@ -1,0 +1,327 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td><strong>권한 불필요</strong> — 사이드바에 항상 표시됩니다</td>
+</tr>
+<tr>
+<td>워크로그 작성·수정·삭제</td>
+<td><strong>권한 불필요</strong> (본인 데이터) + Jira의 Work On Issues 권한</td>
+</tr>
+<tr>
+<td>다른 사람의 워크로그</td>
+<td><strong>수정·삭제 불가</strong> — 작성자 본인만 가능(조회만)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>이 화면의 데이터는 서버에서 <strong>본인 계정 기준으로만</strong> 조회됩니다. 권한 세트와 무관하게 남의 기록이 보이거나 편집되지 않습니다.</li>
+<li>목표 시간 계산에 쓰는 근무시간·공휴일 값은 전역 설정이라 별도 권한 없이 읽힙니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 로그인 후 기본으로 열리는 화면입니다. <strong>내 작업 시간을 기록</strong>하고, 이번 주/이번 달 얼마나 일했는지 확인하며, 내 이슈 일정을 달력에서 볼 때 씁니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 2-1 My Work 전체 화면</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 2-1 My Work 전체 화면"><ri:attachment ri:filename="02-mywork-overview.png" /></ac:image><p><em>그림 2-1. My Work — ① 상단 요약 카드 5개 ② My 프로젝트 ③ My 업무(캘린더 뷰) ④ 캘린더/테이블 전환 ⑤ 워크로그/이슈 표시 모드.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">21-상단-요약-지표</ac:parameter></ac:structured-macro>2.1 상단 요약 지표</h2>
+<table>
+<thead>
+<tr>
+<th>카드</th>
+<th>의미</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이번 달 누적 작업 시간</td>
+<td>이번 달 기록한 시간 / 목표 시간</td>
+<td>125h 3m / 164h</td>
+</tr>
+<tr>
+<td>이번 주 누적 작업 시간</td>
+<td>이번 주 기록한 시간 / 목표 시간</td>
+<td>26h 45m / 40h</td>
+</tr>
+<tr>
+<td>오늘 작업 시간</td>
+<td>오늘 기록한 시간 / 목표 시간</td>
+<td>6h 52m / 8h</td>
+</tr>
+<tr>
+<td>담당 및 협업 이슈 수</td>
+<td>내가 담당자 또는 협업자로 연결된 이슈 수</td>
+<td>11</td>
+</tr>
+<tr>
+<td>참여 프로젝트 수</td>
+<td>내가 속한 프로젝트 수</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">목표-시간-계산</ac:parameter></ac:structured-macro>목표 시간 계산</h3>
+<p><ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[설정 &gt; 일반 설정]]></ac:plain-text-link-body></ac:link>의 <strong>1Day 근무 시간</strong>(기본 <code>8h</code>, <code>1MD = 8h</code>)을 하루 기준으로 삼고, <ac:link><ri:page ri:content-title="7.9 휴일 관리" /><ac:plain-text-link-body><![CDATA[휴일 관리]]></ac:plain-text-link-body></ac:link>에 등록된 <strong>공휴일과 주말을 제외한 근무일 수</strong>를 곱합니다.</p>
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[오늘 목표 = 1일 근무 시간 (예: 8h)
+주 목표   = 이번 주 근무일 수 × 1일 근무 시간 (예: 5일 × 8h = 40h)
+월 목표   = 이번 달 근무일 수 × 1일 근무 시간
+]]></ac:plain-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">22-my-프로젝트</ac:parameter></ac:structured-macro>2.2 My 프로젝트</h2>
+<p>내가 참여 중인 프로젝트가 카드로 나열됩니다. 상단 검색창으로 빠르게 찾을 수 있고, 카드의 <strong>상세로 이동</strong>으로 프로젝트 상세를 엽니다.</p>
+<p>각 카드에 표시되는 정보:</p>
+<ul>
+<li>프로젝트 이름과 상태(예: <code>IN PROGRESS</code>)</li>
+<li>시작일 / 종료일</li>
+<li>내 <strong>역할</strong>(예: Data Engineer)과 <strong>등급</strong>(예: Mid-level)</li>
+</ul>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>역할·등급은 프로젝트 상세의 <ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link> 탭에서 그 멤버에게 부여한 값이 그대로 표시됩니다. 값이 비어 있으면 프로젝트 관리자에게 지정을 요청하세요.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">23-my-업무</ac:parameter></ac:structured-macro>2.3 My 업무</h2>
+<p>내가 맡은 작업과 기록한 워크로그를 보는 영역입니다. 오른쪽 위 버튼으로 <strong>캘린더 / 테이블</strong> 뷰를 전환합니다.</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">캘린더-뷰</ac:parameter></ac:structured-macro>캘린더 뷰</h3>
+<ul>
+<li><strong>월간 / 주간</strong> 보기 전환, <code>&lt;</code> <code>오늘</code> <code>&gt;</code> 로 기간 이동. <strong>월간은 한 칸에 많은 항목을 촘촘하게</strong>, <strong>주간은 시간·제목을 자세히</strong> 보여주도록 밀도가 다릅니다.</li>
+<li>오른쪽 위 <strong>표시 모드</strong> 토글로 달력에 무엇을 올릴지 고릅니다.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>표시 모드</th>
+<th>달력에 보이는 것</th>
+<th>언제 쓰나</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>워크로그</strong> (기본)</td>
+<td>그날 기록한 워크로그(이슈 키·시간), <strong>일별 합계</strong></td>
+<td>&quot;내가 언제 얼마나 일했나&quot;</td>
+</tr>
+<tr>
+<td><strong>이슈</strong></td>
+<td>내가 담당·협업하는 이슈의 <strong>시작일~기한 기간 막대</strong>, 상태 색(할 일/진행 중/완료)</td>
+<td>&quot;이번 주 내 마감이 뭐지&quot;</td>
+</tr>
+</tbody></table>
+<ul>
+<li>공휴일은 날짜 칸에 <strong>공휴일 라벨</strong>로 표시되고, 개인 일정(연차 등)은 두 모드 모두에서 보입니다.</li>
+<li>이슈 모드에서 시작일·기한이 둘 다 없는 이슈는 달력에 놓을 수 없어 <strong>기간 미설정 N건</strong> 버튼으로 따로 모아 보여줍니다. 일정은 <ac:link ac:anchor="537-간트-보기"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[간트]]></ac:plain-text-link-body></ac:link>에서 지정합니다.</li>
+</ul>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 2-2 캘린더 워크로그 모드와 이슈 모드 비교</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 2-2 캘린더 워크로그 모드와 이슈 모드 비교"><ri:attachment ri:filename="02-mywork-calendar-modes.png" /></ac:image><p><em>그림 2-2. 같은 주를 워크로그 모드(왼쪽)와 이슈 모드(오른쪽)로 본 모습. 이슈 모드의 ① 상태 색 막대 ② 기간 미설정 버튼.</em></p></ac:rich-text-body></ac:structured-macro>
+<table>
+<thead>
+<tr>
+<th>조작</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>날짜 클릭</td>
+<td>그 날짜로 워크로그(업무일지) 추가 창이 열립니다</td>
+</tr>
+<tr>
+<td>이슈 클릭</td>
+<td>해당 Jira 이슈로 이동</td>
+</tr>
+<tr>
+<td>이벤트 클릭</td>
+<td>이벤트 수정</td>
+</tr>
+<tr>
+<td>워크로그를 다른 날짜로 <strong>드래그</strong></td>
+<td>작업 일자가 변경됩니다(시작 시각·소요 시간은 유지)</td>
+</tr>
+<tr>
+<td>우측 위 <strong>+ 일정 추가</strong></td>
+<td>워크로그 추가 창 열기</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">테이블-뷰</ac:parameter></ac:structured-macro>테이블 뷰</h3>
+<p>이슈 단위로 작업 현황을 표로 봅니다.</p>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이슈 키</td>
+<td>Jira 이슈 키 (예: SAMPLE-50)</td>
+</tr>
+<tr>
+<td>요약</td>
+<td>이슈 제목</td>
+</tr>
+<tr>
+<td>상태</td>
+<td>할 일 / 진행 중 / 완료</td>
+</tr>
+<tr>
+<td>담당자</td>
+<td>이슈 담당자(Assignee)</td>
+</tr>
+<tr>
+<td>동료</td>
+<td>함께 일하는 협업자</td>
+</tr>
+<tr>
+<td>작업 시간</td>
+<td>그 이슈에 누적된 작업 시간 (예: 11d, 2h 7m)</td>
+</tr>
+<tr>
+<td>기한 / 작업 일</td>
+<td>이슈 기한 또는 워크로그 작업 일자</td>
+</tr>
+<tr>
+<td>작업</td>
+<td>부모 이슈는 <strong>+ 추가</strong>, 개별 워크로그는 <strong>수정</strong></td>
+</tr>
+</tbody></table>
+<ul>
+<li>이슈 왼쪽의 펼침(<code>&gt;</code>) 아이콘을 누르면 그 이슈에 기록된 <strong>개별 워크로그</strong>가 날짜별로 펼쳐집니다.</li>
+<li>부모 이슈 행의 <strong>+ 추가</strong>로 새 워크로그를, 개별 워크로그 행의 <strong>수정</strong>으로 기존 워크로그를 편집합니다. 수정 창 안의 <strong>삭제</strong> 버튼으로 지울 수 있습니다.</li>
+</ul>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>수정·삭제 권한:</strong> 워크로그는 <strong>작성자 본인만</strong> 수정·삭제할 수 있습니다. 다른 사람이 쓴 워크로그는 버튼이 비활성화되어 조회만 됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>동료(협업자)란?</strong> Jira 이슈에 함께 저장되는 <strong>협업자 목록</strong>입니다. 담당자(1명)와 별개로 한 이슈를 함께 수행하는 사람을 여러 명 지정할 수 있고, 동료로 지정되면 그 사람의 My Work에도 &quot;협업 이슈&quot;로 집계됩니다. 자세한 내용은 <ac:link ac:anchor="532-담당자동료-관리"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 담당자·동료 관리]]></ac:plain-text-link-body></ac:link>를 참고하세요.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">24-업무일지워크로그-추가하기</ac:parameter></ac:structured-macro>2.4 업무일지(워크로그) 추가하기</h2>
+<p><code>+ 추가</code>, <code>+ 일정 추가</code>, 또는 캘린더의 날짜를 클릭하면 <strong>업무일지 추가</strong> 창이 열립니다. 입력 방식은 두 가지 탭입니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 2-3 업무일지 추가 창 — 시간 입력 탭</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 2-3 업무일지 추가 창 — 시간 입력 탭"><ri:attachment ri:filename="02-worklog-modal-simple.png" /></ac:image><p><em>그림 2-3. 시간 입력 탭 — ① 업무(이슈) 선택 ② 날짜 ③ 시작·종료 시간 ④ 자동 계산된 시간 ⑤ 업무 설명 편집기.</em></p></ac:rich-text-body></ac:structured-macro>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">방법-1-시간-입력단건</ac:parameter></ac:structured-macro>방법 1. 시간 입력(단건)</h3>
+<p>특정 날짜에 한 건을 기록합니다. <strong>시작 시간과 종료 시간을 입력하면 소요 시간이 자동 계산</strong>됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>필수</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트 정보</td>
+<td></td>
+<td>대상 프로젝트 (자동 표시)</td>
+</tr>
+<tr>
+<td>업무</td>
+<td>필수</td>
+<td>워크로그를 기록할 이슈 선택</td>
+</tr>
+<tr>
+<td>Worklog 작성자</td>
+<td></td>
+<td>작성자 (미지정 시 &quot;할당되지 않음&quot;)</td>
+</tr>
+<tr>
+<td>담당자 / 동료</td>
+<td></td>
+<td>선택한 이슈의 담당자·협업자 표시</td>
+</tr>
+<tr>
+<td>날짜</td>
+<td>필수</td>
+<td>작업한 날짜</td>
+</tr>
+<tr>
+<td>시작 시간 / 종료 시간</td>
+<td>필수</td>
+<td>작업한 시간대. 종료가 시작보다 늦어야 하며, 아래에 <strong>계산된 시간</strong>(예: 3시간 30분)이 표시됩니다</td>
+</tr>
+<tr>
+<td>업무 설명</td>
+<td></td>
+<td>마크다운 서식 편집기</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>예전에 기록한 워크로그를 수정할 때</strong> 시작~종료로 표현할 수 없는 건(자정을 넘기는 등)은 <strong>소요 시간</strong> 입력란으로 바뀌며 &quot;같은 날짜의 시간 범위로 표현할 수 없어 소요 시간으로 수정합니다&quot;라고 안내됩니다. 형식은 Jira 표준(<code>6h 45m</code>)입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>업무 설명 편집기</strong>는 제목·목록·인용·링크·코드 블록 등 마크다운 서식을 지원하며, 내용은 Jira 워크로그에 저장됩니다. 기존 워크로그에 <strong>이미지·멘션</strong>처럼 편집기가 다룰 수 없는 내용이 있으면 본문은 잠기고 &quot;본문은 Jira에서 수정하세요&quot;가 표시됩니다. 이때도 날짜·시간은 여기서 고칠 수 있고 본문은 그대로 보존됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">방법-2-기간-입력일괄</ac:parameter></ac:structured-macro>방법 2. 기간 입력(일괄)</h3>
+<p>날짜 범위에 대해 워크로그를 <strong>한 번에 여러 건</strong> 생성합니다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>필수</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>업무</td>
+<td>필수</td>
+<td>대상 이슈</td>
+</tr>
+<tr>
+<td>시작일 / 종료일</td>
+<td>필수</td>
+<td>기록할 기간</td>
+</tr>
+<tr>
+<td>하루 시작 시간 / 종료 시간</td>
+<td>필수</td>
+<td>매일 적용할 근무 시간대 (예: 09:00~17:00)</td>
+</tr>
+<tr>
+<td>주말 제외</td>
+<td></td>
+<td>토·일 제외</td>
+</tr>
+<tr>
+<td>공휴일 제외</td>
+<td></td>
+<td><ac:link><ri:page ri:content-title="7.9 휴일 관리" /><ac:plain-text-link-body><![CDATA[휴일 관리]]></ac:plain-text-link-body></ac:link>에 등록된 휴일 제외</td>
+</tr>
+<tr>
+<td>연차/휴가 제외</td>
+<td></td>
+<td>연차·휴가일 제외</td>
+</tr>
+<tr>
+<td>업무 설명</td>
+<td></td>
+<td>상세 내용</td>
+</tr>
+</tbody></table>
+<ul>
+<li>입력값에 따라 하단에 <strong>&quot;워크로그 N개 생성 · 하루 8h · 총 40.0h&quot;</strong> 처럼 결과가 미리 표시됩니다.</li>
+<li><strong>일괄 생성이 중간에 실패하면 이미 만든 것까지 모두 취소(롤백)</strong> 됩니다. 취소까지 실패한 경우에만 &quot;일부 항목은 취소하지 못했습니다&quot; 안내가 뜨므로 목록에서 확인하세요.</li>
+</ul>
+<p>마지막에 <strong>추가</strong>로 저장, <strong>닫기</strong>로 취소합니다.</p>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>Jira 이슈 화면을 이미 열어 두었다면 앱으로 오지 않고 그 자리의 <strong>Moves Workforce 패널</strong>에서 바로 기록할 수도 있습니다 — <ac:link><ri:page ri:content-title="10. Jira 이슈 화면 패널" /><ac:plain-text-link-body><![CDATA[10장]]></ac:plain-text-link-body></ac:link>.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">문제-해결</ac:parameter></ac:structured-macro>문제 해결</h2>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인과 해결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>목표 시간이 예상과 다릅니다</td>
+<td><ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[일반 설정]]></ac:plain-text-link-body></ac:link>의 1Day 근무 시간과 <ac:link><ri:page ri:content-title="7.9 휴일 관리" /><ac:plain-text-link-body><![CDATA[휴일 관리]]></ac:plain-text-link-body></ac:link>의 공휴일 등록 상태를 확인하세요</td>
+</tr>
+<tr>
+<td>워크로그 수정 버튼이 눌리지 않습니다</td>
+<td>다른 사람이 작성한 워크로그입니다. 작성자 본인만 수정할 수 있습니다</td>
+</tr>
+<tr>
+<td>&quot;Jira 워크로그 작성 권한이 없어 등록할 수 없습니다&quot;</td>
+<td>그 Jira 프로젝트에서 Work On Issues 권한이 없습니다. Jira 프로젝트 관리자에게 요청하세요</td>
+</tr>
+<tr>
+<td>이슈 모드로 바꿨는데 달력이 비어 있습니다</td>
+<td>내 이슈에 시작일·기한이 없습니다. <strong>기간 미설정 N건</strong> 버튼에서 목록을 확인하고 간트에서 일정을 지정하세요</td>
+</tr>
+<tr>
+<td>My 프로젝트에 프로젝트가 안 보입니다</td>
+<td>그 프로젝트의 <ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link>에 본인이 등록돼 있어야 합니다</td>
+</tr>
+<tr>
+<td>이슈 목록에 내 작업이 없습니다</td>
+<td>담당자 또는 동료로 지정돼 있어야 합니다</td>
+</tr>
+</tbody></table>

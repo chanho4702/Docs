@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>General settings and reference data</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>General settings and reference data</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/admin-settings.html">한국어</a></p>
+<blockquote>
+<p>Review draft: English screenshots were captured on the designated staging site on 2026-10-04 and are shared by both language guides. The deployed version and role-specific access and save operations remain under review.</p>
+</blockquote>
+<p>Configure working standards, salary policy, roles, levels, skills, statuses, and holidays. These settings affect calculations and choices across users.</p>
+<h2>General settings</h2>
+<p>General Settings read allows viewing; write allows changes. Review current values and affected reports before changing them.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Currency</td>
+<td>The organization&#39;s amount-display convention</td>
+</tr>
+<tr>
+<td>Daily working hours</td>
+<td>The basis for MD conversion and target time</td>
+</tr>
+<tr>
+<td>Utilization thresholds</td>
+<td>Organizational boundaries for underuse and overload</td>
+</tr>
+<tr>
+<td>Progress threshold</td>
+<td>Tolerance for the gap between completion and schedule progress</td>
+</tr>
+<tr>
+<td>Salary policy</td>
+<td>Individual amounts or level-based amounts</td>
+</tr>
+<tr>
+<td>Document settings</td>
+<td>Classifications, required classes, and the stale-document threshold</td>
+</tr>
+</tbody></table>
+<p><img src="../images/en/07-general-settings.jpg" alt="General Settings: currency, daily working hours, and utilization thresholds."></p>
+<p>General Settings: currency, daily working hours, and utilization thresholds.</p>
+<p><img src="../images/en/07-general-settings-policy.jpg" alt="The level-based and per-person salary policy options in General Settings."></p>
+<p>The level-based and per-person salary policy options in General Settings.</p>
+<h2>Change salary policy</h2>
+<ol>
+<li>For <strong>Individual</strong> policy, check required annual salaries and project allocation modes and amounts.</li>
+<li>For <strong>Level-based</strong> policy, decide the levels and annual amounts. Band input fields are hidden under Per person.</li>
+<li>Read the transition notice, save, and confirm the change. For first-time setup, enter representative amounts or min/max limits in Level Management after switching.</li>
+<li>Check project cost and dashboard results. Aggregated screens may require another aggregation cycle.</li>
+</ol>
+<p>Switching to level-based policy does not delete stored personal amounts. Also check that required personal amounts are ready if switching back. Directly entered project budgets are separate.</p>
+<h2>Manage reference data</h2>
+<table>
+<thead>
+<tr>
+<th>Screen</th>
+<th>Data managed</th>
+<th>What to consider</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Roles</td>
+<td>Job roles</td>
+<td>Choices used for people and project roles</td>
+</tr>
+<tr>
+<td>Levels</td>
+<td>Person levels and salary bands</td>
+<td>Valid lower and upper limits and representative amounts</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>Shared personal and required-skill dictionary</td>
+<td>Reduce duplicate meanings for useful matching</td>
+</tr>
+<tr>
+<td>Project statuses</td>
+<td>Kanban columns and transitions</td>
+<td>Existing usage and allowed transitions</td>
+</tr>
+<tr>
+<td>Holidays</td>
+<td>Public holidays and working ratios</td>
+<td>Year, dates, and rules such as half-days</td>
+</tr>
+</tbody></table>
+<p>Each screen uses its own read and write permissions. Check separate policies for sensitive values such as level amounts. Before deletion, check existing usage; if deletion is rejected, resolve the reported references first.</p>
+<h2>Storage monitoring</h2>
+<p>Users with Storage Management access can review usage. Coordinate cleanup or recovery with product operations after checking the target and impact. Project and user deletion are separate actions on their management screens; viewing storage usage does not delete data.</p>
+<p>When measures change, compare the setting-change time, applied policy, and aggregation time. Saving a setting does not mean every report immediately reflects the same point in time.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Path: Settings → General Settings. Basic settings, salary policy, and document settings save independently on their respective cards. Do not assume saving one card also saves other cards&#39; unsaved inputs.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Currency</td>
+<td>Select the organization&#39;s display currency. Do not use this as automatic exchange-rate conversion of stored monetary amounts.</td>
+<td>Align budget/salary/band units and save the Basic Settings card.</td>
+</tr>
+<tr>
+<td>Daily hours / Apply / Save</td>
+<td>Apply normalizes the entered hours and updates the local selection. Input is normalized in half-hour steps; permanent storage requires Save on Basic Settings.</td>
+<td>Check entered/displayed values, save, and reopen to verify. MD, time targets, and capacity calculations can change.</td>
+</tr>
+<tr>
+<td>Under / over / severe-overload thresholds</td>
+<td>These are ratios: 1.0 = 100%; 0.7/1.1/1.3 mean 70%/110%/130%. They classify portfolio distribution and resource signals.</td>
+<td>Check organizational policy and threshold order before saving. Changing thresholds does not change logged time.</td>
+</tr>
+<tr>
+<td>Progress threshold</td>
+<td>Enter 0–100 percentage points (%p). It applies to completion-versus-schedule variance; blank input is not a valid zero.</td>
+<td>For example, 5 means a 5%p threshold. Resolve validation errors, save, and check classification.</td>
+</tr>
+<tr>
+<td>Salary policy selection / Save / Change confirmation</td>
+<td>Per person uses individual annual/assigned amounts; Level-based uses representative annual bands. Save the selection and confirm Change in the dialog.</td>
+<td>Decide the levels and amounts before switching. Band fields are hidden under Per person; for first-time setup, switch to Level-based, enter level amounts, then verify costs and unpriced warnings. Review existing bands before reuse. Stored personal amounts are not deleted, but display/editing is restricted under Level-based.</td>
+</tr>
+<tr>
+<td>Configure level bands / missing-basis warning</td>
+<td>Review levels lacking a band and open Level Management. A missing basis can produce zero labor cost under Level-based.</td>
+<td>Do not interpret zero as a free resource. Check project-cost and portfolio update times after switching.</td>
+</tr>
+<tr>
+<td>Document category add / name / required / delete</td>
+<td>Up to 30 categories, names up to 30 characters, without duplicate names. A project lacking a required category is reported as missing it.</td>
+<td>Removing a category does not delete Confluence pages. Review existing categorization and save the Documents card.</td>
+</tr>
+<tr>
+<td>Outdated threshold / document settings Save</td>
+<td>Set a 1–3650 day threshold for last modification. Saving document settings stores both categories and the threshold.</td>
+<td>Resolve category-count/name/duplicate/day validation errors. Distinguish unavailable metadata from stale content.</td>
+</tr>
+<tr>
+<td>Run issue-panel marker backfill</td>
+<td>This administrative action repairs panel-visibility information on already linked issues; it does not create projects/worklogs for users.</td>
+<td>Run with write access and check job state/failure counts. Distinguish accepted execution from completed processing.</td>
+</tr>
+<tr>
+<td>Storage usage / project / table lists</td>
+<td>Inspect storage usage and data distribution in monitoring. Do not treat the current viewer as a general data-reset control.</td>
+<td>Follow the separate confirmation flow for actions such as project deletion. Review operational cleanup scope with the product operator.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+<!-- supplemental-guides:start -->
+
+<h2>Detailed guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047432">Settings</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047851">Settings access and setup order</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047498">People registration and bulk upload</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047539">Team hierarchy and membership</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047571">Job role management</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047624">Levels and salary bands</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047675">Skill dictionary management</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047722">Project statuses and transitions</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047815">Holidays and working days</a></li>
+</ul>
+<!-- supplemental-guides:end -->
+</body></html>

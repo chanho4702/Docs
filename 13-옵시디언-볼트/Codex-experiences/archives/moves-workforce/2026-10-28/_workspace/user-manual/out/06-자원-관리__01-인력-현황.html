@@ -1,0 +1,132 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>인력 상세 드로어</td>
+<td>「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>보유 스킬 편집</td>
+<td>「자원관리」 쓰기 (자기 팀원에 한해 <strong>팀장</strong>도 가능)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>보이는 인원은 관리자·PMO·PM이면 전사, <strong>팀장이면 자신이 이끄는 팀 인원</strong>입니다.</li>
+<li>스킬 선택지는 <ac:link><ri:page ri:content-title="7.6 스킬 관리" /><ac:plain-text-link-body><![CDATA[7.6 스킬 관리]]></ac:plain-text-link-body></ac:link>에서 「스킬 관리」 권한으로 정의합니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — <strong>개인 단위로</strong> 누가 바쁘고 누가 여유인지, 어떤 스킬을 가졌는지 확인할 때.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 6-2 인력 현황</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 6-2 인력 현황"><ri:attachment ri:filename="06-resource-people.png" /></ac:image><p><em>그림 6-2. 인력 현황 — ① 요약 카드(총 인원·여유·적정·과부하)와 마지막 집계 ② 필터(스킬·직무·등급·팀·직군·투입가능만) ③ 인력 표(가동률 밴드·완수율·작업량) ④ 행 클릭으로 열린 인력 상세 드로어.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">상단-요약</ac:parameter></ac:structured-macro>상단 요약</h2>
+<p><strong>총 인원 · 여유 · 적정 · 과부하</strong> 카드와 <strong>마지막 집계</strong> 시각이 표시됩니다.</p>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>가동률은 <strong>배치 집계</strong> 값입니다. 방금 등록한 인원이나 방금 쌓인 워크로그는 다음 집계 전까지 반영되지 않습니다. &quot;집계 데이터가 오래되었습니다&quot; 안내가 뜨면 그 시점 기준으로 해석하세요.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">목록-컬럼</ac:parameter></ac:structured-macro>목록 컬럼</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>인력</td>
+<td>이름·아바타</td>
+</tr>
+<tr>
+<td>팀 / 직무 / 등급</td>
+<td>소속과 직무 정보</td>
+</tr>
+<tr>
+<td>가동률</td>
+<td>배치 집계 기준. 밴드(여유/적정/과부하 주의/과부하/실적없음)로 색 구분</td>
+</tr>
+<tr>
+<td>완수율</td>
+<td><code>소비시간 ÷ (소비 + 남은 작업량)</code>. <strong>완료 이슈는 최근 6개월분만</strong> 집계</td>
+</tr>
+<tr>
+<td>작업량</td>
+<td>처리 / 남은 / 할당. 진행도 % = 처리 ÷ 할당</td>
+</tr>
+<tr>
+<td>할당 이슈</td>
+<td>담당·협업으로 연결된 이슈 수</td>
+</tr>
+<tr>
+<td>참여 프로젝트</td>
+<td>참여 중(미종료) 프로젝트 수</td>
+</tr>
+<tr>
+<td>보유 스킬</td>
+<td>등록된 스킬 태그</td>
+</tr>
+</tbody></table>
+<p><strong>필터</strong>: 스킬 · 직무 · 등급 · 팀 · 직군 · <strong>투입가능만</strong></p>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>가동률 밴드의 경계값(과소 / 과부하 / 심한 과부하)은 <ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1 일반 설정]]></ac:plain-text-link-body></ac:link>에서 조정합니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">인력-상세-드로어</ac:parameter></ac:structured-macro>인력 상세 드로어</h2>
+<p>행을 클릭하면 오른쪽에 상세가 열립니다.</p>
+<table>
+<thead>
+<tr>
+<th>구역</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>부하</strong></td>
+<td>진행중 이슈 수, 남은 작업량(시간)</td>
+</tr>
+<tr>
+<td><strong>진행 중 작업</strong></td>
+<td>이슈별 상태·프로젝트·마감·참여 형태(담당/협업)·<strong>내 몫</strong></td>
+</tr>
+<tr>
+<td><strong>경험</strong></td>
+<td>프로젝트 참여 이력(역할·기간·상태)</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>&quot;내 몫&quot;은 근사치입니다.</strong> 여러 명이 참여한 이슈는 남은 작업량을 <strong>참여 인원으로 균등 분할</strong>한 1인 기대 몫으로 계산합니다. 실제 분담 비율과 다를 수 있습니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">스킬-편집</ac:parameter></ac:structured-macro>스킬 편집</h2>
+<p>드로어의 <strong>스킬 편집</strong>으로 보유 스킬을 지정합니다(쓰기 권한 필요).</p>
+<ul>
+<li>선택지는 <ac:link><ri:page ri:content-title="7.6 스킬 관리" /><ac:plain-text-link-body><![CDATA[7.6 스킬 관리]]></ac:plain-text-link-body></ac:link>에서 정의한 사전을 따릅니다.</li>
+<li>여기 등록한 값이 <ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[6.4 프로젝트 배정]]></ac:plain-text-link-body></ac:link>의 <strong>적합도</strong> 계산에 쓰입니다.</li>
+<li>본인 스킬은 <ac:link><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지]]></ac:plain-text-link-body></ac:link>에서도 직접 편집할 수 있고, 팀장은 마이페이지의 <strong>내 팀</strong>에서 팀원 스킬을 편집할 수 있습니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">문제-해결</ac:parameter></ac:structured-macro>문제 해결</h2>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인과 해결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>가동률이 &quot;데이터 없음&quot;입니다</td>
+<td>아직 집계 전이거나 해당 기간 워크로그 실적이 없습니다</td>
+</tr>
+<tr>
+<td>일부 인원만 보입니다</td>
+<td>팀장 권한이면 자신이 이끄는 팀 인원만 보입니다</td>
+</tr>
+<tr>
+<td>스킬 필터에 원하는 스킬이 없습니다</td>
+<td><ac:link><ri:page ri:content-title="7.6 스킬 관리" /><ac:plain-text-link-body><![CDATA[7.6 스킬 관리]]></ac:plain-text-link-body></ac:link>에서 사전에 먼저 등록해야 합니다</td>
+</tr>
+<tr>
+<td>완수율이 낮게 나옵니다</td>
+<td>완료 이슈를 <strong>최근 6개월분만</strong> 집계합니다. 오래된 완료 이슈는 분자에서 빠집니다</td>
+</tr>
+</tbody></table>

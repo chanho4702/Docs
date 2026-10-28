@@ -1,0 +1,210 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">한국어</a></p>
+<p>Link existing Jira issues to a project and manage assignments, coworkers, planned effort, structure, and schedules. <strong>Adding work links an existing Jira issue; it does not create a new one.</strong></p>
+<h2>Permissions and actions</h2>
+<p>Viewing requires Project read; linking, removing, and editing require Project write. Actions that change Jira issues also require Jira permissions.</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Jira access to check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>View an issue</td>
+<td>Browse Projects and access to the specific issue</td>
+</tr>
+<tr>
+<td>Change dates</td>
+<td>Edit Issues and Schedule Issues</td>
+</tr>
+<tr>
+<td>Set an assignee</td>
+<td>Assign Issues</td>
+</tr>
+<tr>
+<td>Link dependencies</td>
+<td>Link Issues</td>
+</tr>
+<tr>
+<td>Change planned effort</td>
+<td>Edit Issues and enabled time tracking</td>
+</tr>
+</tbody></table>
+<!-- detailed-walkthrough:start -->
+
+<h2>Example: link one existing Jira issue</h2>
+<p><strong>Prepare:</strong> Use an issue you can open in Jira, such as DEMO-12 Write test scenarios. Replace this illustrative key and title with your own. Prepare the issue in Jira first if it does not exist.</p>
+<ol>
+<li>Open <strong>Project Management → Demo website launch → Work Management</strong>.</li>
+<li>Open <strong>Add work</strong> and choose the Jira space and search filters. Restrictive filters can hide a result even when the key is correct.</li>
+<li>Find DEMO-12 and check its title and current project relationship before selecting it. If it belongs to another app project, review the move notice and the effect on analysis first.</li>
+<li>Check that only the intended issues are selected, then add them.</li>
+<li>Review the result, close the dialog, and search for the key in the work list. Check that the issue appears in the list or tree.</li>
+<li>Open the same key in Jira and confirm the original issue. Linking it to the app does not create a copy.</li>
+</ol>
+<p><strong>Completion check:</strong> You can find the issue in the project&#39;s work list. To record time, select it in <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046436">My Work</a>. Check project membership and the Jira assignee separately.</p>
+<h3>Change planning values after linking</h3>
+<p>For bulk changes, select only the intended issues and check the start date, due date, and estimate fields to change. The bulk-apply dialog does not change assignees. Empty fields preserve values; do not use them with the intention of clearing a value. For an organization using 8 hours per day, 1MD means 8 hours. After saving, check the selected issues&#39; dates and estimates in Jira and the app. Missing dates can prevent a bar from appearing in the Gantt or issue calendar.</p>
+<p>Start with manual linking before configuring subscriptions. In the subscription preview, review existing matches, future inclusion rules, and issues excluded because they belong to another project. Do not assume that selecting every search result or saving a subscription means every issue is linked immediately.</p>
+<!-- detailed-walkthrough:end -->
+
+<h2>Link existing issues</h2>
+<ol>
+<li>Open work management in the project and add work.</li>
+<li>Find issues using the Jira space and search filters.</li>
+<li>Select the issues and check any notice about their existing project membership.</li>
+<li>Save and check the issue list.</li>
+</ol>
+<p>An issue belongs to one app project. Moving it from another project can change its links and analytical attribution; review the move notice. <strong>Removing an issue from a project unlinks it without deleting the Jira issue.</strong></p>
+<h2>Choose a view</h2>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Main purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>List</td>
+<td>Search, filter, edit cells, and update selected issues in bulk</td>
+</tr>
+<tr>
+<td>Tree</td>
+<td>Organize folders and parent–child structure</td>
+</tr>
+<tr>
+<td>Gantt</td>
+<td>Review periods, dependencies, and milestones on a timeline</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>Review work structure as a read-only relationship diagram</td>
+</tr>
+</tbody></table>
+<p>Tree, Gantt, and Map share work structure. Distinguish app folders and parent assignments from Jira&#39;s native issue hierarchy. Moving a Gantt bar can change the actual issue dates.</p>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>05-work-gantt.jpg</code> — Sample project Gantt showing folders, work dates, and dependencies.</p>
+</blockquote>
+<h2>Update several issues</h2>
+<ol>
+<li>Select issues in the list and open the bulk-update action.</li>
+<li>Enter only the start date, due date, or planned effort you want to change. Empty fields are left unchanged.</li>
+<li>Check successful and failed results.</li>
+<li>Correct the cause and retry only failed items.</li>
+</ol>
+<p>Planned effort is entered in MD. If 1MD is 8 hours, 2MD represents 16 planned hours. It is separate from time actually logged.</p>
+<h2>Configure automatic inclusion</h2>
+<p>In the subscription settings of the add-work dialog, choose the source space and conditions and review the preview. Choose whether to include existing issues or only issues created later, then save.</p>
+<ul>
+<li>Issues already belonging to another app project may be skipped. Check the reason.</li>
+<li>If synchronization differs from expectations, check source access, filters, and subtask options.</li>
+<li>Do not assume a default estimate replaces existing estimates. Read the setting&#39;s description and target conditions.</li>
+</ul>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>05-work-subscription.jpg</code> — The Subscriptions tab in Add work, separating existing subscriptions from the new-subscription form.</p>
+</blockquote>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>05-work-subscription-conditions.jpg</code> — Issue types, child-issue inclusion, and JQL conditions for an existing subscription, without saving changes.</p>
+</blockquote>
+<h2>Assignees and coworkers</h2>
+<p>An assignee is one responsible person; coworkers are multiple collaborators. Changing the assignee does not automatically change coworkers. If a change takes time to appear in My Work searches, first verify the saved Jira issue. Maintain project membership separately.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Path: project details → Work Management. Distinguish view changes from actions that save Jira fields or app relationships.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>List / Tree / Gantt / Map</td>
+<td>List supports search/inline changes/bulk apply; Tree shows hierarchy; Gantt supports scheduling/dependencies; Map is a read-only structure view.</td>
+<td>Options vary by access. Distinguish shared Tree/Gantt/Map filters from the List&#39;s independent search conditions.</td>
+</tr>
+<tr>
+<td>Add work / select / confirm taking issues</td>
+<td>Link existing Jira issues. Taking an issue from another app project changes its attribution for time/cost analysis.</td>
+<td>Read the prior-project notice and choose whether to take or skip it. This does not delete the issue.</td>
+</tr>
+<tr>
+<td>Create Jira issue</td>
+<td>Create an actual Jira issue in a registered space where you have create access, using its type/title and other fields, then link it to the project.</td>
+<td>For unsupported required fields, create in Jira and then Add work. If creation succeeds but linking fails, relink the existing key rather than create another issue.</td>
+</tr>
+<tr>
+<td>Bulk apply: start / due / planned MD</td>
+<td>Apply entered values from these three fields to selected issues. There is no assignee field. Blank values preserve data; 1MD uses organizational daily hours.</td>
+<td>Enter at least one value and check date order. Closing/cancelling is restricted during execution. Review each issue&#39;s result.</td>
+</tr>
+<tr>
+<td>Retry failed only</td>
+<td>Retry the previous values for failed issues. If schedule saving succeeds before MD fails, changed dates can remain.</td>
+<td>Do not interpret failure as a full rollback. Check Edit Issues, Schedule Issues, and time-tracking fields before retrying.</td>
+</tr>
+<tr>
+<td>Assignee / coworkers editing</td>
+<td>Assignee is one person; coworkers can be multiple people. Change them using the issue&#39;s editing actions, separately from roster registration.</td>
+<td>Check relevant Jira permissions such as Assign Issues and verify the original issue&#39;s saved values.</td>
+</tr>
+<tr>
+<td>Gantt zoom / filters</td>
+<td>Change day/week/month scale and assignee/status/type/space/folder filters. Filtering does not delete data or change dates.</td>
+<td>Do not treat filtered-out work as missing. Folder filters are shared by Tree and Gantt.</td>
+</tr>
+<tr>
+<td>Drag Gantt bars / edit schedule</td>
+<td>Save actual Jira start/due dates. Read-only mode permits navigation, zooming, and expansion.</td>
+<td>Check saved dates after dragging. For rejection, check scheduling permission and start ≤ due.</td>
+</tr>
+<tr>
+<td>Parent issue / dependency / clear</td>
+<td>Organize work hierarchy and relations. Self-reference, cycles, and cross-project links can be rejected.</td>
+<td>Verify the structure in Tree/Gantt. Distinguish Jira-supported hierarchy from app folders and check Link Issues.</td>
+</tr>
+<tr>
+<td>Folder create / rename / move / assign / delete</td>
+<td>Folders group app work. Deleting a folder moves contents to its parent/root without deleting Jira issues.</td>
+<td>Detach a parent-issue relationship before moving that issue to a folder. A folder cannot move under its own descendant.</td>
+</tr>
+<tr>
+<td>Remove from project</td>
+<td>Unlink the app-project relationship, separately from deleting Jira issues/worklogs.</td>
+<td>Check the key and attribution impact. Issue-property document links can reappear when the issue is relinked.</td>
+</tr>
+<tr>
+<td>Subscription source / advanced options</td>
+<td>Subscribe to a Jira space. A project supports up to 10 subscriptions; the same source cannot be subscribed by another project.</td>
+<td>Check existing subscriptions and source access. To change source, unsubscribe and subscribe to the new source.</td>
+</tr>
+<tr>
+<td>Subscription types / children / extra JQL</td>
+<td>No selected types means all types. Including children also imports children of selected types; extra JQL is combined using AND.</td>
+<td>Viewer-dependent functions such as currentUser() are disallowed. Check matching/conflicting/already-added counts in Preview.</td>
+</tr>
+<tr>
+<td>Subscription default estimate</td>
+<td>Enter hours (h), up to 100 hours. Fill only incoming issues without an Original Estimate; existing values are not overwritten.</td>
+<td>Distinguish hours from bulk apply&#39;s MD. Empty input disables estimate filling.</td>
+</tr>
+<tr>
+<td>Bring in existing issues / Add subscription</td>
+<td>Checked includes existing matches; unchecked starts with issues created after subscription. Existing-issue import can continue asynchronously.</td>
+<td>Import delays/failures do not imply subscription creation was cancelled. Check the list and next sync instead of creating a duplicate.</td>
+</tr>
+<tr>
+<td>Sync now</td>
+<td>Check subscribed sources without waiting for the hourly sync. Newly created Jira issues can be delayed by search indexing.</td>
+<td>Partial application can continue on the next sync; do not immediately add every issue again manually.</td>
+</tr>
+<tr>
+<td>Edit conditions / pause / unsubscribe</td>
+<td>Changed rules apply from the next sync. Pausing, unsubscribing, or narrowing conditions does not remove previously imported issues.</td>
+<td>An in-progress existing-issue import can stop. Remove existing issues separately and check subscription status/last sync.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

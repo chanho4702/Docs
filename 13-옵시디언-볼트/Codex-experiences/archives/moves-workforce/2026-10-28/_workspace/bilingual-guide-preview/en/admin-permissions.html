@@ -1,0 +1,129 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Permissions and data visibility</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Permissions and data visibility</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/admin-permissions.html">한국어</a></p>
+<blockquote>
+<p>Review draft: English screenshots were captured on the designated staging site on 2026-10-04 and are shared by both language guides. The deployed version and role-specific access and save operations remain under review.</p>
+</blockquote>
+<p>Permissions determine <strong>what actions are allowed</strong>; visibility scope determines <strong>which data those actions apply to</strong>. Jira permissions apply separately. Check all three when investigating missing menus or rejected changes.</p>
+<h2>Create a permission set</h2>
+<p>Permission Management read allows inspection; write allows creating and changing sets.</p>
+<ol>
+<li>Add a set in <strong>Settings → Permission Management</strong>.</li>
+<li>Select read and write access for the required features.</li>
+<li>Set project visibility scope.</li>
+<li>Assign the set to a user or team.</li>
+<li>Check the user&#39;s effective permissions in My Page and verify their actual access.</li>
+</ol>
+<p>Permission Management write can grant other permissions, so assign it to those responsible for access administration. Ordinary assigners may be prevented from granting a set broader than their own access.</p>
+<h2>Project scope</h2>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>All projects</td>
+<td>All projects within the app</td>
+</tr>
+<tr>
+<td>Member projects only</td>
+<td>Projects where the user is registered as a project member</td>
+</tr>
+<tr>
+<td>My teams only</td>
+<td>Projects allowed through membership or leadership of teams and subteams</td>
+</tr>
+</tbody></table>
+<p>For team scope, check user membership and leadership alongside responsible teams and actual project membership. With no valid team relationship, the project list may be empty.</p>
+<p><img src="../images/en/07-permission-set.jpg" alt="The PM permission editor showing project data scope and read/write permissions, without saving changes."></p>
+<p>The PM permission editor showing project data scope and read/write permissions, without saving changes.</p>
+<h2>Cost and organizational information</h2>
+<ul>
+<li>Cost read separately controls salary and labor-cost visibility. Project or Report read alone does not grant cost access.</li>
+<li>Personal amounts also depend on salary policy. Level-based policy can hide individual annual salaries.</li>
+<li>Team and people visibility uses a separate organizational scope check. Do not assume changing project scope alone hides the full directory.</li>
+<li>Check the following organizational scope rules for the resource directory and team analysis.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Condition</th>
+<th>Organizational data scope</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Jira global administrative permission</td>
+<td>All</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Read access to at least one</strong> of Team Management, User Management, or Resource Management <strong>and all-project scope</strong></td>
+<td>All</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Neither condition above, but registered as an actual team leader</td>
+<td>Teams the user leads and their subteams</td>
+</tr>
+<tr>
+<td>4</td>
+<td>None of the above</td>
+<td>No visible data through these organizational queries</td>
+</tr>
+</tbody></table>
+<p>This table does not replace the permission needed to open a screen. Resource Management still requires its own read access. <strong>Report read alone does not open the organization-wide directory.</strong> These rules were checked in the local implementation; their deployment on staging still needs live verification.</p>
+<p>Do not infer actual access from labels such as Admin, PM, or PMO alone. Check which system-set fields are editable and the Jira-administrator exceptions.</p>
+<h2>Inherit team permissions</h2>
+<p>Distinguish an explicitly assigned personal set from team inheritance. With inheritance selected, permissions come from the team or an ancestor team. If the screen warns that no set can be inherited, correct the configuration before completing the assignment.</p>
+<p>Leadership changes, team moves, and team deletion can change inherited access. Recheck using the affected account afterward.</p>
+<h2>Jira permissions remain separate</h2>
+<p>Jira can reject issue edits, assignments, or worklogs even when the user has app write access. See <a href="./project-work.html">work management</a> and <a href="./my-work.html">My Work</a> for the relevant Jira permissions. Worklog Export data also follows the user&#39;s Jira access.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Permission Management defines both screen access (Read/Write) and data scope. A visible menu does not imply access to every person or cost record.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Add Permission / name</td>
+<td>Name a set and select feature read/write access before saving. Duplicate names or an empty permission selection can be rejected.</td>
+<td>Creation alone does not apply the set to users; assign it personally or through a team.</td>
+</tr>
+<tr>
+<td>Read / Write / Select All</td>
+<td>Read permits viewing; Write permits the feature&#39;s creation/modification/deletion. Select All broadens the checkboxes in the draft.</td>
+<td>Select the necessary scope and save. App Write does not grant Jira Edit/Assign/Schedule/Link permissions.</td>
+</tr>
+<tr>
+<td>All / my projects / my team project scope</td>
+<td>Define project visibility scope. Administrators follow separate all-project rules. People directories additionally follow organizational-scope checks.</td>
+<td>Do not assume team scope plus Resource/User Read exposes all company candidates. Actual leaders can be restricted to led teams and descendants.</td>
+</tr>
+<tr>
+<td>Cost / salary access</td>
+<td>Cost access and salary policy jointly govern monetary values. Directory access and cost access are separate.</td>
+<td>Check an account without cost access and personal-amount visibility under Level-based separately.</td>
+</tr>
+<tr>
+<td>Edit / Delete permission</td>
+<td>Editing affects effective access for assigned users/teams. Deleting an in-use set can be rejected.</td>
+<td>Have affected users check with their own accounts. Review/remove references before deleting a set.</td>
+</tr>
+<tr>
+<td>Personal permission / inherit from team</td>
+<td>An explicit personal set takes precedence; team inheritance follows the team or nearest ancestor set. Distinguish registration defaults from editing&#39;s inherit choice.</td>
+<td>Review effective access before moving teams/changing team sets. Do not assume missing inheritance automatically grants Member access.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

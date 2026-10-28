@@ -1,0 +1,347 @@
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>버전</td>
+<td>v3.0</td>
+</tr>
+<tr>
+<td>최종 현행화</td>
+<td>2026-09-28</td>
+</tr>
+<tr>
+<td>기준 소스</td>
+<td><code>develop</code> + <code>RFC-204</code> 작업 트리 (2026-09-28), <code>static/ui/src</code>, <code>locales/kr</code>, <code>src/permission</code></td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>Jira(Atlassian)에 설치되는 <strong>Moves Workforce</strong> 앱의 사용 안내서입니다.
+작업 시간(워크로그) 기록과 프로젝트별 인력·작업·인건비 관리, 진척·가동률 분석을 한 곳에서 처리할 수 있는 워크포스 관리 도구입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>기준선 주의:</strong> 이 매뉴얼은 2026-09-28 개발 소스를 기준으로 하며, 운영 환경의 배포 시점에 따라 일부 화면이 아직 없을 수 있습니다. 실제 제공 기능은 <strong>릴리스 노트</strong>와 대상 환경의 배포 상태를 확인하세요.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>그림에 대하여:</strong> 각 페이지의 <code>그림 N-M</code>은 캡처 예정 자리입니다. 캡처 목록·촬영 조건은 images/README.md에 있습니다. 파일이 아직 없으면 그림 자리에 깨진 이미지가 표시됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이 목차 페이지</td>
+<td><strong>권한 불필요</strong></td>
+</tr>
+<tr>
+<td>각 화면의 권한</td>
+<td>페이지마다 상단의 <strong>접근 권한</strong> 표를 확인하세요</td>
+</tr>
+<tr>
+<td>권한 전체 요약</td>
+<td><ac:link><ri:page ri:content-title="부록 B. 권한별 사용 범위" /><ac:plain-text-link-body><![CDATA[부록 B. 권한별 사용 범위]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>내 현재 권한 확인</td>
+<td><ac:link ac:anchor="31-내-현황"><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지 &gt; 내 권한]]></ac:plain-text-link-body></ac:link> (권한 불필요)</td>
+</tr>
+</tbody></table>
+<p><strong>권한 표기 규칙</strong></p>
+<p>권한 이름은 <strong><ac:link><ri:page ri:content-title="7.8 권한 관리" /><ac:plain-text-link-body><![CDATA[설정 &gt; 권한 관리]]></ac:plain-text-link-body></ac:link> 화면에 표시되는 항목명</strong>을 「 」 안에 그대로 씁니다.</p>
+<table>
+<thead>
+<tr>
+<th>표기</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>「프로젝트 관리」 읽기</td>
+<td>그 항목의 <strong>읽기(Read)</strong> 체크가 있어야 화면이 보입니다</td>
+</tr>
+<tr>
+<td>「프로젝트 관리」 쓰기</td>
+<td><strong>쓰기(Write)</strong> 체크가 있어야 추가·수정·삭제 버튼이 나타납니다</td>
+</tr>
+<tr>
+<td>A 또는 B</td>
+<td>둘 중 <strong>하나만</strong> 있어도 됩니다</td>
+</tr>
+<tr>
+<td>A + B</td>
+<td><strong>둘 다</strong> 있어야 합니다</td>
+</tr>
+<tr>
+<td>권한 불필요</td>
+<td>본인 데이터이거나 전역 공개 정보입니다</td>
+</tr>
+<tr>
+<td>Jira 권한</td>
+<td>앱 권한과 <strong>별개로</strong> Jira 자체 권한이 필요합니다</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>권한이 없으면 대부분 <strong>버튼·탭·메뉴가 아예 보이지 않습니다.</strong> 서버에서도 같은 검사를 하므로 화면을 우회해도 거부됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<hr />
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">이-문서를-읽는-법</ac:parameter></ac:structured-macro>이 문서를 읽는 법</h2>
+<p>각 페이지는 다음 순서로 구성됩니다.</p>
+<ol>
+<li><strong>접근 권한</strong> — 이 화면을 보고 편집하는 데 필요한 권한</li>
+<li><strong>언제 쓰나</strong> — 이 화면이 해결하는 문제</li>
+<li><strong>화면 구성</strong> — 어디에 무엇이 있는지 (그림 포함)</li>
+<li><strong>절차</strong> — 단계별 절차</li>
+<li><strong>알아두기 / 주의</strong> — 오해하기 쉬운 규칙</li>
+<li>(필요 시) <strong>문제 해결</strong> — 증상과 원인</li>
+</ol>
+<hr />
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">목차</ac:parameter></ac:structured-macro>목차</h2>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">1</ac:parameter></ac:structured-macro>1. <ac:link><ri:page ri:content-title="1. 개요" /><ac:plain-text-link-body><![CDATA[개요]]></ac:plain-text-link-body></ac:link></h3>
+<p>제품 소개, 접속 방법, 메뉴 구성, 권한의 기본 개념, 공통 UI 규칙(주소 공유·링크 복사·패널 접기)</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">2</ac:parameter></ac:structured-macro>2. <ac:link><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[My Work]]></ac:plain-text-link-body></ac:link></h3>
+<p>상단 요약 지표, My 프로젝트, My 업무(캘린더 워크로그/이슈 모드·테이블), 업무일지 추가(시간 범위·기간 일괄)</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">3</ac:parameter></ac:structured-macro>3. <ac:link><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지]]></ac:plain-text-link-body></ac:link></h3>
+<p>내 현황 KPI, 기여 차트, 내 권한·스킬, 내 팀(팀장 전용)</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">4</ac:parameter></ac:structured-macro>4. <ac:link><ri:page ri:content-title="4. 프로젝트 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 관리]]></ac:plain-text-link-body></ac:link></h3>
+<p>프로젝트 목록·상세 드로어, 추가·수정(필요 스킬), 삭제 진행, 칸반 보드</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">5</ac:parameter></ac:structured-macro>5. <ac:link><ri:page ri:content-title="5. 프로젝트 상세" /><ac:plain-text-link-body><![CDATA[프로젝트 상세]]></ac:plain-text-link-body></ac:link></h3>
+<table>
+<thead>
+<tr>
+<th>절</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5.1 <ac:link><ri:page ri:content-title="5.1 대시보드" /><ac:plain-text-link-body><![CDATA[대시보드]]></ac:plain-text-link-body></ac:link></td>
+<td>요약 카드 6종, 위젯 15종, 템플릿·전부 추가, 커스텀 필터</td>
+</tr>
+<tr>
+<td>5.2 <ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>담당 팀, 인력 목록, <strong>급여 관리</strong>, 작업 배정</td>
+</tr>
+<tr>
+<td>5.3 <ac:link><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[작업 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>목록(계층·일괄 적용)·트리·간트·<strong>맵</strong>, 담당자/동료, 자동 편입(구독)</td>
+</tr>
+<tr>
+<td>5.4 <ac:link><ri:page ri:content-title="5.4 캘린더" /><ac:plain-text-link-body><![CDATA[캘린더]]></ac:plain-text-link-body></ac:link></td>
+<td>워크로그/이슈 모드, 기간 미설정 이슈</td>
+</tr>
+<tr>
+<td>5.5 <ac:link><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[분석 및 리포트]]></ac:plain-text-link-body></ac:link></td>
+<td>작업·인력·팀 분석, 진척률, 비용, 작업 이력</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">6</ac:parameter></ac:structured-macro>6. <ac:link><ri:page ri:content-title="6. 자원 관리" /><ac:plain-text-link-body><![CDATA[자원 관리]]></ac:plain-text-link-body></ac:link></h3>
+<table>
+<thead>
+<tr>
+<th>절</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>6.1 <ac:link><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[인력 현황]]></ac:plain-text-link-body></ac:link></td>
+<td>전사 인력 부하·스킬, 인력 상세 드로어</td>
+</tr>
+<tr>
+<td>6.2 <ac:link><ri:page ri:content-title="6.2 조직 현황" /><ac:plain-text-link-body><![CDATA[조직 현황]]></ac:plain-text-link-body></ac:link></td>
+<td>계층형 팀 트리와 팀원 목록</td>
+</tr>
+<tr>
+<td>6.3 <ac:link><ri:page ri:content-title="6.3 팀 분석" /><ac:plain-text-link-body><![CDATA[팀 분석]]></ac:plain-text-link-body></ac:link></td>
+<td>팀·프로젝트 교차 지표, 계층 롤업</td>
+</tr>
+<tr>
+<td>6.4 <ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[프로젝트 배정]]></ac:plain-text-link-body></ac:link></td>
+<td>적합도 기반 배정, 배정 관계도</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">7</ac:parameter></ac:structured-macro>7. <ac:link><ri:page ri:content-title="7. 설정" /><ac:plain-text-link-body><![CDATA[설정]]></ac:plain-text-link-body></ac:link></h3>
+<table>
+<thead>
+<tr>
+<th>절</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7.1 <ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[일반 설정]]></ac:plain-text-link-body></ac:link></td>
+<td>근무시간·MM 기준·가동률 밴드·급여 정책</td>
+</tr>
+<tr>
+<td>7.2 <ac:link><ri:page ri:content-title="7.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>사용자 등록, 엑셀 일괄 업로드, 팀장 표시</td>
+</tr>
+<tr>
+<td>7.3 <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[팀 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>조직 계층, 팀장(= 소속 팀원), 팀원 배치, 팀 권한 상속</td>
+</tr>
+<tr>
+<td>7.4 <ac:link><ri:page ri:content-title="7.4 역할 관리" /><ac:plain-text-link-body><![CDATA[역할 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>직무 정의</td>
+</tr>
+<tr>
+<td>7.5 <ac:link><ri:page ri:content-title="7.5 등급 관리" /><ac:plain-text-link-body><![CDATA[등급 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>등급과 급여 밴드</td>
+</tr>
+<tr>
+<td>7.6 <ac:link><ri:page ri:content-title="7.6 스킬 관리" /><ac:plain-text-link-body><![CDATA[스킬 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>직군별 스킬 사전</td>
+</tr>
+<tr>
+<td>7.7 <ac:link><ri:page ri:content-title="7.7 프로젝트 상태 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 상태 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>칸반 컬럼과 상태 흐름</td>
+</tr>
+<tr>
+<td>7.8 <ac:link><ri:page ri:content-title="7.8 권한 관리" /><ac:plain-text-link-body><![CDATA[권한 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>권한 세트, 읽기/쓰기, 프로젝트 범위</td>
+</tr>
+<tr>
+<td>7.9 <ac:link><ri:page ri:content-title="7.9 휴일 관리" /><ac:plain-text-link-body><![CDATA[휴일 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>공휴일과 가용률</td>
+</tr>
+</tbody></table>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">8</ac:parameter></ac:structured-macro>8. <ac:link><ri:page ri:content-title="8. 통합 대시보드" /><ac:plain-text-link-body><![CDATA[통합 대시보드 (전사)]]></ac:plain-text-link-body></ac:link></h3>
+<p>여러 프로젝트를 한 화면에서 비교 — T/S/R 신호등, 일정·범위·자원·비용 서브탭, 토폴로지</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">9</ac:parameter></ac:structured-macro>9. <ac:link><ri:page ri:content-title="9. 워크로그 추출" /><ac:plain-text-link-body><![CDATA[워크로그 추출]]></ac:plain-text-link-body></ac:link></h3>
+<p>Jira 전체 워크로그를 기간·프로젝트·작성자로 검색해 Excel로 내려받기</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">10</ac:parameter></ac:structured-macro>10. <ac:link><ri:page ri:content-title="10. Jira 이슈 화면 패널" /><ac:plain-text-link-body><![CDATA[Jira 이슈 화면의 Moves Workforce 패널]]></ac:plain-text-link-body></ac:link></h3>
+<p>앱을 열지 않고 Jira 이슈 화면에서 공수 확인·워크로그 기록</p>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">부록</ac:parameter></ac:structured-macro>부록</h3>
+<ul>
+<li><ac:link><ri:page ri:content-title="부록 A. 용어집" /><ac:plain-text-link-body><![CDATA[A. 용어집]]></ac:plain-text-link-body></ac:link></li>
+<li><ac:link><ri:page ri:content-title="부록 B. 권한별 사용 범위" /><ac:plain-text-link-body><![CDATA[B. 권한별 사용 범위 요약]]></ac:plain-text-link-body></ac:link></li>
+<li><ac:link><ri:page ri:content-title="부록 C. 변경 이력" /><ac:plain-text-link-body><![CDATA[C. 변경 이력]]></ac:plain-text-link-body></ac:link></li>
+<li>그림 캡처 계획</li>
+</ul>
+<hr />
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">목적별-빠른-찾기</ac:parameter></ac:structured-macro>목적별 빠른 찾기</h2>
+<table>
+<thead>
+<tr>
+<th>하고 싶은 일</th>
+<th>페이지</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>오늘 일한 시간을 기록하고 싶다</td>
+<td><ac:link ac:anchor="24-업무일지워크로그-추가하기"><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[2.4 업무일지 추가]]></ac:plain-text-link-body></ac:link> · <ac:link><ri:page ri:content-title="10. Jira 이슈 화면 패널" /><ac:plain-text-link-body><![CDATA[10. Jira 이슈 화면에서 기록]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>여러 날치를 한 번에 기록하고 싶다</td>
+<td><ac:link ac:anchor="방법-2-기간-입력일괄"><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[2.4 기간 입력]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>내 이슈 일정을 달력에서 보고 싶다</td>
+<td><ac:link ac:anchor="캘린더-뷰"><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[2.3 캘린더 이슈 모드]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>프로젝트를 새로 만들고 싶다</td>
+<td><ac:link ac:anchor="프로젝트-추가--수정"><ri:page ri:content-title="4. 프로젝트 관리" /><ac:plain-text-link-body><![CDATA[4.1 프로젝트 목록]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>프로젝트에 사람을 넣고 싶다</td>
+<td><ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 인력 관리]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>인건비가 0원으로 나온다</td>
+<td><ac:link ac:anchor="인건비가-0원으로-나올-때"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 급여 관리]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>여러 작업의 일정을 한 번에 바꾸고 싶다</td>
+<td><ac:link ac:anchor="일괄-적용과-제외"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 일괄 적용]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>WBS(작업 계층)를 만들고 싶다</td>
+<td><ac:link ac:anchor="536-트리-보기"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 트리 보기]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>일정을 드래그로 조정하고 싶다</td>
+<td><ac:link ac:anchor="537-간트-보기"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 간트 보기]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>작업 구조를 한 장의 그림으로 보고 싶다</td>
+<td><ac:link ac:anchor="538-맵-보기"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 맵 보기]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>이슈를 자동으로 편입하고 싶다</td>
+<td><ac:link ac:anchor="533-자동-편입프로젝트-구독"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 자동 편입]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>프로젝트가 지연인지 알고 싶다</td>
+<td><ac:link ac:anchor="554-진척률"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 진척률]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>누가 과부하인지 보고 싶다</td>
+<td><ac:link ac:anchor="552-인력-분석"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 인력 분석]]></ac:plain-text-link-body></ac:link> · <ac:link><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[6.1 인력 현황]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>특정 스킬을 가진 사람을 찾고 싶다</td>
+<td><ac:link><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[6.1 인력 현황]]></ac:plain-text-link-body></ac:link> · <ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[6.4 프로젝트 배정]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>조직도를 구성하고 싶다</td>
+<td><ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 팀 관리]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>권한을 조정하고 싶다</td>
+<td><ac:link><ri:page ri:content-title="7.8 권한 관리" /><ac:plain-text-link-body><![CDATA[7.8 권한 관리]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>여러 프로젝트를 한눈에 비교하고 싶다</td>
+<td><ac:link><ri:page ri:content-title="8. 통합 대시보드" /><ac:plain-text-link-body><![CDATA[8. 통합 대시보드]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>어느 프로젝트가 위험한지 알고 싶다</td>
+<td><ac:link ac:anchor="82-종합-개요tsr-신호"><ri:page ri:content-title="8. 통합 대시보드" /><ac:plain-text-link-body><![CDATA[8.2 T/S/R 신호등]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>전사 워크로그를 엑셀로 뽑고 싶다</td>
+<td><ac:link><ri:page ri:content-title="9. 워크로그 추출" /><ac:plain-text-link-body><![CDATA[9. 워크로그 추출]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>지금 보는 화면을 동료에게 보내고 싶다</td>
+<td><ac:link ac:anchor="15-공통-ui-규칙"><ri:page ri:content-title="1. 개요" /><ac:plain-text-link-body><![CDATA[1.5 링크 복사]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+<tr>
+<td>화면이 안 보인다</td>
+<td><ac:link ac:anchor="14-권한의-기본-개념"><ri:page ri:content-title="1. 개요" /><ac:plain-text-link-body><![CDATA[1.4 권한의 기본 개념]]></ac:plain-text-link-body></ac:link> · <ac:link><ri:page ri:content-title="부록 B. 권한별 사용 범위" /><ac:plain-text-link-body><![CDATA[부록 B]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+</tbody></table>
+<hr />
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">관련-문서</ac:parameter></ac:structured-macro>관련 문서</h2>
+<table>
+<thead>
+<tr>
+<th>문서</th>
+<th>다루는 내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>관리자 매뉴얼</strong></td>
+<td>설치·초기화, 권한 설계, 대량 업로드, 저장 공간 운영</td>
+</tr>
+<tr>
+<td><strong>빠른시작 가이드</strong></td>
+<td>설치 직후 15분 세팅</td>
+</tr>
+<tr>
+<td><strong>FAQ</strong></td>
+<td>자주 묻는 질문</td>
+</tr>
+<tr>
+<td><strong>용어집</strong></td>
+<td>전사 공통 용어</td>
+</tr>
+<tr>
+<td><strong>릴리스 노트</strong></td>
+<td>버전별 제공 기능</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>범위 밖:</strong> <strong>저장 공간 관리</strong>(Settings &gt; 저장공간 관리)는 이 매뉴얼에서 다루지 않습니다. 관리자 매뉴얼을 참고하세요.</p>
+</ac:rich-text-body></ac:structured-macro>

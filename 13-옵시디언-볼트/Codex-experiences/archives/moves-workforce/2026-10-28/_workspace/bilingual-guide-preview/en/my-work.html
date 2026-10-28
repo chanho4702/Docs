@@ -1,0 +1,222 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Using My Work</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Using My Work</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/my-work.html">한국어</a></p>
+<blockquote>
+<p>Review draft: English screenshots were captured on the designated staging site on 2026-10-04 and are shared by both language guides. The deployed version and role-specific access and save operations remain under review.</p>
+</blockquote>
+<p>Use My Work to see your projects, assigned and collaborative issues, and recorded time. It supports daily time entry and weekly schedule reviews.</p>
+<h2>Required access</h2>
+<p>This is a personal work view for users with access to the app. You need permission to view the Jira issue. Creating worklogs requires <strong>Work On Issues</strong>, editing your own entries requires <strong>Edit Own Worklogs</strong>, and deleting them requires <strong>Delete Own Worklogs</strong>. Time tracking must also be enabled.</p>
+<!-- detailed-walkthrough:start -->
+
+<h2>Check each single-date entry field</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+<th>Check before submitting</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Work item</td>
+<td>DEMO-12 Write test scenarios</td>
+<td>The key and title identify the work you actually did.</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>2026-10-05</td>
+<td>This is the actual work date.</td>
+</tr>
+<tr>
+<td>Start / end</td>
+<td>09:00 / 12:30</td>
+<td>End is later than start; calculated duration is 3 hours 30 minutes.</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Prepared test scenarios</td>
+<td>Someone reviewing the entry can understand the activity.</td>
+</tr>
+</tbody></table>
+<p>Select the date to open the add dialog, choose the issue, and enter the fields. After submitting, open the daily entry and compare its issue, date, and duration with your input. Split the entry into working intervals when you need to exclude a break.</p>
+<h3>Example: the same work over five dates</h3>
+<ol>
+<li>Choose period entry and the prepared issue. Enter 2026-10-05 through 2026-10-09 and daily times of 09:00–12:30.</li>
+<li>Review weekend, holiday, and leave exclusions. With five included dates, the result is five entries totaling 17 hours 30 minutes. Holidays or leave can reduce that number; use the on-screen preview as the final check.</li>
+<li>Submit only after the included dates, record count, daily duration, and total match your intention. This creates a record for each included date, not one record covering the entire period.</li>
+<li>If saving fails, read whether nothing was created, created records were cancelled, or cancellation was incomplete. Refresh My Work and the Jira issue&#39;s worklogs before retrying. The app attempts to undo entries created before a failure, but an incomplete cancellation can leave records behind. If cancellation is incomplete, check the remaining dates and durations, keep correct entries, and use single-date entry only for missing dates. To retry the entire period, first remove remaining entries with your own delete permission and confirm cancellation. If you cannot delete them, ask an administrator to resolve the records rather than duplicate the whole period.</li>
+</ol>
+<h3>Correct or remove an existing entry</h3>
+<p>Expand the issue&#39;s worklogs in the table or open its calendar entry. Confirm the author, issue key, date, and duration before editing. Change the incorrect date/time or description, submit, and check the updated entry and daily total. To delete, use the entry&#39;s delete action and check that the record has disappeared. Editing and deleting require the corresponding Jira permissions; a missing action does not mean you should create another entry as a replacement.</p>
+<!-- detailed-walkthrough:end -->
+
+<h2>Read the screen</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Summary</td>
+<td>Recorded time for today, this week, and this month; assigned and collaborative issues and projects</td>
+</tr>
+<tr>
+<td>Your projects</td>
+<td>Participation and your project role and level</td>
+</tr>
+<tr>
+<td>Calendar</td>
+<td>Monthly or weekly worklogs or issue schedules</td>
+</tr>
+<tr>
+<td>Table</td>
+<td>Issue-level work and expandable worklog entries</td>
+</tr>
+</tbody></table>
+<p><img src="../images/en/02-mywork-overview.jpg" alt="My Work summary, participating projects, and monthly worklog calendar."></p>
+<p>My Work summary, participating projects, and monthly worklog calendar.</p>
+<p>Target time uses your organization&#39;s working-hour and holiday settings. For example, 8 hours per day across 5 working days gives a weekly target of 40 hours. A difference from the target is not, by itself, a measure of performance.</p>
+<h2>Add and edit worklogs</h2>
+<ol>
+<li>Select a date or open the worklog dialog.</li>
+<li>Select an issue. Check any search filters still applied.</li>
+<li>In time entry mode, enter the work date and start and end times.</li>
+<li>Check the calculated duration, describe the work, and save.</li>
+<li>To make a correction, edit your own entry. Before deleting an entry, check the issue, date, and duration.</li>
+</ol>
+<p>For the same work across several dates, use period entry. Check the date range, daily duration, and weekend and holiday options, then review the dates to be created. If saving produces failures, first check successful entries to avoid duplicates.</p>
+<p><img src="../images/en/02-worklog-modal-simple.jpg" alt="An unsaved worklog with a sample issue and times of 09:00–12:30, calculating 3 hours 30 minutes."></p>
+<p>An unsaved worklog with a sample issue and times of 09:00–12:30, calculating 3 hours 30 minutes.</p>
+<p><img src="../images/en/02-worklog-modal-period.jpg" alt="Period entry with date range, daily start/end times, and weekend, holiday, and leave exclusions. Review the record count and total time before saving."></p>
+<p>Period entry with date range, daily start/end times, and weekend, holiday, and leave exclusions. Review the record count and total time before saving.</p>
+<h2>Calendar modes</h2>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>What it shows</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Worklogs</td>
+<td>Recorded time and daily totals</td>
+<td>Review when and how much you worked</td>
+</tr>
+<tr>
+<td>Issues</td>
+<td>Start and due dates for assigned and collaborative issues</td>
+<td>Review schedules and deadlines</td>
+</tr>
+</tbody></table>
+<p>Issues without start and due dates may not appear as calendar bars. Check the unscheduled-issues list and ask an authorized person to set their dates. Dragging a worklog to another date changes its recorded date; check the result after moving it.</p>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check in this order</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>An issue is missing</td>
+<td>Search and space filters → assignment or collaboration → ability to open the issue in Jira</td>
+</tr>
+<tr>
+<td>Save fails</td>
+<td>Date and duration → Jira time tracking → Work On Issues → the error message</td>
+</tr>
+<tr>
+<td>Edit or delete is missing</td>
+<td>Whether you authored the entry → the relevant Jira permission</td>
+</tr>
+<tr>
+<td>A project is missing</td>
+<td>Project membership → the app&#39;s project visibility scope</td>
+</tr>
+</tbody></table>
+<p>Use <a href="./my-page.html">My Page</a> for period-based contribution and permissions, or <a href="./worklog-export.html">Worklog export</a> for broader extraction.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Path: Jira Apps → Moves Workforce → My Work. Distinguish time records, personal schedules, and Jira issue schedules.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Calendar / Table</td>
+<td>Display your work as a calendar or table. Switching does not create or delete worklogs.</td>
+<td>Expand an issue&#39;s entries in the table or select a calendar date/entry to inspect it.</td>
+</tr>
+<tr>
+<td>Worklog / Issue mode</td>
+<td>Worklog mode shows logged dates and time; Issue mode shows issue start/due dates. The populations differ even within the same month.</td>
+<td>Check the mode before diagnosing a missing bar; in Issue mode also check unscheduled issues.</td>
+</tr>
+<tr>
+<td>Today / previous-next / month-week</td>
+<td>Move the displayed date or period. Changing the visible month/week does not change recorded dates.</td>
+<td>Check the period heading after navigation; do not mistake an old entry for today&#39;s work.</td>
+</tr>
+<tr>
+<td>Log work</td>
+<td>Open the worklog dialog. You need access to the chosen issue, Jira Work On Issues, and time tracking.</td>
+<td>Opening the dialog does not create a record. Submit the fields and verify the actual entry.</td>
+</tr>
+<tr>
+<td>Issue search / space</td>
+<td>Find and select an issue by key or title. A space filter narrows search; it does not grant access.</td>
+<td>Recheck the selected issue after changing spaces. Clear restrictive filters and check the original Jira issue if results are empty.</td>
+</tr>
+<tr>
+<td>Date, start, end, calculated duration</td>
+<td>For single-date entry, end must be later than start. 09:00–12:30 is 3 hours 30 minutes. The calculated duration is the recorded time; breaks are not automatically deducted.</td>
+<td>Split intervals to exclude breaks; after submission verify issue, author, date, and duration.</td>
+</tr>
+<tr>
+<td>Period entry and exclusions</td>
+<td>Set the date range and daily start/end times. Weekend, holiday, and leave exclusions change the included dates and record count.</td>
+<td>Review preview count/totals before submitting. After a failure, read the cancellation result and enter only dates missing from the remaining correct records.</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Describe the activity. Saving an existing entry can be restricted if its description could not be loaded, to avoid losing content.</td>
+<td>Reload before editing rather than overwriting a failed-to-load description with an empty value.</td>
+</tr>
+<tr>
+<td>Edit/delete entry / drag to another date</td>
+<td>Editing your entry needs Edit Own Worklogs; deleting needs Delete Own Worklogs. Dragging a worklog changes its actual recorded date.</td>
+<td>Check the entry and daily totals after saving. Correct a wrong move by editing the entry, not by adding a duplicate.</td>
+</tr>
+<tr>
+<td>Add schedule / type</td>
+<td>This is a personal schedule, separate from a worklog. Selecting its type sets a default availability ratio; enter start/end dates.</td>
+<td>End cannot precede start. Adding a schedule does not create a Jira worklog.</td>
+</tr>
+<tr>
+<td>Schedule availability / description</td>
+<td>Enter the available share: 0 means no availability, 1 a full day, and 0.5 half a day. This is used in leave/capacity calculations.</td>
+<td>Recheck the ratio after changing type. Do not interpret it as hours of work already logged.</td>
+</tr>
+<tr>
+<td>Update/delete/cancel schedule</td>
+<td>Update changes the selected personal schedule; delete removes it after confirmation. Cancel closes unsaved input.</td>
+<td>Deleted schedules cannot be recovered. For a not-found/forbidden message, check the target and owning account.</td>
+</tr>
+<tr>
+<td>Collapse panel / resize</td>
+<td>Collapse My Projects/Tasks or drag the boundary to resize the list/calendar. Double-click the boundary to restore its default width.</td>
+<td>Only the displayed space changes. Reopen the panel to check the selected work.</td>
+</tr>
+</tbody></table>
+<p>Submitted time is a Jira worklog. Do not enter the same work separately in Jira and the app. If cancellation of period entry is incomplete and you cannot delete residual entries, ask an administrator to resolve them.</p>
+<!-- control-reference:end -->
+
+</body></html>

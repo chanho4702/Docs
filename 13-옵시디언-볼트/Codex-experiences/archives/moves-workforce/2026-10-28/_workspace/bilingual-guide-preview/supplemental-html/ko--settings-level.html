@@ -1,0 +1,164 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047624">English</a></p>
+<h2>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「등급 관리」 읽기</td>
+</tr>
+<tr>
+<td>등급 추가·수정·삭제·빠른 추가</td>
+<td>「등급 관리」 쓰기</td>
+</tr>
+<tr>
+<td>급여 밴드(하한·상한·대표값) 입력</td>
+<td>「등급 관리」 쓰기</td>
+</tr>
+<tr>
+<td>급여 밴드 <strong>금액 열람</strong></td>
+<td>「비용」 읽기 또는 「등급 관리」 권한. 없으면 금액이 응답에서 제외됩니다</td>
+</tr>
+</tbody></table>
+<ul>
+<li>등급 <strong>목록</strong>은 「인력 관리」 읽기 또는 「일반 설정」 읽기로도 조회됩니다(인력 화면의 선택지, 급여 정책 카드의 &quot;밴드 미설정 등급 수&quot; 계산에 필요).</li>
+<li>급여 밴드는 급여 정책이 <strong>등급 기반</strong>일 때 인건비 계산에 쓰입니다(<a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342802">7.1</a>).</li>
+</ul>
+<p><strong>언제 쓰나</strong> — 인력 <strong>등급(Level)</strong> 을 정의하고, 등급 기반 급여 정책을 쓴다면 <strong>급여 밴드</strong>를 채울 때.</p>
+<blockquote>
+<p><strong>[이미지 삽입 위치 · 추가 캡처 필요]</strong> 등급 관리 — ① 등급 표(급여 범위·대표값) ② 등급 추가 창(하한·상한·대표값·중앙값 계산) ③ 빠른 추가 프리셋 ④ 정책이 인원별일 때의 &quot;급여 밴드는 사용되지 않습니다&quot; 안내.</p>
+</blockquote>
+<h2>목록 컬럼</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>등급 / 설명</td>
+<td>등급명과 설명 (예: Senior / 10년차 이상)</td>
+</tr>
+<tr>
+<td>급여 범위</td>
+<td>하한 ~ 상한</td>
+</tr>
+<tr>
+<td>대표값</td>
+<td><strong>인건비 계산에 실제로 쓰이는 값</strong></td>
+</tr>
+</tbody></table>
+<h2>등록 방법 두 가지</h2>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>등급 추가</strong></td>
+<td>이름·설명·급여 밴드를 입력해 하나씩 등록</td>
+</tr>
+<tr>
+<td><strong>빠른 추가</strong></td>
+<td>직급 체계 프리셋에서 골라 한 번에 등록</td>
+</tr>
+</tbody></table>
+<p><strong>프리셋 종류</strong>: 일반(Junior/Senior) · 등급제(G1~G5) · 한국식 직급 · Band 체계</p>
+<h2>급여 밴드 입력 규칙</h2>
+<p>급여 정책이 <strong>등급 기반</strong>일 때 사용됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>규칙</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>하한 / 상한</td>
+<td>0 이상. <strong>하한이 상한보다 크면 저장 거부</strong></td>
+</tr>
+<tr>
+<td><strong>대표값</strong></td>
+<td><strong>계산에 쓰이는 값.</strong> 비워 두면 <strong>중앙값</strong>(<code>(하한 + 상한) ÷ 2</code>)이 자동 입력됩니다</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>중앙값 계산</strong> 버튼으로 대표값을 채울 수 있습니다.</li>
+<li>대표값이 하한~상한 범위를 벗어나도 <strong>저장은 허용</strong>됩니다(관리자 판단 존중). &quot;대표값이 급여 범위를 벗어났습니다. 그대로 저장할 수 있습니다&quot; 경고만 표시됩니다.</li>
+</ul>
+<blockquote>
+<p>급여 정책이 &#39;인원별&#39;이면 <strong>&quot;급여 밴드는 사용되지 않습니다&quot;</strong> 안내와 함께 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342802">설정으로 이동하는 링크</a>가 표시됩니다.</p>
+</blockquote>
+<h2>밴드를 비워 두면 생기는 일</h2>
+<p>등급 기반 정책에서 <strong>밴드(대표값)가 없는 등급</strong>의 인원은 <strong>인건비가 0으로 계산</strong>됩니다.</p>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342802">7.1 일반 설정</a>에서 정책을 전환할 때 &quot;등급 N개에 급여 밴드가 없습니다&quot; 경고가 표시됩니다.</li>
+<li>비용 화면의 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256"><strong>미산정 인원</strong></a> 지표로도 확인할 수 있습니다.</li>
+</ul>
+<h2>여기서 정의한 값이 쓰이는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>화면</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342810">7.2 인력 관리</a></td>
+<td>사용자의 <strong>직무 등급</strong> 선택지</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172851256">5.2 프로젝트 인력</a></td>
+<td>프로젝트 멤버의 <strong>등급</strong>, 등급 기반 인건비 산정</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178889">5.1 대시보드</a></td>
+<td>등급 분포 차트</td>
+</tr>
+<tr>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173703169">6.1 인력 현황</a></td>
+<td>등급 필터·표시</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>버튼·입력 항목과 처리 결과 상세</h2>
+<p>레벨은 인력 기준과 등급 기반 비용 계산을 연결합니다. 급여 밴드는 연간 금액이며 월급·만원 단위로 축약 입력하지 않습니다.</p>
+<table>
+<thead>
+<tr>
+<th>버튼·입력 항목</th>
+<th>기능·사용 조건·변경 대상</th>
+<th>결과 확인과 문제 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>레벨 추가·이름·설명</td>
+<td>조직의 등급을 등록합니다. 인원별 정책에서도 레벨은 사용할 수 있지만 밴드는 비용 기준으로 사용되지 않습니다.</td>
+<td>정책 안내와 목록을 확인합니다. 밴드 입력만으로 조직 급여 정책이 변경되지는 않습니다.</td>
+</tr>
+<tr>
+<td>하한·상한</td>
+<td>0 이상의 숫자이며 하한≤상한이어야 합니다. 빈 값은 금액 미설정·해제 의미이고 0과 다릅니다.</td>
+<td>금액은 통화의 기본 단위로 정수만 입력합니다. 소수점·음수 기호·문자는 입력 과정에서 제거되므로 표시된 숫자와 보조 금액을 반드시 확인합니다. 하한이 상한보다 크면 저장할 수 없습니다.</td>
+</tr>
+<tr>
+<td>대표값·중앙값 사용</td>
+<td>대표 연간 금액이 비용 계산에 사용됩니다. 대표값이 비고 하한·상한이 유효하면 중앙값이 채워집니다.</td>
+<td>대표값이 범위 밖이면 경고하지만 저장은 가능합니다. 의도된 조직 기준인지 확인합니다.</td>
+</tr>
+<tr>
+<td>Quick Add·수정·삭제</td>
+<td>경력 단계 예시를 선택해 추가하거나 기존 기준을 수정·삭제합니다. 이미 있는 예시는 건너뜁니다.</td>
+<td>사용 중인 레벨 삭제는 거부될 수 있습니다. 금액을 지우기 전 영향받는 비용과 미산정 표시를 확인합니다.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

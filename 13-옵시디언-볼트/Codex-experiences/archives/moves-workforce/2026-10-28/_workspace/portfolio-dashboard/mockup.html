@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>전사 통합 대시보드 — 목업</title>
+<script src="file:///C:/CloudJira/moves-workforce/static/ui/node_modules/echarts/dist/echarts.min.js"></script>
+<style>
+  :root{
+    --blue:#0052CC; --blue2:#0065FF; --ink:#172B4D; --sub:#5E6C84;
+    --bd:#DFE1E6; --bg:#F4F5F7; --green:#36B37E; --yellow:#FFAB00; --red:#FF5630;
+    --purple:#6554C0; --teal:#00B8D9;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,"Segoe UI",Roboto,"Malgun Gothic",sans-serif; background:var(--bg); color:var(--ink); padding:24px 28px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;}
+  .topbar h1{font-size:22px; font-weight:600;}
+  .topbar .meta{display:flex; align-items:center; gap:14px; font-size:13px; color:var(--sub);}
+  .btn{background:var(--blue); color:#fff; border:none; padding:7px 14px; border-radius:3px; font-size:13px; cursor:pointer; font-weight:500;}
+  .btn.ghost{background:#fff; color:var(--ink); border:1px solid var(--bd);}
+  .sec-label{font-size:12px; font-weight:700; letter-spacing:.4px; color:var(--sub); text-transform:uppercase; margin:26px 4px 12px;}
+  /* KPI */
+  .kpi-row{display:grid; grid-template-columns:repeat(5,1fr); gap:14px;}
+  .kpi{background:#fff; border:1px solid var(--bd); border-radius:6px; padding:16px 18px;}
+  .kpi .label{font-size:12px; color:var(--sub); margin-bottom:8px;}
+  .kpi .val{font-size:26px; font-weight:700; line-height:1;}
+  .kpi .val small{font-size:14px; font-weight:600; color:var(--sub); margin-left:3px;}
+  .kpi.risk .val{color:var(--red);}
+  .kpi .delta{font-size:12px; margin-top:6px;}
+  .up{color:var(--green);} .down{color:var(--red);}
+  /* subtab */
+  .subtabs{display:flex; gap:4px; border-bottom:2px solid var(--bd); margin:0 0 16px;}
+  .subtab{padding:9px 16px; font-size:14px; color:var(--sub); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px;}
+  .subtab.active{color:var(--blue); border-bottom-color:var(--blue); font-weight:600;}
+  .tabnote{font-size:11px; color:var(--sub); background:#EAE6FF; color:#5E4DB2; display:inline-block; padding:2px 8px; border-radius:10px; margin-left:8px; vertical-align:middle;}
+  /* cards / grid */
+  .card{background:#fff; border:1px solid var(--bd); border-radius:6px; padding:16px 18px; margin-bottom:16px;}
+  .card h3{font-size:14px; font-weight:600; margin-bottom:4px; display:flex; align-items:center; gap:8px;}
+  .card .desc{font-size:11.5px; color:var(--sub); margin-bottom:10px;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .chart{width:100%; height:280px;}
+  .chart.sm{height:240px;}
+  .toggle{margin-left:auto; font-size:11px; color:var(--blue); border:1px solid var(--bd); border-radius:3px; padding:2px 8px; cursor:pointer;}
+  /* table */
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--bd);}
+  th{font-size:11px; color:var(--sub); font-weight:600; text-transform:uppercase; letter-spacing:.3px;}
+  td.num{text-align:right; font-variant-numeric:tabular-nums;}
+  tr:hover td{background:#FAFBFC; cursor:pointer;}
+  .bar-cell{position:relative; background:#EBECF0; border-radius:3px; height:8px; width:90px; display:inline-block; vertical-align:middle;}
+  .bar-cell > i{position:absolute; left:0; top:0; height:100%; border-radius:3px;}
+  .badge{font-size:11px; font-weight:600; padding:2px 9px; border-radius:10px;}
+  .b-normal{background:#E3FCEF; color:#006644;}
+  .b-caution{background:#FFFAE6; color:#974F0C;}
+  .b-delayed{background:#FFEBE6; color:#BF2600;}
+  .pill{font-size:11px; padding:2px 8px; border-radius:3px; background:#DEEBFF; color:#0747A6;}
+  .legend-hint{font-size:11px; color:var(--sub); margin-top:6px;}
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <h1>전사 통합 대시보드</h1>
+    <div class="meta">
+      <span>📅 기준 시각: 2026-06-01 06:00</span>
+      <button class="btn ghost">↻ 지금 재집계</button>
+    </div>
+  </div>
+
+  <!-- ── 섹션 1: 전사 요약 ── -->
+  <div class="sec-label">전사 요약</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="label">활성 프로젝트</div><div class="val">12<small>개</small></div><div class="delta up">▲ 2 (지난주)</div></div>
+    <div class="kpi"><div class="label">총 투입 MM</div><div class="val">92.0<small>MM</small></div><div class="delta up">▲ 5.4</div></div>
+    <div class="kpi"><div class="label">총 인건비 (월)</div><div class="val">₩412<small>M</small></div><div class="delta down">▲ ₩18M</div></div>
+    <div class="kpi"><div class="label">평균 완성률</div><div class="val">62<small>%</small></div><div class="delta up">▲ 4%p</div></div>
+    <div class="kpi risk"><div class="label">리스크 프로젝트</div><div class="val">3<small>개</small></div><div class="delta down">▲ 1</div></div>
+  </div>
+
+  <!-- ── 섹션 2: 프로젝트 비교 (서브탭) ── -->
+  <div class="sec-label">프로젝트 비교 <span class="tabnote">섹션2는 서브탭 — 아래는 3개 탭을 모두 펼친 미리보기</span></div>
+  <div class="subtabs">
+    <div class="subtab active">개요</div>
+    <div class="subtab">인력 · 비용</div>
+    <div class="subtab">공수 · 작업</div>
+  </div>
+
+  <!-- 탭1: 개요 — 프로젝트 현황 테이블 -->
+  <div class="card">
+    <h3>프로젝트별 현황 <span style="font-size:11px;color:var(--sub);font-weight:400;">행 클릭 → 프로젝트 상세 드릴다운</span></h3>
+    <table>
+      <thead><tr>
+        <th>프로젝트</th><th>상태</th><th>인원</th><th>투입MM</th><th>인건비</th>
+        <th>완성</th><th>일정</th><th>가동률</th><th>리스크</th>
+      </tr></thead>
+      <tbody id="ptable"></tbody>
+    </table>
+  </div>
+
+  <!-- 탭2: 인력·비용 -->
+  <div class="grid2">
+    <div class="card">
+      <h3>롤 / 레벨 분포 비교 <span class="toggle">롤 ▾</span></h3>
+      <div class="desc">프로젝트별 투입 인원 구성비 (100% 정규화 누적막대)</div>
+      <div id="c_roledist" class="chart sm"></div>
+    </div>
+    <div class="card">
+      <h3>프로젝트별 총 인건비</h3>
+      <div class="desc">Σ 참여 인원 급여 (월 인건비, 백만원)</div>
+      <div id="c_cost" class="chart sm"></div>
+    </div>
+    <div class="card">
+      <h3>급여 구간 분포</h3>
+      <div class="desc">전사 참여 인원 급여 히스토그램</div>
+      <div id="c_salary" class="chart sm"></div>
+    </div>
+    <div class="card">
+      <h3>인력 가동률 분포</h3>
+      <div class="desc">고유 인원 기준 과소 / 적정 / 과부하 (경계: 설정값)</div>
+      <div id="c_util" class="chart sm"></div>
+    </div>
+  </div>
+
+  <!-- 탭3: 공수·작업 -->
+  <div class="grid2">
+    <div class="card">
+      <h3>전사 공수 추이</h3>
+      <div class="desc">월별 투입 MD (막대) + 누적 MM (라인)</div>
+      <div id="c_trend" class="chart sm"></div>
+    </div>
+    <div class="card">
+      <h3>작업 분포 — 투입 인력 대비 공수 <span class="toggle">집계막대 ⇄ 산점</span></h3>
+      <div class="desc">점 = 인원 1명의 작업공수(MD) · 프로젝트별 분포 + 집계</div>
+      <div id="c_work" class="chart sm"></div>
+    </div>
+  </div>
+
+  <!-- ── 섹션 3: 리스크 / 문제 ── -->
+  <div class="sec-label">리스크 / 문제</div>
+  <div class="grid2">
+    <div class="card">
+      <h3>리스크 TOP 프로젝트</h3>
+      <div class="desc">완성-일정 차이(지연 %p) 큰 순</div>
+      <div id="c_risk" class="chart sm"></div>
+    </div>
+    <div class="card">
+      <h3>문제 이슈 한눈에 (TOP 50)</h3>
+      <div class="desc">x=지연일수, y=공수편차(MD), 버블=심각도 · 우상단=위험</div>
+      <div id="c_problem" class="chart sm"></div>
+    </div>
+  </div>
+
+<script>
+const C={blue:'#0052CC',blue2:'#0065FF',green:'#36B37E',yellow:'#FFAB00',red:'#FF5630',purple:'#6554C0',teal:'#00B8D9',sub:'#5E6C84',bd:'#DFE1E6'};
+const projects=[
+  {name:'결제 플랫폼 고도화',status:'진행중',sc:'b-normal',mem:8,mm:14.5,cost:38,comp:0.58,sch:0.71,util:0.83,risk:'delayed'},
+  {name:'모바일 앱 리뉴얼',status:'진행중',sc:'b-normal',mem:6,mm:11.0,cost:29,comp:0.74,sch:0.69,util:0.91,risk:'normal'},
+  {name:'데이터 마이그레이션',status:'지연',sc:'b-delayed',mem:5,mm:9.2,cost:24,comp:0.41,sch:0.66,util:1.12,risk:'delayed'},
+  {name:'사내 포털 구축',status:'진행중',sc:'b-caution',mem:7,mm:12.8,cost:33,comp:0.55,sch:0.60,util:0.78,risk:'caution'},
+  {name:'AI 챗봇 PoC',status:'진행중',sc:'b-normal',mem:4,mm:6.5,cost:19,comp:0.80,sch:0.75,util:0.69,risk:'normal'},
+];
+const riskColor={normal:'#36B37E',caution:'#FFAB00',delayed:'#FF5630'};
+const riskLabel={normal:'정상',caution:'주의',delayed:'지연'};
+// 테이블
+document.getElementById('ptable').innerHTML=projects.map(p=>`
+  <tr>
+    <td><strong>${p.name}</strong></td>
+    <td><span class="pill">${p.status}</span></td>
+    <td class="num">${p.mem}</td>
+    <td class="num">${p.mm.toFixed(1)}</td>
+    <td class="num">₩${p.cost}M</td>
+    <td><span class="bar-cell"><i style="width:${p.comp*100}%;background:${C.blue2}"></i></span> ${Math.round(p.comp*100)}%</td>
+    <td><span class="bar-cell"><i style="width:${p.sch*100}%;background:${C.sub}"></i></span> ${Math.round(p.sch*100)}%</td>
+    <td class="num">${Math.round(p.util*100)}%</td>
+    <td><span class="badge ${'b-'+p.risk}">${riskLabel[p.risk]}</span></td>
+  </tr>`).join('');
+
+const charts=[];
+function mk(id,opt){const el=echarts.init(document.getElementById(id));el.setOption(opt);charts.push(el);}
+const pn=projects.map(p=>p.name.length>7?p.name.slice(0,6)+'…':p.name);
+const baseGrid={left:48,right:18,top:30,bottom:42};
+const axisText={color:C.sub,fontSize:11};
+
+// 1) 롤 분포 100% 정규화 누적막대
+const roleRaw=[[3,4,1],[2,3,1],[1,3,1],[2,4,1],[1,2,1]]; // PL,Dev,QA
+const roleNames=['PL','Developer','QA']; const roleCol=[C.purple,C.blue2,C.teal];
+mk('c_roledist',{
+  tooltip:{trigger:'axis'}, legend:{data:roleNames,bottom:0,textStyle:axisText},
+  grid:baseGrid, xAxis:{type:'category',data:pn,axisLabel:axisText},
+  yAxis:{type:'value',max:100,axisLabel:{...axisText,formatter:'{value}%'}},
+  series:roleNames.map((n,i)=>({name:n,type:'bar',stack:'t',color:roleCol[i],
+    data:roleRaw.map(r=>Math.round(r[i]/r.reduce((a,b)=>a+b)*100))}))
+});
+// 2) 인건비 막대
+mk('c_cost',{tooltip:{trigger:'axis'},grid:baseGrid,
+  xAxis:{type:'category',data:pn,axisLabel:axisText},
+  yAxis:{type:'value',axisLabel:{...axisText,formatter:'₩{value}M'}},
+  series:[{type:'bar',color:C.green,data:projects.map(p=>p.cost),barWidth:'45%',
+    label:{show:true,position:'top',formatter:'₩{c}M',color:C.sub,fontSize:10}}]});
+// 3) 급여 히스토그램
+mk('c_salary',{tooltip:{},grid:baseGrid,
+  xAxis:{type:'category',data:['~3M','3~5M','5~7M','7M+'],axisLabel:axisText},
+  yAxis:{type:'value',axisLabel:axisText},
+  series:[{type:'bar',color:C.blue,data:[4,11,9,3],barWidth:'55%',
+    label:{show:true,position:'top',formatter:'{c}명',color:C.sub,fontSize:10}}]});
+// 4) 가동률 도넛
+mk('c_util',{tooltip:{trigger:'item',formatter:'{b}: {c}명 ({d}%)'},
+  legend:{bottom:0,textStyle:axisText},
+  series:[{type:'pie',radius:['42%','68%'],center:['50%','45%'],
+    label:{show:false},
+    data:[{name:'과소',value:5,itemStyle:{color:C.yellow}},
+          {name:'적정',value:22,itemStyle:{color:C.green}},
+          {name:'과부하',value:4,itemStyle:{color:C.red}}]}]});
+// 5) 공수 추이 (막대+라인)
+const months=['01','02','03','04','05'];
+const md=[210,260,240,300,280]; let cum=0; const cm=md.map(v=>(cum+=v)/20).map(v=>Math.round(v*10)/10);
+mk('c_trend',{tooltip:{trigger:'axis'},legend:{data:['월 MD','누적 MM'],bottom:0,textStyle:axisText},
+  grid:baseGrid,xAxis:{type:'category',data:months,axisLabel:axisText},
+  yAxis:[{type:'value',axisLabel:axisText},{type:'value',axisLabel:{...axisText,formatter:'{value}MM'}}],
+  series:[{name:'월 MD',type:'bar',color:C.blue2,data:md,barWidth:'40%'},
+          {name:'누적 MM',type:'line',yAxisIndex:1,color:C.red,smooth:true,data:cm,symbolSize:6}]});
+// 6) 작업 분포 scatter (프로젝트 카테고리별 인원 공수 점 + 평균 막대)
+const workScatter=[]; const avg=[];
+projects.forEach((p,xi)=>{
+  const n=p.mem; let s=0; const base=p.mm*20/n;
+  for(let k=0;k<n;k++){const v=Math.max(2,base+(Math.random()-0.5)*base*1.3); s+=v; workScatter.push([xi,Math.round(v*10)/10]);}
+  avg.push(Math.round(s/n*10)/10);
+});
+mk('c_work',{tooltip:{},grid:baseGrid,
+  xAxis:{type:'category',data:pn,axisLabel:axisText},
+  yAxis:{type:'value',name:'공수MD',nameTextStyle:axisText,axisLabel:axisText},
+  series:[
+    {name:'인원 공수',type:'bar',color:'rgba(0,82,204,.16)',barWidth:'52%',data:avg,
+     label:{show:true,position:'top',formatter:'{c}',color:C.sub,fontSize:10}},
+    {name:'인원',type:'scatter',symbolSize:9,itemStyle:{color:C.blue},data:workScatter}]});
+// 7) 리스크 TOP 가로막대
+const risk=projects.map(p=>({n:p.name,v:Math.max(0,Math.round((p.sch-p.comp)*100))})).sort((a,b)=>a.v-b.v);
+mk('c_risk',{tooltip:{trigger:'axis'},grid:{left:120,right:30,top:14,bottom:24},
+  xAxis:{type:'value',axisLabel:{...axisText,formatter:'{value}%p'}},
+  yAxis:{type:'category',data:risk.map(r=>r.n.length>9?r.n.slice(0,8)+'…':r.n),axisLabel:axisText},
+  series:[{type:'bar',data:risk.map(r=>r.v),barWidth:'55%',
+    itemStyle:{color:p=>p.value>=12?C.red:p.value>=6?C.yellow:C.green},
+    label:{show:true,position:'right',formatter:'{c}%p',color:C.sub,fontSize:10}}]});
+// 8) 문제 이슈 버블
+const prob=[];
+for(let i=0;i<28;i++){const d=Math.round(Math.random()*30), e=Math.round((Math.random()*8-1)*10)/10; const sev=Math.max(4,d*0.6+e*4);
+  prob.push([d,e,sev]);}
+mk('c_problem',{tooltip:{formatter:p=>`지연 ${p.value[0]}일 · 공수편차 ${p.value[1]}MD`},
+  grid:{left:54,right:24,top:20,bottom:42},
+  xAxis:{type:'value',name:'지연일수',nameLocation:'middle',nameGap:24,nameTextStyle:axisText,axisLabel:axisText},
+  yAxis:{type:'value',name:'공수편차MD',nameTextStyle:axisText,axisLabel:axisText},
+  series:[{type:'scatter',data:prob,symbolSize:v=>v[2],
+    itemStyle:{color:p=>{const r=p.value[0]/30+p.value[1]/8;return r>1?C.red:r>0.5?C.yellow:C.teal;},opacity:.75}}]});
+
+window.addEventListener('resize',()=>charts.forEach(c=>c.resize()));
+</script>
+</body>
+</html>

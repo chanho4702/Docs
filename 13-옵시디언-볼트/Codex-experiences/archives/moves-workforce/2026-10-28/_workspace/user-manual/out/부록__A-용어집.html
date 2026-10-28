@@ -1,0 +1,200 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이 페이지</td>
+<td><strong>권한 불필요</strong> — 용어 설명 문서입니다</td>
+</tr>
+</tbody></table>
+<hr />
+<table>
+<thead>
+<tr>
+<th>용어</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>워크로그 / 업무일지</td>
+<td>특정 이슈에 기록하는 작업 시간 항목. Jira 워크로그와 같은 데이터</td>
+</tr>
+<tr>
+<td>담당자(Assignee)</td>
+<td>이슈를 책임지는 사람(1명)</td>
+</tr>
+<tr>
+<td>동료(coworker)</td>
+<td>이슈를 함께 수행하는 협업자. 이슈 단위로 여러 명 지정 가능</td>
+</tr>
+<tr>
+<td>역할(Role)</td>
+<td>인력의 직무 (Data Engineer 등)</td>
+</tr>
+<tr>
+<td>등급(Level)</td>
+<td>인력 레벨 (Junior / Mid-level / Senior / Lead 등)</td>
+</tr>
+<tr>
+<td>MD (Man-Day)</td>
+<td>작업량 단위. 1 MD = 한 사람이 하루(= 1Day 근무 시간, 기본 8h) 동안 하는 일의 양</td>
+</tr>
+<tr>
+<td>MM (Man-Month)</td>
+<td>인월. MM = MD ÷ (1MM 근무일 수)</td>
+</tr>
+<tr>
+<td>1Day 근무 시간</td>
+<td><code>1MD</code>에 해당하는 시간(<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[일반 설정]]></ac:plain-text-link-body></ac:link>, 기본 8h)</td>
+</tr>
+<tr>
+<td>가동률</td>
+<td>실제 일한 양(MD) ÷ 일할 수 있었던 양(근무일 − 연차·공휴일). 1.0 = 100%</td>
+</tr>
+<tr>
+<td>실효 가용 MD</td>
+<td>기간 근무일에서 연차·공휴일을 뺀 실제 출근 가능 일수. 가동률의 분모</td>
+</tr>
+<tr>
+<td>완성 진척</td>
+<td>계획공수 가중 진행률. &quot;얼마나 끝났나&quot;</td>
+</tr>
+<tr>
+<td>일정 진척</td>
+<td>경과 근무일 ÷ 전체 근무일. &quot;시간이 얼마나 흘렀나&quot;</td>
+</tr>
+<tr>
+<td>공수 진척</td>
+<td>워크로그 누적 공수 소진. &quot;얼마나 일했나&quot;</td>
+</tr>
+<tr>
+<td>처리율</td>
+<td>작업의 진행 정도(%). Jira 시간 추적(기록 시간·잔여 추정) 기반</td>
+</tr>
+<tr>
+<td>계획 작업량</td>
+<td>Jira Original Estimate 기반 계획 공수(MD)</td>
+</tr>
+<tr>
+<td>내 몫</td>
+<td>여러 명이 참여한 이슈에서 한 사람에게 귀속되는 부분. 화면에 따라 <strong>내가 기록한 워크로그</strong>(이슈 패널) 또는 <strong>남은 작업량의 균등 분할</strong>(인력 현황)로 계산되는 근사치</td>
+</tr>
+<tr>
+<td>확정 지연</td>
+<td>완료된 이슈의 (실적일 − 기한) 평균. 회고 지표</td>
+</tr>
+<tr>
+<td>예측 지연</td>
+<td>남은 공수 추세로 본 예상 종료일 − 종료 예정일. 예보 지표(낙관 근사치)</td>
+</tr>
+<tr>
+<td>총 인건비</td>
+<td>참여 인력의 급여 기준으로 산정된 프로젝트 인건비 합계</td>
+</tr>
+<tr>
+<td>급여 정책</td>
+<td>인원별(개인 금액) 또는 등급 기반(등급 대표값)</td>
+</tr>
+<tr>
+<td>투입 급여</td>
+<td>특정 프로젝트에 그 사람을 쓰는 데 잡는 금액</td>
+</tr>
+<tr>
+<td>등급 급여 밴드</td>
+<td>등급별 하한·상한·대표값. <strong>대표값</strong>이 계산에 쓰임</td>
+</tr>
+<tr>
+<td>투입 개월수</td>
+<td>총 달력일수 ÷ 30.4375. 연봉 환산의 기준</td>
+</tr>
+<tr>
+<td>미산정 인원</td>
+<td>인건비가 0원으로 계산된 인원</td>
+</tr>
+<tr>
+<td>담당 팀</td>
+<td>프로젝트의 계획·책임 팀. 실제 인력 명단과 별개</td>
+</tr>
+<tr>
+<td>팀장</td>
+<td>팀을 이끄는 사람. <strong>반드시 그 팀 소속</strong>이며 한 사람이 한 팀만 이끕니다</td>
+</tr>
+<tr>
+<td>팀 권한 상속</td>
+<td>개인 권한 대신 소속 팀(없으면 상위 팀)의 권한 세트를 따르는 설정</td>
+</tr>
+<tr>
+<td>프로젝트 조회 범위</td>
+<td>전체 프로젝트 / 소속 프로젝트만 / 내 팀만 — 권한 세트가 볼 수 있는 프로젝트 범위</td>
+</tr>
+<tr>
+<td>상위 지정(WBS)</td>
+<td>앱이 저장하는 작업 계층. Jira 3단계 제약 없이 중첩 가능</td>
+</tr>
+<tr>
+<td>폴더</td>
+<td>간트·트리·맵의 앱 전용 작업 묶음. Jira에는 없음</td>
+</tr>
+<tr>
+<td>선후행</td>
+<td>작업 간 의존 관계. Jira 이슈 링크(Blocks)로 저장</td>
+</tr>
+<tr>
+<td>마일스톤</td>
+<td>시작일과 종료일이 같은 작업. 간트에서 마름모로 표시</td>
+</tr>
+<tr>
+<td>계층 보기 / 평면 보기</td>
+<td>작업 목록에서 Jira 상위–하위로 묶어 보기 / 한 줄씩 나열</td>
+</tr>
+<tr>
+<td>일괄 적용</td>
+<td>목록에서 선택한 여러 작업에 시작일·기한·계획 작업량을 한 번에 넣는 기능</td>
+</tr>
+<tr>
+<td>맵 보기</td>
+<td>프로젝트 → 폴더 → 작업을 위에서 아래로 그린 읽기 전용 조직도</td>
+</tr>
+<tr>
+<td>프로젝트 구독 / 자동 편입</td>
+<td>Jira 스페이스 조건에 맞는 이슈를 자동 편입하는 규칙</td>
+</tr>
+<tr>
+<td>백필</td>
+<td>구독 설정 시 기존 이슈를 소급해 가져오는 처리</td>
+</tr>
+<tr>
+<td>소유권</td>
+<td>이슈는 앱 프로젝트 하나에만 속함. 다른 프로젝트로 가져가면 공수·비용도 함께 이동</td>
+</tr>
+<tr>
+<td>토폴로지</td>
+<td>프로젝트–스페이스–상태–이슈(전사) 또는 이슈–하위–연결(프로젝트)을 그린 관계망 위젯</td>
+</tr>
+<tr>
+<td>커스텀 필터 위젯</td>
+<td>담당자·상태·타입·우선순위·기한·계획 공수 조건을 직접 지정해 이슈를 모아 보는 대시보드 위젯</td>
+</tr>
+<tr>
+<td>적합도</td>
+<td>프로젝트 필요 스킬 대비 인력 보유 스킬의 일치 정도</td>
+</tr>
+<tr>
+<td>스페이스</td>
+<td>Jira 프로젝트. 이 앱의 &quot;프로젝트&quot;와 구분하기 위한 표현</td>
+</tr>
+<tr>
+<td>딥링크 / 링크 복사</td>
+<td>탭·보기까지 담긴 화면 주소. 링크 복사 버튼으로 복사해 공유</td>
+</tr>
+<tr>
+<td>이슈 패널</td>
+<td>Jira 이슈 화면의 활동 탭·컨텍스트 패널에 나타나는 Moves Workforce 영역</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>전사 공통 용어 정의는 <strong>용어집 문서</strong>를 함께 참고하세요.</p>
+</ac:rich-text-body></ac:structured-macro>

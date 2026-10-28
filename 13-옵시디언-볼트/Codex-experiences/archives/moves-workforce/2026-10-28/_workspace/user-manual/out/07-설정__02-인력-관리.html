@@ -1,0 +1,168 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「인력 관리」 읽기</td>
+</tr>
+<tr>
+<td>인력 추가·수정·삭제</td>
+<td>「인력 관리」 쓰기</td>
+</tr>
+<tr>
+<td>엑셀 일괄 업로드</td>
+<td>「인력 관리」 쓰기</td>
+</tr>
+<tr>
+<td>Excel 다운로드</td>
+<td>「인력 관리」 읽기</td>
+</tr>
+<tr>
+<td>연봉 입력·표시</td>
+<td>「인력 관리」 쓰기 <strong>+</strong> 급여 정책이 <strong>인원별</strong></td>
+</tr>
+<tr>
+<td>권한 세트 지정</td>
+<td>「인력 관리」 쓰기. 단, <strong>자기 권한을 넘는 세트는 줄 수 없습니다</strong>(Jira 관리자·「권한 관리」 쓰기 보유자는 제한 없음)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>역할·등급·팀·권한 <strong>선택지</strong>는 이 화면에서 함께 조회됩니다(「인력 관리」 읽기로 열립니다). 값 자체를 만들려면 각 기준정보 화면의 권한이 필요합니다.</li>
+<li>급여 정책이 등급 기반이면 연봉 칸이 사라집니다(<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1]]></ac:plain-text-link-body></ac:link>).</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 워크포스 사용자(인력)를 등록·수정할 때. <strong>여기 등록된 사람만</strong> 팀 배치·프로젝트 인력·팀장 지정의 대상이 됩니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 7-3 인력 관리</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 7-3 인력 관리"><ri:attachment ri:filename="07-users.png" /></ac:image><p><em>그림 7-3. 인력 관리 — ① 권한/역할/등급/팀별 인원 통계 카드 ② 필터와 Excel 다운로드 ③ 인력 추가·일괄 업로드 ④ 인력 표(팀장 배지·권한·연봉).</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">화면-구성</ac:parameter></ac:structured-macro>화면 구성</h2>
+<ul>
+<li>상단에 <strong>권한 / 역할 / 등급 / 팀별 인원 통계</strong> 카드</li>
+<li>필터: 사용자 검색 · 역할 · 등급 · 권한 · 팀</li>
+<li><strong>Excel 다운로드</strong>: 설정한 필터 조건 그대로 내려받습니다</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>사용자</td>
+<td>이름·아바타. 소속 팀의 팀장이면 <strong>팀장</strong> 배지</td>
+</tr>
+<tr>
+<td>직무 역할</td>
+<td><ac:link><ri:page ri:content-title="7.4 역할 관리" /><ac:plain-text-link-body><![CDATA[7.4]]></ac:plain-text-link-body></ac:link>에서 정의한 값</td>
+</tr>
+<tr>
+<td>직무 등급</td>
+<td><ac:link><ri:page ri:content-title="7.5 등급 관리" /><ac:plain-text-link-body><![CDATA[7.5]]></ac:plain-text-link-body></ac:link>에서 정의한 값</td>
+</tr>
+<tr>
+<td>팀</td>
+<td>소속 팀</td>
+</tr>
+<tr>
+<td>권한</td>
+<td>권한 세트 또는 <strong>팀 권한 상속</strong></td>
+</tr>
+<tr>
+<td>연봉</td>
+<td><strong>급여 정책이 인원별일 때만</strong> 입력·표시 (단위: 만원)</td>
+</tr>
+<tr>
+<td>등록일 / 작업</td>
+<td>등록 시각, 수정·삭제</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">인력-한-명-추가하기</ac:parameter></ac:structured-macro>인력 한 명 추가하기</h2>
+<ol>
+<li><strong>인력 추가</strong>를 누릅니다.</li>
+<li><strong>Jira 사용자</strong>를 이름 또는 이메일로 검색해 선택합니다.</li>
+<li>직무 역할·등급·권한을 지정합니다.<ul>
+<li><strong>권한을 선택하지 않으면 Member 권한으로 자동 등록</strong>됩니다.</li>
+<li>팀 권한을 따르게 하려면 <strong>팀 권한 상속</strong>을 선택합니다(<ac:link ac:anchor="팀-권한-상속"><ri:page ri:content-title="7.8 권한 관리" /><ac:plain-text-link-body><![CDATA[7.8 참고]]></ac:plain-text-link-body></ac:link>).</li>
+</ul>
+</li>
+<li>정책이 인원별이면 연봉을 입력할 수 있습니다.</li>
+</ol>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">팀장의-팀-이동-제한</ac:parameter></ac:structured-macro>팀장의 팀 이동 제한</h2>
+<p>수정 창에서 <strong>팀</strong>을 바꿀 수 있지만, 그 사람이 <strong>어떤 팀의 팀장이면 그 팀 밖으로 옮길 수 없습니다.</strong> &quot;팀장은 이끄는 팀 밖으로 옮길 수 없습니다. 팀장 지정을 먼저 해제하세요&quot;가 표시됩니다. <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 팀 관리]]></ac:plain-text-link-body></ac:link>에서 팀장을 바꾼 뒤 이동하세요.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">여러-명-한-번에-등록하기-일괄-업로드</ac:parameter></ac:structured-macro>여러 명 한 번에 등록하기 (일괄 업로드)</h2>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 7-4 엑셀 일괄 업로드</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 7-4 엑셀 일괄 업로드"><ri:attachment ri:filename="07-users-bulk-upload.png" /></ac:image><p><em>그림 7-4. 일괄 업로드 — ① 템플릿 다운로드 ② 파일 드롭 영역 ③ 진행률 ④ 결과 요약(전체/등록/중복/미존재/실패) ⑤ 실패 목록 버튼.</em></p></ac:rich-text-body></ac:structured-macro>
+<ol>
+<li><strong>일괄 업로드</strong> → <strong>템플릿 다운로드</strong>로 양식을 받습니다.</li>
+<li>양식을 채워 xlsx로 저장합니다. <strong>최대 5MB, xlsx만 가능</strong>합니다.</li>
+<li>파일을 드래그하거나 <strong>파일 선택</strong>으로 올립니다.</li>
+<li>처리는 백그라운드로 진행되며 진행률이 표시됩니다.</li>
+<li>결과가 <strong>전체 / 등록 / 중복 / 미존재 / 실패</strong>로 요약됩니다.</li>
+<li>실패 건이 있으면 <strong>일괄 업로드 실패 목록</strong> 버튼으로 사유를 확인합니다.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>결과 항목</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>등록</td>
+<td>정상 등록됨</td>
+</tr>
+<tr>
+<td>중복</td>
+<td>이미 워크포스에 있는 사용자</td>
+</tr>
+<tr>
+<td><strong>미존재</strong></td>
+<td><strong>Jira에 없는 계정</strong> — Jira 사용자로 먼저 초대돼 있어야 등록됩니다</td>
+</tr>
+<tr>
+<td>실패</td>
+<td>그 밖의 오류(실패 목록에서 사유 확인)</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">알아두기</ac:parameter></ac:structured-macro>알아두기</h2>
+<ul>
+<li>급여 정책이 등급 기반이면 <strong>&quot;개인 연봉은 입력·표시되지 않습니다&quot;</strong> 안내가 표시됩니다(<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1]]></ac:plain-text-link-body></ac:link>).</li>
+<li>사용자를 삭제하면 복구할 수 없습니다. 삭제 전 확인 창이 표시됩니다. 삭제된 사람이 팀장이던 팀은 <strong>팀장이 비워집니다.</strong></li>
+<li>여기서 등록한 연봉은 프로젝트 인건비 계산 중 <strong>연봉 투입 유형</strong>에서 사용됩니다(<ac:link ac:anchor="523-급여-관리"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 급여 관리]]></ac:plain-text-link-body></ac:link>).</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">문제-해결</ac:parameter></ac:structured-macro>문제 해결</h2>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인과 해결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>업로드 결과가 전부 &quot;미존재&quot;입니다</td>
+<td>대상자들이 Jira 사용자로 초대돼 있지 않습니다</td>
+</tr>
+<tr>
+<td>연봉 칸이 보이지 않습니다</td>
+<td>급여 정책이 등급 기반입니다</td>
+</tr>
+<tr>
+<td>권한 세트를 고를 수 없습니다</td>
+<td>내 권한보다 넓은 세트는 배정할 수 없습니다. 「권한 관리」 쓰기 보유자에게 요청하세요</td>
+</tr>
+<tr>
+<td>팀을 바꾸려는데 거부됩니다</td>
+<td>그 사람이 팀장입니다. <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3]]></ac:plain-text-link-body></ac:link>에서 팀장을 먼저 해제하세요</td>
+</tr>
+<tr>
+<td>팀장으로 지정하려는데 목록에 없습니다</td>
+<td>그 사람을 먼저 여기서 인력으로 등록해야 합니다</td>
+</tr>
+<tr>
+<td>프로젝트 배정 화면에서 &quot;백오피스에 등록되지 않은 사용자&quot;라고 나옵니다</td>
+<td>같은 이유입니다. 인력으로 먼저 등록하세요</td>
+</tr>
+</tbody></table>

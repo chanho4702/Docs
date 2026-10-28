@@ -1,0 +1,482 @@
+Browser tab: 961899423, Title: "Moves Workforce Jira·Confluence에서의 동작 안내 - Moves Workforce - Confluence", URL: "https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence".
+1 AXWebArea Moves Workforce Jira·Confluence에서의 동작 안내 - Moves Workforce - Confluence, URL: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence
+	2 container com-atlassian-confluence
+		3 container full-height-container
+			4 container confluence-ui
+				5 container
+					6 text Skip to:
+					7 content list
+						8 link Description: Top Bar, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence#_r2_
+						9 link Description: Sidebar, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence#side-navigation
+						10 link Description: Main Content, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence#AkMainContent
+				11 container unsafe-design-system-page-layout-root
+					12 container
+						13 button Collapse sidebar
+						14 pop up button (collapsed) Switch sites or apps, Secondary Actions: Expand
+						15 link Description: Confluence, Value: dmove-addons.atlassian.net/wiki
+						16 container
+							17 combo box (collapsed, settable) Description: Search, Secondary Actions: Expand
+							18 text Search, press enter to navigate to advanced search with your text query
+							19 button Open app connections
+						20 pop up button (collapsed) Description: Create, Secondary Actions: Expand
+						21 container Actions
+							22 content list
+								23 button Ask Rovo
+									24 text Ask Rovo
+								25 pop up button (collapsed) Notifications, Secondary Actions: Expand
+								26 button Help
+								27 pop up button (collapsed) tom@dmove.kr, Secondary Actions: Expand
+									28 text tom@dmove.kr
+					29 container Description: Sidebar, ID: side-navigation
+						30 container
+							31 content list
+								32 container
+									33 link Description: For you, Value: dmove-addons.atlassian.net/wiki/home
+								34 container
+									35 pop up button (collapsed) Recent, Secondary Actions: Expand
+								36 container
+									37 pop up button (collapsed) Starred, Secondary Actions: Expand
+								38 container
+									39 pop up button (collapsed) Spaces, Secondary Actions: Expand
+								40 container
+									41 button (collapsed) Apps, ID: :r12:, Secondary Actions: Expand
+							42 container
+								43 link Description: Moves Workforce, Value: dmove-addons.atlassian.net/wiki/spaces/MW/overview?homepageId=114327890
+								44 pop up button (collapsed) More actions, Secondary Actions: Expand
+							45 button Back to top, ID: scroll-to-top-button
+							46 container
+								47 button (expanded) Content, ID: :r4a:, Secondary Actions: Collapse
+								48 pop up button (collapsed) Create Create, ID: contextual-create-content-button, Secondary Actions: Expand
+									49 image Create
+									50 text Create
+								51 pop up button (collapsed) Change view, Secondary Actions: Expand
+								52 content list
+									53 container contentTreeSearch
+										54 text field (settable) Search by title
+										55 text Results will update as you type.
+									56 content list
+										57 link Description: Privacy & Security Policy, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931/Privacy+Security+Policy
+										58 link Description: Product Support service level agreement (SLA), Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943/Product+Support+service+level+agreement+SLA
+										59 link Description: (EN) Moves Workforce, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/120553474
+										60 container (expanded) Secondary Actions: Collapse
+											61 link Description: (KR) Moves Workforce, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/172195842
+											62 content list
+												63 link Description: 사용자 가이드, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/171573307
+												64 link Description: 관리자 가이드, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/172457996
+												65 container (expanded) Secondary Actions: Collapse
+													66 link Description: 기타 문서, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/172425230
+													67 content list
+														68 link Description: Change emoji, currently sparkles 빠른 시작 가이드 (Quick Start), Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/172457998/Quick+Start
+														69 link Description: Change emoji, currently bookmark 공통 용어집 및 정의 안내, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/172195871
+														70 link Description: Change emoji, currently light bulb 자주 묻는 질문(FAQ), Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/172982288/FAQ
+														71 link Description: Change emoji, currently police car light 핵심 로직 정의서 및 지표 계산 방식, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/173244513
+														72 link Description: Change emoji, currently stop sign 권한별 사용 범위 요약, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/173310035
+														73 link Description: Change emoji, currently open book Moves Workforce Jira·Confluence에서의 동작 안내, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence
+									74 container
+										75 container
+											76 button Create
+								77 content list
+									78 container
+										79 link Description: Calendars, Value: dmove-addons.atlassian.net/wiki/spaces/MW/calendars
+							80 content list
+								81 container
+									82 link Description: Company hub , (opens new window), Value: dmove-addons.atlassian.net/wiki/company-hub
+									83 container Hub
+								84 container
+									85 link Description: Teams , (opens new window), Value: home.atlassian.com/o/de9f907e-4da9-477e-a3f8-913524242dcb/people?cloudId=e5ae7a68-7ea0-4167-b829-cd3d0b230ac4&xpis=eyJicmlkZ2UiOiJnbG9iYWxTaG9ydGN1dHMiLCJpZCI6IjE3OTExMTY3Njg3MDQiLCJzb3VyY2UiOiJjb25mbHVlbmNlIn0%3D
+									86 pop up button (collapsed) open menu, Secondary Actions: Expand
+								87 container
+									88 pop up button (collapsed) More, Secondary Actions: Expand
+						89 container
+							90 slider (settable, integer) Side Navigation Drag Handle, Value: 300
+							91 text Side Navigation Drag Handle
+					92 container
+						93 container object-header-container-id
+							94 text Moves Workforce Jira·Confluence에서의 동작 안내
+							95 link Description: Updated just now, Value: dmove-addons.atlassian.net/wiki/spaces/MW/history/203751433
+							96 container Updated by Tom Kim on Oct 4 at 10:34 PM, ID: popover-re5
+								97 text Updated by Tom Kim on Oct 4 at 10:34 PM
+							98 container Active people on page
+								99 content list Active people on page
+									100 button Tom Kim (Viewing)
+										101 image Tom Kim
+							102 link Description: Edit this content, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/edit-v2/203751433, ID: editPageLink
+							103 container
+								104 button Share, Open - Anyone in the space can edit
+								105 button Copy link
+							106 pop up button (collapsed) More actions, ID: more-actions-trigger, Secondary Actions: Expand
+						107 container
+							108 container title-text
+								109 container Change emoji, currently :book:
+								110 container content-title-id
+									111 heading Moves Workforce Jira·Confluence에서의 동작 안내, Value: 1, ID: heading-title-text
+										112 text Moves Workforce Jira·Confluence에서의 동작 안내
+									113 button
+							114 container
+								115 pop up button (collapsed) By Tom Kim, Secondary Actions: Expand
+									116 text By Tom Kim
+								117 pop up button (collapsed) Read time 4 min, Secondary Actions: Expand
+									118 image Read time
+									119 text 4 min
+								120 button Listen
+								121 button (collapsed) Add a reaction, Secondary Actions: Expand
+									122 text Add a reaction
+							123 container content
+								124 container main-content
+									125 container
+										126 heading 요약, Value: 2
+											127 text 요약
+										128 button Copy link to 요약, ID: 7b982b44-e126-4bc2-a08f-1907d126c557
+											129 image Copy
+										130 table
+											131 row
+												132 cell
+													133 text 제품
+													134 button No sort applied to the column
+												135 cell
+													136 text 필수 여부
+													137 button No sort applied to the column
+												138 cell
+													139 text 앱이 하는 일
+													140 button No sort applied to the column
+											141 row
+												142 cell
+													143 text Jira
+												144 cell
+													145 text 필수
+												146 cell
+													147 text 앱 전체가 Jira에서 동작합니다. 모든 화면이 Jira 안에 있습니다.
+											148 row
+												149 cell
+													150 text Confluence
+												151 cell
+													152 text 선택
+												153 cell
+													154 container
+														155 text Confluence 안에는 앱 화면이 없습니다.  Jira 화면( 문서 관리  탭)이 Confluence 페이지를 검색해 프로젝트·작업에 연결할 때만 Confluence를 사용합니다.
+										156 container
+											157 text 앱은 Jira에서 여세요.  Confluence에만 설치하면 아무 화면도 나타나지 않습니다. 앱이 Confluence에 화면을 추가하지 않고, Confluence는 Jira 화면의 문서 출처로만 쓰이기 때문입니다.
+										158 heading 1. 설치, Value: 2, ID: 1.-설치
+											159 text 1. 설치
+										160 button Copy link to 1. 설치, ID: 341714fd-e443-4b23-83f9-7cd54da804be
+											161 image Copy
+										162 content list
+											163 container
+												164 AXListMarker 1. 
+												165 text Jira
+												166 text  사이트에 
+												167 text Moves Workforce for Jira
+												168 text 를 설치합니다.
+											169 container
+												170 AXListMarker 2. 
+												171 text (선택) 문서 기능을 쓰려면 
+												172 text 같은 사이트의 Confluence
+												173 text 에도 앱을 추가합니다.
+												174 content list
+													175 container
+														176 AXListMarker ◦ 
+														177 text Confluence가 없어도 새 문서 연결을 제외한 모든 기능이 동작합니다. 이 경우 문서 관리 탭에 「Confluence에 연결되지 않았습니다」 안내가 뜨고 읽기 전용으로 동작합니다.
+											178 container
+												179 AXListMarker 3. 
+												180 text 앱을 설치한 Jira 관리자는 앱 안에서 모든 권한을 자동으로 가집니다.
+										181 heading 2. Jira에서 사용하기, Value: 2, ID: 2.-Jira에서-사용하기
+											182 text 2. Jira에서 사용하기
+										183 button Copy link to 2. Jira에서 사용하기, ID: 32aaa240-e10d-48bc-9721-0965dcc3ca86
+											184 image Copy
+										185 heading 2.1 앱 열기, Value: 3, ID: 2.1-앱-열기
+											186 text 2.1 앱 열기
+										187 button Copy link to 2.1 앱 열기, ID: 808e8193-7444-446d-9b64-957cdb474228
+											188 image Copy
+										189 text Jira 상단 메뉴 → 앱(Apps) → Moves Workforce
+										190 text 왼쪽 사이드바가 있는 Jira 전체 페이지로 열립니다. 처음 화면은 
+										191 text My Work
+										192 text (내 워크로그)입니다. 사이드바 메뉴: 
+										193 text My Work
+										194 text , 
+										195 text 마이페이지
+										196 text , 
+										197 text 통합 대시보드
+										198 text , 
+										199 text 프로젝트 관리
+										200 text , 
+										201 text 자원관리
+										202 text , 
+										203 text 워크로그 추출
+										204 text , 
+										205 text Settings
+										206 text (관리 메뉴)
+										207 heading 2.2 빠른 시작 (약 5분), Value: 3, ID: 2.2-빠른-시작-(약-5분)
+											208 text 2.2 빠른 시작 (약 5분)
+										209 button Copy link to 2.2 빠른 시작 (약 5분), ID: 0df7f9a9-836a-46da-8895-a9022ae6c564
+											210 image Copy
+										211 content list
+											212 container
+												213 AXListMarker 1. 
+												214 text 프로젝트 만들기
+												215 text  사이드바 → 
+												216 text 프로젝트 관리
+												217 text  → 프로젝트를 만듭니다(이름, 기간, 상태).
+											218 container
+												219 AXListMarker 2. 
+												220 text 인원 추가
+												221 text  프로젝트를 열고 → 
+												222 text User Management → Members
+												223 text  → 
+												224 text Add User
+												225 text 에서 Jira 사용자를 프로젝트 인원으로 추가합니다.
+											226 container
+												227 AXListMarker 3. 
+												228 text Jira 작업 연결
+												229 text  프로젝트를 열고 → 
+												230 text 작업 관리
+												231 text  탭 → 
+												232 text 작업 추가
+												233 text  → Jira 스페이스(프로젝트)나 개별 작업을 고릅니다.
+												234 content list
+													235 container
+														236 AXListMarker ◦ 
+														237 text 선택: Jira 스페이스를 구독하면 그 스페이스에 새로 생기는 작업이 프로젝트에 자동으로 들어옵니다.
+											238 container
+												239 AXListMarker 4. 
+												240 text Jira에서 작업 시간 기록
+												241 text  연결한 작업 중 하나에 Jira에서 작업 시간(워크로그)을 기록합니다. 앱은 Jira 워크로그를 읽어서 쓰므로 시간 기록을 따로 만들지 않습니다.
+											242 container
+												243 AXListMarker 5. 
+												244 text 결과 확인
+												245 content list
+													246 container
+														247 AXListMarker ◦ 
+														248 text 프로젝트 → 
+														249 text 대시보드
+														250 text , 
+														251 text 진척률
+														252 text , 
+														253 text 비용
+														254 text , 
+														255 text 프로젝트 캘린더
+														256 text , 
+														257 text 분석 및 리포트
+														258 text  탭: 투입 공수(MD/MM), 가동률, 진척도, 비용
+													259 container
+														260 AXListMarker ◦ 
+														261 text 사이드바 → 
+														262 text 통합 대시보드
+														263 text : 전체 프로젝트를 한눈에 봅니다.
+													264 container
+														265 AXListMarker ◦ 
+														266 text 사이드바 → 
+														267 text 자원관리
+														268 text : 인력 현황, 프로젝트 배정, 팀 분석
+										269 heading 2.3 Jira 작업 화면 안에서, Value: 3, ID: 2.3-Jira-작업-화면-안에서
+											270 text 2.3 Jira 작업 화면 안에서
+										271 button Copy link to 2.3 Jira 작업 화면 안에서, ID: ace1c3f7-15e8-421c-a465-0df304f1d715
+											272 image Copy
+										273 text Jira 작업 패널은 설치된 앱 버전과 작업의 프로젝트 연결 상태에 따라 달라집니다. 패널이 보이지 않으면 
+										274 text Jira → 앱 → Moves Workforce → My Work
+										275 text 에서 시간을 기록하고 프로젝트 화면에서 결과를 확인합니다. 아래 Confluence 문서 연결 기능을 시험하는 데 작업 패널은 필수 조건이 아닙니다.
+										276 heading 2.4 관리, Value: 3, ID: 2.4-관리
+											277 text 2.4 관리
+										278 button Copy link to 2.4 관리, ID: 984e2494-8382-49a3-a8ec-c77495a9e042
+											279 image Copy
+										280 text 사이드바 → 
+										281 text Settings
+										282 text  (Jira 관리자와 권한을 받은 사용자): 일반 설정, 인력, 팀, 역할, 직급, 스킬, 프로젝트 상태, 권한 세트, 공휴일, 저장 공간 사용량
+										283 heading 3. Confluence와 함께 쓰기 (선택), Value: 2, ID: 3.-Confluence와-함께-쓰기-(선택)
+											284 text 3. Confluence와 함께 쓰기 (선택)
+										285 button Copy link to 3. Confluence와 함께 쓰기 (선택), ID: 4dcc9802-318d-4f9a-a1ec-3830ad43c83d
+											286 image Copy
+										287 text Confluence에는 
+										288 text 앱 화면이 없습니다.
+										289 text  Confluence 관련 기능은 Jira 프로젝트의 
+										290 text 문서 관리
+										291 text  탭에 있습니다.
+										292 heading 3.1 위치, Value: 3, ID: 3.1-위치
+											293 text 3.1 위치
+										294 button Copy link to 3.1 위치, ID: f6cacd7d-8cf2-4876-88d1-61f8064b4885
+											295 image Copy
+										296 text Jira → 앱(Apps) → Moves Workforce → 프로젝트 관리 → (프로젝트) → 문서 관리 탭
+										297 heading 3.2 할 수 있는 일, Value: 3, ID: 3.2-할-수-있는-일
+											298 text 3.2 할 수 있는 일
+										299 button Copy link to 3.2 할 수 있는 일, ID: 422e5c8f-a79c-4185-b72f-cbd514f8be07
+											300 image Copy
+										301 content list
+											302 container
+												303 AXListMarker 1. 
+												304 text 문서 연결
+												305 text 을 누릅니다.
+											306 container
+												307 AXListMarker 2. 
+												308 text Confluence 페이지를 검색해(스페이스로 거르거나 본문까지 검색 가능) 한 개 이상 고릅니다.
+											309 container
+												310 AXListMarker 3. 
+												311 text (선택) 연결할 프로젝트 작업을 고릅니다. 고르지 않으면 프로젝트 자체에 「프로젝트 문서」로 연결됩니다.
+											312 container
+												313 AXListMarker 4. 
+												314 text (선택) 분류(예: 「설계」, 「테스트 계획」)를 고르고 저장합니다.
+											315 container
+												316 AXListMarker 5. 
+												317 text 탭에서 다음을 볼 수 있습니다.
+												318 content list
+													319 container
+														320 AXListMarker ◦ 
+														321 text 문서 보기
+														322 text : 연결한 페이지별 스페이스, 분류, 연결된 작업, 최종 수정일, 상태
+													323 container
+														324 AXListMarker ◦ 
+														325 text 작업 보기
+														326 text : 작업별로 연결된 문서. 문서가 없는 작업만 걸러 볼 수 있습니다.
+													327 container
+														328 AXListMarker ◦ 
+														329 text 요약 카드
+														330 text : 연결 문서 수, 문서 없는 작업, 오래된 문서, 끊긴 링크, 누락된 필수 분류
+										331 text 분류와 「오래된 문서」 기준 일수는 
+										332 text Settings → 일반 설정 → 문서
+										333 text 에서 정합니다.
+										334 heading 3.3 필요한 접근 권한, Value: 3, ID: 3.3-필요한-접근-권한
+											335 text 3.3 필요한 접근 권한
+										336 button Copy link to 3.3 필요한 접근 권한, ID: 54c89915-052c-499e-8633-2001f298ad4e
+											337 image Copy
+										338 content list
+											339 container
+												340 AXListMarker • 
+												341 text 앱을 사용하는 Jira 사이트와 같은 사이트의 Confluence 원본 페이지에 접근할 수 있는 계정을 사용합니다.
+											342 container
+												343 AXListMarker • 
+												344 text 앱의 Project 읽기 권한으로 프로젝트 문서를 조회합니다. 연결·분류 변경·연결 해제에는 Project 쓰기 권한이 필요합니다.
+											345 container
+												346 AXListMarker • 
+												347 text Jira 작업에 문서를 연결하려면 해당 작업의 편집 권한도 필요합니다.
+											348 container
+												349 AXListMarker • 
+												350 text 가이드를 별도의 문서 사이트에 게시해도 다른 Jira 사이트의 앱과 연결되지는 않습니다. 검색 대상은 앱이 설치된 Jira 사이트에 연결된 Confluence입니다.
+										351 heading 3.4 심사자가 따라 할 절차와 예상 결과, Value: 3, ID: 3.4-심사자가-따라-할-절차와-예상-결과
+											352 text 3.4 심사자가 따라 할 절차와 예상 결과
+										353 button Copy link to 3.4 심사자가 따라 할 절차와 예상 결과, ID: df306cfc-84ed-4281-986c-467989b07799
+											354 image Copy
+										355 text 테스트용 프로젝트, 해당 프로젝트에 연결된 Jira 작업, 같은 사이트에서 조회할 수 있는 Confluence 페이지를 준비합니다.
+										356 content list
+											357 container
+												358 AXListMarker 1. 
+												359 text **문서 관리 → 문서 연결(Link documents)**에서 스페이스·제목·페이지 URL로 검색합니다. 필요하면 본문 검색을 켭니다. 현재 사용자가 접근할 수 있는 페이지가 검색 결과에 나타납니다.
+											360 container
+												361 AXListMarker 2. 
+												362 text 페이지를 선택하고 
+												363 text Work items
+												364 text 는 비워 둔 채 분류를 선택해 저장합니다. 프로젝트 문서로 표시되는지 확인합니다.
+											365 container
+												366 AXListMarker 3. 
+												367 text 이번에는 작업을 선택해 페이지를 연결합니다. 작업 보기에서 해당 작업의 문서 링크를 확인합니다. 여러 작업을 선택했다면 작업별 성공·실패 결과를 확인합니다.
+											368 container
+												369 AXListMarker 4. 
+												370 text 문서 링크를 엽니다. Confluence 원본 페이지가 열리며 앱이 페이지를 복사하거나 편집하지 않았음을 확인합니다.
+											371 container
+												372 AXListMarker 5. 
+												373 text 쓰기 권한이 있는 계정으로 분류를 바꾸거나 연결을 해제합니다. 연결 관계가 변경되며 원본 페이지는 삭제되지 않습니다.
+											374 container
+												375 AXListMarker 6. 
+												376 text Project 쓰기 권한이 없는 계정에서는 읽기가 허용된 프로젝트의 문서를 조회할 수 있고 편집 동작은 제공되지 않는지 확인합니다. Confluence 페이지 조회 권한은 해당 사용자의 Confluence 권한을 따릅니다.
+										377 text 문서 연결 창은 Documents, Work items, Category의 세 부분으로 구성됩니다. 사이트마다 프로젝트와 페이지는 달라집니다.
+										378 heading 3.5 문서 상태와 연결 문제 확인, Value: 3, ID: 3.5-문서-상태와-연결-문제-확인
+											379 text 3.5 문서 상태와 연결 문제 확인
+										380 button Copy link to 3.5 문서 상태와 연결 문제 확인, ID: 0dde8fc0-de82-458a-a5cf-a89fadb88cbd
+											381 image Copy
+										382 content list
+											383 container
+												384 AXListMarker • 
+												385 text Healthy
+												386 text : 현재 사용자에게 접근 가능한 페이지입니다.
+											387 container
+												388 AXListMarker • 
+												389 text Stale
+												390 text : 관리자가 정한 기준 기간보다 오래 갱신되지 않았습니다.
+											391 container
+												392 AXListMarker • 
+												393 text Broken
+												394 text : 삭제되었거나 현재 사용자가 접근할 수 없는 페이지일 수 있습니다. 삭제로 단정하기 전에 원본 페이지를 확인합니다.
+											395 container
+												396 AXListMarker • 
+												397 text Unknown
+												398 text : 최신 정보를 확인하지 못했습니다. 정상 또는 문서 없음이라는 뜻이 아닙니다.
+											399 container
+												400 AXListMarker • 
+												401 text Confluence를 사용할 수 없으면 저장된 문서 제목은 보일 수 있지만 검색과 신규 연결은 사용할 수 없습니다. 같은 사이트의 Confluence 설치와 사용자 접근 권한을 관리자에게 확인합니다.
+											402 container
+												403 AXListMarker • 
+												404 text 일부 Jira 작업만 실패하면 실패한 작업의 편집 권한과 문서 수 제한을 확인한 뒤 재시도합니다.
+										405 heading 3.6 앱이 Confluence에 접근하는 방식, Value: 3, ID: 3.6-앱이-Confluence에-접근하는-방식
+											406 text 3.6 앱이 Confluence에 접근하는 방식
+										407 button Copy link to 3.6 앱이 Confluence에 접근하는 방식, ID: 2bac277b-2769-43d7-bcb9-1c6bc1150b6f
+											408 image Copy
+										409 content list
+											410 container
+												411 AXListMarker • 
+												412 text 권한 범위: 
+												413 text search:confluence
+												414 text  하나뿐입니다. 앱은 Confluence 검색 API(
+												415 text /wiki/rest/api/search
+												416 text )만 호출합니다.
+											417 container
+												418 AXListMarker • 
+												419 text 호출은 
+												420 text 현재 사용자의 권한으로
+												421 text  실행됩니다. 사용자는 Confluence에서 원래 볼 수 있는 페이지만 봅니다.
+											422 container
+												423 AXListMarker • 
+												424 text 앱은 Confluence에 아무것도 
+												425 text 쓰지 않습니다.
+												426 text  연결 정보는 Jira 쪽에 저장됩니다(Jira 이슈 속성, 프로젝트 문서는 Forge 저장소).
+											427 container
+												428 AXListMarker • 
+												429 text 사이트에 Confluence가 없으면 기존 연결은 계속 보이고, 검색과 새 연결은 안내와 함께 비활성화됩니다.
+										430 heading 4. 데이터·호스팅, Value: 2, ID: 4.-데이터·호스팅
+											431 text 4. 데이터·호스팅
+										432 button Copy link to 4. 데이터·호스팅, ID: 9e24024c-4c33-4fc6-93bc-802480c4d4c0
+											433 image Copy
+										434 content list
+											435 container
+												436 AXListMarker • 
+												437 text 앱 백엔드는 Atlassian Forge에서 동작합니다. 인력 관리 데이터와 문서 연결 기록은 Forge SQL, Forge Key-Value Store와 Jira 이슈 속성을 사용합니다.
+											438 container
+												439 AXListMarker • 
+												440 text Confluence 접근은 읽기 전용입니다. 앱은 Confluence 페이지를 생성·수정·삭제하지 않습니다. 연결 표시와 상태 확인을 위해 연결 메타데이터와 저장된 페이지 정보를 보관합니다.
+											441 container
+												442 AXListMarker • 
+												443 text 설정에 따라 클라이언트 오류 모니터링에 Sentry를 사용할 수 있습니다. manifest에 Sentry 주소가 허용되어 있으며 클라이언트의 기본 PII 수집은 꺼져 있습니다. 공식 정책은 
+												444 link Description: Privacy & Security Policy, Help: https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931
+												445 text 를 참고합니다. 이 사용 안내가 정책을 대신하지는 않습니다.
+											446 container
+												447 AXListMarker • 
+												448 text 이 문서 연결 절차에 별도의 타사 계정은 필요하지 않습니다. 심사자는 본인의 Jira·Confluence 접근 권한과 위에 설명한 앱 권한이 필요합니다.
+										449 heading 5. 가이드와 지원, Value: 2, ID: 5.-가이드와-지원
+											450 text 5. 가이드와 지원
+										451 button Copy link to 5. 가이드와 지원, ID: 87b3e5ae-d22b-4dbd-a4a5-c03c63328604
+											452 image Copy
+										453 content list
+											454 container
+												455 AXListMarker • 
+												456 link Description: 영어 사용자 가이드, Help: https://dmove-addons.atlassian.net/wiki/spaces/MW/folder/204046344/User+Guide, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/204046344/User+Guide
+											457 container
+												458 AXListMarker • 
+												459 link Description: 한국어 사용자 가이드, Help: https://dmove-addons.atlassian.net/wiki/spaces/MW/folder/171573307, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/171573307
+											460 container
+												461 AXListMarker • 
+												462 link Description: 지원 서비스 수준 안내, Help: https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943
+							463 container
+								464 pop up button (collapsed) Table of contents, Secondary Actions: Expand
+								465 button View all comments
+								466 button Open Details Panel
+								467 pop up button (collapsed) Description: Record a Loom video, Secondary Actions: Expand
+								468 button Remix page
+								469 container
+									470 button Open Rovo Chat
+										471 text Open Rovo Chat
+							472 container addCommentButton
+								473 button Add a general comment
+									474 image Add a comment
+									475 text Add a comment
+								476 button Add labels
+								477 button (collapsed) Add reaction Add a reaction, Secondary Actions: Expand
+									478 image Add reaction
+									479 text Add a reaction
+
+The focused UI element is 1 AXWebArea Moves Workforce Jira·Confluence에서의 동작 안내 - Moves Workforce - Confluence, URL: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751433/Moves+Workforce+Jira+Confluence

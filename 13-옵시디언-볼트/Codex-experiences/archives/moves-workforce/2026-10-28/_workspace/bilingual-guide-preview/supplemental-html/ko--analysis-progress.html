@@ -1,0 +1,123 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047050">English</a></p>
+<blockquote>
+<p><strong>[이미지 삽입 위치 · 추가 캡처 필요]</strong> 진척률 — ① 종합 헤더(완성/일정 진척률·차이·지연 배지·예상 완료일) ② 진척 비교 막대 ③ S-curve ④ 상태별 분포(건수/공수) ⑤ 지연·위험 이슈 표 ⑥ &quot;이 화면 읽는 법&quot; 접이식 가이드.</p>
+</blockquote>
+<p>프로젝트의 <strong>현재 시점 진척 스냅샷</strong>입니다. 이 화면은 <strong>성격이 다른 세 가지를 한 숫자로 합치지 않습니다.</strong> (&quot;공수를 80% 썼으니 80% 끝났다&quot; → 틀린 판단)</p>
+<table>
+<thead>
+<tr>
+<th>층</th>
+<th>질문</th>
+<th>계산</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>완성 진척</strong>(핵심)</td>
+<td>얼마나 <strong>끝났나</strong></td>
+<td>Σ(이슈 진행률 × 계획공수) ÷ Σ(계획공수). 완료=100%, 진행 중=실투입/계획(최대 100%), 할 일=0%</td>
+</tr>
+<tr>
+<td><strong>공수 진척</strong></td>
+<td>얼마나 <strong>일했나</strong></td>
+<td>실투입 워크로그 누적. 완성도가 아닌 효율·리스크 신호</td>
+</tr>
+<tr>
+<td><strong>일정 진척</strong></td>
+<td>시간이 얼마나 <strong>흘렀나</strong></td>
+<td>경과 근무일 ÷ 전체 근무일(휴일·주말 제외)</td>
+</tr>
+</tbody></table>
+<h3>핵심 판단 규칙</h3>
+<ul>
+<li><strong>① 완성 vs 일정 (주 신호)</strong>: 완성이 일정보다 임계치(기본 5%p, <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342802">7.1에서 조정</a>) 이상 낮으면 <strong>지연</strong></li>
+<li><strong>② 공수 vs 완성 (보조)</strong>: 공수를 많이 썼는데 완성이 낮으면 <strong>비효율·리스크</strong></li>
+</ul>
+<blockquote>
+<p>상단 종합 헤더의 <strong>차이(완성률 − 일정률)</strong> 가 이 화면의 단일 핵심 신호입니다. <strong>음수면 지연, 양수면 선행.</strong></p>
+</blockquote>
+<h3>영역별로 읽는 법</h3>
+<table>
+<thead>
+<tr>
+<th>영역</th>
+<th>무엇을 보여주나</th>
+<th>어떻게 읽나</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>종합 헤더</strong></td>
+<td>완성/일정 진척률, 차이(%p), 지연 배지(정상/주의/지연), 확정 지연·예측 지연, 예상 완료일</td>
+<td>일정대로인지 바로 판단합니다. 종료 예정일 초과 여부 선제 파악</td>
+</tr>
+<tr>
+<td><strong>진척 비교 막대</strong></td>
+<td>일정·완성·공수를 같은 0~100% 축에 병치 + 계획/실적 기성/실투입(MD)</td>
+<td>완성 막대가 일정보다 짧으면 지연, 공수 막대만 길면 비효율. <strong>실적 기성 &lt; 실투입</strong>이면 쓴 공수만큼 못 끝낸 것</td>
+</tr>
+<tr>
+<td><strong>진척 추이(S-curve)</strong></td>
+<td>계획 누적(점선) vs 실적 누적(실선) + 오늘·종료 예정·예상 완료 마커</td>
+<td>실선이 점선 아래로 처지면 진행이 느림. <strong>곡선 모양으로 막판 몰림 예측</strong></td>
+</tr>
+<tr>
+<td><strong>상태별 분포</strong></td>
+<td>완료/진행 중/할 일을 <strong>개수</strong> 또는 <strong>공수(MD)</strong> 기준으로</td>
+<td>공수 기준 권장. 대기 비중이 큰데 일정이 임박하면 범위 리스크</td>
+</tr>
+<tr>
+<td><strong>지연·위험 이슈</strong></td>
+<td>기한 초과 미완료·공수 편차 큰 이슈 테이블(이슈 타입 아이콘 포함)</td>
+<td><strong>당장 손봐야 할 이슈를 우선순위로 식별</strong></td>
+</tr>
+</tbody></table>
+<h3>지연 지표 두 가지</h3>
+<ul>
+<li><strong>확정 지연</strong> = 이미 완료된 이슈의 (실적일 − 기한) 평균 → <strong>회고</strong></li>
+<li><strong>예측 지연</strong> = 남은 공수 추세로 본 예상 종료일 − 종료 예정일 → <strong>예보</strong></li>
+</ul>
+<blockquote>
+<p>예측 지연은 <strong>낙관 근사치</strong>입니다. 이슈별 예상 종료일의 최댓값 기준이라 병렬 작업 한계를 무시 — 실제보다 빠르게 잡힐 수 있어 보수적으로 해석하세요.</p>
+</blockquote>
+<h3>대표 사용 시나리오</h3>
+<ul>
+<li><strong>주간 스탠드업</strong>: 종합 헤더의 차이(%p)·지연 배지로 30초 상태 보고</li>
+<li><strong>일정 위험 조기 경보</strong>: S-curve 실선이 점선 아래로 벌어지기 시작하면 인력 보강/범위 조정 판단</li>
+<li><strong>비효율 감지</strong>: 공수율은 높은데 완성률이 낮은 구간 → 추정 오류·재작업·블로커 조사</li>
+</ul>
+<h3>제약</h3>
+<ul>
+<li>진척률은 현재 시점 전체 스냅샷이라 <strong>기간 필터가 없습니다</strong>(기준 기간은 프로젝트 시작<del>종료, 일정은 시작</del>오늘).</li>
+<li><strong>계획 작업량(Original Estimate)이 입력된 이슈가 없으면 계산할 수 없습니다.</strong> <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">일괄 적용</a>이나 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178881">구독의 기본 계획 작업량</a>으로 채울 수 있습니다.</li>
+<li>상단의 접이식 <strong>&quot;이 화면 읽는 법&quot;</strong> 가이드에서 각 지표의 정의·계산식을 확인할 수 있습니다.</li>
+<li>같은 데이터를 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173178889">대시보드의 진척률 카드·진척 추이 위젯</a>에서도 볼 수 있습니다.</li>
+</ul>
+<!-- control-reference:start -->
+
+<h2>버튼·입력 항목과 처리 결과 상세</h2>
+<p>진척 화면은 프로젝트 일정과 현재 작업 상태·예상 공수를 기준으로 하며 인력 분석의 기간 필터를 제공하지 않습니다.</p>
+<table>
+<thead>
+<tr>
+<th>버튼·입력 항목</th>
+<th>기능·사용 조건·변경 대상</th>
+<th>결과 확인과 문제 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>완료·일정·차이·예상 완료</td>
+<td>완료 진척과 일정 경과를 비교합니다. 이슈 개수 완료율과 공수 기반 진척을 혼동하지 않습니다.</td>
+<td>프로젝트 날짜·Original Estimate가 없으면 안내가 표시될 수 있습니다. 추정 완료는 확정 마감이 아닙니다.</td>
+</tr>
+<tr>
+<td>S-curve·비교·상태 분포</td>
+<td>프로젝트 진척 흐름과 현재 상태를 읽는 차트입니다. 읽기만으로 Jira 상태가 바뀌지 않습니다.</td>
+<td>설정의 허용 차이(%p)와 계산 기준을 함께 확인합니다.</td>
+</tr>
+<tr>
+<td>지연·위험 작업·원본 이슈</td>
+<td>확정 지연과 예측 지연 대상을 구분하고 작업 키로 원본을 확인합니다.</td>
+<td>리스크 표의 이슈 날짜·담당자·예상 공수를 확인한 뒤 계획 수정은 작업 관리에서 수행합니다.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

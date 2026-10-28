@@ -1,0 +1,68 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「프로젝트 상태 관리」 읽기</td>
+</tr>
+<tr>
+<td>상태 추가·수정·삭제</td>
+<td>「프로젝트 상태 관리」 쓰기</td>
+</tr>
+<tr>
+<td>상태 연결(흐름) 편집</td>
+<td>「프로젝트 상태 관리」 쓰기</td>
+</tr>
+<tr>
+<td>칸반 화면에서 컬럼 추가·이름 변경·삭제</td>
+<td>「칸반 보드」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>같은 상태를 두 곳에서 만질 수 있습니다. <strong>설정 화면은 「프로젝트 상태 관리」</strong>, <strong>칸반 화면은 「칸반 보드」</strong> 권한을 씁니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 프로젝트의 <strong>상태(칸반 컬럼)</strong> 와 <strong>상태 전이 흐름</strong>을 정의할 때.</p>
+<p>기본 시드 상태는 <code>To Do</code> → <code>IN PROGRESS</code> → <code>DONE</code> 입니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 7-9 프로젝트 상태 관리와 상태 흐름 편집</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 7-9 프로젝트 상태 관리와 상태 흐름 편집"><ri:attachment ri:filename="07-project-status.png" /></ac:image><p><em>그림 7-9. 프로젝트 상태 관리 — ① 상태 표(이름·색) ② 상태 추가 ③ 상태 연결 편집(노드와 화살표로 흐름 정의, 연결되지 않은 상태 표시).</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">상태-추가수정</ac:parameter></ac:structured-macro>상태 추가·수정</h2>
+<ol>
+<li><strong>상태 추가</strong>를 누릅니다.</li>
+<li><strong>상태 이름</strong>(예: 진행중)과 <strong>색상</strong>을 지정합니다.</li>
+<li>행에서 수정·삭제할 수 있습니다.</li>
+</ol>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>여기서 정의한 상태가 <ac:link ac:anchor="41-프로젝트-목록"><ri:page ri:content-title="4. 프로젝트 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 목록]]></ac:plain-text-link-body></ac:link>의 상태 선택지와 <ac:link ac:anchor="42-칸반-보드"><ri:page ri:content-title="4. 프로젝트 관리" /><ac:plain-text-link-body><![CDATA[칸반 보드]]></ac:plain-text-link-body></ac:link>의 <strong>컬럼</strong>이 됩니다. 칸반 화면에서도 컬럼 추가·이름 변경·삭제를 할 수 있습니다. 상태 색은 목록·칸반·My Work 카드의 상태 라벨에 그대로 쓰입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">상태-흐름-편집</ac:parameter></ac:structured-macro>상태 흐름 편집</h2>
+<p><strong>상태 연결 편집</strong>을 누르면 상태 간 이동 흐름을 시각적으로 정의합니다.</p>
+<p><strong>규칙</strong></p>
+<ul>
+<li>각 상태는 <strong>다음 상태 하나, 이전 상태 하나</strong>만 가질 수 있습니다(1:1 연결).</li>
+<li><strong>순환 연결은 허용되지 않습니다.</strong></li>
+<li>연결되지 않은 상태는 &quot;연결되지 않은 상태입니다&quot;로 표시됩니다.</li>
+<li>칸반에서 카드를 옮기거나 프로젝트 상태를 바꿀 때 <strong>서버가 이 흐름과 상태 존재 여부를 검증</strong>합니다. 거부되면 원래 상태로 되돌아가고 사유가 표시됩니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">삭제-제약</ac:parameter></ac:structured-macro>삭제 제약</h2>
+<table>
+<thead>
+<tr>
+<th>제약</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>최소 1개의 상태가 필요합니다</td>
+<td>상태가 하나도 없으면 프로젝트를 만들 수 없고 칸반이 비어 보입니다</td>
+</tr>
+<tr>
+<td>이전 상태가 없으면 삭제할 수 없습니다</td>
+<td>삭제 시 그 상태의 프로젝트를 옮길 곳이 필요합니다</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>삭제하면 그 상태에 있던 <strong>프로젝트는 이전 상태로 변경</strong>됩니다(프로젝트가 삭제되지 않습니다).</p>
+</ac:rich-text-body></ac:structured-macro>

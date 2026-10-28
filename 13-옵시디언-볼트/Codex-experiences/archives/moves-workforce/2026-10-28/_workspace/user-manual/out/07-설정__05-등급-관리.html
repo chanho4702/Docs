@@ -1,0 +1,126 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「등급 관리」 읽기</td>
+</tr>
+<tr>
+<td>등급 추가·수정·삭제·빠른 추가</td>
+<td>「등급 관리」 쓰기</td>
+</tr>
+<tr>
+<td>급여 밴드(하한·상한·대표값) 입력</td>
+<td>「등급 관리」 쓰기</td>
+</tr>
+<tr>
+<td>급여 밴드 <strong>금액 열람</strong></td>
+<td>「비용」 읽기 또는 「등급 관리」 권한. 없으면 금액이 응답에서 제외됩니다</td>
+</tr>
+</tbody></table>
+<ul>
+<li>등급 <strong>목록</strong>은 「인력 관리」 읽기 또는 「일반 설정」 읽기로도 조회됩니다(인력 화면의 선택지, 급여 정책 카드의 &quot;밴드 미설정 등급 수&quot; 계산에 필요).</li>
+<li>급여 밴드는 급여 정책이 <strong>등급 기반</strong>일 때 인건비 계산에 쓰입니다(<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1]]></ac:plain-text-link-body></ac:link>).</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 인력 <strong>등급(Level)</strong> 을 정의하고, 등급 기반 급여 정책을 쓴다면 <strong>급여 밴드</strong>를 채울 때.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 7-7 등급 관리</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 7-7 등급 관리"><ri:attachment ri:filename="07-levels.png" /></ac:image><p><em>그림 7-7. 등급 관리 — ① 등급 표(급여 범위·대표값) ② 등급 추가 창(하한·상한·대표값·중앙값 계산) ③ 빠른 추가 프리셋 ④ 정책이 인원별일 때의 &amp;quot;급여 밴드는 사용되지 않습니다&amp;quot; 안내.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">목록-컬럼</ac:parameter></ac:structured-macro>목록 컬럼</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>등급 / 설명</td>
+<td>등급명과 설명 (예: Senior / 10년차 이상)</td>
+</tr>
+<tr>
+<td>급여 범위</td>
+<td>하한 ~ 상한</td>
+</tr>
+<tr>
+<td>대표값</td>
+<td><strong>인건비 계산에 실제로 쓰이는 값</strong></td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">등록-방법-두-가지</ac:parameter></ac:structured-macro>등록 방법 두 가지</h2>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>등급 추가</strong></td>
+<td>이름·설명·급여 밴드를 입력해 하나씩 등록</td>
+</tr>
+<tr>
+<td><strong>빠른 추가</strong></td>
+<td>직급 체계 프리셋에서 골라 한 번에 등록</td>
+</tr>
+</tbody></table>
+<p><strong>프리셋 종류</strong>: 일반(Junior/Senior) · 등급제(G1~G5) · 한국식 직급 · Band 체계</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">급여-밴드-입력-규칙</ac:parameter></ac:structured-macro>급여 밴드 입력 규칙</h2>
+<p>급여 정책이 <strong>등급 기반</strong>일 때 사용됩니다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>규칙</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>하한 / 상한</td>
+<td>0 이상. <strong>하한이 상한보다 크면 저장 거부</strong></td>
+</tr>
+<tr>
+<td><strong>대표값</strong></td>
+<td><strong>계산에 쓰이는 값.</strong> 비워 두면 <strong>중앙값</strong>(<code>(하한 + 상한) ÷ 2</code>)이 자동 입력됩니다</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>중앙값 계산</strong> 버튼으로 대표값을 채울 수 있습니다.</li>
+<li>대표값이 하한~상한 범위를 벗어나도 <strong>저장은 허용</strong>됩니다(관리자 판단 존중). &quot;대표값이 급여 범위를 벗어났습니다. 그대로 저장할 수 있습니다&quot; 경고만 표시됩니다.</li>
+</ul>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>급여 정책이 &#39;인원별&#39;이면 <strong>&quot;급여 밴드는 사용되지 않습니다&quot;</strong> 안내와 함께 <ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[설정으로 이동하는 링크]]></ac:plain-text-link-body></ac:link>가 표시됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">밴드를-비워-두면-생기는-일</ac:parameter></ac:structured-macro>밴드를 비워 두면 생기는 일</h2>
+<p>등급 기반 정책에서 <strong>밴드(대표값)가 없는 등급</strong>의 인원은 <strong>인건비가 0으로 계산</strong>됩니다.</p>
+<ul>
+<li><ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1 일반 설정]]></ac:plain-text-link-body></ac:link>에서 정책을 전환할 때 &quot;등급 N개에 급여 밴드가 없습니다&quot; 경고가 표시됩니다.</li>
+<li>비용 화면의 <ac:link ac:anchor="인건비가-0원으로-나올-때"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[미산정 인원]]></ac:plain-text-link-body></ac:link> 지표로도 확인할 수 있습니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">여기서-정의한-값이-쓰이는-곳</ac:parameter></ac:structured-macro>여기서 정의한 값이 쓰이는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>화면</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><ac:link><ri:page ri:content-title="7.2 인력 관리" /><ac:plain-text-link-body><![CDATA[7.2 인력 관리]]></ac:plain-text-link-body></ac:link></td>
+<td>사용자의 <strong>직무 등급</strong> 선택지</td>
+</tr>
+<tr>
+<td><ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 프로젝트 인력]]></ac:plain-text-link-body></ac:link></td>
+<td>프로젝트 멤버의 <strong>등급</strong>, 등급 기반 인건비 산정</td>
+</tr>
+<tr>
+<td><ac:link><ri:page ri:content-title="5.1 대시보드" /><ac:plain-text-link-body><![CDATA[5.1 대시보드]]></ac:plain-text-link-body></ac:link></td>
+<td>등급 분포 차트</td>
+</tr>
+<tr>
+<td><ac:link><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[6.1 인력 현황]]></ac:plain-text-link-body></ac:link></td>
+<td>등급 필터·표시</td>
+</tr>
+</tbody></table>

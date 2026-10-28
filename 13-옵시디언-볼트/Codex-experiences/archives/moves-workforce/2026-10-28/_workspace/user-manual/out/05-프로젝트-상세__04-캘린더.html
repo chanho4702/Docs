@@ -1,0 +1,62 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「프로젝트 관리」 읽기</td>
+</tr>
+<tr>
+<td>워크로그 수정·삭제</td>
+<td>각 워크로그의 <strong>작성자 본인만</strong> (앱 권한과 무관)</td>
+</tr>
+<tr>
+<td>프로젝트 이벤트 추가·수정</td>
+<td>「프로젝트 관리」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>프로젝트 조회 범위(소속 프로젝트만 / 내 팀만) 밖 프로젝트에서는 열리지 않습니다.</li>
+<li>여기서 보이는 워크로그는 각자 <ac:link><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[My Work]]></ac:plain-text-link-body></ac:link>에서 기록한 것과 같은 데이터입니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 프로젝트 전체의 <strong>워크로그·이슈 일정·이벤트를 달력</strong>으로 볼 때. <ac:link ac:anchor="캘린더-뷰"><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[개인 캘린더]]></ac:plain-text-link-body></ac:link>의 프로젝트 단위 버전입니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 5-12 프로젝트 캘린더 이슈 모드</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 5-12 프로젝트 캘린더 이슈 모드"><ri:attachment ri:filename="05-calendar-issue-mode.png" /></ac:image><p><em>그림 5-12. 프로젝트 캘린더(주간, 이슈 모드) — ① 작업자·작업 필터 ② 워크로그/이슈 모드 토글 ③ 상태 색 이슈 막대 ④ 공휴일 라벨 ⑤ 기간 미설정 N건.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">화면-구성</ac:parameter></ac:structured-macro>화면 구성</h2>
+<ul>
+<li><strong>작업자 선택 / 작업 선택</strong> 필터로 특정 인원·작업만 볼 수 있습니다.</li>
+<li><strong>월간 / 주간</strong> 보기와 기간 이동을 지원합니다. 월간은 촘촘하게, 주간은 시간·제목을 자세히 보여줍니다.</li>
+<li>오른쪽 위 <strong>표시 모드</strong> 토글:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>표시 모드</th>
+<th>달력에 보이는 것</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>워크로그</strong> (기본)</td>
+<td>이슈별 워크로그(시간 범위·담당자)와 <strong>일별 합계</strong></td>
+</tr>
+<tr>
+<td><strong>이슈</strong></td>
+<td>프로젝트에 편입된 이슈의 <strong>시작일~기한 기간 막대</strong>, 상태 색(할 일 / 진행 중 / 완료). <ac:link ac:anchor="537-간트-보기"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[작업 관리 간트]]></ac:plain-text-link-body></ac:link>와 같은 일정 데이터를 씁니다</td>
+</tr>
+</tbody></table>
+<ul>
+<li>두 모드 모두 <strong>프로젝트 이벤트</strong>(예: &quot;워크숍&quot;)와 <strong>공휴일 라벨</strong>이 표시됩니다.</li>
+<li>이슈 모드에서 시작일·기한이 없는 이슈는 <strong>기간 미설정 N건</strong> 버튼에 모아 보여주며, 일정은 간트에서 지정하라고 안내합니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">알아두기</ac:parameter></ac:structured-macro>알아두기</h2>
+<ul>
+<li>여기 보이는 워크로그는 <ac:link><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[My Work]]></ac:plain-text-link-body></ac:link>에서 각자 기록한 것과 같은 데이터입니다. 캘린더에서 확인하고, 수정은 작성자 본인이 합니다.</li>
+<li>특정 인원의 투입 추이를 수치로 보려면 <ac:link ac:anchor="552-인력-분석"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 인력 분석]]></ac:plain-text-link-body></ac:link>이 더 적합합니다.</li>
+<li>여러 날에 걸친 이슈 막대와 개인 일정이 같은 주에 있으면 겹치지 않도록 줄이 나뉘어 표시됩니다.</li>
+</ul>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>연차·휴가처럼 종료일이 있는 일정을 등록할 때</strong>는 화면에 표시되는 마지막 날짜가 실제 종료일과 맞는지 확인하세요. 종료일 처리 방식 때문에 하루 차이가 나는 사례가 있었습니다.</p>
+</ac:rich-text-body></ac:structured-macro>

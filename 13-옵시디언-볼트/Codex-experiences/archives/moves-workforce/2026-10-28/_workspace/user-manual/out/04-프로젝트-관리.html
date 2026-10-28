@@ -1,0 +1,199 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>메뉴 노출</td>
+<td><strong>권한 불필요</strong> — 사이드바에 항상 표시됩니다</td>
+</tr>
+<tr>
+<td><strong>프로젝트 목록</strong> 탭</td>
+<td>「프로젝트 관리」 읽기 (없으면 탭이 보이지 않습니다)</td>
+</tr>
+<tr>
+<td>프로젝트 추가·수정·삭제, 필요 스킬 편집</td>
+<td>「프로젝트 관리」 쓰기</td>
+</tr>
+<tr>
+<td><strong>칸반 보드</strong> 탭</td>
+<td>「칸반 보드」 읽기</td>
+</tr>
+<tr>
+<td>칸반 카드 드래그·컬럼 추가·삭제</td>
+<td>「칸반 보드」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>두 탭은 <strong>권한이 서로 다릅니다.</strong> 「프로젝트 관리」만 있으면 목록만, 「칸반 보드」만 있으면 칸반만 보입니다.</li>
+<li>보이는 프로젝트 <strong>범위</strong>는 권한 세트의 조회 범위(전체 / 소속 프로젝트만 / 내 팀만)를 따릅니다 — <ac:link ac:anchor="14-권한의-기본-개념"><ri:page ri:content-title="1. 개요" /><ac:plain-text-link-body><![CDATA[1.4 참고]]></ac:plain-text-link-body></ac:link>.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 프로젝트를 <strong>만들고, 상태를 관리하고, 상세로 진입</strong>하는 출발점입니다.</p>
+<p>좌측 <strong>프로젝트 관리</strong> 메뉴로 진입하며 상단에 두 탭이 있습니다: <strong>프로젝트 관리</strong>(목록), <strong>칸반 보드</strong>. 선택한 탭은 주소에 남아 새로고침해도 유지됩니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">41-프로젝트-목록</ac:parameter></ac:structured-macro>4.1 프로젝트 목록</h2>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 4-1 프로젝트 목록과 상세 드로어</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 4-1 프로젝트 목록과 상세 드로어"><ri:attachment ri:filename="04-project-list-drawer.png" /></ac:image><p><em>그림 4-1. 프로젝트 목록 — ① 이름 검색 ② + 프로젝트 추가 ③ 행 클릭으로 열린 상세 드로어(기간·참여 인력·요구 스킬·상세 페이지 열기).</em></p></ac:rich-text-body></ac:structured-macro>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트 이름</td>
+<td><strong>이름을 클릭</strong>하면 <ac:link><ri:page ri:content-title="5. 프로젝트 상세" /><ac:plain-text-link-body><![CDATA[프로젝트 상세]]></ac:plain-text-link-body></ac:link>로 이동</td>
+</tr>
+<tr>
+<td>프로젝트 상태</td>
+<td>색 라벨. 예: To Do / IN PROGRESS / DONE (<ac:link><ri:page ri:content-title="7.7 프로젝트 상태 관리" /><ac:plain-text-link-body><![CDATA[7.7에서 정의]]></ac:plain-text-link-body></ac:link>)</td>
+</tr>
+<tr>
+<td>시작일 / 종료일</td>
+<td>프로젝트 기간</td>
+</tr>
+<tr>
+<td>프로젝트 비용</td>
+<td>프로젝트 등록 시 입력한 예산값. 급여 정책으로 계산하는 <strong>계획 인건비와는 별개</strong></td>
+</tr>
+<tr>
+<td>추가 작업</td>
+<td>수정 / 삭제</td>
+</tr>
+</tbody></table>
+<ul>
+<li>상단 <strong>프로젝트 이름</strong> 입력 후 <strong>검색</strong>으로 필터링, 새로고침 아이콘으로 목록 갱신</li>
+<li>우측 위 <strong>+ 프로젝트 추가</strong>로 새 프로젝트 등록</li>
+<li><strong>행의 빈 곳을 클릭</strong>하면 오른쪽에 <strong>상세 드로어</strong>가 열립니다. 상세 페이지로 들어가지 않고 기간·참여 인력·요구 스킬을 훑어보고, <strong>수정 / 삭제 / 상세 페이지 열기</strong>로 이어갈 수 있습니다.</li>
+</ul>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">프로젝트-추가--수정</ac:parameter></ac:structured-macro>프로젝트 추가 / 수정</h3>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 4-2 프로젝트 추가 창</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 4-2 프로젝트 추가 창"><ri:attachment ri:filename="04-project-modal.png" /></ac:image><p><em>그림 4-2. 프로젝트 추가 창 — ① 기본 정보 ② 필요 스킬(직군 필터·검색·선택 목록) ③ 저장.</em></p></ac:rich-text-body></ac:structured-macro>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>필수</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트 이름</td>
+<td>필수</td>
+<td></td>
+</tr>
+<tr>
+<td>프로젝트 상태</td>
+<td>필수</td>
+<td>프로젝트 상태 관리에서 정의한 값 중 선택</td>
+</tr>
+<tr>
+<td>시작일 / 종료일</td>
+<td>필수</td>
+<td></td>
+</tr>
+<tr>
+<td>프로젝트 비용</td>
+<td>필수</td>
+<td>숫자(천 단위 콤마 자동). 비용 분석의 계획 인건비와는 별개</td>
+</tr>
+<tr>
+<td><strong>필요 스킬</strong></td>
+<td></td>
+<td>이 프로젝트에 필요한 스킬을 <ac:link><ri:page ri:content-title="7.6 스킬 관리" /><ac:plain-text-link-body><![CDATA[스킬 사전]]></ac:plain-text-link-body></ac:link>에서 고릅니다. 직군으로 좁히거나 이름으로 검색해 선택하며, 나중에 바꿀 수 있습니다</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>수정 모드에서는 <strong>등록·수정 정보</strong>(생성자/생성일시·수정자/수정일시)가 읽기 전용으로 함께 표시됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>필요 스킬은 프로젝트 저장 시 함께 반영됩니다.</strong> 기본 정보는 저장됐는데 스킬 저장이 끝나지 않으면 &quot;다시 저장해 주세요&quot; 안내가 뜨며 선택 내역은 유지됩니다. 여기서 정한 스킬이 <ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[6.4 프로젝트 배정]]></ac:plain-text-link-body></ac:link>의 <strong>적합도</strong> 계산 기준이 됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>기간 입력을 빠뜨리지 마세요.</strong> 프로젝트 시작일·종료일이 없으면 <strong>인건비 환산(투입 개월수)과 진척률 계산이 모두 0</strong>이 됩니다(<ac:link ac:anchor="인건비가-0원으로-나올-때"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2]]></ac:plain-text-link-body></ac:link>, <ac:link ac:anchor="554-진척률"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5]]></ac:plain-text-link-body></ac:link> 참고).</p>
+</ac:rich-text-body></ac:structured-macro>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">프로젝트-삭제</ac:parameter></ac:structured-macro>프로젝트 삭제</h3>
+<p>프로젝트를 삭제하면 소속 인력·대시보드·간트·스킬 매핑 등 관련 데이터가 함께 삭제되며 되돌릴 수 없습니다. 확인 후 <strong>삭제 진행</strong> 창이 열려 단계별 진행 상태(이슈 연결 해제 → 간트 연결 정리 → 스킬 정리 → …)를 보여줍니다.</p>
+<ul>
+<li><strong>Jira 이슈 자체는 삭제되지 않습니다.</strong> 이슈에 남아 있던 이 프로젝트와의 연결만 해제됩니다.</li>
+<li>중간에 실패하면 진행 상태가 보존되어 <strong>삭제 재시도</strong>로 이어서 진행할 수 있습니다.</li>
+<li>&quot;연결된 Jira 이슈에 접근할 수 없어 삭제를 완료할 수 없습니다&quot;가 뜨면, 그 이슈를 볼 수 있는 관리자에게 재시도를 요청하세요. 삭제는 실행자의 Jira 권한으로 이슈를 정리하기 때문입니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">42-칸반-보드</ac:parameter></ac:structured-macro>4.2 칸반 보드</h2>
+<p>프로젝트를 <strong>상태 컬럼별 카드</strong>로 보여주며 드래그로 상태를 바꾸는 보드입니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 4-3 칸반 보드</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 4-3 칸반 보드"><ri:attachment ri:filename="04-kanban-board.png" /></ac:image><p><em>그림 4-3. 칸반 보드 — ① 상태 컬럼 ② 프로젝트 카드(드래그 중) ③ 컬럼 하단 + 프로젝트 추가 ④ 우측 끝 컬럼 추가.</em></p></ac:rich-text-body></ac:structured-macro>
+<ul>
+<li><strong>컬럼 = 프로젝트 상태</strong>(<ac:link><ri:page ri:content-title="7.7 프로젝트 상태 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 상태 관리]]></ac:plain-text-link-body></ac:link>에서 정의한 순서)</li>
+<li><strong>카드 = 프로젝트</strong>(프로젝트명, 기간, 담당 아바타)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>하고 싶은 일</th>
+<th>조작</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>상태 변경</td>
+<td>카드를 다른 컬럼으로 <strong>드래그</strong> (즉시 반영)</td>
+</tr>
+<tr>
+<td>프로젝트 수정</td>
+<td>카드 클릭 → 추가/수정 모달</td>
+</tr>
+<tr>
+<td>이름만 빠르게 변경</td>
+<td>카드 제목 <strong>인라인 편집</strong></td>
+</tr>
+<tr>
+<td>프로젝트 삭제</td>
+<td>카드 메뉴 → 삭제 (목록과 같은 삭제 진행 창)</td>
+</tr>
+<tr>
+<td>상태 컬럼 추가</td>
+<td>우측 끝 <strong>+</strong> 버튼</td>
+</tr>
+<tr>
+<td>상태 이름 변경</td>
+<td>컬럼 헤더 인라인 수정</td>
+</tr>
+<tr>
+<td>상태 삭제</td>
+<td>컬럼 메뉴 → 삭제 (최소 1개 필요, 이전 상태가 있어야 가능)</td>
+</tr>
+<tr>
+<td>그 상태로 프로젝트 신규 등록</td>
+<td>각 컬럼 하단 <strong>+ 프로젝트 추가</strong></td>
+</tr>
+<tr>
+<td>과거 프로젝트 더 보기</td>
+<td>마지막(완료) 컬럼 하단 <strong>더보기</strong></td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>쓰기 권한(「칸반 보드」 쓰기)이 없으면 드래그·추가·삭제·이름 변경이 비활성화되고 <strong>조회만</strong> 가능합니다.
+상태 변경은 서버에서도 검증합니다. 거부되면 카드가 원래 컬럼으로 되돌아가고 사유가 표시됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">문제-해결</ac:parameter></ac:structured-macro>문제 해결</h2>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인과 해결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>목록 탭 또는 칸반 탭이 없습니다</td>
+<td>각각 「프로젝트 관리」 읽기, 「칸반 보드」 읽기 권한이 없습니다</td>
+</tr>
+<tr>
+<td>내가 참여하는 프로젝트가 안 보입니다</td>
+<td>조회 범위가 &quot;소속 프로젝트만&quot;인데 <ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link>에 등록돼 있지 않습니다</td>
+</tr>
+<tr>
+<td>칸반이 비어 있습니다</td>
+<td>상태 컬럼이 하나도 없습니다. <ac:link><ri:page ri:content-title="7.7 프로젝트 상태 관리" /><ac:plain-text-link-body><![CDATA[7.7]]></ac:plain-text-link-body></ac:link>에서 상태를 먼저 만드세요</td>
+</tr>
+<tr>
+<td>삭제가 중간에 멈췄습니다</td>
+<td>삭제 진행 창의 <strong>삭제 재시도</strong>를 누르세요. Jira 이슈 접근 권한이 없어 멈춘 경우 권한 있는 관리자가 재시도해야 합니다</td>
+</tr>
+</tbody></table>
