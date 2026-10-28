@@ -1,0 +1,163 @@
+{
+  "base": "22eeff8 + stage5 source snapshot",
+  "suites": [
+    {
+      "name": "com.dmove.moveseye.premium.apm.collector.ingest.store.ApmMetric1mStoreIT",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.086"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.collector.ingest.store.ApmMetric1mStoreTest",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.056"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.collector.ingest.store.ApmMetricIngestAtomicityIT",
+      "tests": "16",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "5.155"
+    },
+    {
+      "name": "집계 규칙",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.024"
+    },
+    {
+      "name": "🔴 수집기 분리 — 유령 서비스를 만들지 않는다",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.123"
+    },
+    {
+      "name": "🔴 D17 — 누적 지표의 min/max와 exemplar 값",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.099"
+    },
+    {
+      "name": "🔴 CUMULATIVE 수신에서도 실시간 Top·p95가 산다",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.888"
+    },
+    {
+      "name": "장애 vs 정책 — 503과 200을 가른다",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.366"
+    },
+    {
+      "name": "🔴 D1 — 구 시맨틱 규약(Python/Node 기본)으로 온 HTTP 지표",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.035"
+    },
+    {
+      "name": "실시간 링버퍼 훅",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.158"
+    },
+    {
+      "name": "round1(explicit·CUMULATIVE) 실측 페이로드",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.146"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.collector.ingest.store.MetricIngestorTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.303"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.core.batch.ApmBatchJobTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.477"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.core.batch.archive.ApmArchiveGateArchTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.098"
+    },
+    {
+      "name": "🔴 게이트 꺼짐(기본) — 예전 호출 그대로",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.018"
+    },
+    {
+      "name": "게이트 켜짐 — 대상 테이블은 전부 판정을 받는다",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.038"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.core.batch.rollup.ApmLateMetricRollupIT",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "18.603"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.core.batch.rollup.ApmRollupJobIT",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "9.009"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.core.batch.rollup.ApmRollupWatermarkTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.177"
+    }
+  ],
+  "totals": {
+    "tests": 148,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

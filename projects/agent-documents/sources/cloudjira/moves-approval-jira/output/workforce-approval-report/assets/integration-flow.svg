@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="770" viewBox="0 0 1200 770" role="img" aria-labelledby="t d">
+  <title id="t">Workforce–Approval 연동 아키텍처와 처리 플로우 (2026-10-14)</title>
+  <desc id="d">두 Forge 앱은 저장소와 resolver 를 공유하지 않고 Jira 엔티티 프로퍼티에 서명 문서를 교환한다. 워크로그 입력 창구는 승인 앱 이슈 화면과 워크포스 앱 내부 화면 두 곳이며, 워크포스는 writeGate 판정 뒤에만 저장하고 판정할 수 없으면 승인 앱으로 넘긴다. B 단계에서 승인분 워크로그는 앱 역할 visibility 로 숨겨진다.</desc>
+  <defs>
+    <style>
+      text { font-family: Pretendard, "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; fill: #172B4D; }
+      .h1 { font-size: 18px; font-weight: 700; }
+      .h2 { font-size: 15px; font-weight: 700; }
+      .t { font-size: 12.5px; font-weight: 700; }
+      .s { font-size: 11.5px; }
+      .m { font-size: 11.5px; fill: #253858; }
+      .lab { font-size: 10.5px; fill: #42526E; }
+      .tag { font-size: 10.5px; font-weight: 700; }
+      .wfO { fill: #F2F6FD; stroke: #3B6FD8; stroke-width: 1.5; }
+      .apO { fill: #F1F8F3; stroke: #2E8B57; stroke-width: 1.5; }
+      .jiO { fill: #F7F8F9; stroke: #6B778C; stroke-width: 1.5; }
+      .wf { fill: #FFFFFF; stroke: #8FAEEB; }
+      .ap { fill: #FFFFFF; stroke: #86C29E; }
+      .ji { fill: #FFFFFF; stroke: #B3BAC5; }
+      .inp { fill: #FFF8E6; stroke: #D69E2E; stroke-width: 1.4; }
+      .bst { fill: #F5F0FF; stroke: #7A5AF8; stroke-width: 1.4; }
+      .aw { stroke: #3B6FD8; stroke-width: 2; fill: none; }
+      .ag { stroke: #2E8B57; stroke-width: 2; fill: none; }
+      .ak { stroke: #6B778C; stroke-width: 1.6; fill: none; }
+      .ad { stroke: #C05621; stroke-width: 1.8; fill: none; stroke-dasharray: 6 4; }
+      .ab { stroke: #7A5AF8; stroke-width: 1.8; fill: none; stroke-dasharray: 3 3; }
+    </style>
+    <marker id="mw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B6FD8"/></marker>
+    <marker id="mg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E8B57"/></marker>
+    <marker id="mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B778C"/></marker>
+    <marker id="md" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C05621"/></marker>
+    <marker id="mb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7A5AF8"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="770" fill="#FFFFFF"/>
+  <text class="h1" x="20" y="30">Workforce–Approval 연동 — 서명 문서 교환과 워크로그 입력 두 창구 (기준 2026-10-14)</text>
+
+  <!-- 넘김(DEFER) 경로: 워크포스 판정 → 승인 앱 화면 -->
+  <path class="ad" d="M315,200 H375 V52 H1100 V96" marker-end="url(#md)"/>
+  <text class="lab" x="738" y="46" text-anchor="middle" style="fill:#C05621">DEFER · wr 없음/만료 → 저장하지 않고 승인 앱 화면으로 넘김 (링크 이동 · 앱 간 직접 호출 없음)</text>
+
+  <!-- 외곽 상자 -->
+  <rect class="wfO" x="20" y="64" width="310" height="642" rx="10"/>
+  <text class="h2" x="35" y="86">Moves Workforce (Forge)</text>
+  <rect class="jiO" x="420" y="64" width="360" height="642" rx="10"/>
+  <text class="h2" x="435" y="86">Jira Cloud — 교환 문서 · 워크로그</text>
+  <rect class="apO" x="870" y="64" width="310" height="642" rx="10"/>
+  <text class="h2" x="885" y="86">Moves Approval (Forge)</text>
+
+  <!-- 1행: 입력 화면 -->
+  <rect class="inp" x="35" y="100" width="280" height="65" rx="6"/>
+  <text class="t" x="47" y="122">② 워크포스 앱 내부 화면</text>
+  <text class="s" x="47" y="141">마이워크·프로젝트 캘린더 모달</text>
+  <text class="s" x="47" y="157">작성 · 기간 입력 · 수정 · 삭제 · 드래그</text>
+
+  <rect class="ji" x="435" y="100" width="330" height="65" rx="6"/>
+  <text class="s" x="447" y="122">앱 간 SQL·KVS 공유 없음 · resolver 상호 호출 없음</text>
+  <text class="s" x="447" y="140">프로퍼티는 편집 권한자도 바꿀 수 있다</text>
+  <text class="s" x="447" y="157">→ Ed25519 서명 검증을 통과한 값만 쓴다</text>
+
+  <rect class="inp" x="885" y="100" width="280" height="65" rx="6"/>
+  <text class="t" x="897" y="122">① 승인 앱 이슈 화면</text>
+  <text class="s" x="897" y="141">Work log 탭 · Log work 액션</text>
+  <text class="s" x="897" y="157">(시간 추적 제공자 대체 화면)</text>
+
+  <path class="ak" d="M175,165 V183" marker-end="url(#mk)"/>
+  <path class="ak" d="M1025,165 V183" marker-end="url(#mk)"/>
+
+  <!-- 2행: 쓰기 -->
+  <rect class="wf" x="35" y="185" width="280" height="120" rx="6"/>
+  <text class="t" x="47" y="206">판정 → 저장 (LinkedWriteGate)</text>
+  <text class="m" x="47" y="225">writeGate.js · 두 리포 바이트 동일</text>
+  <text class="s" x="47" y="243">ALLOW: asUser POST/PUT/DELETE</text>
+  <text class="s" x="47" y="260">   + movesRms.origin 서명 봉투(≤15분)</text>
+  <text class="s" x="47" y="277">DENY: 승인 앱과 같은 거부 코드</text>
+  <text class="s" x="47" y="294">DEFER: 저장 안 함 → 넘김</text>
+
+  <rect class="ji" x="435" y="185" width="330" height="120" rx="6"/>
+  <text class="t" x="447" y="206">워크로그 (이슈 하위)</text>
+  <text class="m" x="447" y="225">props movesRms.origin   ← 워크포스 작성</text>
+  <text class="m" x="447" y="242">props movesApproval.origin·op ← 승인 앱</text>
+  <rect class="bst" x="445" y="252" width="310" height="46" rx="5"/>
+  <text class="s" x="455" y="270" style="font-weight:700;fill:#5B3FD0">B 단계: visibility = 앱 역할</text>
+  <text class="s" x="455" y="288" style="fill:#5B3FD0">사용자 직접 GET 404 · Jira 직접 수정 차단</text>
+
+  <rect class="ap" x="885" y="185" width="280" height="120" rx="6"/>
+  <text class="t" x="897" y="206">resolver (guardedDefine · asUser)</text>
+  <text class="s" x="897" y="225">POST + movesApproval.origin {op}</text>
+  <text class="s" x="897" y="242">op ↔ SQL intent 대조 → 출처 APP</text>
+  <text class="s" x="897" y="262" style="fill:#5B3FD0;font-weight:700">B 단계: 승인·인증분 숨김(asApp)</text>
+  <text class="s" x="897" y="279" style="fill:#5B3FD0">작성자·팀장만 asApp 보충 읽기</text>
+  <text class="s" x="897" y="296" style="fill:#5B3FD0">(불변식 8 예외 6조건)</text>
+
+  <path class="aw" d="M315,272 H433" marker-end="url(#mw)"/>
+  <text class="lab" x="375" y="266" text-anchor="middle">asUser 쓰기</text>
+  <path class="ag" d="M885,230 H767" marker-end="url(#mg)"/>
+  <text class="lab" x="827" y="224" text-anchor="middle">asUser 쓰기</text>
+  <path class="ab" d="M885,275 H757" marker-end="url(#mb)"/>
+  <text class="lab" x="827" y="291" text-anchor="middle" style="fill:#7A5AF8">asApp visibility</text>
+
+  <!-- 3행: A → W 문서 -->
+  <rect class="wf" x="35" y="325" width="280" height="100" rx="6"/>
+  <text class="t" x="47" y="346">판정 재료 읽기 (asUser · 본인)</text>
+  <text class="s" x="47" y="365">ctl.wr 미만료 = 입력 열림(gated)</text>
+  <text class="s" x="47" y="382">cert·v1 문서 → 승인·인증·제출 잠금</text>
+  <text class="s" x="47" y="399">자기 rms.issue → 작성 기간·사전 승인</text>
+  <text class="s" x="47" y="416">읽기·서명 실패 = DEFER</text>
+  <path class="ak" d="M175,325 V307" marker-end="url(#mk)"/>
+
+  <rect class="ji" x="435" y="325" width="330" height="100" rx="6"/>
+  <rect x="445" y="333" width="150" height="18" rx="9" fill="#E3F4E9"/>
+  <text class="tag" x="455" y="346" style="fill:#1F6F43">A → W · 승인 앱 서명</text>
+  <text class="m" x="447" y="368">사용자   movesApproval.cert.{YYYY-MM}</text>
+  <text class="m" x="447" y="385">사용자   movesApproval.{YYYY}</text>
+  <text class="m" x="447" y="402">프로젝트·이슈 movesApproval.ctl (wr)</text>
+  <text class="m" x="447" y="419">프로젝트 movesApproval.flows</text>
+
+  <rect class="ap" x="885" y="325" width="280" height="100" rx="6"/>
+  <text class="t" x="897" y="346">WorkforcePublisher (asApp)</text>
+  <text class="s" x="897" y="365">outbox workforce_publish → 서명 PUT</text>
+  <text class="s" x="897" y="382">cert: 결정·인증 후 45초 묶어 게시</text>
+  <text class="s" x="897" y="399">ctl: 신호 검증 즉시(요청당 ≤3)</text>
+  <text class="s" x="897" y="416">  + 일일 scan · wr 3일마다 재서명</text>
+
+  <path class="ag" d="M885,375 H767" marker-end="url(#mg)"/>
+  <text class="lab" x="827" y="369" text-anchor="middle">asApp 게시</text>
+  <path class="ag" d="M435,375 H317" marker-end="url(#mg)"/>
+  <text class="lab" x="375" y="369" text-anchor="middle">asUser 읽기·검증</text>
+
+  <!-- 4행: W → A 문서 -->
+  <rect class="wf" x="35" y="445" width="280" height="100" rx="6"/>
+  <text class="t" x="47" y="466">ApprovalLinkSignals</text>
+  <text class="s" x="47" y="485">팀 인덱스 → approverOf · leads</text>
+  <text class="s" x="47" y="502">org: 본인 asUser (앱 열 때 · epoch)</text>
+  <text class="s" x="47" y="519">policy·issue·kb: asApp</text>
+  <text class="s" x="47" y="536">500명 초과 = ORG_INVALID(게시 안 함)</text>
+
+  <rect class="ji" x="435" y="445" width="330" height="100" rx="6"/>
+  <rect x="445" y="453" width="150" height="18" rx="9" fill="#E4ECFC"/>
+  <text class="tag" x="455" y="466" style="fill:#2A55B0">W → A · 워크포스 서명</text>
+  <text class="m" x="447" y="488">사용자   movesRms.org (팀 구조·cap)</text>
+  <text class="m" x="447" y="505">프로젝트·이슈 movesRms.policy (연동 신호)</text>
+  <text class="m" x="447" y="522">이슈     movesRms.issue (기간·사전 승인)</text>
+  <text class="m" x="447" y="539">프로젝트 movesRms.kb</text>
+
+  <rect class="ap" x="885" y="445" width="280" height="100" rx="6"/>
+  <text class="t" x="897" y="466">WorkforceInbound (asUser 읽기)</text>
+  <text class="s" x="897" y="485">Ed25519 검증 → workforce_inbound</text>
+  <text class="s" x="897" y="502">VERIFIED 사본은 sticky</text>
+  <text class="s" x="897" y="519">→ 기본 승인자 · 팀장 여부 · 범위</text>
+  <text class="s" x="897" y="536">새 신호 VERIFIED → ctl 즉시 게시</text>
+  <path class="ak" d="M1025,445 V427" marker-end="url(#mk)"/>
+
+  <path class="aw" d="M315,495 H433" marker-end="url(#mw)"/>
+  <text class="lab" x="375" y="489" text-anchor="middle">서명 게시</text>
+  <path class="aw" d="M765,495 H883" marker-end="url(#mw)"/>
+  <text class="lab" x="827" y="489" text-anchor="middle">asUser 읽기·검증</text>
+
+  <!-- 5행: 이벤트 -->
+  <rect class="wf" x="35" y="565" width="280" height="70" rx="6"/>
+  <text class="t" x="47" y="586">워크포스 SQL · KVS</text>
+  <text class="s" x="47" y="605">팀·사용자 원천 (팀 인덱스 60초 캐시)</text>
+  <text class="s" x="47" y="622">승인 데이터는 저장하지 않음(DB 무증가)</text>
+
+  <rect class="ji" x="435" y="565" width="330" height="70" rx="6"/>
+  <text class="m" x="447" y="586">avi:jira:{created,updated,deleted}:worklog</text>
+  <text class="s" x="447" y="605">두 창구 기록 모두 같은 이벤트로 들어온다</text>
+  <text class="s" x="447" y="622">Jira 기본 Log work·REST·자동화 = 출처 NONE</text>
+
+  <rect class="ap" x="885" y="565" width="280" height="70" rx="6"/>
+  <text class="t" x="897" y="586">worklog-changed 트리거</text>
+  <text class="s" x="897" y="605">출처 PROVEN → requestAutomatically</text>
+  <text class="s" x="897" y="622">승인자: 팀장 → 위 팀장 → 본인</text>
+  <path class="ak" d="M1025,565 V547" marker-end="url(#mk)"/>
+
+  <path class="ak" d="M765,600 H883" marker-end="url(#mk)"/>
+  <text class="lab" x="827" y="594" text-anchor="middle">이벤트</text>
+
+  <!-- 6행 -->
+  <rect class="wf" x="35" y="650" width="280" height="45" rx="6"/>
+  <text class="s" x="47" y="670">서명 키 wf-* (암호화 변수)</text>
+  <text class="s" x="47" y="687">공개키 키링 ap-*·wf-* 빌드 내장</text>
+
+  <rect class="ji" x="435" y="650" width="330" height="45" rx="6"/>
+  <text class="s" x="447" y="670">검증 실패·문서 부재 = 연동 없음(단독 경로)</text>
+  <text class="s" x="447" y="687">HTTP 200 ≠ 서명 검증 성공</text>
+
+  <rect class="ap" x="885" y="650" width="280" height="45" rx="6"/>
+  <text class="s" x="897" y="670">Forge SQL 원장 — 결정이 진실</text>
+  <text class="s" x="897" y="687">서명 키 ap-* (암호화 변수)</text>
+
+  <!-- 범례 -->
+  <g transform="translate(20,722)">
+    <path class="aw" d="M0,8 H34" marker-end="url(#mw)"/><text class="lab" x="42" y="12">워크포스 서명 문서·쓰기</text>
+    <path class="ag" d="M190,8 H224" marker-end="url(#mg)"/><text class="lab" x="232" y="12">승인 앱 서명 문서·쓰기</text>
+    <path class="ak" d="M378,8 H412" marker-end="url(#mk)"/><text class="lab" x="420" y="12">앱 내부 흐름·이벤트</text>
+    <path class="ad" d="M548,8 H582" marker-end="url(#md)"/><text class="lab" x="590" y="12">넘김(DEFER·HANDOFF)</text>
+    <path class="ab" d="M728,8 H762" marker-end="url(#mb)"/><text class="lab" x="770" y="12">B 단계 숨김(앱 역할 visibility)</text>
+    <rect x="950" y="1" width="16" height="14" class="inp"/><text class="lab" x="972" y="12">입력 창구 ①·②</text>
+  </g>
+  <text class="lab" x="20" y="758">근거: 승인 앱 contract.js·WorklogControlCtl.js·WorkforceInbound.js·WorkforcePublisher.js / 워크포스 orgCap.js·LinkedWriteGate.js·controlDoc.js (코드 기준, 운영 실측 아님)</text>
+</svg>

@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1" type="device"><diagram id="page-7" name="07 DB 소유권과 앱별 처리 책임">
+    <mxGraphModel dx="1400" dy="1590" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1400" pageHeight="1590" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="07 DB 소유권과 앱별 처리 책임" style="text;html=0;fontSize=30;fontStyle=1;align=left;fontFamily=Malgun Gothic;fontColor=#142D4E;shadow=0;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="현행 저장 구조를 활용한 목표 구성 · API로 필요한 정보만 제공하며 상대 DB에 직접 접근하지 않습니다." style="text;html=0;fontSize=16;align=left;fontColor=#64748B;fontFamily=Malgun Gothic;shadow=0;fillColor=none;strokeColor=none;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="1320" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="wf" value="Workforce가 소유하고 관리하는 영역" style="rounded=1;arcSize=4;whiteSpace=wrap;html=0;fillColor=#F3F7FF;strokeColor=#B7CBEB;dashed=1;verticalAlign=top;align=left;spacingTop=16;spacingLeft=16;fontSize=21;fontStyle=1;fontFamily=Malgun Gothic;fontColor=#334B66;shadow=0;strokeWidth=1.5;dashPattern=6 5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="590" height="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="ap" value="Approval이 소유하고 관리하는 영역" style="rounded=1;arcSize=4;whiteSpace=wrap;html=0;fillColor=#F0F9F5;strokeColor=#ACD6CA;dashed=1;verticalAlign=top;align=left;spacingTop=16;spacingLeft=16;fontSize=21;fontStyle=1;fontFamily=Malgun Gothic;fontColor=#334B66;shadow=0;strokeWidth=1.5;dashPattern=6 5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="110" width="590" height="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" value="SQL·KVS·Custom Entity 조회" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="wk" target="ws">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="필요한 정보만 API 응답" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#369A86;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="ws" target="wa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="SQL 원장·이력·설정 조회" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#557DBD;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="ak" target="as">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="판정 및 결과 API 응답" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#369A86;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="as" target="aa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="상대 앱 결과로 화면·집계" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C9C73;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="wa" target="wo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="결정·통제·이력 관리" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C9C73;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="aa" target="ao">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wdb" value="Workforce DB · Forge SQL&#10;사용자 정보 · 소속 팀&#10;프로젝트 · 참여 사용자 · 배정 팀&#10;프로젝트·참여자·팀 배정" style="shape=cylinder;size=15;boundedLbl=1;backgroundOutline=1;spacingTop=22;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="200" width="510" height="190.0" as="geometry" />
+        </mxCell>
+        <mxCell id="wk" value="Workforce Forge Custom Entity / KVS&#10;팀 정보 · 조직 구조 · 팀장&#10;업무 설정·코드 등" style="shape=cylinder;size=15;boundedLbl=1;backgroundOutline=1;spacingTop=22;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="430" width="510" height="175.0" as="geometry" />
+        </mxCell>
+        <mxCell id="ws" value="Workforce 업무 서비스&#10;사용자 소속 + 프로젝트 참여 + 입력 조건 조합&#10;요청한 사용자·이슈에 필요한 응답만 구성" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="650" width="510" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="wa" value="Workforce가 Approval에 제공&#10;조직: 사용자 · 소속 팀 · 담당 팀장&#10;업무: 프로젝트 · 이슈 · 참여 여부 · 입력 조건&#10;기준: 정보 갱신 시각" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="880" width="510" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="wo" value="Workforce의 최종 역할&#10;입력 화면·조직/계획 관리·승인 결과 표시&#10;진행 시간 / 승인 인정 시간 집계·보고" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5EC;strokeColor=#4C9C73;strokeWidth=1.6;fontColor=#266344;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1110" width="510" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="adb" value="Approval DB · Forge SQL&#10;승인 요청 · 승인자 · 결정 결과&#10;요청 대상·승인자·결정·승인 당시 값&#10;승인 잠금 · 기간 마감 · 통제 상태" style="shape=cylinder;size=15;boundedLbl=1;backgroundOutline=1;spacingTop=22;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="200" width="510" height="190.0" as="geometry" />
+        </mxCell>
+        <mxCell id="ak" value="Approval DB · 이력 / 보조 저장소&#10;작업 기록 변경 이력 · 현재 확인값&#10;변경 전후·최종 관측 값&#10;KVS: 설정·처리 표식" style="shape=cylinder;size=15;boundedLbl=1;backgroundOutline=1;spacingTop=22;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="430" width="510" height="175.0" as="geometry" />
+        </mxCell>
+        <mxCell id="as" value="Approval 업무 서비스&#10;받은 조직·참여 정보 + Jira 원본/권한 확인&#10;자기 승인 원장으로 결정·마감·변경 가능 판정" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="650" width="510" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="aa" value="Approval이 Workforce에 제공&#10;작업 기록 · 승인 상태 · 승인 인정 시간&#10;변경 허용/거부/보류·사유·기간 잠금&#10;결정 시각·반영 상태·결과 버전" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="880" width="510" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="ao" value="Approval의 최종 역할&#10;승인 접수·팀장 자격 확인·단건/일괄 결정&#10;수정·삭제 통제·마감·승인 증거 보존" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5EC;strokeColor=#4C9C73;strokeWidth=1.6;fontColor=#266344;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="800" y="1110" width="510" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="jira" value="Jira 원본 (앱 DB와 구분)&#10;작업 기록 · 이슈 · 작성자 · 작업일 · 기록 시간&#10;양쪽 앱이 Jira REST API로 대조하며 승인 당시 값은 Approval에 별도 보존" style="shape=cylinder;size=15;boundedLbl=1;backgroundOutline=1;spacingTop=22;whiteSpace=wrap;html=0;fillColor=#E8F0FF;strokeColor=#557DBD;strokeWidth=1.6;fontColor=#274F8E;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="1360" width="900" height="170.0" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  </mxfile>

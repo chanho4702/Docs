@@ -1,0 +1,65 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy &amp; Security 작성 근거표 — 내부용</title><style>body{margin:0;background:#f5f7fa;color:#172b4d;font:16px/1.75 system-ui,-apple-system,"Malgun Gothic",sans-serif}main{max-width:1000px;margin:32px auto;padding:40px 48px;background:white;border:1px solid #dfe4eb;border-radius:12px}h1{font-size:30px;line-height:1.3;border-bottom:3px solid #1868db;padding-bottom:22px}h2{margin-top:36px;font-size:22px}a{color:#0c66e4}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dfe4eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eef3fa}img{max-width:100%;height:auto;border:1px solid #dfe4eb}code{background:#eef1f6;padding:2px 4px;border-radius:3px}li{margin:7px 0}blockquote{border-left:4px solid #1868db;padding-left:16px;color:#44546f}@media(max-width:700px){main{margin:0;padding:20px}table{display:block;overflow:auto}h1{font-size:25px}}@media print{body{background:white}main{border:0;margin:0;padding:0}h2{break-after:avoid}table,img{break-inside:avoid}}</style><main><p>﻿# Privacy &amp; Security 작성 근거표 — 내부용</p>
+<p>실제 제출 폼의 질문에 맞춰 조직 담당자가 확정할 자료다. 아래 구현 사실을 법적·조직 운영 보증으로 확대하지 않는다.</p>
+<table>
+<thead>
+<tr>
+<th>주제</th>
+<th>코드에서 확인한 사실</th>
+<th>담당자 확인 사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>저장</td>
+<td>manifest SQL·KVS, 승인/변경 이력 저장</td>
+<td>production 데이터 지역·보관 정책</td>
+</tr>
+<tr>
+<td>사용자 데이터</td>
+<td>account ID·결정·사유·서명 관련 정보·워크로그 설명/지문</td>
+<td>Privacy Policy의 범주와 처리 목적 일치</td>
+</tr>
+<tr>
+<td>통신</td>
+<td>dynamic webtrigger, 서명된 Workforce 채널, backend egress</td>
+<td>production 실제 허용 호스트·연동 설명</td>
+</tr>
+<tr>
+<td>권한</td>
+<td>read:jira-work, read:jira-user, write:jira-work, storage:app, report:personal-data</td>
+<td>설치 동의 화면과 리스팅의 최신 권한 일치</td>
+</tr>
+<tr>
+<td>impersonation</td>
+<td>상태 자동 적용 전용 offline 권한 코드</td>
+<td>해당 기능 출시 전 실행자·동의 검증</td>
+</tr>
+<tr>
+<td>접근 제어</td>
+<td>resolver 가드 및 이슈/작성자/팀 범위 확인</td>
+<td>실제 권한 없는 계정·export·숨김 기록 검증</td>
+</tr>
+<tr>
+<td>보관·삭제</td>
+<td>보관 설정, 내보내기 확인, 보호 원장 제외</td>
+<td>법적 보관 기간·삭제 요청 처리 절차·담당자</td>
+</tr>
+<tr>
+<td>앱 제거</td>
+<td>통제 해제 작업과 preUninstall 보조 처리</td>
+<td>잔여 0 확인 및 제거 후 데이터 정책</td>
+</tr>
+<tr>
+<td>지원</td>
+<td>고객 오류 코드와 진단 UI</td>
+<td>공개 지원 URL·운영 시간·응답 목표</td>
+</tr>
+<tr>
+<td>사고 대응·인증</td>
+<td>코드만으로 조직 운영 체계나 인증 증명 불가</td>
+<td>보안 연락처·사고 대응·침투 테스트·인증 증빙</td>
+</tr>
+</tbody>
+</table>
+<p>공식 <a href="https://developer.atlassian.com/platform/marketplace/security-privacy-tab/">Privacy and Security 안내</a>의 현행 제출 질문을 기준으로 최종 입력한다. 답변을 확인하지 않은 항목은 임의로 Yes 처리하지 않는다.</p>
+</main></html>

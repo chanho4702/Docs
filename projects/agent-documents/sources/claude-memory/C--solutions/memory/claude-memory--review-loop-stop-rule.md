@@ -1,0 +1,12 @@
+---
+name: review-loop-stop-rule
+description: 코덱스 검수가 같은 기능에서 반려를 반복하면 멈추고 범위·기준을 사용자에게 먼저 묻는다(10-22 9회 반려 교훈)
+metadata:
+  type: feedback
+---
+
+같은 기능에서 코덱스 검수 반려가 **2회 연속** 나오면, 고쳐서 다시 맡기기 전에 멈추고 사용자에게 "어디까지 하고 커밋할지·이 기능이 꼭 필요한지"를 먼저 묻는다.
+
+**Why:** 2026-10-22 A5·B12·B13 작업에서 보조 방어(B13-② 처리 중 요청 SQL·경로 서버 재가림) 하나 때문에 구현 검수 9회가 전부 반려됐다. "어떤 입력에도 새지 않음"은 검수자가 반례 하나만 찾으면 되는 구조라 끝이 없었고, 이미 결함 없음이 확인된 A5·B13-①까지 커밋이 밀렸다. 사용자가 "검수를 이렇게 많이 한 이유가 있니?", "굳이 해야 하는 작업이야?"라고 물었고, 결국 B13-②는 보류됐다.
+
+**How to apply:** 반려 사유가 같은 기능·같은 종류(반례 찾기형)로 반복되면 즉시 보고 — 무엇이 필수이고 무엇이 선택(이중 방어·백로그 "필요해질 때" 등급)인지 구분해 제시하고, 선택 부분은 빼고 커밋하는 안을 같이 낸다. 사용자에게 설명할 때는 쉬운 말로(전문 용어 최소화). [[projects/agent-documents/sources/claude-memory/C--solutions/memory/claude-memory--codex-review-handoff|codex-review-handoff]] [[projects/agent-documents/sources/claude-memory/C--solutions/memory/claude-memory--commit-requires-approval|commit-requires-approval]]

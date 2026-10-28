@@ -1,0 +1,24 @@
+﻿ M README.md
+ M locales/en-US.json
+ M locales/en/permission.json
+ M locales/ko-KR.json
+ M locales/kr/permission.json
+ M src/permission/PermissionMap.js
+ M src/permission/PrincipalResolver.js
+ M src/permission/permissionGuard.js
+ M src/resolver/__test__/SalaryPolicyLeak.test.js
+ M src/resolver/backoffice/team/TeamController.js
+ M src/resolver/backoffice/team/TeamService.js
+ M src/resolver/backoffice/user/UserController.js
+ M src/resolver/backoffice/user/UserService.js
+ M src/resolver/backoffice/user/__test__/UpdateUserMerge.test.js
+ M src/resolver/portfolioDashboard/PortfolioAggregator.js
+ M src/resolver/scheduler/SchedulerService.js
+ M src/utils/errors/ErrorCodes.js
+ M static/ui/src/backoffice/page/team/teamErrors.js
+ M static/ui/src/backoffice/page/user/modal/edit/useUserEditModal.js
+ M static/ui/src/backoffice/page/user/modal/regist/useUserRegistrationModal.js
+ M static/ui/src/utils/permissionError.js
+?? src/permission/PermissionAssignment.js
+?? test/permission/permissionAssignment.test.js
+?? test/permission/projectScopeGuard.test.js

@@ -1,0 +1,7 @@
+{
+  "clientId": "{Client ID}",
+  "clientSecret": "{Secret}",
+  "baseUrl": "https://{사이트}.atlassian.net/gateway/api/svc/jira/apps/{appId}_{envId}",
+  "redirectUri": "http://localhost:8765/callback",
+  "tokenFile": "./wf-token.json"
+}

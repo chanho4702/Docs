@@ -1,0 +1,94 @@
+Target SERVER request
+apm-diagnostics-runtime-fixture · 1111111111111111
+?
+Retry
+Service
+apm-diagnostics-runtime-fixture
+	
+Instance
+qa-instance-A
+	
+Process run ID
+00000000-0000-4000-8000-000000000101
+
+
+Start
+2026-10-28 16:08:04
+	
+Latency
+3.00 s
+Direct observation
+Data received
+Request connection acquisition
+?
+Direct observation
+Data received
+Acquisition attempts
+1
+	
+Observed interval union
+400 ms
+	
+Completed attempt total
+400 ms
+	
+Maximum acquisition
+400 ms
+
+
+Intervals intended for delivery
+1
+	
+Received intervals
+1
+	
+Below threshold
+0
+	
+Details omitted
+0
+
+
+Unfinished attempts
+0
+	
+Detail threshold
+10 ms
+These observations cover supported hooks, not every database path. Concurrent acquisitions may have a cumulative duration longer than the request.
+0 ms
+3.00 s
+00000000-0000-4000-8000-000000000102
+400 ms · Acquired
+Request SQL and external HTTP calls
+Direct observation
+Data received
+CLIENT intervals attributed to the selected SERVER. SQL and HTTP durations do not isolate database execution or network waiting.
+HTTP · 4444444444444444 · After request start 1.00 s · 300 ms
+View in waterfall
+SQL · 3333333333333333 · After request start 600 ms · 200 ms
+View in waterfall
+Instance context
+Surrounding context
+Partial data
+Runtime before and after process restarts cannot be separated.
+Memory and thread totals cannot be reconstructed accurately from stored one-minute data, so they have been excluded.
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+2026-10-28 16:06:04 — 2026-10-28 16:10:07
+Active connections (count)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+Maximum connections (count)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+CPU utilization (%)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+GC duration (ms)
+?
+Same-instance context at 60-second resolution · Process restarts are not separated · Not per-request CPU or GC time.
+Investigation candidates
+Evidence-based investigation candidates from rule version 1. Surrounding conditions do not establish a sole cause.
+Connection acquisition observed · 400 ms
+View evidence: Request connection acquisition
+Connection acquisition delay candidate · 400 ms
+View evidence: Request connection acquisition

@@ -1,0 +1,91 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172818543">한국어</a></p>
+<h2>Three separate measures</h2>
+<p>Progress analysis is a snapshot of the whole project now. Report read and project access are required. It distinguishes completion, effort consumption, and elapsed schedule; spending 80% of the effort does not mean 80% of the work is complete.</p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Calculation and interpretation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Completion</td>
+<td>Sum of issue progress × planned MD, divided by total planned MD</td>
+</tr>
+<tr>
+<td>Effort consumption</td>
+<td>Actual accumulated worklogs; an efficiency and risk signal</td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td>Elapsed working days divided by total project working days, excluding weekends and applying holidays</td>
+</tr>
+</tbody></table>
+<p>Done issues contribute 100%; To Do contributes 0%. In-progress issues use actual effort divided by planned effort, capped at 100%. This is an approximation, not a directly reported physical completion percentage.</p>
+<h2>Primary signal</h2>
+<p>The headline gap is completion minus schedule, in percentage points. A negative gap means completion is behind elapsed schedule. The progress threshold is configurable; the standard threshold is 5 percentage points. High effort consumption with low completion deserves a separate efficiency review.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Progress screen showing completion, schedule, effort, the gap, S-curve, status distribution, and delayed or at-risk work. Use sample values.</p>
+</blockquote>
+<h2>Read the screen</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Summary</td>
+<td>Completion, schedule, gap, delay badge, confirmed or predicted delay, expected finish</td>
+</tr>
+<tr>
+<td>Comparison bars</td>
+<td>A shorter completion bar than schedule indicates lag; a long effort bar alone indicates consumption</td>
+</tr>
+<tr>
+<td>S-curve</td>
+<td>Actual completion below planned completion can show widening delivery risk</td>
+</tr>
+<tr>
+<td>Status distribution</td>
+<td>Compare counts or MD; MD helps distinguish large from small issues</td>
+</tr>
+<tr>
+<td>At-risk work</td>
+<td>Unfinished overdue issues or large effort deviations needing action</td>
+</tr>
+</tbody></table>
+<h2>Delay and limitations</h2>
+<p>Confirmed delay describes completed work finishing after its due date. Predicted delay compares an estimated finish from remaining effort with the planned finish. Predictions are optimistic approximations and do not fully model contention, dependencies, or parallel work limits.</p>
+<p>There is no independent period filter: cutting only some measures to a shorter period would make the comparison inconsistent. Issues need Original Estimate for a meaningful weighted calculation. Review estimates, dates, and the expandable explanation before reporting the result. Dashboard progress widgets use the same concepts.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Progress uses project dates, current work status, and estimates; it does not provide the people-analysis period filter.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Completion / schedule / variance / estimated end</td>
+<td>Compare completion with schedule elapsed. Distinguish issue-count completion from effort-based progress.</td>
+<td>Missing dates/Original Estimate can produce a notice. Estimated completion is not a guaranteed deadline.</td>
+</tr>
+<tr>
+<td>S-curve / comparison / status distribution</td>
+<td>Read progress trends and current states without changing Jira statuses.</td>
+<td>Review the configured variance threshold (%p) and formula together.</td>
+</tr>
+<tr>
+<td>Delayed/at-risk work / original issue</td>
+<td>Distinguish confirmed from predicted delays and open the original issue by key.</td>
+<td>Inspect issue dates/assignee/estimates in the risk table; change plans in Work Management.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

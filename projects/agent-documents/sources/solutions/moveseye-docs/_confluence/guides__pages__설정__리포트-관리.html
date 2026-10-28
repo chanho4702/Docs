@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>리포트 관리</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>리포트 관리</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 시스템 관리자, 운영 책임자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/setting/ReportManagement.tsx</div></div>
+<h1>리포트 관리</h1>
+<blockquote><p><strong>사이드바</strong> 설정 &gt; 리포트 관리 <strong>경로</strong> <code>/setting/report-management</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>배치가 생성한 주간·월간 리포트를 관리하고 <strong>보존 기간 정책</strong>을 정하는 화면이다.</p>
+<h2>화면 구성</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>영역</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>저장된 리포트</strong></td><td>생성된 리포트 목록, 선택 삭제</td></tr>
+<tr><td><strong>보존 설정</strong></td><td>자동 삭제 기준 기간</td></tr>
+</tbody></table>
+<h2>사용 흐름</h2>
+<ol>
+<li>저장된 리포트 목록에서 생성 상태를 확인한다.</li>
+<li>보존 기간을 조직 정책에 맞게 설정한다.</li>
+<li>불필요한 리포트는 선택 삭제한다.</li>
+</ol>
+<h2>주의할 점</h2>
+<h3>보존 기간을 정하지 않으면 무한 누적된다</h3>
+<p>리포트는 주간·월간으로 계속 쌓인다. 보존 정책이 없으면 <strong>디스크가 계속 찬다.</strong> 도입 초기에 반드시 설정한다.</p>
+<h3>자동 삭제는 배치가 수행한다</h3>
+<p><code>report_cleanup</code> 배치가 보존 기간이 지난 리포트를 지운다. 이 배치가 꺼져 있으면 정책을 설정해도 삭제되지 않는다. <strong>스케줄러</strong>에서 활성 상태를 확인한다.</p>
+<blockquote><p>참고: 정리 계열 배치는 라이선스가 만료돼도 계속 동작한다. 멈추면 디스크가 무한정 차기 때문이다.</p></blockquote>
+<h3>리포트가 생성되지 않을 때</h3>
+<p>목록이 비어 있다면 생성 배치(<code>report_weekly</code>, <code>report_monthly</code>)를 확인한다.</p>
+<ul>
+<li>배치가 활성화돼 있는가</li>
+<li>마지막 실행이 성공했는가</li>
+<li><strong>부분 실패</strong>가 아닌가 — 실행 이력의 요약(<code>ok=38 fail=2</code>)을 읽는다</li>
+</ul>
+<h3>보존 기간 단축의 영향</h3>
+<p>보존 기간을 줄이면 <strong>다음 정리 배치 실행 시 기존 리포트가 삭제된다.</strong> 과거 자료가 필요하다면 먼저 내려받는다.</p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>스케줄러</strong></li>
+<li><strong>호스트 그룹 — 리포트 탭</strong></li>
+</ul>
+</body></html>

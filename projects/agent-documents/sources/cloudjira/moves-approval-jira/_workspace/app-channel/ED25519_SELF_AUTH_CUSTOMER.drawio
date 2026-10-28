@@ -1,0 +1,683 @@
+<mxfile host="app.diagrams.net" pages="5">
+  <diagram name="01 전체 구성" id="cust-01">
+    <mxGraphModel dx="2416" dy="1298" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1860" pageHeight="1320" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=28;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="Moves 앱 간 통신 보안 아키텍처 · Web Trigger + Ed25519 서명" vertex="1">
+          <mxGeometry height="44" width="1600" x="40" y="24" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=0;fontColor=#50647F;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="두 앱이 서로를 직접 인증 · 비밀은 각 앱의 서명 키 하나 · 요청과 응답 모두 서명 · 공급자 서버 경유 없음" vertex="1">
+          <mxGeometry height="30" width="1600" x="40" y="68" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;arcSize=2;whiteSpace=wrap;html=0;fillColor=#FAFBFD;strokeColor=#7A8CA5;strokeWidth=1.4;verticalAlign=top;align=left;spacingTop=10;spacingLeft=16;fontSize=18;fontStyle=1;fontFamily=Malgun Gothic;fontColor=#334B66;" value="Atlassian Cloud · 고객 Jira 사이트 (Forge 실행 환경)" vertex="1">
+          <mxGeometry height="940" width="1820" x="20" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="adm_a" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;" value="승인 앱 관리자 (고객)" vertex="1">
+          <mxGeometry height="50" width="260" x="200" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="adm_w" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;" value="워크포스 관리자 (고객)" vertex="1">
+          <mxGeometry height="50" width="260" x="1400" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" edge="1" parent="1" source="adm_a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9AA8BA;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="adm_w" value="연결 코드 전달 (최초 1회 · 30분 유효 · 서명됨)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=0;fillColor=#F0F9F5;strokeColor=#ACD6CA;dashed=1;dashPattern=6 5;strokeWidth=1.5;verticalAlign=top;align=left;spacingTop=12;spacingLeft=16;fontSize=20;fontStyle=1;fontFamily=Malgun Gothic;fontColor=#334B66;shadow=0;" value="Moves Approval (승인 앱)" vertex="1">
+          <mxGeometry height="780" width="680" x="40" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="rounded=1;arcSize=3;whiteSpace=wrap;html=0;fillColor=#F3F7FF;strokeColor=#B7CBEB;dashed=1;dashPattern=6 5;strokeWidth=1.5;verticalAlign=top;align=left;spacingTop=12;spacingLeft=16;fontSize=20;fontStyle=1;fontFamily=Malgun Gothic;fontColor=#334B66;shadow=0;" value="Moves Workforce (워크포스)" vertex="1">
+          <mxGeometry height="780" width="680" x="1140" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="a_res" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="화면 요청 처리 · 권한 확인&#xa;권한 확인을 통과한 요청만 전달&#xa;요청자 = Atlassian 이 확인한 사용자" vertex="1">
+          <mxGeometry height="100" width="300" x="70" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="a_cli" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="보내기&#xa;요청서 작성 → 서명 키로 서명&#xa;받은 응답의 서명 검증" vertex="1">
+          <mxGeometry height="100" width="290" x="400" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="a_svc" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="업무 데이터 (Forge SQL)&#xa;승인 판정 · 잠금 기록&#xa;데이터 주인이 직접 답함" vertex="1">
+          <mxGeometry height="100" width="290" x="70" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="a_srv" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F0EBFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#56378D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="받기 · Web Trigger&#xa;12단계 검증 · 요청자 권한 재확인&#xa;→ 업무 처리 → 응답 서명" vertex="1">
+          <mxGeometry height="100" width="290" x="400" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="a_sec" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="서명 키 (비밀)&#xa;Forge 암호화 환경 변수에만 보관&#xa;소스 코드 · 저장소에 없음" vertex="1">
+          <mxGeometry height="100" width="300" x="70" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="a_key" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="워크포스 공개키 (공개)&#xa;앱 배포본에 내장&#xa;운영 사이트는 운영용 키만 신뢰" vertex="1">
+          <mxGeometry height="100" width="300" x="395" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="a_kvs" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F4F6F9;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="연결 정보 (Forge 저장소)&#xa;연결 상태 · 연결 식별자 · 워크포스 주소 → 받을 때 연결 식별자 대조" vertex="1">
+          <mxGeometry height="80" width="620" x="70" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" edge="1" parent="1" source="a_res" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="a_cli" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" edge="1" parent="1" source="a_srv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="a_svc" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" edge="1" parent="1" source="a_sec" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.1;entryY=1;entryDx=0;entryDy=0;" target="a_cli" value="서명">
+          <mxGeometry relative="1" x="-0.75" as="geometry">
+            <Array as="points">
+              <mxPoint x="295" y="680" />
+              <mxPoint x="380" y="680" />
+              <mxPoint x="380" y="460" />
+              <mxPoint x="429" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c10" edge="1" parent="1" source="a_key" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#D98A1F;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="a_srv" value="검증">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w_srv" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F0EBFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#56378D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="받기 · Web Trigger&#xa;12단계 검증 · 요청자 권한 재확인&#xa;→ 업무 처리 → 응답 서명" vertex="1">
+          <mxGeometry height="100" width="290" x="1170" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="w_svc" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="업무 데이터 (Forge SQL)&#xa;팀 · 팀장 · 연결 이슈 · 작성 기간" vertex="1">
+          <mxGeometry height="100" width="290" x="1500" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="w_cli" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="보내기&#xa;요청서 작성 → 서명 키로 서명&#xa;받은 응답의 서명 검증" vertex="1">
+          <mxGeometry height="100" width="290" x="1170" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="w_res" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="화면 요청 처리 · 권한 확인&#xa;권한 확인을 통과한 요청만 전달&#xa;요청자 = Atlassian 이 확인한 사용자" vertex="1">
+          <mxGeometry height="100" width="300" x="1490" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="w_key" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="승인 앱 공개키 (공개)&#xa;앱 배포본에 내장&#xa;운영 사이트는 운영용 키만 신뢰" vertex="1">
+          <mxGeometry height="100" width="300" x="1170" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="w_sec" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="서명 키 (비밀)&#xa;Forge 암호화 환경 변수에만 보관&#xa;소스 코드 · 저장소에 없음" vertex="1">
+          <mxGeometry height="100" width="300" x="1490" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="w_kvs" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F4F6F9;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="연결 정보 (Forge 저장소)&#xa;연결 상태 · 연결 식별자 · 승인 앱 주소 → 받을 때 연결 식별자 대조" vertex="1">
+          <mxGeometry height="80" width="620" x="1170" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" edge="1" parent="1" source="w_srv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#4C7FD1;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="w_svc" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" edge="1" parent="1" source="w_res" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#4C7FD1;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="w_cli" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" edge="1" parent="1" source="w_key" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#D98A1F;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.9;entryY=1;entryDx=0;entryDy=0;" target="w_srv" value="검증">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <Array as="points">
+              <mxPoint x="1320" y="680" />
+              <mxPoint x="1475" y="680" />
+              <mxPoint x="1475" y="460" />
+              <mxPoint x="1431" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c14" edge="1" parent="1" source="w_sec" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.9;entryY=1;entryDx=0;entryDy=0;" target="w_cli" value="서명">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1565" y="700" />
+              <mxPoint x="1431" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c15" edge="1" parent="1" source="a_cli" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="w_srv" value="① 요청 (HTTPS) · 요청서 + Ed25519 서명&#xa;사이트 · 연결 식별자 · 시각 · 일회용 번호 · 요청자">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" edge="1" parent="1" source="w_srv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="a_cli" value="② 서명된 응답 · 요청의 일회용 번호 포함">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" edge="1" parent="1" source="w_cli" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" target="a_srv" value="③ 반대 방향도 같은 규칙&#xa;(워크포스 → 승인 앱)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" edge="1" parent="1" source="a_srv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="w_cli" value="④ 서명된 응답">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jira" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E8F0FF;strokeColor=#557DBD;strokeWidth=1.6;fontColor=#274F8E;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="Jira (Atlassian)&#xa;요청자 계정 · 활성 확인&#xa;이슈별 요청자 권한 확인&#xa;(양쪽 받기 모듈이 사용)" vertex="1">
+          <mxGeometry height="110" width="280" x="820" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" edge="1" parent="1" source="a_srv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#557DBD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="jira" value="요청자 권한 재확인">
+          <mxGeometry relative="1" x="0.3" as="geometry">
+            <Array as="points">
+              <mxPoint x="646" y="695" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c20" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;arcSize=4;" value="보안 원칙&#xa;• 서명 없는 요청, 다른 사이트용 요청, 2분이 지난 요청, 이미 받은 요청은 업무 데이터에 닿기 전에 거부&#xa;• 응답에도 서명하고 요청의 일회용 번호를 넣음 → 예전 응답을 끼워 넣어도 사용되지 않음&#xa;• 받는 작업 목록에 승인 · 반려 · 정책 변경 · 삭제 실행이 없음 → 앱 간 통신으로 승인 결과를 바꿀 수 없음&#xa;• 서명이 맞아도 요청자의 Jira 권한을 다시 확인 → 그 사용자가 볼 수 있는 범위만 처리&#xa;• 판정할 수 없으면 막음(fail-close) → 기존 잠금 유지" vertex="1">
+          <mxGeometry height="200" width="1180" x="40" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;arcSize=4;" value="참고 · 외부 시스템용 API&#xa;API Route + Atlassian OAuth 2.0(3LO)&#xa;Atlassian 게이트웨이가 토큰 · 범위를 검증한 뒤&#xa;앱 함수 실행 (이 그림의 방식과 별개)" vertex="1">
+          <mxGeometry height="200" width="570" x="1250" y="1080" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="02 요청 한 번의 흐름" id="cust-02">
+    <mxGraphModel grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1760" pageHeight="1300" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=28;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="요청 한 번의 흐름 · 보내기 → 검증 → 권한 재확인 → 서명 응답" vertex="1">
+          <mxGeometry x="40" y="24" width="1600" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=0;fontColor=#50647F;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="예: 워크포스 화면에서 워크로그를 저장할 때 승인 앱에 작성 가능 여부를 묻는 경우 (반대 방향도 같음)" vertex="1">
+          <mxGeometry x="40" y="68" width="1600" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="사용자" vertex="1">
+          <mxGeometry x="30" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="endArrow=none;html=0;strokeColor=#9AA8BA;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="160" as="sourcePoint" />
+            <mxPoint x="170" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="보내는 앱 (예: 워크포스)" vertex="1">
+          <mxGeometry x="470" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="endArrow=none;html=0;strokeColor=#4C7FD1;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="160" as="sourcePoint" />
+            <mxPoint x="610" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="받는 앱 (예: 승인 앱)" vertex="1">
+          <mxGeometry x="970" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="endArrow=none;html=0;strokeColor=#369A86;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="160" as="sourcePoint" />
+            <mxPoint x="1110" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E8F0FF;strokeColor=#557DBD;strokeWidth=1.6;fontColor=#274F8E;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="Jira (Atlassian)" vertex="1">
+          <mxGeometry x="1390" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="endArrow=none;html=0;strokeColor=#557DBD;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1530" y="160" as="sourcePoint" />
+            <mxPoint x="1530" y="1150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c11" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9AA8BA;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;edgeStyle=none;" value="1  화면에서 작업 (워크로그 저장)" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="200" as="sourcePoint" />
+            <mxPoint x="610" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c12" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="2  권한 확인&#xa;   Atlassian 이 확인한 로그인 사용자 기준" vertex="1">
+          <mxGeometry x="410.0" y="225" width="400" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="3  요청서 작성&#xa;   사이트 · 연결 식별자 · 작업 · 시각 · 일회용 번호 · 요청자&#xa;4  서명 키로 요청서 전체에 서명" vertex="1">
+          <mxGeometry x="410.0" y="300" width="400" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;edgeStyle=none;" value="5  HTTPS 요청 (요청서 + Ed25519 서명)" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="430" as="sourcePoint" />
+            <mxPoint x="1110" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c15" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="6  12단계 검증 (그림 03)&#xa;   형식 · 시각 · 키 · 서명 · 사이트 · 재전송 · 연결" vertex="1">
+          <mxGeometry x="910.0" y="455" width="400" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#557DBD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;edgeStyle=none;" value="7  요청자 권한 확인" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="570" as="sourcePoint" />
+            <mxPoint x="1530" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c17" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#557DBD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="8  권한 결과" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1530" y="620" as="sourcePoint" />
+            <mxPoint x="1110" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c18" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="9  업무 처리 (요청자가 볼 수 있는 범위만)&#xa;10 응답 작성 · 요청의 일회용 번호 포함&#xa;11 서명 키로 응답에 서명" vertex="1">
+          <mxGeometry x="910.0" y="645" width="400" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="12 서명된 응답" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1110" y="775" as="sourcePoint" />
+            <mxPoint x="610" y="775" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c20" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="13 응답 검증&#xa;   서명 · 일회용 번호 · 사이트 · 연결 · 작업 · 시각&#xa;   하나라도 다르면 응답을 쓰지 않음" vertex="1">
+          <mxGeometry x="410.0" y="800" width="400" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9AA8BA;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="14 결과 표시 (저장 또는 승인 앱 화면 안내)" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="610" y="930" as="sourcePoint" />
+            <mxPoint x="170" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c22" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="실패 시: 받는 앱은 최소 응답만 · 업무 데이터 미사용&#xa;보내는 앱은 막음(fail-close) · 기존 잠금 유지" vertex="1">
+          <mxGeometry x="890.0" y="960" width="440" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;arcSize=4;" value="• 3번의 요청자는 화면에서 넘어온 값이 아니라 Atlassian 이 확인한 로그인 사용자의 계정 식별자&#xa;• 7번 권한 확인 결과는 허용 · 거부 판정에만 쓰고 응답이나 로그로 내보내지 않음. 확인 실패 · 시간 초과는 거부&#xa;• 사람이 없는 자동 처리는 요청자를 &quot;시스템&quot;으로 표시. 허용된 사유와 앱이 정한 대상 1건으로만 제한" vertex="1">
+          <mxGeometry x="40" y="1170" width="1680" height="110" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="03 받는 앱 12단계 검증" id="cust-03">
+    <mxGraphModel grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1500" pageHeight="1400" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=28;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="받는 앱의 12단계 검증 · 비용이 적은 검사부터" vertex="1">
+          <mxGeometry x="40" y="24" width="1300" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=0;fontColor=#50647F;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="1~8단계는 데이터베이스를 쓰지 않음 → 위조 요청이 대량으로 와도 업무 데이터에 닿기 전에 거부" vertex="1">
+          <mxGeometry x="40" y="68" width="1300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;arcSize=4;html=0;fillColor=#F4F6F9;strokeColor=#9AA8BA;dashed=1;dashPattern=5 4;strokeWidth=1.2;" value="" vertex="1">
+          <mxGeometry x="120" y="186" width="1320" height="656" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=1;fontColor=#50647F;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;" value="DB 미사용&#xa;즉시 거부" vertex="1">
+          <mxGeometry x="135" y="484.0" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=1;arcSize=4;html=0;fillColor=#FFF8EC;strokeColor=#D98A1F;dashed=1;dashPattern=5 4;strokeWidth=1.2;" value="" vertex="1">
+          <mxGeometry x="120" y="842" width="1320" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=1;fontColor=#D98A1F;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;" value="연결 정보&#xa;1회 확인" vertex="1">
+          <mxGeometry x="135" y="853.0" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="1" style="rounded=1;arcSize=4;html=0;fillColor=#F4F6F9;strokeColor=#9AA8BA;dashed=1;dashPattern=5 4;strokeWidth=1.2;" value="" vertex="1">
+          <mxGeometry x="120" y="924" width="1320" height="164" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=1;fontColor=#50647F;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;" value="정책 확인" vertex="1">
+          <mxGeometry x="135" y="976.0" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=1;arcSize=4;html=0;fillColor=#EEF6F3;strokeColor=#369A86;dashed=1;dashPattern=5 4;strokeWidth=1.2;" value="" vertex="1">
+          <mxGeometry x="120" y="1088" width="1320" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=1;fontColor=#369A86;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;" value="업무 데이터&#xa;Jira 권한" vertex="1">
+          <mxGeometry x="135" y="1099.0" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F0EBFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#56378D;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;" value="요청 도착 (HTTPS)&#xa;요청서 + Ed25519 서명" vertex="1">
+          <mxGeometry x="330" y="110" width="580" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="1. 허용된 요청 방식 · 최대 크기 이하" vertex="1">
+          <mxGeometry x="330" y="200" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 잘못된 요청" vertex="1">
+          <mxGeometry x="1030" y="205" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="" edge="1" source="start" target="s1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s1" target="f1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="2. 요청서 구조 · 받는 앱 = 나 · 보낸 앱 = 연동 상대" vertex="1">
+          <mxGeometry x="330" y="282" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 잘못된 요청" vertex="1">
+          <mxGeometry x="1030" y="287" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s2" target="f2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="3. 이 방향에서 허용된 작업인가" vertex="1">
+          <mxGeometry x="330" y="364" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 허용되지 않은 작업" vertex="1">
+          <mxGeometry x="1030" y="369" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s3" target="f3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="4. 서명 시각이 2분 이내인가" vertex="1">
+          <mxGeometry x="330" y="446" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 만료" vertex="1">
+          <mxGeometry x="1030" y="451" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s3" target="s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s4" target="f4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="5. 서명 키가 신뢰 키 목록에 있는가 (운영용만)" vertex="1">
+          <mxGeometry x="330" y="528" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 인증 실패" vertex="1">
+          <mxGeometry x="1030" y="533" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s4" target="s5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s5" target="f5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;fontStyle=1;" value="6. Ed25519 서명 검증 (요청서 전체)" vertex="1">
+          <mxGeometry x="330" y="610" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f6" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 인증 실패" vertex="1">
+          <mxGeometry x="1030" y="615" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s5" target="s6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s6" target="f6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="7. 대상 사이트 = 이 고객 사이트인가" vertex="1">
+          <mxGeometry x="330" y="692" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 다른 사이트" vertex="1">
+          <mxGeometry x="1030" y="697" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s6" target="s7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c24" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s7" target="f7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s8" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="8. 최근 5분 안에 같은 일회용 번호가 있었나" vertex="1">
+          <mxGeometry x="330" y="774" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f8" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 재전송" vertex="1">
+          <mxGeometry x="1030" y="779" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c25" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s7" target="s8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c26" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s8" target="f8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="9. 연결 상태 정상 · 연결 식별자 일치" vertex="1">
+          <mxGeometry x="330" y="856" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 연결 안 됨 / 옛 연결" vertex="1">
+          <mxGeometry x="1030" y="861" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c27" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s8" target="s9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c28" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s9" target="f9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s10" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="10. 라이선스 활성" vertex="1">
+          <mxGeometry x="330" y="938" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f10" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 라이선스" vertex="1">
+          <mxGeometry x="1030" y="943" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c29" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s9" target="s10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c30" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s10" target="f10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s11" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="11. 요청자 정책 · 시스템 요청 사유 허용 목록" vertex="1">
+          <mxGeometry x="330" y="1020" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f11" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 · 허용되지 않은 요청자" vertex="1">
+          <mxGeometry x="1030" y="1025" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s10" target="s11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c32" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s11" target="f11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s12" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#369A86;strokeWidth=1.6;fontColor=#1F3350;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;spacingLeft=16;" value="12. 요청자 권한 재확인 → 업무 처리" vertex="1">
+          <mxGeometry x="330" y="1102" width="580" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="f12" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;" value="거부 또는 범위 축소" vertex="1">
+          <mxGeometry x="1030" y="1107" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c33" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="통과" edge="1" source="s11" target="s12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c34" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="실패" edge="1" source="s12" target="f12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="resp" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;" value="서명된 응답&#xa;요청의 일회용 번호 포함 · 결과 또는 오류" vertex="1">
+          <mxGeometry x="330" y="1194" width="580" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="c35" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" value="" edge="1" source="s12" target="resp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rv" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="보내는 앱의 응답 검증&#xa;서명 · 일회용 번호 · 사이트 · 연결 · 작업 · 시각&#xa;모두 맞을 때만 결과 사용" vertex="1">
+          <mxGeometry x="1030" y="1188" width="340" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="c36" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#4C7FD1;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="" edge="1" source="resp" target="rv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c37" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;arcSize=4;" value="• 1~8단계 거부는 최소 응답만 돌려주고, 어느 단계에서 실패했는지 외부에 자세히 알리지 않음&#xa;• 9단계 이후 실패는 연동 실패 기록에 남기고 관리자 화면에 &quot;연결 확인 필요&quot; 표시" vertex="1">
+          <mxGeometry x="120" y="1294" width="1320" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="04 처음 연결 (연결 코드)" id="cust-04">
+    <mxGraphModel grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1600" pageHeight="1150" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=28;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="처음 연결 · 연결 코드 붙여넣기 한 번으로 양방향 완성" vertex="1">
+          <mxGeometry x="40" y="24" width="1400" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=0;fontColor=#50647F;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="A = 코드를 만든 앱, B = 붙여넣은 앱 (승인 앱 · 워크포스 어느 쪽이든 가능) · 고객 관리자가 최초 1회 수행" vertex="1">
+          <mxGeometry x="40" y="68" width="1500" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="A 앱 관리자" vertex="1">
+          <mxGeometry x="50" y="110" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="endArrow=none;html=0;strokeColor=#369A86;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="160" as="sourcePoint" />
+            <mxPoint x="170" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c5" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="A 앱 (예: 승인 앱)" vertex="1">
+          <mxGeometry x="430" y="110" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="endArrow=none;html=0;strokeColor=#369A86;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="160" as="sourcePoint" />
+            <mxPoint x="550" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c7" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="B 앱 (예: 워크포스)" vertex="1">
+          <mxGeometry x="880" y="110" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="endArrow=none;html=0;strokeColor=#4C7FD1;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="160" as="sourcePoint" />
+            <mxPoint x="1000" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="B 앱 관리자" vertex="1">
+          <mxGeometry x="1260" y="110" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="endArrow=none;html=0;strokeColor=#4C7FD1;strokeWidth=1.4;dashed=1;dashPattern=6 5;" value="" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1380" y="160" as="sourcePoint" />
+            <mxPoint x="1380" y="930" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c11" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;edgeStyle=none;" value="1  연결 코드 만들기" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="200" as="sourcePoint" />
+            <mxPoint x="550" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c12" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="2  자기 주소 · 새 연결 식별자 · 일회용 확인값 생성&#xa;   확인값은 해시만 저장" vertex="1">
+          <mxGeometry x="355.0" y="225" width="390" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="3  연결 코드&#xa;   (A 서명 키로 서명 · 30분 유효)" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="330" as="sourcePoint" />
+            <mxPoint x="170" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c14" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9AA8BA;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="4  코드 복사 · 전달 (관리자 사이)" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="400" as="sourcePoint" />
+            <mxPoint x="1380" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c15" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#4C7FD1;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;edgeStyle=none;" value="5  코드 붙여넣기" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1380" y="470" as="sourcePoint" />
+            <mxPoint x="1000" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c16" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="6  코드 확인: A 공개키 서명 · 앱 종류 · 환경&#xa;   대상 사이트 = 내 사이트 · 만료 · 주소 형식" vertex="1">
+          <mxGeometry x="805.0" y="495" width="390" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;edgeStyle=none;" value="7  연결 완료 요청 (B 서명 키로 서명)&#xa;   확인값 + B 주소" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="610" as="sourcePoint" />
+            <mxPoint x="550" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c18" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="8  12단계 검증 → 연결 식별자 · 만료 · 확인값 대조&#xa;   연결 저장 · 연결 코드 폐기(1회용)" vertex="1">
+          <mxGeometry x="355.0" y="640" width="390" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#9573CD;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="9  서명된 응답 (7번 요청의 일회용 번호 포함)" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="760" as="sourcePoint" />
+            <mxPoint x="1000" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c20" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;spacingLeft=12;" value="10 응답 검증 → 연결 저장" vertex="1">
+          <mxGeometry x="805.0" y="785" width="390" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#4C7FD1;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;dashed=1;edgeStyle=none;" value="11 연결됨" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1000" y="890" as="sourcePoint" />
+            <mxPoint x="1380" y="890" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c22" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=14;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;arcSize=4;" value="• A 는 B 의 주소를 7번 요청으로, B 는 A 의 주소를 연결 코드에서 얻음&#xa;• 다른 사이트에서 만든 코드는 6번(B)과 8번(A)에서 두 번 거부 · 30분 지난 코드와 이미 쓴 코드도 거부&#xa;• 코드 원문과 확인값 원문은 로그 · 감사 기록에 남기지 않음 · 화면에는 복사 버튼만&#xa;• 다시 연결하면 새 연결 식별자 → 옛 연결로 온 요청은 즉시 거부" vertex="1">
+          <mxGeometry x="40" y="950" width="1520" height="130" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="05 키 관리 · 탐지 · 사고 대응" id="cust-05">
+    <mxGraphModel grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1700" pageHeight="1230" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=28;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="키 관리 · 탐지 · 사고 대응" vertex="1">
+          <mxGeometry x="40" y="24" width="1400" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=16;fontStyle=0;fontColor=#50647F;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="비밀은 각 앱의 서명 키 하나 · 공개키 목록을 바꿔 배포하는 것만으로 교체 · 폐기 · 고객 관리자가 관리할 비밀 없음" vertex="1">
+          <mxGeometry x="40" y="68" width="1600" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lh0" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F4F6F9;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" value="생성" vertex="1">
+          <mxGeometry x="40" y="150" width="290" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="lb0" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="공급자가 환경별로 생성&#xa;운영 · 개발 · 검증 분리&#xa;파일 · 저장소에 남기지 않음" vertex="1">
+          <mxGeometry x="40" y="206" width="290" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="lh1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" value="보관" vertex="1">
+          <mxGeometry x="380" y="150" width="290" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="lb1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="서명 키: Forge 암호화&#xa;환경 변수에만&#xa;공개키: 상대 앱 배포본" vertex="1">
+          <mxGeometry x="380" y="206" width="290" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="" edge="1" source="lh0" target="lh1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lh2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F0EBFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#56378D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" value="사용" vertex="1">
+          <mxGeometry x="720" y="150" width="290" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="lb2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9573CD;strokeWidth=1.6;fontColor=#56378D;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="요청 · 응답마다 서명&#xa;받는 쪽은 공개키로 검증&#xa;운영용 키만 신뢰" vertex="1">
+          <mxGeometry x="720" y="206" width="290" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="" edge="1" source="lh1" target="lh2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lh3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" value="교체" vertex="1">
+          <mxGeometry x="1060" y="150" width="290" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="lb3" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="① 새 공개키 양쪽 추가 배포&#xa;② 서명 키 전환&#xa;③ 옛 공개키 제거 배포" vertex="1">
+          <mxGeometry x="1060" y="206" width="290" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="c5" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="" edge="1" source="lh2" target="lh3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lh4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" value="폐기" vertex="1">
+          <mxGeometry x="1400" y="150" width="290" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="lb4" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="공개키 목록에서 제거 배포&#xa;→ 그 키의 모든 서명&#xa;즉시 무효" vertex="1">
+          <mxGeometry x="1400" y="206" width="290" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="c6" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#6B7A90;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="" edge="1" source="lh3" target="lh4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=15;fontStyle=0;fontColor=#50647F;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;" value="교체 중에는 옛 키와 새 키를 함께 신뢰하므로 통신이 끊기지 않음" vertex="1">
+          <mxGeometry x="900" y="330" width="610" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=22;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="탐지" vertex="1">
+          <mxGeometry x="40" y="400" width="600" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#F4F6F9;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;" value="관찰 신호&#xa;• 서명 실패 · 신뢰하지 않는 키 요청 증가&#xa;• 다른 사이트용 · 재전송 요청 증가&#xa;• 사용자별 요청 속도 제한 초과" vertex="1">
+          <mxGeometry x="40" y="445" width="520" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;fontStyle=0;" value="유출로 간주하는 신호&#xa;• 폐기한 키로 서명된 요청 (1건이라도)&#xa;• 서명은 맞는데 요청자 권한 거부 급증&#xa;• 받은 요청 수 &gt; 상대 앱이 보낸 요청 수 (송신 · 수신 대조)" vertex="1">
+          <mxGeometry x="590" y="445" width="560" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=14;spacingTop=8;" value="기록 · 점검&#xa;• 감사 이력에 서명 키 이름 기록&#xa;• 연동 실패 기록 · 관리자 화면 표시&#xa;• 거부 사유 집계 · 대조 · 정기 점검 (적용 예정)" vertex="1">
+          <mxGeometry x="1180" y="445" width="480" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="1" style="text;html=0;whiteSpace=wrap;fontFamily=Malgun Gothic;fontSize=22;fontStyle=1;fontColor=#142D4E;align=left;verticalAlign=middle;strokeColor=none;fillColor=none;" value="사고 대응" vertex="1">
+          <mxGeometry x="40" y="590" width="600" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="cs0" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="서명 키 유출 의심" vertex="1">
+          <mxGeometry x="40" y="640" width="360" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ca0" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="새 키로 교체하고 옛 키 폐기" vertex="1">
+          <mxGeometry x="500" y="640" width="440" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ce0" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="옛 키로 만든 요청 즉시 거부&#xa;유출돼도 승인 · 반려 · 삭제 실행 불가&#xa;요청자 권한 재확인으로 범위 제한" vertex="1">
+          <mxGeometry x="1040" y="640" width="620" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="대응" edge="1" source="cs0" target="ca0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="효과" edge="1" source="ca0" target="ce0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cs1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="특정 사이트 연결 오용 의심" vertex="1">
+          <mxGeometry x="40" y="790" width="360" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ca1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="고객 관리자가 연결 해제 후&#xa;다시 연결" vertex="1">
+          <mxGeometry x="500" y="790" width="440" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ce1" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="새 연결 식별자 발급&#xa;옛 연결로 온 요청 즉시 거부" vertex="1">
+          <mxGeometry x="1040" y="790" width="620" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="대응" edge="1" source="cs1" target="ca1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="효과" edge="1" source="ca1" target="ce1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cs2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FDECEC;strokeColor=#C2504B;strokeWidth=1.6;fontColor=#7A1F1B;fontFamily=Malgun Gothic;fontSize=16;spacing=8;shadow=0;fontStyle=1;" value="Web Trigger 주소 노출" vertex="1">
+          <mxGeometry x="40" y="940" width="360" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ca2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFF4E5;strokeColor=#D98A1F;strokeWidth=1.6;fontColor=#7A4A0B;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="새 주소 발급 → 상대 앱에&#xa;서명된 변경 알림 → 옛 주소 삭제" vertex="1">
+          <mxGeometry x="500" y="940" width="440" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ce2" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;" value="옛 주소 호출 불가&#xa;주소만으로는 서명 없이 처리 안 됨" vertex="1">
+          <mxGeometry x="1040" y="940" width="620" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#C2504B;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="대응" edge="1" source="cs2" target="ca2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=0;strokeWidth=1.6;strokeColor=#369A86;fontColor=#3B4C63;fontFamily=Malgun Gothic;fontSize=14;labelBackgroundColor=#FFFFFF;endArrow=block;endFill=1;endSize=7;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" value="효과" edge="1" source="ca2" target="ce2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=0;fillColor=#FFFFFF;strokeColor=#9AA8BA;strokeWidth=1.6;fontColor=#334B66;fontFamily=Malgun Gothic;fontSize=15;spacing=8;shadow=0;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;arcSize=4;" value="책임 분담&#xa;• Atlassian: Forge 실행 환경 · Web Trigger 주소 · HTTPS · 암호화 환경 변수 보관 · 사이트별 데이터 분리&#xa;• 공급자: 서명 · 검증 구현 · 키 생성 · 교체 · 폐기 · 작업 목록과 데이터 최소화 · 감사 기록 · 사고 대응&#xa;• 고객 관리자: 두 앱 연결(연결 코드 전달) · 필요 시 연결 해제 · 재연결 · Jira 권한 구성" vertex="1">
+          <mxGeometry x="40" y="1090" width="1620" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

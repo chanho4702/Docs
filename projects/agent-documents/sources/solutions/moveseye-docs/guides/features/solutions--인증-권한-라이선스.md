@@ -1,0 +1,975 @@
+---
+title: 인증·사용자·권한·라이선스 기능 상세 가이드
+doc_type: guide
+audience: [기획, 개발, 운영, QA, 지원]
+status: review
+owner: MovesEye 팀
+baseline: 2026-10-06
+source_of_truth: "moveseye-be-spring/src/main/java/com/dmove/moveseye/{auth,user,license,config}/, moveseyee_fe/src/{pages/authentication,pages/user-roles,pages/setting/license,routes/pageAccess.ts,services/axiosInstance.ts}, moveseye-license-issuer/src/main/java/com/dmove/moveseye/tools/license/"
+reviewed_at: 2026-10-06
+review_cycle: event-driven
+deployment_scope: source
+be_commit: e55948c
+fe_commit: 9dfcbe8
+---
+
+# 인증·사용자·권한·라이선스 기능 상세 가이드
+
+> 이 영역은 "누가 들어올 수 있는가(로그인·세션)", "들어온 사람이 무엇을 할 수 있는가(역할 권한·관리자 판정·데이터 범위)", "이 설치본이 어떤 기능을 쓸 수 있는가(라이선스)"를 다룬다. 관리자는 계정·역할·사용자 그룹을 만들고, 일반 사용자는 로그인·내 정보 수정을 하며, 공급사는 발급 도구로 라이선스 키를 만든다. 문서는 로그인부터 세션 회수, 사용자·역할·그룹 관리, BE 권한 강제 구조, 라이선스 키 검증과 단계적 차단, 사내 발급 도구까지 포함한다. Zabbix 자체 사용자 화면과 MCP OAuth 절차는 범위 밖이다(세션 세대와 만나는 지점만 적는다). 모든 서술은 2026-10-06 소스(BE `e55948c`, FE `9dfcbe8`)를 정적으로 읽어 대조한 결과이며, 서버 기동·API 호출·브라우저 확인은 하지 않았다.
+
+## 1. 한눈에 보기
+
+### 1.1 기능 목록
+
+| 기능 | 화면 주소·메뉴 위치 | 상태 | 권한·라이선스 | 한 줄 설명 |
+|---|---|---|---|---|
+| 로그인 | `/sign-in` (공개) | 현재 | 없음. 라이선스 잠금 중에도 동작 | 사용자명·비밀번호로 로그인하고 인증 쿠키 2개를 받는다 |
+| 세션 유지·자동 재발급 | 화면 없음(FE axios 인터셉터) | 현재 | 로그인 사용자 | access 토큰(30분) 만료 시 refresh 토큰(8시간)으로 1회 재발급한다 |
+| 로그아웃 | 사이드바 하단 사용자 카드 | 현재 | 로그인 사용자 | 이 기기의 로그인 계열과 세션을 폐기하고 쿠키를 지운다 |
+| 비밀번호 재설정 | `/password-reset` (공개), 로그인 화면의 링크 | 현재 | 없음. 계정에 이메일이 있어야 한다 | 이메일로 받은 6자리 코드로 새 비밀번호를 정한다 |
+| 이메일 인증 | 화면 없음(BE API만) | 부분 | 없음 | 코드 확인 후 임시 비밀번호를 발급하는 흐름. FE 화면과 메일 발송이 없다(§4 SEC-05) |
+| 마이 페이지 | `/setting/my-page`, 관리 콘솔 > 계정 | 현재 | 모든 로그인 사용자 | 이름·이메일·비밀번호를 본인이 바꾼다 |
+| 연결된 앱 | `/setting/connected-apps`, 관리 콘솔 > 계정 | 현재(범위 밖) | 모든 로그인 사용자 | MCP 연결 목록. 이 문서는 세션 세대와 만나는 지점만 다룬다 |
+| 사용자 관리 — 사용자 | `/setting/user-management?tab=users`, 관리 콘솔 > 접근 | 현재 | 관리자 전용 | 계정 등록·수정·삭제·활성/비활성·MCP 권한 |
+| 사용자 관리 — 역할 | `/setting/user-management?tab=roles`, 편집은 `/setting/user-management/roles/create`·`/roles/edit?id=` | 현재 | 관리자 전용 | 역할과 기능 권한 칸(보기·편집)을 정한다 |
+| 사용자 관리 — 사용자 그룹 | `/setting/user-management?tab=user-groups` | 현재 | 관리자 전용 | 사용자 그룹과 호스트 그룹 연결(데이터 범위) |
+| Zabbix 동기화 | 사용자 관리 각 탭의 동기화 버튼, 스케줄러 `user_sync` | 현재(배치는 기본 꺼짐) | 관리자 전용 | Zabbix의 사용자·그룹·역할을 MovesEye 사본에 맞춘다 |
+| 화면 접근 가드 | 모든 보호 화면(`PageWrapper`) | 현재 | — | 역할·권한을 서버에서 받아 화면을 열지 404로 보낼지 판정한다 |
+| 라이선스 상태 | `/setting/license`, 관리 콘솔 > 접근 | 현재 | 관리자 전용. 잠금 중에도 열림 | 등급·유형·만료·보유 기능·수명주기 표시, 해지 |
+| 라이선스 적용 | `/setting/license/apply` | 현재 | 관리자 전용. 잠금 중에도 열림 | `.lic` 파일 업로드 또는 키 붙여넣기로 등록·교체 |
+| 잠금 화면 | 주소 없음(보호 화면을 통째로 대체) | 현재 | 라이선스 상태 `NONE`·`INVALID` | 등록 화면으로 보내는 안내 |
+| 만료 배너·읽기 전용·실시간 차단 안내·업셀 | 앱 상단 배너, 토스트, 화면 내 안내 | 현재 | 라이선스 상태에 따라 | 만료 단계별로 기능이 줄어드는 것을 알린다 |
+| 라이선스 발급 도구 | 사내 PC의 `issue.bat`(콘솔) 또는 `http://127.0.0.1:877`(웹) | 현재(제품과 별도 저장소) | 개인키 보유자 | 고객사별 `.lic` 키를 서명해 만든다 |
+| 설정 자격증명 암호화 | 화면 없음 | 현재 | — | 설정에 저장하는 Zabbix·AWS·LLM 비밀값을 `enc:v1:` 형식으로 암호화한다 |
+
+구 주소 `/users-roles/*`와 `/zabbix-management/user-management`는 `/setting/user-management`로 이동한다(`moveseyee_fe/src/routes/routes.tsx:826-848`, `:1155`).
+
+### 1.2 전체 구조
+
+요청 한 건은 아래 순서로 판정을 지난다. 순서 자체가 계약이다.
+
+1. **인증 필터**(`JwtAuthFilter`) — `accessToken` 쿠키(없으면 `Authorization: Bearer`)의 JWT를 검증하고 Zabbix API 토큰을 붙인다. 실패하면 HTTP 401이다.
+2. **Spring Security 인가** — 공개 경로 외에는 인증이 있어야 한다(`SecurityConfig`).
+3. **인터셉터 4개**(`WebConfig`, 등록 순서 = 실행 순서) — `RolesInterceptor` → `McpAccessInterceptor` → `VisitorIdCheckInterceptor` → `AccessModeInterceptor` → `FeatureInterceptor`. 세션 바인딩(visitor) 검사가 라이선스 검사보다 먼저다.
+4. **컨트롤러 메서드 첫 줄의 권한 검사** — 관리자 전용이면 `AdminAccessChecker.requireAdmin`, 역할 권한 칸이면 `DmovePermissionChecker.requireView/Edit`, APM이면 `ApmAccessChecker`.
+5. **데이터 범위** — Zabbix 경유 조회는 사용자별 Zabbix API 토큰으로 호출해 Zabbix가 거른다. 자체 DB만 읽는 일부 경로는 `HostVisibilityChecker`·`HostGroupVisibilityChecker`가 대상 단위로 다시 확인한다.
+
+```mermaid
+flowchart LR
+  subgraph FE[브라우저]
+    SI[로그인·비밀번호 재설정]
+    PW[PageWrapper 가드<br/>useAuth·useLicense]
+    AX[axios 인터셉터<br/>x-visitor-id·401 refresh]
+    UM[사용자 관리·마이 페이지]
+    LIC[라이선스 화면·잠금 화면]
+  end
+  subgraph BE[moveseye-be-spring]
+    F[JwtAuthFilter]
+    I[인터셉터<br/>Roles→MCP→Visitor→AccessMode→Feature]
+    AC[AuthController /auth/**]
+    UC[UserController /users/**]
+    LC[LicenseController /features·/settings/license]
+    CHK[AdminAccessChecker<br/>DmovePermissionChecker<br/>Host·HostGroupVisibilityChecker]
+    LP[SignedKeyLicenseProvider<br/>60초 캐시]
+  end
+  subgraph DATA[데이터 원천]
+    PG[(PostgreSQL<br/>user·role·user_group·host_group·otp·license)]
+    RD[(Redis<br/>REFRESH_*·USER_LOGIN_KEY_*·RATE_*·REDIS_USER_API_TOKEN)]
+    ZB[Zabbix API<br/>user·usrgrp·role·token]
+    PK[classpath license/public-*.pem]
+  end
+  ISS[발급 도구<br/>moveseye-license-issuer] -. .lic 키 .-> LIC
+  SI --> AX --> F --> I --> AC & UC & LC
+  PW --> AX
+  UM --> AX
+  LIC --> AX
+  UC --> CHK
+  AC --> PG & RD & ZB
+  UC --> PG & RD & ZB
+  LC --> LP --> PG
+  LP --> PK
+  I --> LP
+```
+
+## 2. 기능별 상세
+
+### 2.1 로그인
+
+- **무엇을 하는가** — MovesEye 계정(`user` 테이블)의 사용자명·비밀번호를 확인하고 세션을 연다. 비밀번호의 정본은 MovesEye DB의 bcrypt 해시다. Zabbix 비밀번호로 직접 인증하지 않는다.
+- **화면과 진입 경로** — `/sign-in`. 로그인하지 않은 상태로 보호 화면에 들어오면 이곳으로 이동한다. `?redirect=` 쿼리가 있으면 로그인 뒤 그 내부 경로로 돌아간다(MCP 동의 화면 등).
+- **사용 방법**
+  1. 사용자명과 비밀번호를 입력하고 **로그인**을 누른다.
+  2. 성공하면 "로그인 성공" 안내 1초 뒤 대상 화면으로 이동한다.
+  3. 사용자명·비밀번호가 틀리면 두 입력 칸 아래에 같은 오류 문구가 뜬다(어느 쪽이 틀렸는지 구분하지 않는다).
+  4. 같은 계정의 비밀번호 변경 등이 진행 중이라 5초 안에 처리하지 못하면 "잠시 후 다시 시도" 안내가 뜬다.
+  5. 그 밖의 실패(요청 제한 포함)는 "로그인 실패" 한 가지 문구로 뜬다.
+  - 화면의 "로그인 상태 유지" 체크박스는 값이 서버로 전달되지 않으며 동작에 영향이 없다.
+- **동작 원리**
+  - FE(`SignIn.tsx`)는 로그인 직전에 FingerprintJS로 브라우저 식별값을 만들어 `localStorage`의 `x-visitor-id`에 저장하고, 이후 모든 요청 헤더에 싣는다.
+  - BE `AuthService.login`의 순서: ① 실패 횟수 제한 확인 → ② `ACTIVE` 상태의 사용자 조회(없으면 실패 횟수 +1) → ③ `UserService.loginLocked`가 사용자 행을 `FOR UPDATE`로 잠근 한 트랜잭션에서 상태 확인·비밀번호 검증(bcrypt `$2b$`, cost 10)·세대 읽기·refresh 토큰과 세션 발급 → ④ 잠금 밖에서 Zabbix 연동 계정이면 Zabbix API 토큰을 새로 만들어 Redis에 저장 → ⑤ access JWT 서명.
+  - ④가 실패하면 방금 발급한 로그인 계열만 되돌린다. 그 사이 같은 계정의 다른 로그인이 성공했다면 그 세션은 남는다.
+  - 응답 본문에는 사용자 정보(`{ user }`)만 있고, 토큰은 `Set-Cookie` 두 줄로 내려간다.
+    - `accessToken`: JWT(HS256), `Path=/`, 수명 30분.
+    - `refreshToken`: 256비트 무작위 문자열(JWT 아님), `Path=/auth`, 수명 8시간.
+    - 두 쿠키 모두 `HttpOnly`, `Secure`(기본 켜짐), `SameSite=Strict`(기본)다.
+  - access JWT의 클레임은 `typ=access`, `id`(MovesEye 사용자 id), `userRole`, `roleid`(역할 id, Zabbix 연동 계정만), `userid`(Zabbix 사용자 id, 연동 계정만)이다. 사용자명은 들어 있지 않다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| POST | `/auth/login` | 로그인. 헤더 `x-visitor-id` | 공개 |
+
+- **데이터** — `user`(V1 기준 스키마, `status_locked` V61, `mcp_permission` V25). Redis: `REFRESH_TOKEN:<토큰>`, `REFRESH_GEN:<userId>`, `USER_LOGIN_KEY_<userId>`, `REFRESH_SESSION_FAMILY:<userId>`, `REDIS_USER_API_TOKEN`(해시, 값 형식 `토큰:토큰id:만료초`).
+- **권한·라이선스** — `AuthController` 전체가 라이선스 게이트 면제다. 라이선스가 없어도 로그인·로그아웃은 된다.
+- **빈 값·실패·경계 상태**
+  - 존재하지 않는 계정·비활성 계정·비밀번호 불일치는 모두 HTTP 200 + `errorCode: WRONG_USER_OR_PASSWORD`로 같다.
+  - 실패 제한: 사용자명 기준 15분 동안 10회 실패, 접속 IP 기준 15분 동안 50회 실패(설정 가능)에 닿으면 HTTP 200 + `errorCode: TOO_MANY_REQUESTS`. 창은 첫 실패부터 고정이고, 로그인에 성공하면 사용자명 카운터만 지운다(IP 카운터는 지우지 않는다).
+  - Zabbix 연동 계정은 로그인 때 Zabbix에 닿아야 한다. Zabbix 토큰 발급이 실패하면 로그인도 실패한다.
+  - Zabbix에서 동기화로 만들어진 계정은 비밀번호가 비어 있어 로그인할 수 없다. 관리자가 사용자 관리에서 비밀번호를 넣거나, 이메일을 등록한 뒤 비밀번호 재설정을 거쳐야 한다.
+- **운영 주의**
+  - HTTP(비 TLS) 배포에서는 `COOKIE_SECURE=false`가 없으면 브라우저가 쿠키를 버려 "로그인은 200인데 이후 요청이 전부 401"이 된다. `localhost`는 예외라 개발 PC에서는 드러나지 않는다.
+  - 리버스 프록시 뒤에 두면 모든 요청의 원격 주소가 프록시 주소가 되어 IP 기준 제한을 전 사용자가 공유한다. `FORWARD_HEADERS_STRATEGY=native`로 신뢰 프록시를 지정한다.
+
+### 2.2 세션 유지·토큰 재발급·세션 회수
+
+- **무엇을 하는가** — 사용자가 다시 로그인하지 않고 8시간까지 쓰게 하고, 비밀번호 변경·비활성화·삭제 때 그 계정의 모든 기기를 끊는다.
+- **동작 원리**
+  - **세션 바인딩** — `@VisitorIdCheck`가 붙은 컨트롤러(사용자 화면용 컨트롤러 전부)는 요청의 `x-visitor-id`를 Redis `USER_LOGIN_KEY_<userId>` 값과 비교한다(`VisitorSessionChecker`). 값이 없거나 다르면 HTTP 401이다. SSE(`EventSource`)는 헤더를 못 실어 쿼리 파라미터로 같은 판정을 받는다.
+  - **재발급(회전)** — FE axios 인터셉터가 401을 받으면 `/auth/refresh`를 한 번만 부르고(동시 401은 한 번으로 합친다) 원 요청을 한 번 다시 보낸다. refresh도 실패하면 로그인 플래그를 지우고 `/sign-in`으로 보낸다.
+  - BE는 refresh 토큰을 **1회용**으로 쓴다. 회전 스크립트(`ROTATE_LUA`)가 옛 토큰을 지우고 같은 세대·같은 계열의 새 토큰을 쓴 뒤, 세션 키를 다시 세운다(TTL 8시간 연장 — 사용 중이면 계속 늘어난다).
+  - **세대(generation)** — 사용자별 정수 `REFRESH_GEN:<userId>`(만료 없음). 발급·회전은 토큰의 세대가 현재 세대와 같을 때만 된다. 비밀번호 변경·재설정, 이메일 인증의 비밀번호 발급, 비활성화(개별·그룹·동기화), 삭제는 세대를 +1 하고 세션 키를 한 스크립트로 지운다 → 그 계정의 모든 기기가 다음 요청에서 401, refresh도 401.
+  - **계열(family)** — 로그인 한 번이 계열 하나다. 로그아웃은 그 계열에 폐기 표식(`REFRESH_FAMILY_REVOKED:<family>`, TTL 8시간)을 남긴다. 회전으로 소비된 옛 토큰은 10분간 흔적(`REFRESH_CONSUMED:<토큰>`)을 남겨, 회전과 겹친 로그아웃이 옛 쿠키만 들고 와도 계열을 찾는다.
+  - **본인 비밀번호 변경** — 모든 세션을 끊은 뒤 그 변경이 올린 세대로 현재 기기만 다시 발급한다(응답에 새 `refreshToken` 쿠키).
+  - **세션 키는 계정당 1칸**이다. 로그인은 다른 기기의 refresh 계열을 지우지 않는다. 그래서 두 기기가 같은 계정으로 로그인해 있으면, 한쪽이 요청할 때 다른 쪽이 세운 세션 값 때문에 401을 받고 refresh로 세션을 되찾는 왕복이 번갈아 일어난다(§4 SEC-03).
+  - **Zabbix API 토큰** — 연동 계정은 요청마다 Redis 해시에서 개인 Zabbix 토큰을 읽는다. 만료됐으면 분산 락(최대 10회 재시도, 150ms×회차 대기) 아래에서 다시 만든다. refresh 때는 항상 기존 Zabbix 토큰을 지우고 새로 만든다.
+  - **관리자**(`userRole` ADMIN·SUPER_ADMIN)는 개인 토큰 대신 Zabbix 서비스 계정(슈퍼어드민) 토큰을 쓴다. 이 토큰은 Redis에 60초 캐시되고, 만료되면 Zabbix `user.login`을 다시 한다.
+  - **Zabbix 미연동 비관리자**는 Zabbix 토큰 없이 통과한다. 자산·비용·맵 같은 자체 기능은 쓰고, Zabbix를 부르는 API는 HTTP 200 + body `code: 403`, `errorCode: FORBIDDEN`으로 거부된다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| POST | `/auth/refresh` | refresh 쿠키로 access·refresh 재발급. 헤더 `x-visitor-id` | 공개(쿠키 필요) |
+
+- **빈 값·실패·경계 상태**
+  - refresh 토큰 없음·다른 브라우저의 visitor 값·폐기된 세대·로그아웃된 계열·계열 정보가 없는 옛 토큰 → HTTP 401.
+  - 다른 visitor 값으로 온 refresh는 토큰을 소비하지 않고 거부만 한다.
+  - Redis가 비워지면(재설치·`FLUSHALL`) 세션 키와 refresh 토큰이 사라져 전원이 다시 로그인한다. `REFRESH_GEN:*`만 지워지는 경우에도 현재 세대가 0으로 돌아가 살아 있던 토큰이 전부 불일치가 된다.
+- **운영 주의** — 세션 관련 Redis 스크립트는 서로 다른 접두어의 키 여러 개를 한 번에 다루므로 단일 Redis를 전제로 한다. Redis Cluster 동작은 확인되지 않았다.
+
+### 2.3 로그아웃
+
+- **화면과 진입 경로** — 사이드바(모바일 포함) 하단 사용자 카드의 로그아웃. 확인창을 거친다.
+- **동작 원리** — FE `handleLogout`(`utils/index.ts`)이 `POST /auth/logout`을 부르고, 성공·실패와 무관하게 로그인 플래그와 저장된 인증 정보를 지운 뒤 `/sign-in`으로 이동한다. BE는 그 계열에 폐기 표식 → 세션 키 삭제 → refresh 토큰 삭제 순으로 처리하고, Zabbix 연동 비관리자면 Zabbix 세션도 끊는다(실패해도 로컬 로그아웃은 끝낸다). 응답은 만료된 쿠키 두 개를 내려 브라우저 쿠키를 지운다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| POST | `/auth/logout` | 이 기기 로그아웃 | 로그인(세션 바인딩 검사 없음) |
+
+- **경계 상태** — 로그아웃은 세션 키를 통째로 지운다. 같은 계정으로 로그인해 있던 다른 기기는 로그아웃되지 않지만 다음 요청에서 401 → refresh 왕복을 한 번 겪는다.
+
+### 2.4 비밀번호 재설정
+
+- **무엇을 하는가** — 비밀번호를 잊은 사용자가 계정에 등록된 이메일로 6자리 코드를 받아 새 비밀번호를 정한다.
+- **화면과 진입 경로** — `/password-reset`. 로그인 화면의 "비밀번호 재설정" 링크, 또는 메일 안의 `…/password-reset?username=<사용자명>` 링크.
+- **사용 방법**
+  1. 사용자명을 입력하고 **메일 보내기**를 누른다. 메일 링크로 들어온 경우 이 단계는 건너뛴다(서버에는 존재 확인만 요청한다).
+  2. 메일로 받은 6자리 코드를 입력하고 **다음**을 누른다. 재전송 버튼은 180초 뒤 활성화된다.
+  3. 새 비밀번호와 확인 값을 입력하고 **저장**을 누른다. 성공하면 1초 뒤 로그인 화면으로 간다.
+- **동작 원리**
+  - `POST /auth/forgot-password` — IP 기준 요청 수를 센 뒤(15분 20회 기본) 사용자를 찾고, 이전의 미사용 재설정 코드를 무효화하고, 새 6자리 숫자 코드를 `otp` 테이블에 만료 3분으로 저장한 다음 메일을 보낸다.
+  - `GET /auth/verify?username=&code=&type=RESET_PASSWORD` — 사용자명 기준 시도 횟수(3분 5회)를 세고, 코드·종류·상태(ACTIVE)·만료 전 조건으로 찾고, 코드의 소유자가 그 사용자인지 대조한 뒤 사용자 행 잠금 아래에서 ACTIVE→VERIFIED로 바꾼다. 응답의 `token`(JWT, `typ=otp`)이 다음 단계의 재설정 토큰이다.
+  - `POST /auth/reset-password {token, password}` — 토큰을 검증하고, 재설정용 코드인지 확인하고, 사용자 행 잠금 아래에서 VERIFIED→DEACTIVE로 **소비**한 뒤 비밀번호를 바꾸고 그 계정의 모든 세션을 끊는다. Zabbix 연동 계정(관리자 제외)은 Zabbix 비밀번호도 같은 값으로 바꾼다.
+  - 같은 토큰으로 두 번 재설정할 수 없고, 이메일 인증용 코드의 토큰으로는 재설정할 수 없다.
+  - 코드 조회와 두 번의 상태 전환이 모두 "만료 전"을 조건으로 하므로, **코드 발급부터 새 비밀번호 저장까지 3분 안에** 끝내야 한다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| POST | `/auth/forgot-password` | 재설정 코드 발송. `onlyCheckExisted=true`면 발송 없이 존재 확인만 | 공개 |
+| POST | `/auth/resend` | 코드 재발송(`type` 지정) | 공개 |
+| GET | `/auth/verify` | 코드 확인, 재설정 토큰 반환 | 공개 |
+| POST | `/auth/reset-password` | 새 비밀번호 저장 | 공개(재설정 토큰 필요) |
+
+- **데이터** — `otp`(`code` 6자, `expire_time`, `type` RESET_PASSWORD·VERIFY_EMAIL, `status` ACTIVE·VERIFIED·DEACTIVE). 만료된 행을 지우는 정리 작업은 이 영역 코드에서 확인되지 않았다.
+- **빈 값·실패·경계 상태**
+  - 없는 사용자 → `USER_NOT_FOUND`, 이메일 없는 계정 → `USER_NOT_HAS_EMAIL`. 화면은 각각 다른 문구를 사용자명 칸에 표시한다.
+  - 코드가 틀렸거나 만료됐거나 이미 쓰였으면 `OTP_NOT_EXIST_OR_EXPIRE` 또는 `OTP_WRONG`. 재설정 단계에서 이 오류가 나면 화면은 코드 입력 단계로 되돌린다.
+  - 메일 서버(SMTP)가 설정되지 않은 설치본에서는 코드가 DB에만 만들어지고 메일은 나가지 않는다. 화면은 다음 단계로 넘어가지만 사용자는 코드를 받지 못한다.
+  - 설치 직후의 기본 관리자 계정은 이메일이 비어 있어 이 기능을 쓸 수 없다. 마이 페이지에서 이메일을 먼저 등록한다.
+- **운영 주의** — 메일 발송 설정은 `MAIL_*` 환경변수(`app.mail`)다. 재설정 메일의 링크는 `fePathWeb` 설정값으로 만들어진다.
+
+### 2.5 이메일 인증 (부분 구현)
+
+- **무엇을 하는가** — 이메일 소유를 코드로 확인하고, 아직 인증되지 않은 계정에 임시 비밀번호를 발급하는 흐름이다. Zabbix에서 동기화된(비밀번호가 없는) 계정의 최초 비밀번호 발급용으로 만들어졌다.
+- **현재 상태** — BE API(`/auth/resend`의 `type=VERIFY_EMAIL`, `/auth/verify`의 `type=VERIFY_EMAIL`)만 있다. FE에 이 흐름의 화면과 호출이 없고, 발급한 임시 비밀번호를 보내는 환영 메일은 실제로 발송되지 않는다. 운영에서 이 흐름으로 계정을 준비할 수 없다(§4 SEC-05).
+- **동작 원리** — 코드 확인이 성공하면 한 트랜잭션에서 인증 표시(`email_verified=true`)를 하고, 미인증 계정이었으면 무작위 8자 비밀번호로 교체하고 그 계정의 모든 세션을 끊는다.
+
+### 2.6 마이 페이지
+
+- **무엇을 하는가** — 로그인한 사용자가 자기 이름·성·이메일·비밀번호를 바꾼다.
+- **화면과 진입 경로** — `/setting/my-page`. 헤더 ⚙ 관리 콘솔의 "계정" 묶음, 관리 콘솔 홈, 전역 검색.
+- **사용 방법**
+  1. **편집**을 누르면 이름·성·이메일 칸이 열린다. 사용자 ID는 바꿀 수 없다.
+  2. 이메일을 다른 값으로 바꾸면 "현재 비밀번호" 칸이 나타난다. 입력해야 저장된다.
+  3. **저장**은 바뀐 칸만 서버로 보낸다. 바뀐 것이 없으면 "변경 없음" 안내만 뜬다. 칸을 비워서 값을 지우는 동작은 없다.
+  4. **비밀번호 변경** 버튼은 별도 창에서 현재 비밀번호와 새 비밀번호를 받는다. 성공하면 "다른 기기와 연결된 앱이 끊긴다"는 안내가 뜬다.
+  - 프로필 저장과 비밀번호 변경은 동시에 진행되지 않는다(한쪽이 끝날 때까지 다른 쪽 버튼이 잠긴다).
+- **동작 원리** — 조회는 `GET /users/my-profile`(화면 가드가 쓰는 캐시와 같은 키), 저장은 `PUT /users/my-profile`이다. BE는 본인 전용 요청 형식(`UpdateMyProfileDto`)만 받아 이름·성·이메일·비밀번호 외의 값(역할·그룹·사용자명·상태)은 무시한다. 이메일이 정규화 기준으로 실제 달라지거나 비밀번호가 들어 있으면 현재 비밀번호를 확인한다. 이메일이 바뀌면 그 계정의 미사용 인증 코드를 모두 무효화한다. 비밀번호가 바뀌면 전 기기 세션을 끊고 현재 기기만 다시 세운다. Zabbix 연동 계정은 이름·성·비밀번호가 Zabbix에도 반영된다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| GET | `/users/my-profile` | 내 정보(역할 포함). 라이선스 잠금 중에도 열림 | 로그인 |
+| PUT | `/users/my-profile` | 내 정보·비밀번호 수정 | 로그인 |
+| GET | `/users/me/permissions` | 내 역할의 기능 권한(관리자는 기본 템플릿) | 로그인 |
+| PATCH | `/users/update-email` | 이메일만 변경(현재 비밀번호 필요) — **FE 미사용** | 로그인 |
+
+- **빈 값·실패·경계 상태**
+  - 현재 비밀번호가 틀리면 `CURRENT_PASSWORD_INCORRECT` → 해당 칸에 오류 표시.
+  - 이미 쓰는 이메일이면 `EMAIL_EXISTED` → 이메일 칸에 오류 표시.
+  - Zabbix 연동 계정인데 Zabbix에서 그 사용자가 사라졌으면 조회가 `USER_NOT_FOUND`로 실패한다. 이 조회는 화면 가드가 부팅 때 쓰는 것이라, 그 계정은 로그인 직후 "권한 정보를 불러오지 못했습니다" 화면을 보게 된다.
+  - 비밀번호가 아직 없는 계정(동기화로 생긴 계정)은 현재 비밀번호를 댈 수 없어 이 화면에서 비밀번호·이메일을 바꿀 수 없다.
+
+### 2.7 사용자 관리 — 사용자 탭
+
+- **무엇을 하는가** — 관리자가 계정을 만들고, 역할·사용자 그룹·이메일·비밀번호를 바꾸고, 활성/비활성과 MCP 권한을 정하고, 삭제한다.
+- **화면과 진입 경로** — `/setting/user-management?tab=users`. 사용자 그룹·역할 탭의 구성원 링크는 `?tab=users&id=<id>`로 해당 사용자의 수정 창을 바로 연다.
+- **사용 방법**
+  1. **계정 생성** — 사용자명·이메일·비밀번호·역할(필수), 이름·성·사용자 그룹(선택). "Zabbix에도 생성" 여부를 고른다. 끄면 MovesEye 전용 계정이 된다.
+  2. 사용자명을 누르면 수정 창이 열린다. 비밀번호를 넣으면 그 사용자의 모든 기기가 로그아웃된다.
+  3. **상태** 열 옆의 활성화/비활성화 동작은 확인창을 거친다. 관리자가 개별로 비활성화한 계정은 자물쇠 표시가 붙고, 그룹을 다시 켜거나 동기화가 돌아도 되살아나지 않는다.
+  4. **MCP 권한** 열(MCP 연동이 켜진 설치본에서만 보임)에서 없음·조회·조회+변경을 고른다.
+  5. **알림 수신처** 열의 버튼은 Zabbix 사용자 미디어 편집 창을 연다(Zabbix 연동 계정만).
+  6. 체크박스로 고른 뒤 삭제하면 MovesEye와 Zabbix 양쪽에서 계정이 지워진다. Zabbix 역할 유형이 Super admin인 계정은 체크박스가 잠긴다.
+  7. 검색어는 사용자명·역할 이름·소속 그룹 이름에 부분 일치한다. 상태 필터와 정렬(사용자명·이메일·상태·역할·유형·플랫폼·생성/수정 시각)이 있다. 검색·필터·페이지는 URL 쿼리에 남는다.
+- **동작 원리**
+  - 목록(`GET /users`)은 `userRole`이 `ADMIN`인 계정을 **제외**한다. 설치 때 만들어지는 기본 관리자 계정은 이 목록에 나오지 않는다.
+  - 생성은 중복(사용자명·이메일) 확인 → Zabbix 사용자 생성 또는 기존 Zabbix 사용자 연결 → 로컬 저장 순이다. 배정한 그룹 중 비활성 그룹이 있으면 계정도 비활성으로 만든다. 그룹을 지정한 생성은 소속 잠금(advisory lock) 아래에서 그룹 상태를 다시 읽는다.
+  - 수정은 사용자 행 잠금 아래에서 한다. 필드를 고쳐도 상태는 바뀌지 않는다(상태는 전용 API만 바꾼다). 비활성 그룹을 배정하면 비활성으로 전환되는데, 대상이 관리자이거나 요청자 자신이면 거부한다.
+  - 상태 변경(`PATCH /users/{id}/status`)의 거부 조건: 자기 자신(`CANNOT_CHANGE_OWN_STATUS`), 관리자 비활성화(`CANNOT_DEACTIVATE_ADMIN`), 비활성 그룹 소속인데 활성화 요청(`USER_GROUP_INACTIVE`). 비활성화는 `status_locked=true`와 함께 세대를 올려 웹 세션·refresh·MCP 연결을 모두 끊는다.
+  - 삭제는 Zabbix에서 먼저 지운 뒤 로컬 행을 지우고 각 사용자의 세대를 올린다. 로컬 행은 실제 삭제(hard delete)다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| GET | `/users` | 목록(관리자 계정 제외) | 관리자 |
+| GET | `/users/{id}` | 상세 | 관리자 |
+| POST | `/users` | 생성 | 관리자 |
+| PUT | `/users/{id}` | 수정 | 관리자 |
+| PATCH | `/users/{id}/status` | 활성/비활성 | 관리자 |
+| PATCH | `/users/{id}/mcp-permission` | MCP 권한 | 관리자 |
+| DELETE | `/users` | 삭제(본문 `userIds`) | 관리자 |
+| GET | `/users/zabbix/list-user`, `/users/zabbix/user-detail` | 아직 MovesEye에 없는 Zabbix 사용자 조회 — **FE 미사용** | 관리자 |
+| GET·PATCH | `/users/zabbix-info/{id}` | 다른 사용자의 Zabbix 정보 조회·수정 — FE에 서비스 함수만 있고 호출처 없음 | 관리자 |
+| GET·POST | `/admin/users`, `/admin/users/zabbix-users`, `/admin/usrgrps`, `/admin/roles` | 구 관리 API — **FE 미사용**, 현재 판정 방식으로는 누구도 통과하지 못한다(§4 SEC-20) | (사실상 사용 불가) |
+
+- **데이터** — `user`: `username`(유일), `email`(유일), `password`(bcrypt), `role`(`userRole`, 기본 `USER`), `zabbix_role`(이름과 달리 MovesEye `role` 테이블의 id), `zabbix_userid`, `status`, `status_locked`(V61), `platform`(DMOVE·ZABBIX), `mcp_permission`(V25), `email_verified`. `user_usergroups`(사용자↔그룹).
+- **권한·라이선스** — FE는 `adminOnly` 라우트, BE는 메서드마다 `AdminAccessChecker.requireAdmin`. 관리자가 아니면 HTTP 200 + body `code: 403`.
+- **빈 값·실패·경계 상태**
+  - 잠금 대기 초과(같은 사용자의 다른 변경·동기화와 겹침) → `FAILED_TO_ACQUIRE_LOCK`. 화면은 저장 실패 문구를 띄운다.
+  - 역할이 삭제된 사용자는 역할 id가 사라진 값을 가리킨 채 남고, 권한 판정에서는 "역할 없음"으로 모든 권한 칸이 거부된다.
+- **운영 주의** — MovesEye 관리자 여부를 정하는 `userRole`을 바꾸는 화면·API는 없다. 관리자 계정은 설치 때 만들어지는 기본 계정 하나이며, 추가하려면 DB를 직접 고쳐야 한다(§4 SEC-01).
+
+### 2.8 사용자 관리 — 사용자 그룹 탭과 데이터 범위
+
+- **무엇을 하는가** — 사용자 그룹을 만들고 구성원과 호스트 그룹을 연결한다. 이 연결이 "어떤 호스트의 데이터를 볼 수 있는가"(데이터 범위)를 정한다.
+- **화면과 진입 경로** — `/setting/user-management?tab=user-groups`.
+- **사용 방법** — 그룹 이름을 눌러 수정 창을 열고 구성원·호스트 그룹·상태를 정한다. 체크박스로 골라 삭제한다. 검색과 상태 필터가 있다.
+- **동작 원리**
+  - 사용자 그룹은 Zabbix 사용자 그룹과 1:1로 대응한다. 생성·수정·삭제는 Zabbix에 먼저 반영하고 로컬 사본(`user_group`, `usergroup_hostgroups`)을 맞춘다.
+  - **데이터 범위의 실제 강제는 Zabbix가 한다.** 연동 계정의 요청은 그 사용자의 Zabbix API 토큰으로 호출되므로, Zabbix 사용자 그룹 ↔ 호스트 그룹 권한과 태그 필터가 그대로 적용된다. MovesEye는 별도의 범위 판정 테이블을 조회에 쓰지 않는다.
+  - 자체 DB만 읽는 경로는 Zabbix의 필터가 걸리지 않으므로 BE가 대상 단위로 다시 확인한다. 현재 적용된 곳은 세 군데다: 호스트 상세 사용자 정의 차트(`HostVisibilityChecker`), 호스트 그룹 리포트(`HostGroupVisibilityChecker`), 이벤트 통계(가시 사건만 집계).
+  - 그룹을 비활성으로 바꾸면 구성원(관리자·요청자 제외)이 비활성으로 바뀌고 세션이 끊긴다. 다시 활성으로 바꾸면 개별 비활성 표시가 없는 구성원만 되살아난다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| GET | `/users/user-groups`, `/users/user-groups/{id}` | 목록·상세 | 관리자 |
+| POST·PUT·DELETE | `/users/user-groups`, `/users/user-groups/{id}` | 생성·수정·삭제 | 관리자 |
+| GET | `/users/host-groups`, `/users/host-groups/{id}` | 호스트 그룹 사본 목록·상세(선택지용) | **로그인 사용자 전원** |
+| POST·PUT·DELETE | `/users/host-groups`, `/users/host-groups/{id}` | 호스트 그룹 생성·수정·삭제 | 관리자 |
+| GET | `/users/hosts` | 호스트 목록(사용자 토큰으로 Zabbix 조회) | 로그인 사용자 전원 |
+
+- **데이터** — `user_group`(`zabbix_usrgrpid`, `status`), `host_group`(`zabbix_host_group_id`, `hosts` JSON — 그룹에 속한 호스트 id·이름 사본), `usergroup_hostgroups`.
+- **빈 값·실패·경계 상태** — 기능 권한만 주고 데이터 범위를 주지 않으면 메뉴는 보이는데 목록이 빈다. 데이터 범위만 주고 기능 권한을 주지 않으면 메뉴가 보이지 않는다.
+- **운영 주의** — `GET /users/host-groups`는 Zabbix를 거치지 않고 로컬 사본 전체를 돌려준다. 호출자의 Zabbix 권한과 무관하게 모든 호스트 그룹 이름과 소속 호스트 이름이 보인다(§4 SEC-08).
+
+### 2.9 사용자 관리 — 역할 탭과 권한 키
+
+- **무엇을 하는가** — 역할을 만들고 기능 권한 칸을 정한다. 역할은 Zabbix 역할과 1:1로 대응하며, 한 역할에 "MovesEye 권한"과 "Zabbix 권한" 두 묶음이 있다.
+- **화면과 진입 경로** — 목록은 `/setting/user-management?tab=roles`, 편집은 `/setting/user-management/roles/create` 또는 `/roles/edit?id=<역할 id>`.
+- **사용 방법**
+  1. 역할 이름과 사용자 유형(User·Admin·Super admin)을 정한다. 유형을 바꾸면 두 권한 묶음이 그 유형의 기본값으로 다시 채워진다.
+  2. "MovesEye 권한" 탭에서 칸마다 보기·편집·삭제·다운로드를 체크한다. 효과가 없는 칸은 잠겨 있고 이유가 툴팁으로 나온다.
+  3. "Zabbix 권한" 탭에서 Zabbix UI 접근 항목을 하나 이상 체크해야 저장된다.
+  4. 저장하면 Zabbix 역할을 만들거나 고친 뒤 로컬에 저장하고 역할 목록으로 돌아간다.
+- **동작 원리**
+  - 역할의 `dmove_permission`(JSON)이 MovesEye 기능 권한의 정본이다. BE `DmovePermissionChecker`가 요청마다 사용자의 역할 id → 역할 JSON을 읽어 판정한다. 같은 HTTP 요청 안에서만 한 번 읽은 값을 재사용하고 요청을 넘겨 캐시하지 않으므로, **역할을 바꾸면 그 사용자의 다음 요청부터 반영**된다.
+  - `view`와 `edit`은 서로를 포함하지 않는다. `delete`·`download` 칸은 저장되지만 FE·BE 어디에서도 판정에 쓰지 않는다.
+  - 역할이 없거나, 모듈·칸이 JSON에 없으면 거부한다.
+  - **역할의 "사용자 유형"은 Zabbix 역할 유형이다.** MovesEye 관리자 판정에는 쓰이지 않는다(§2.10).
+  - 기본 템플릿(`DmovePermissions.of(유형)`): User 유형은 모니터링·이벤트·APM 등의 `view`만 켜지고 `edit`은 꺼진다. Admin·Super admin 유형은 대부분의 `edit`이 켜진다.
+- **권한 키 전수 표** (모듈.칸 → 보이는 메뉴 → BE가 막는 API)
+
+| 모듈.칸 | 열리는 메뉴·화면(FE) | BE가 이 칸으로 막는 API | 실제 효과 |
+|---|---|---|---|
+| `monitoring.hostGroup` | 모니터링 > 호스트 그룹 | `GET /hosts/{groupid}` 계열(상세·자원/알림 추이·상위 호스트·디스크·리포트·라이브체크) — `view` | 있음 |
+| `monitoring.serverMonitoring` | 모니터링 > 서버 모니터링, 호스트 상세 | 호스트 단위 조회(`/host/{id}/cpu·memory·disk·network·items·response-time`, `/hosts/{hostid}/summary·collected-info`, `/interface/**`, `/session/**`, `/event/{id}/events…`)는 server 또는 network 중 하나의 `view`. 사용자 정의 차트 쓰기(`/host/{id}/widgets`)는 둘 중 하나의 `edit` + 대상 호스트 가시성 | 있음 |
+| `monitoring.networkMonitoring` | 모니터링 > 네트워크 모니터링 | 위와 같음 + `GET /hosts/hosts-network` — `view` | 있음 |
+| `eventAlert.byHost` | 이벤트/알림 메뉴, 문제 상세, 이벤트 현황 | `GET /event/{id}`, `/event/{id}/list-previous`, `/event/stats` — `view` | 있음 |
+| `eventAlert.byTemplate` | 문제 확인(Acknowledge) 저장 버튼 | `PUT /event/{id}/acknowledge` — `edit` | 있음 |
+| `cloudInfraMonitoring.awsResources` | 클라우드 인프라 화면, 비용 Cloud 탭 | `/cloud-infras/**`(연결 테스트 제외), `GET /costs/cloud` — `view` | 있음 |
+| `applicationMonitoring.apm` | APM 메뉴 전체. 수집기·알람 규칙 등 관리 화면은 `edit` | `/apm/**` — `ApmAccessChecker`의 `view`·`edit` | 있음(추가로 `Feature.APM` 라이선스 필요) |
+| `cloudInfraMonitoring.hostGroupCI`·`serverMonitoringCI`·`networkMonitoringCI` | 없음 | 없음 | 없음(사용처 없음) |
+| `customDashboard.customDashboard`·`customDashboardSettings` | 없음 | 없음 | 없음 |
+| `report.generatingReport`·`reportHistory` | 없음(리포트 관리는 관리자 전용) | 없음 | 없음 |
+| `notification.history`·`externalNotification`·`externalNotificationSettings` | 없음(알림 관리는 관리자 전용) | 없음 | 없음 |
+| `mapView.integratedControlMap`·`mapList` | 없음(네트워크 맵·지리 맵은 로그인 사용자 전원) | 없음 | 없음 |
+| `settings.zabbixInfo`·`cloudInfraInfo` | 없음(관리자 전용) | 없음(`/settings/**`는 관리자 판정) | 없음 |
+| `settings.myPage` | 없음(본인 API) | 없음 | 없음 |
+| `userManagement.userGroups`·`hostGroupUR`·`userRoles`·`user` | 없음(관리자 전용) | 없음(`/users/**` 관리는 관리자 판정) | 없음 |
+
+"효과 없음" 칸은 역할 편집 화면에서 잠겨 표시되지만(`constants/permissionLabels.ts`의 `INERT_PERMISSION_FEATURES`), 저장 본문에는 서버가 준 값이 그대로 보존된다.
+
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| GET | `/users/roles` | 역할 목록(구성원 포함) | 관리자 |
+| GET | `/users/role/{id}` | 역할 상세 | 관리자 |
+| GET | `/users/role/permission?type=&platform=` | 유형별 기본 권한 템플릿(MovesEye) 또는 Zabbix 권한 스키마 | **로그인 사용자 전원** |
+| POST | `/users/role/storage` | 역할 생성·수정 | 관리자 |
+| POST | `/users/roles/delete` | 역할 삭제(로컬 + Zabbix) | 관리자 |
+
+- **데이터** — `role`(`name`, `ref_id` = Zabbix roleid, `type`, `dmove_permission` JSON, `zabbix_permission` JSON, `create_by_platform`), `permission_schema`(유형별 Zabbix 권한 틀). V27(`awsResources` 칸 추가), V48(`applicationMonitoring` 칸 추가)이 기존 역할 JSON에 칸을 보충했다.
+- **빈 값·실패·경계 상태** — 역할을 지워도 그 역할을 가진 사용자의 상태는 바뀌지 않는다. 그 사용자는 역할 id가 없는 값을 가리켜 모든 권한 칸이 거부된다. 역할 삭제 화면에는 이 결과에 대한 경고가 없다.
+
+### 2.10 BE 권한 강제 구조
+
+- **관리자 판정 축** — `userRole ∈ {ADMIN, SUPER_ADMIN}`. `AdminAccessChecker`, `DmovePermissionChecker`, `CallerContexts`, `JwtAuthFilter`, FE `isAdminUserRole`·`useIsUserRoleAdmin`이 같은 집합을 쓴다. 관리자는 역할 JSON을 읽지 않고 모든 권한 칸을 통과하며, Zabbix 조회도 서비스 계정 토큰으로 한다. Zabbix 쪽 역할 유형(Zabbix Super admin)은 판정에 쓰지 않는다.
+- **강제 방식** — 어노테이션이나 URL 패턴이 아니라 **컨트롤러 메서드 첫 줄에서 판정 함수를 직접 부른다.** 판정 함수는 세 종류다.
+  - `AdminAccessChecker.requireAdmin(user)` — 관리자 전용(사용자 관리, 설정, 라이선스 등록·해지, Zabbix 관리 전체, 스케줄러, 기기 분류, 리포트·아카이브 관리, 자산·비용 쓰기 등).
+  - `DmovePermissionChecker.requireView/requireEdit/requireAnyView/requireAnyEdit(user, 키)` — 역할 권한 칸.
+  - `ApmAccessChecker.requireRead/requireEdit` — APM 전용(내부적으로 같은 판정기 사용).
+- **거부 응답** — 권한 거부는 HTTP 200 + body `code: 403`(메시지 `Access Denied`)이다. 실제 HTTP 401은 인증 실패뿐이며, FE는 401만 재발급 신호로 쓴다.
+- **구 방식의 잔재** — `@Roles`+`@RolesGuarded`(`RolesInterceptor`)는 JWT의 `roleid`(숫자 문자열)를 역할 enum 이름과 비교한다. 두 값은 형식이 달라 일치하지 않으므로 이 방식이 붙은 `/admin/**` 컨트롤러 2개는 누구도 통과하지 못한다. 새 코드는 이 방식을 쓰지 않는다.
+- **컨트롤러별 강제 현황** (API 수는 메서드 단위 매핑 어노테이션 기준, 2026-10-06 소스. 메서드 본문 또는 같은 클래스의 위임 메서드에 판정 함수 호출이 있는지를 스크립트로 훑은 뒤 예외를 눈으로 분류했다)
+
+| 컨트롤러(경로) | API 수 | 강제 방식 | 검사 없는 API |
+|---|---|---|---|
+| `UserController` (`/users`) | 32 | 관리자 판정 24개 + 본인 API | 본인 4개(`my-profile` GET·PUT, `me/permissions`, `update-email`), 공용 4개(`role/permission`, `hosts`, `host-groups`, `host-groups/{id}`) |
+| `SettingController` (`/settings`) | 8 | 전부 관리자 | 없음 |
+| `LicenseController` | 4 | 등록(2)·해지 관리자 | `GET /features`(의도: 전원) |
+| `HostController` (`/hosts`) | 20 | 권한 칸 15개 | 공유 5개: `hostgroups`, `server`, `detail/{hostid}`, `search`, `hostgroup-problems` |
+| `Cpu`·`Memory`·`Disk`·`Network`·`Interface`·`Session`·`ResponseTime`·`Items` 컨트롤러 | 19 | 전부 권한 칸(`anyView`) | 없음 |
+| `WidgetsController` (`/host/{id}/widgets`) | 5 | 권한 칸 + 대상 호스트 가시성 | 없음 |
+| `EventController`·`HostEventController`·`EventStatsController` | 13 | 권한 칸 10개 | 공유 3개: `GET /event/problems`, `GET /event/bells`, `PUT /event/isRead` |
+| `EventStreamController` (`/event/stream`) | 1 | 세션 바인딩(쿼리 파라미터) | 권한 칸 없음(공유) |
+| `CloudInfraController` (`/cloud-infras`) | 16 | `awsResources.view`, 연결 테스트는 관리자 | 없음 |
+| `AssetController` (`/assets`) | 10 | 쓰기 5개 관리자 | 조회 5개(목록·요약·대시보드·상세·활동) |
+| `CostController` (`/costs`) | 10 | 쓰기·업로드 5개 관리자, 대시보드의 클라우드 부분과 Cloud 탭은 `awsResources.view` | 조회 3개(`/hw`, `/hw/incomplete`, `/hw/{assetId}/depreciation`) |
+| `GeoClusterController` (`/geo-clusters`) | 10 | 좌표 편집 1개만 관리자 | 나머지 9개(생성·수정·삭제·대표 지정 포함) |
+| `NetworkArchitectureController` (`/network-architectures`) | 7 | 없음 | 7개 전부(생성·수정·삭제 포함) |
+| `HomeController` (`/home`) | 8 | 위젯은 본인 소유 행만 다룸 | 권한 칸 없음(공유) |
+| `DeviceClassificationController` (`/settings/device-classifications`) | 7 | 쓰기 6개 관리자 | 목록 1개(의도: 전원, 선택지용) |
+| `HostManageController`(9)·`MonitoringCoverageController`(1)·`zabbixadmin/*` 컨트롤러 15개(104)·`SchedulerSettingController`(4)·`AiMonitorController`(14)·`ReportManagementController`(6)·`ArchiveFileController`(9)·`ApmArchiveController`(5) | 152 | 전부 관리자 | 없음 |
+| `premium/apm/*` 사용자용 컨트롤러 | 다수 | `ApmAccessChecker`(일부는 관리자 판정) + `@RequiresFeature(APM)` | 없음 |
+| `ApmOtlpController`·`ApmOtlpLiveController`·`ApmRumIngestController`·`ApmDeploymentWebhookController`·`AiMonitorOtlpController` | — | 사용자 세션이 아니라 수신 토큰(Bearer)을 컨트롤러가 직접 대조 | (기계 클라이언트용) |
+| `InternalSettingController`·`InternalMcpController` (`/internal/**`) | 3 | 공유 비밀 헤더 `x-internal-token` | — |
+| `AdminUserController`·`AdminUsrgrpController` (`/admin/**`) | 5 | `@RolesGuarded`+`@Roles(ADMIN)` | (전원 거부) |
+
+- **공유 API를 권한 칸으로 막지 않는 이유** — 헤더 전역 검색, 알림 벨, 홈, 호스트 그룹 필터처럼 여러 화면과 앱 부팅 경로가 함께 쓰는 API다. 한 칸으로 막으면 다른 칸의 화면이 깨진다. 이 API들의 데이터 범위는 사용자 Zabbix 토큰에 의존한다.
+- **검증 장치** — 모듈마다 대표 API 하나씩 "권한 없음 → 거부, 권한 있음 → 통과, 관리자 → 통과"를 보는 단위 테스트(`PermissionEnforcementControllerTest`)와 실제 JWT 쿠키로 도는 통합 테스트(`AuthorizationContractIT`)가 있다. 모든 컨트롤러 메서드에 검사가 있는지를 구조적으로 강제하는 테스트는 없다(§4 SEC-06).
+
+### 2.11 FE 화면 접근 가드와 권한 표시
+
+- **동작 원리**
+  - 보호 화면은 전부 `PageWrapper`를 거친다. 판정 순서는 ① 라이선스 잠금이면 잠금 화면(라이선스 화면 제외) → ② `decidePageAccess`(순수 함수)의 결과에 따라 화면·대기 스피너·오류 안내·404.
+  - `useAuth`는 로그인 플래그가 있으면 `GET /users/my-profile`과 `GET /users/me/permissions`를 부른다(신선도 1분). 화면을 여는 근거는 **이번 세션에 서버가 준 역할·권한**뿐이다. 브라우저에 저장된 이전 값으로는 열지 않으며, 역할과 권한은 저장소에 남기지 않는다.
+  - 서버가 401/403으로 거부한 조회는 새 성공 응답이 올 때까지 믿지 않는다. 네트워크 오류·5xx 같은 일시 실패는 이번 세션에 받은 값을 유지한다.
+  - 관리자 전용 화면은 `adminOnly`, 권한 칸 화면은 `permissionKey`(+ `permissionAxis`, 기본 `view`)로 선언한다. 사이드바·모바일 사이드바·관리 콘솔·전역 검색·라우트 가드 5곳이 같은 판정 함수(`utils/permissions.ts`)를 쓴다.
+  - 조회(GET) 응답이 권한 거부 형태면 "이 작업을 수행할 권한이 없습니다." 토스트를 띄운다. 이동이나 로그아웃은 하지 않는다. 쓰기 요청의 거부는 각 화면이 직접 안내한다.
+  - 계정이 바뀌면(로그인 성공, 또는 내 정보 응답의 사용자 id 변경) 세션 번호(epoch)를 올리고, 진행 중 조회를 취소하고, 조회 캐시와 AI 대화를 비우고, 화면 트리를 다시 마운트한다. 이전 계정에서 시작한 쓰기 요청은 전송 전에 끊는다.
+- **빈 값·실패·경계 상태**
+  - 권한 없음 → `/errors/404`로 이동.
+  - 내 정보·권한 조회 중 → 스피너. 조회 실패 → "권한 정보를 불러오지 못했습니다" 안내와 **다시 시도** 버튼.
+  - refresh까지 실패한 401 → 로그인 화면으로 이동.
+
+### 2.12 Zabbix 동기화
+
+- **무엇을 하는가** — Zabbix의 호스트 그룹·사용자 그룹·사용자·역할을 MovesEye 사본에 맞춘다.
+- **화면과 진입 경로** — 사용자 관리 세 탭의 표 상단 동기화 버튼(`POST /users/sync`). 주기 실행은 설정 > 스케줄러의 `user_sync` 작업(기본 꺼짐, 켜면 10분 주기)이다.
+- **동작 원리** — Zabbix 조회(그룹·사용자·역할·권한 스키마)를 트랜잭션 밖에서 끝낸 뒤, 한 트랜잭션에서 DB에만 적용한다. 실패하면 전부 되돌린다. 성공 시각을 Redis `SYNC_TIME_KEY`(TTL 10분)에 적고, 목록 화면의 "동기화 시각"이 이 값을 보여 준다.
+  - Zabbix에 있고 MovesEye에 없는 사용자는 `platform=ZABBIX`, 비밀번호 없음, `userRole=USER`로 만들어진다.
+  - Zabbix 연동 계정 중 Zabbix에서 사라진 사용자는 삭제 대상이다. MovesEye 전용 계정(`zabbix_userid` 없음)과 `userRole=ADMIN` 계정은 건드리지 않는다.
+  - 비활성 그룹 소속이면 비활성으로 바꾸고 세션을 끊는다. 관리자가 개별 비활성화한 계정(`status_locked`)은 되살리지 않는다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| POST | `/users/sync` | 수동 동기화 | 관리자 |
+
+- **빈 값·실패·경계 상태** — 다른 변경과 잠금이 10초 넘게 겹치면 전부 되돌리고 `FAILED_TO_ACQUIRE_LOCK`을 준다. 동기화 중 그룹의 로컬 id가 바뀐 것을 감지하면 중단한다.
+- **운영 주의** — 스케줄러에서 `user_sync`를 켜면 Zabbix에서 지워진 연동 계정이 MovesEye에서도 삭제된다. 라이선스가 읽기 전용·잠금이면 이 작업은 건너뛴다.
+
+### 2.13 MCP 토큰과 세션 세대가 만나는 지점
+
+- MCP 토큰은 AI 서버가 `POST /internal/mcp/tokens`(공유 비밀 헤더)로 발급받는 JWT(`typ=mcp`, 수명 60초~24시간, 기본 1시간)다. 발급 시점의 사용자 세대가 `gen` 클레임에 들어간다.
+- MCP 토큰은 세션 바인딩 검사를 면제받는 대신 `McpAccessInterceptor`가 요청마다 DB와 Redis를 다시 본다: 계정이 없거나 비활성이면 401, `userRole`이 발급 때와 다르면 401, `gen`이 현재 세대와 다르면 401, 현재 `mcp_permission`이 요청을 허용하지 않으면 200 + body 403.
+- 따라서 비밀번호 변경·재설정·비활성화·삭제는 웹 세션과 함께 MCP 연결도 끊는다. MCP 토큰이 닿을 수 있는 경로는 허용 목록(`/hosts`, `/host`, `/event`, `/zabbix-manage`, `/assets`, `/interface`, `/users/my-profile`, `/settings/device-classifications`, `/session`, `/home/system-status`, `/costs`, `/ai-monitor`)뿐이고 `/event/stream`은 제외다.
+
+### 2.14 라이선스 모델과 키 검증
+
+- **무엇을 하는가** — 설치본이 쓸 수 있는 기능 범위와 기간을 서명된 키로 정한다. 검증은 외부 통신 없이 제품에 들어 있는 공개키로 한다.
+- **모델**
+  - **등급(Edition)** — `STANDARD`(기본 기능 전부), `PREMIUM`(STANDARD + `GPU_MONITORING`·`DB_MONITORING`·`APM`).
+  - **기능(Feature)** — `GPU_MONITORING`, `DB_MONITORING`, `APM`. 실제 보유 기능은 "등급 기본 기능 ∪ 키의 추가 기능"이다. 그래서 STANDARD에 APM만 추가한 키를 만들 수 있다.
+  - **유형(LicenseType)** — `SUBSCRIPTION`(기간제), `PERPETUAL`(영구, 만료 판정을 타지 않음). 체험판 유형은 없고 기간제를 짧게, 유예 0일로 발급한다.
+- **키 구조** — RS256으로 서명한 JWT 문자열이다. 클레임: `iss=dmove-license`, `jti`(키 고유 id), `sub`·`customer`(고객사명), `licenseType`, `edition`, `features`(추가 기능 배열), `startsAt`(유효 시작, 표시용), `expiresAt`(만료 시각, 기간제 필수), `graceDays`(만료 후 유예, 기본 30), `maxHosts`(자리만 있고 쓰지 않음), `activationDeadline`(이 시각까지 등록해야 함, 기본 발급 후 7일). 시각은 epoch 초다. 표준 `exp` 클레임은 쓰지 않는다(쓰면 만료 즉시 서명 검증이 실패해 단계적 차단이 불가능해진다).
+- **검증**
+  - 공개키는 `classpath*:license/public-*.pem` 전부를 읽어 차례로 시도한다. 키쌍을 바꿀 때 구 공개키를 함께 두면 이미 발급한 키가 유효한 채로 넘어갈 수 있다.
+  - **등록 때**(`verify`) — 서명·필수 클레임 + 등록 기한 + "유예까지 이미 끝난 키가 아닌가".
+  - **사용 중 판정**(`parse`) — 서명·클레임만 본다. 등록 기한은 보지 않는다.
+  - 판정에 쓰는 값은 전부 키에서 온다. DB `license` 행에서 읽는 것은 키 원문뿐이고, 등급·만료 같은 다른 컬럼은 표시용 사본이다. 컬럼을 직접 고쳐도 판정은 바뀌지 않는다.
+  - 서명 검증 결과는 60초 캐시한다. 등록·해지는 캐시를 즉시 버린다. 만료·유예 같은 시간 전이는 매 요청 다시 계산하므로 캐시가 허용 시간을 늘리지 않는다.
+- **상태 머신** (기준 시각 = 서버 시계)
+
+| 상태 | 조건 | 접근 모드 | 프리미엄 | 실시간(Zabbix) 조회 |
+|---|---|---|---|---|
+| `NONE` | 활성 키 없음(신규 설치·해지) | LOCKED | 불가 | 불가 |
+| `INVALID` | 저장된 키의 재검증 실패, 또는 판정 조회 3회 연속 실패 | LOCKED | 불가 | 불가 |
+| `ACTIVE` | 영구이거나 만료 30일 전보다 이전 | FULL | 가능 | 가능 |
+| `EXPIRING` | 만료 30일 이내 | FULL | 가능 | 가능 |
+| `GRACE` | 만료 후 `graceDays` 이내 | FULL | 가능 | 가능 |
+| `EXPIRED` | 유예 종료 후 30일 이내 | READ_ONLY | **불가** | 가능 |
+| `ARCHIVED` | 그 이후(영구 유지) | READ_ONLY | 불가 | **불가** |
+
+- **데이터** — `license`(V20, V22): `jti`, `license_key`(원문), 표시용 사본(`customer`, `license_type`, `edition`, `features`, `grace_days`, `max_hosts`, `starts_at`, `expires_at`), `activated_at`, `active`, `registered_by`, `registered_at`, `revoked_at`. 활성 행은 부분 유니크 인덱스로 1개만 가능하다. 해지·교체해도 행은 지우지 않고 `active=false`로 남는다(등록 이력).
+
+### 2.15 라이선스 설정 화면
+
+- **화면과 진입 경로** — `/setting/license`(상태 탭), `/setting/license/apply`(적용 탭). 관리 콘솔 "접근" 묶음, 잠금 화면의 버튼.
+- **사용 방법**
+  1. **상태** 탭은 상태 태그, 고객사명, 등급, 유형, 실시간 조회 허용 여부, 접근 모드, 만료 시각, 기간제 수명주기(ACTIVE→EXPIRING→GRACE→EXPIRED→ARCHIVED 단계와 남은 일수), 프리미엄 기능 3종의 포함 여부를 보여 준다.
+  2. **적용** 탭에서 `.lic` 파일을 끌어다 놓거나(최대 64KB) 키를 붙여넣고 적용한다. 활성 키가 있으면 버튼 문구가 "교체"로 바뀐다. 새 키를 등록하면 기존 키는 자동으로 내려간다.
+  3. **해지**는 확인창을 거친다. 해지하면 즉시 `NONE`(잠금)이 된다. 만료와 달리 읽기 전용 단계가 없다.
+- **동작 원리** — 상태는 `GET /features`(FE 3분 주기 재조회 + 게이트 차단을 받으면 즉시 재조회). 등록은 `POST /settings/license`(JSON 또는 multipart, 두 경로가 같은 처리), 해지는 `DELETE /settings/license`다. 등록·해지 응답은 새 상태이며 화면 캐시에 바로 반영된다. 붙여넣은 키의 공백·줄바꿈은 서버가 제거한다.
+- **주요 API**
+
+| Method | Path | 용도 | 권한 |
+|---|---|---|---|
+| GET | `/features` | 현재 상태·보유 기능 | 로그인 사용자 전원 |
+| POST | `/settings/license` | 키 등록·교체(JSON `licenseKey` 또는 multipart `file`) | 관리자 |
+| DELETE | `/settings/license` | 해지 | 관리자 |
+
+- **빈 값·실패·경계 상태** — 등록 거부 사유는 `errorCode`로 구분된다: `LICENSE_KEY_INVALID`(서명 불일치), `LICENSE_KEY_MALFORMED`(형식 깨짐·빈 파일·64KB 초과), `LICENSE_KEY_INVALID_CLAIM`(클레임 누락·값 오류), `LICENSE_ACTIVATION_EXPIRED`(등록 기한 경과), `LICENSE_ALREADY_EXPIRED`(유예까지 끝난 키). 상태 조회가 실패하면 재시도 버튼이 있는 안내가 나온다.
+- **운영 주의** — 등록 이력을 보는 화면과 API는 없다. 누가 언제 등록·해지했는지는 `license` 테이블과 서버 로그로만 확인한다.
+
+### 2.16 라이선스 게이트 — 잠금·읽기 전용·기능·실시간 차단
+
+- **BE 게이트 4종**
+
+| 게이트 | 위치 | 판정 | 응답(HTTP 200 + body) |
+|---|---|---|---|
+| 잠금 | `AccessModeInterceptor` | 모드 LOCKED이고 `@LicenseExempt`가 아님 | `errorCode: LICENSE_REQUIRED` |
+| 읽기 전용 | `AccessModeInterceptor` | 모드 READ_ONLY이고 쓰기 요청(GET·HEAD·OPTIONS 외. `@ReadOnlyAllowed`면 통과, `@MutatingRequest`면 차단) | `errorCode: LICENSE_READ_ONLY` |
+| 기능 | `FeatureInterceptor` | `@RequiresFeature(X)`인데 `allows(X)`가 거짓(미보유, 또는 EXPIRED·ARCHIVED) | `errorCode: LICENSE_FEATURE_REQUIRED` |
+| 실시간 | 수집 포트 데코레이터 3종(`LicenseGuarded*Port`) | ARCHIVED에서 Zabbix 조회 | `errorCode: LICENSE_LIVE_BLOCKED` |
+
+  - 면제(`@LicenseExempt`) 대상: `/auth/**`, 라이선스 API, `GET /users/my-profile`, `GET /users/me/permissions`, `GET /users/role/permission`, `/internal/**`, 그리고 기계 클라이언트용 수신 컨트롤러(OTLP·RUM·배포 웹훅). 수신 컨트롤러는 인터셉터를 비켜 서는 대신 스스로 라이선스를 확인하고 실제 HTTP 상태(403 또는 503)로 답한다.
+  - 배치는 `SchedulerManager`가 실행 직전에 막는다. 쓰기 가능한 상태가 아니면 수집 계열 작업을 건너뛰고 로그만 남긴다. 정리(cleanup) 작업은 계속 돈다.
+  - 저장된 데이터(자산·리포트 스냅샷 등)는 ARCHIVED에서도 계속 조회된다.
+- **FE 표시**
+  - **잠금 화면**(`LockdownPage`) — `mode=LOCKED`이면 라이선스 화면을 제외한 보호 화면을 통째로 대체한다. 키 없음과 검증 실패를 다른 문구로 안내하고, 등록 화면으로 가는 버튼이 있다. 상태를 받기 전(로딩 중)에는 잠그지 않는다.
+  - **배너**(`LicenseBanner`) — 만료 임박·유예·읽기 전용 단계를 상단에 알린다.
+  - **게이트 토스트** — axios 인터셉터가 응답 본문의 게이트 `errorCode`를 보고 이벤트를 보내면, `useLicenseGateWatcher`가 상태를 즉시 다시 조회하고 같은 코드는 3초에 한 번만 토스트를 띄운다. 잠금은 토스트 없이 잠금 화면으로 바뀐다.
+  - **기능 게이트**(`FeatureGate`, 사이드바 `FeatureLockedLabel`, `UpsellPanel`) — 미보유 프리미엄 메뉴는 자물쇠와 함께 보이고, 들어가면 업셀 안내가 나온다. 판정은 "보유 + 상태가 ACTIVE·EXPIRING·GRACE"다. 이것은 편의 표시이고 실제 차단은 BE가 한다.
+  - **실시간 차단 안내**(`LiveBlockedNotice`) — ARCHIVED에서 실시간 위젯 자리에 표시한다.
+
+### 2.17 라이선스 발급 도구 (사내 전용)
+
+- **무엇을 하는가** — 고객사별 라이선스 키(`.lic`)를 개인키로 서명해 만든다. 제품 저장소·배포본과 분리된 별도 저장소(`moveseye-license-issuer`)다.
+- **사용 방법**
+  1. 최초 1회 `issue.bat --genkey`로 키쌍을 만든다. `keys/private-key.pem`이 발급 권한 그 자체다. `keys/public-key.pem`을 제품의 `src/main/resources/license/public-<번호>.pem`으로 복사해 번들한다. 이미 개인키가 있으면 덮어쓰지 않는다.
+  2. **웹 화면** — `issue.bat --web`으로 `http://127.0.0.1:877`을 연다. 고객사명·등급·유형·시작일·기간·유예·추가 기능·등록 기한을 입력하고 발급한다. 같은 화면에 발급 대장이 표로 나오고 파일을 내려받는다.
+  3. **콘솔** — `issue.bat`(대화형) 또는 인자형(`--customer`, `--edition`, `--type`, `--days`, `--grace`, `--features`, `--deadline`).
+  4. 산출물은 `issued/<고객사>_<등급>_<발급일>.lic`, 대장은 `issued/issued-licenses.csv`(발급일시·jti·고객사·등급·유형·유효기간·유예·추가기능·등록기한·파일명)다.
+- **동작 원리** — CLI와 웹이 `LicenseIssuerCore.issue` 하나를 공유한다. 만료 시각은 "시작일 0시 + 기간(일)"으로 계산해 키에 서명한다(발급 PC의 시간대 기준). RSA 2048비트 키를 쓴다.
+- **제품과의 계약** — 클레임 상수와 enum 4개 파일(`LicenseClaims`, `Edition`, `Feature`, `LicenseType`)은 두 저장소에 같은 내용으로 있어야 한다. 2026-10-06 기준 네 파일의 본문은 패키지 선언 줄을 제외하고 동일하다. 양쪽의 `LicenseContractTest`가 같은 문자열을 각자 단언하므로 한쪽만 바꾸면 그쪽 테스트가 깨진다.
+- **운영 주의**
+  - 웹 화면을 띄운 프로세스는 실행 중인 동안 발급 권한을 가진다. 기본은 루프백(`127.0.0.1`)만 연다. 다른 주소로 열려면 `--token`이 필수이며 없으면 기동을 거부한다. 다운로드는 발급 대장에 있는 파일만 허용한다.
+  - `keys/`와 `issued/`는 저장소에 올리지 않는다(`.gitignore`). 개인키와 발급 대장의 백업은 저장소 밖에서 따로 해야 한다.
+  - 개인키를 잃으면 새 키쌍으로 바꿔야 하고, 제품에 구 공개키가 남아 있는 동안만 기존 고객 키가 유효하다.
+
+### 2.18 자격증명 암호화와 시크릿 관리
+
+- **무엇을 하는가** — 설정 화면에서 저장하는 외부 시스템 자격증명(Zabbix 서비스 계정 비밀번호, AWS 비밀 키, LLM API 키 등)을 DB에 암호문으로 저장한다.
+- **동작 원리** — `SettingSecretCodec`이 AES-256-GCM으로 암호화하고 `enc:v1:<base64(iv‖암호문‖태그)>` 형식으로 저장한다. 접두어가 없으면 평문(도입 전 데이터)으로 보고 그대로 읽으며, 다음 저장 때 암호문으로 바뀐다. 접두어가 있는데 복호화가 실패하면 오류를 낸다(평문처럼 흘려보내지 않는다).
+- **키** — 환경변수 `CREDENTIAL_ENCRYPTION_KEY`(base64 32바이트). 설치본마다 다른 값을 쓴다. 없거나 길이가 맞지 않으면 기동이 실패하며 오류 문구가 생성 방법을 안내한다.
+- **설정 응답** — 설정 조회 API는 비밀값 키를 응답에서 지운다. 저장 요청에서 비밀값이 비어 오면 저장된 값을 유지한다.
+- **시크릿의 정본** — 환경변수다(개발은 `.env`를 셸에 올려 기동, 운영은 OS·컨테이너 환경변수). 외부 비밀 저장소(Vault) 연동은 설정 파일에 주석으로만 남아 있고 쓰지 않는다.
+- **막는 것과 막지 못하는 것** — DB 덤프·백업 유출 시 자격증명이 평문으로 나가는 것을 막는다. 서버 자체가 침해되면 키도 함께 노출되므로 그것은 막지 못한다.
+
+## 3. 공통 동작과 설정
+
+### 3.1 설정 키
+
+| 환경변수(설정 키) | 기본값 | 의미 |
+|---|---|---|
+| `JWT_SECRET` (`app.jwt.secret`) | 없음(필수) | access·MCP·OTP 토큰 서명 키(HS256). 32바이트 미만이면 기동 실패 |
+| `JWT_ACCESS_EXPIRATION_SECONDS` | 1800 | access 토큰·OTP 토큰(JWT) 수명 |
+| `JWT_REFRESH_EXPIRATION_SECONDS` | 28800 | refresh 토큰·세션 키 수명 |
+| `COOKIE_SECURE` (`app.cookie.secure`) | true | 인증 쿠키의 Secure 속성. dev 프로필만 false |
+| `COOKIE_SAME_SITE` | Strict | 인증 쿠키의 SameSite 속성 |
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:5173,http://localhost:3000` | 쿠키 인증을 허용할 FE 오리진 목록(와일드카드 불가) |
+| `FORWARD_HEADERS_STRATEGY` | none | 리버스 프록시 뒤일 때 `native` |
+| `AUTH_LOGIN_IP_MAX_FAILURES` / `AUTH_LOGIN_IP_WINDOW_SECONDS` | 50 / 900 | IP 기준 로그인 실패 제한 |
+| `AUTH_OTP_SEND_IP_MAX` / `AUTH_OTP_SEND_IP_WINDOW_SECONDS` | 20 / 900 | IP 기준 코드 발송 제한 |
+| `CREDENTIAL_ENCRYPTION_KEY` | 없음(필수) | 설정 자격증명 암호화 키 |
+| `INTERNAL_API_TOKEN` | 빈 값 | AI 서버 ↔ BE 공유 비밀. 비어 있으면 `/internal/**`는 항상 403 |
+| `SPRINGDOC_ENABLED` | false | API 문서(Swagger) 노출. dev 프로필만 켜짐 |
+| `SYNC_ENABLED` (`app.sync.enabled`) | false | 설정 파일에 남아 있으나 현재 동기화 배치의 on/off는 DB `scheduler_setting`의 `user_sync` 행이 정한다 |
+
+코드 상수(설정 불가): 사용자명 기준 로그인 실패 10회/15분, 코드 검증 5회/3분, 코드 길이 6자·만료 3분, 로그인·MCP 발급 잠금 대기 5초, 라이선스 판정 캐시 60초, 만료 임박 창 30일, 유예 뒤 실시간 유지 30일.
+
+### 3.2 Redis 키
+
+| 키 | 값·수명 | 용도 |
+|---|---|---|
+| `USER_LOGIN_KEY_<userId>` | visitor 값, 8시간(회전 때 연장) | 세션 바인딩 |
+| `REFRESH_TOKEN:<토큰>` | `{userId, visitorId, expiresAt, generation, family}`, 8시간 | refresh 토큰 |
+| `REFRESH_GEN:<userId>` | 정수, 만료 없음 | 사용자 세대 |
+| `REFRESH_FAMILY_REVOKED:<family>` | 8시간 | 로그아웃한 계열 표식 |
+| `REFRESH_CONSUMED:<토큰>` | 계열 id, 600초 | 회전으로 소비된 토큰 흔적 |
+| `REFRESH_SESSION_FAMILY:<userId>` | 계열 id, 8시간 | 세션을 세운 계열 |
+| `REDIS_USER_API_TOKEN`(해시) | `토큰:토큰id:만료초` | 사용자별 Zabbix API 토큰 |
+| `LOCK_KEY_USER_API_TOKEN:<zabbixUserid>` | 분산 락 | Zabbix 토큰 재발급 직렬화 |
+| `RATE_LOGIN:<사용자명>`, `RATE_LOGIN_IP:<ip>`, `RATE_OTP:<사용자명>`, `RATE_OTP_SEND_IP:<ip>` | 카운터, 창 길이만큼 | 실패·요청 제한 |
+| `SYNC_TIME_KEY` | epoch 초, 10분 | 마지막 동기화 시각 |
+
+### 3.3 스케줄러 작업
+
+| 작업 키 | 기본 | 내용 |
+|---|---|---|
+| `user_sync` | 꺼짐(켜면 10분 주기) | Zabbix 사용자·그룹·역할 동기화. 라이선스가 쓰기 불가 상태면 건너뜀 |
+
+### 3.4 응답 계약과 보안 기본값
+
+- 비즈니스 오류·권한 거부·라이선스 차단은 HTTP 200 + body(`status: error`, `code`, `errorCode`, `message`)다. 실제 상태 코드로 나가는 것은 인증 실패(401)와 기계 클라이언트용 수신 API뿐이다.
+- CSRF 방어 토큰은 쓰지 않는다(`csrf.disable()`). 쿠키의 `SameSite=Strict`와 CORS 오리진 화이트리스트에 의존한다.
+- 응답 보안 헤더는 BE에 명시 설정이 없어 Spring Security 기본값이 적용된다. FE 정적 파일을 내는 웹 서버의 헤더는 이 저장소 범위 밖이다.
+- 세션 저장소는 서버 메모리가 아니라 Redis이고, 권한 판정은 요청마다 DB를 읽는다. 따라서 BE를 여러 대로 늘려도 로그인·권한 판정은 인스턴스에 묶이지 않는다. 라이선스 판정 캐시(60초)만 인스턴스별이라, 한 대에서 등록·해지한 결과가 다른 대에 반영되기까지 최대 60초가 걸린다.
+
+## 4. 문제점 및 보완점 분석
+
+### 4.1 요약
+
+| ID | 제목 | 중요도 | 유형 | 증거 수준 | 상태 |
+|---|---|---|---|---|---|
+| SEC-01 | 기본 관리자 계정이 고정 초기 비밀번호로 만들어지고 변경 강제가 없으며, 관리자 계정을 늘리는 경로가 없다 | 높음 | 보안 | 코드 확인 | 신규 |
+| SEC-02 | 관리자의 모든 요청이 Zabbix 서비스 계정 로그인 성공에 의존해, Zabbix 접속이 실패하면 접속 설정 화면에도 들어가지 못한다 | 높음 | 실패처리 | 코드 확인(응답 코드는 추론) | 기존 기록(배포 메모)-유효 |
+| SEC-03 | 세션 키는 계정당 1칸인데 로그인 계열은 여러 개 살아 있어, 두 기기가 번갈아 401→재발급을 반복한다 | 중간 | 운영 | 코드 확인(부하 규모는 추론) | 신규 |
+| SEC-04 | 로그인 실패 제한이 사용자명 기준 고정 창이라 제3자가 특정 계정을 계속 잠글 수 있다 | 중간 | 보안 | 코드 확인 | 신규 |
+| SEC-05 | 이메일 인증 흐름이 미완성이다 — 화면이 없고, 발급한 임시 비밀번호가 어디로도 전달되지 않는다 | 중간 | 미완성 | 코드 확인 | 신규 |
+| SEC-06 | 권한 검사가 메서드별 수동 호출이고, 누락을 잡는 구조 테스트가 없다 | 중간 | 보안 | 코드 확인 | 신규 |
+| SEC-07 | `LicenseArchitectureTest` A5-c가 현재 코드에서 실패한다 — 검사가 한 단계 위임만 따라가는데 실제는 두 단계다 | 중간 | 미완성 | 코드 확인(실행은 기존 기록) | 기존 기록-유효(원인 신규) |
+| SEC-08 | `GET /users/host-groups`가 데이터 범위 없이 전 호스트 그룹과 소속 호스트 이름을 모든 로그인 사용자에게 준다 | 중간 | 보안 | 코드 확인 | 신규 |
+| SEC-09 | 자산·HW 비용·지리 맵·네트워크 맵은 기능 권한도 데이터 범위도 없고, 맵은 로그인 사용자 누구나 수정·삭제한다 | 중간 | 보안 | 코드 확인 | 기존 기록-유효 |
+| SEC-10 | 여러 화면이 함께 쓰는 API는 권한 칸을 적용하지 않는다 | 중간 | 보안 | 코드 확인 | 기존 백로그-유효 |
+| SEC-11 | 로그인·계정·역할·권한·라이선스 변경의 감사 기록이 없다 | 중간 | 운영 | 코드 확인 | 기존 백로그-유효 |
+| SEC-12 | HTTP 배포에서는 토큰이 평문으로 오가고, FE와 BE가 서로 다른 사이트면 인증 쿠키가 전송되지 않는다 | 중간 | 운영 | 기존 기록 + 추론 | 기존 기록-유효 |
+| SEC-13 | 서명 키 하나(`JWT_SECRET`)로 4종 토큰을 서명하고 무중단 교체 수단이 없다. 운영 키 교체 여부는 미확인 | 중간 | 운영 | 코드 확인(운영 상태 미확인) | 기존 백로그-미확인 |
+| SEC-14 | 해지하거나 DB를 잃은 뒤에는 등록 기한이 지난 같은 키를 다시 등록할 수 없다 | 중간 | 운영 | 코드 확인 | 신규 |
+| SEC-15 | 비밀번호 규칙이 화면·API·경로마다 다르다 | 중간 | 보안 | 코드 확인 | 신규 |
+| SEC-16 | 비밀번호 재설정 전 과정을 코드 발급 후 3분 안에 끝내야 한다 | 낮음 | 사용성 | 코드 확인 | 신규 |
+| SEC-17 | 비밀번호 찾기가 계정 존재·이메일 유무를 구분해 알려 주고, 코드 난수원이 보안용이 아니다 | 낮음 | 보안 | 코드 확인 | 신규 |
+| SEC-18 | 사용자 삭제에 자기 자신·관리자 보호가 없고, 설계와 달리 삭제가 즉시 영구 삭제다 | 낮음 | 정확성 | 코드 확인 | 신규 |
+| SEC-19 | 로그인·코드 확인 응답이 사용자 엔티티를 그대로 내보낸다 | 낮음 | 보안 | 코드 확인 | 신규 |
+| SEC-20 | 쓰이지 않는 API·상수·함수가 남아 있다(`/admin/**` 등) | 낮음 | 미완성 | 코드 확인 | 신규 |
+| SEC-21 | 로그인 화면의 "로그인 상태 유지"가 동작하지 않고, 요청 제한·잠금 화면 안내가 대상에 맞지 않는다 | 낮음 | 사용성 | 코드 확인 | 신규 |
+| SEC-22 | 역할 편집 화면의 상세 조회 캐시 키에 역할 id가 없다 | 낮음 | 정확성 | 코드 확인(발현은 추론) | 신규 |
+| SEC-23 | 라이선스는 시계 되돌리기·여러 서버 복사·공개키 추가를 막지 못한다 | 낮음 | 보안 | 코드 확인 | 기존 기록-유효 |
+| SEC-24 | 라이선스 판정 조회가 실패하면 "검증 실패" 잠금 화면이 뜬다 | 낮음 | 실패처리 | 코드 확인(화면은 추론) | 신규 |
+| SEC-25 | 세션 만료 시 알림 벨이 무한 로딩되던 문제의 현재 상태를 확인하지 못했다 | 낮음 | 실패처리 | 기존 기록 | 기존 기록-미확인 |
+| SEC-26 | 자산 지도 화면 소스에 외부 지도 서비스 액세스 토큰이 하드코딩돼 있다 | 낮음 | 보안 | 코드 확인 | 기존 감사-유효 |
+
+### 4.2 기존 감사의 보안 지적 4건 — 현재 상태
+
+`_workspace/features/infra/scale-call-guard/audit_scale-5000-hosts.md` §2의 보안 항목을 현재 코드로 다시 확인했다.
+
+| 감사 ID | 내용 | 현재 상태 | 근거 |
+|---|---|---|---|
+| S1 | Zabbix 미연동 사용자를 슈퍼관리자 토큰으로 조회 | **해소됨** — 미연동 비관리자는 `CallerContext.unlinked()`로 분류되어 Zabbix 호출 시점에 거부된다 | `moveseye-be-spring/src/main/java/com/dmove/moveseye/common/metric/CallerContexts.java:49-57`, `moveseye-be-spring/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/session/ZabbixSessionProvider.java:42-46` |
+| S2 | 그룹 자원·알림 추이 캐시 키에 사용자 구분 없음 | **해소됨** — 캐시 키에 호출자(principal)가 들어간다 | `moveseye-be-spring/src/main/java/com/dmove/moveseye/host/HostService.java:964-967`, `:1074-1076` |
+| S3 | 커버리지·호스트 관리 목록이 슈퍼관리자 토큰 사용 | **부분 해소** — 두 컨트롤러 모두 관리자 판정을 거치므로 비관리자(및 비관리자의 AI 호출)는 닿지 못한다. 서비스는 여전히 서비스 계정 토큰을 쓴다. AI 요약 캐시의 사용자 분리는 AI 저장소 소관이라 이번에 확인하지 않았다 | `moveseye-be-spring/src/main/java/com/dmove/moveseye/host/coverage/MonitoringCoverageController.java:36`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/host/manage/HostManageService.java:83` |
+| S4 | 지도 액세스 토큰 하드코딩 | **유효** (SEC-26) | `moveseyee_fe/src/pages/asset/MapViewList.tsx:29`, `moveseyee_fe/src/pages/asset/ServerLocationList.tsx:25` |
+
+남은 구조적 주의: `CallerContexts.from(null)`과 `ZabbixSessionProvider.resolve(null)`은 호출자가 없으면 시스템(슈퍼관리자) 권한으로 처리한다(`CallerContexts.java:41-44`, `ZabbixSessionProvider.java:38-40`). 배치용 기본값이지만, 요청 경로에서 사용자 정보를 넘기지 않는 코드가 생기면 그 조회는 범위 제한 없이 실행된다.
+
+### 4.3 항목별 상세
+
+### SEC-01. 기본 관리자 계정이 고정 초기 비밀번호로 만들어지고 변경 강제가 없으며, 관리자 계정을 늘리는 경로가 없다
+
+**중요도: 높음 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상:
+  - 마이그레이션 V10이 `admin` 계정을 고정된 bcrypt 해시로 만든다. 그 초기 비밀번호는 마이그레이션 파일 주석과 저장소 문서에 적혀 있고, 제품의 최소 길이 규칙(8자)보다 짧다.
+  - 첫 로그인 때 비밀번호 변경을 요구하는 코드는 BE·FE 어디에도 없다(해당 플래그·화면 검색 결과 0건).
+  - MovesEye 관리자 판정의 유일한 근거인 `user.role`(`userRole`) 컬럼에 값을 쓰는 코드는 V10 시드뿐이다. 사용자 생성·수정·동기화 어디에서도 `userRole`을 지정하지 않아 새 계정은 모두 DB 기본값 `USER`가 된다.
+  - 사용자 목록 API는 `userRole=ADMIN` 계정을 제외하므로 관리자 계정은 사용자 관리 화면에 나오지 않는다.
+- 영향: 초기 비밀번호를 바꾸지 않은 설치본은 그 값을 아는 누구에게나 관리자 권한(사용자·설정·Zabbix 관리 전체, Zabbix 서비스 계정 토큰 사용)을 내준다. 관리자 계정이 하나라 여러 운영자가 같은 계정을 공유하게 되고, 누가 무엇을 했는지 구분할 수 없다(SEC-11과 겹침). 관리자가 비밀번호를 잊고 이메일도 등록하지 않았다면 화면으로 복구할 방법이 없고 DB를 직접 고쳐야 한다.
+- 보완 제안:
+  1. 시드 계정에 "초기 비밀번호 사용 중" 표시를 두고, 그 상태에서는 비밀번호 변경 API와 로그아웃 외의 요청을 거부한다. 대안으로 설치 시 환경변수로 받은 초기 비밀번호만 허용하는 방식이 있다(설치 절차가 한 단계 늘어난다).
+  2. 관리자 지정·해제 API와 화면을 만든다(마지막 관리자 해제 금지, 자기 자신 해제 금지, 변경 시 대상 세대 +1). 관리자 계정도 사용자 목록에 표시한다.
+  3. 최소한 관리자 가이드에 "설치 직후 비밀번호 변경·이메일 등록"을 필수 절차로 명시한다.
+- 완료 조건: 초기 비밀번호 그대로는 보호 API가 거부되는 통합 테스트, 두 번째 관리자 지정 후 그 계정으로 관리자 전용 API가 통과하는 테스트, 마지막 관리자 해제가 거부되는 테스트.
+- 근거: `moveseye-be-spring/src/main/resources/db/migration/V10__seed_admin_user.sql:1-16`, `moveseye-be-spring/src/main/resources/db/migration/V1__baseline.sql:519`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/UserService.java:504`(목록 제외)·`:598-610`(생성 시 `userRole` 미지정), `moveseye-be-spring/src/main/java/com/dmove/moveseye/zabbixadmin/sync/ZabbixSyncServiceImpl.java:354-361`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/AdminAccessChecker.java:42-48`
+
+### SEC-02. 관리자의 모든 요청이 Zabbix 서비스 계정 로그인 성공에 의존해, Zabbix 접속이 실패하면 접속 설정 화면에도 들어가지 못한다
+
+**중요도: 높음 · 유형: 실패처리 · 증거: 코드 확인(응답 상태 코드는 추론)**
+
+- 현상:
+  - 인증 필터는 관리자 요청마다 `zabbixUserService.getSuperAdminToken()`을 부른다. 이 값은 Redis에 60초만 캐시되고, 만료되면 Zabbix `user.login`을 수행한다.
+  - Zabbix에 연결할 수 없으면 `ZabbixClient`가 `ApiError`(입출력 오류)를 던지고, 로그인이 거부되면 `ZABBIX_SASMIN_LOGIN_FAILED`(`ApiError`)가 난다.
+  - 필터의 예외 처리는 `UnauthorizedError`와 JWT 검증 예외만 잡는다. `ApiError`는 잡히지 않고 필터 밖으로 나간다.
+  - 이 필터는 관리자의 모든 요청(내 정보 조회, 라이선스 상태, **Zabbix 접속 설정 저장** 포함)에 앞서 실행된다.
+- 영향: Zabbix가 내려가 있거나 접속 설정(URL·계정·비밀번호)이 틀리면, 캐시가 만료되는 60초 뒤부터 관리자는 어떤 API도 쓸 수 없다. 접속 설정을 고치는 화면도 같은 필터 뒤에 있어 화면으로는 복구할 수 없고, DB의 설정 행이나 환경변수를 직접 고쳐야 한다. 관리자가 접속 설정에 오타를 저장한 경우에도 같은 상태가 된다. 필터에서 나간 예외는 공통 오류 응답 처리를 거치지 않으므로 HTTP 500으로 보일 것으로 추론한다(런타임 미확인). 실서버 첫 배포에서 Zabbix 설정이 없어 관리자 화면의 사이드바가 통째로 비었던 기록이 같은 경로다. Zabbix 장애는 모니터링 제품을 가장 급하게 열어 보는 시점이라는 점에서 영향이 크다.
+- 보완 제안:
+  1. 필터에서는 서비스 계정 토큰을 미리 받지 않고, 실제로 Zabbix를 부르는 시점에 해석한다(포트 경로는 이미 `ZabbixSessionProvider`가 그렇게 한다. 토큰을 직접 넘기는 레거시 경로만 남는다).
+  2. 그 전까지의 응급 조치로, 필터가 토큰 확보 실패를 잡아 토큰 없이 통과시키고 Zabbix 호출 시점에 실패하게 한다. 이렇게 하면 설정·라이선스·사용자 관리처럼 Zabbix와 무관한 관리자 API는 계속 동작한다.
+  3. 서비스 계정 토큰 캐시 수명(60초)을 늘리거나 로그인 실패를 짧게 음성 캐시해, Zabbix 장애 중 매 요청이 로그인 시도로 이어지지 않게 한다.
+- 완료 조건: Zabbix 연결을 끊은 상태에서 관리자가 `GET /users/my-profile`, `GET /features`, `POST /settings/zabbix`를 호출해 정상 응답(또는 Zabbix 관련 부분만 실패)을 받는 통합 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/JwtAuthFilter.java:54-71`(예외 범위)·`:101-104`(관리자 토큰 확보), `moveseye-be-spring/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/identity/user/ZabbixUserServiceImpl.java:40-61`, `moveseye-be-spring/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/client/ZabbixClient.java:235-240`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/zabbixadmin/spi/RedisZabbixSessionStore.java:33-36`
+
+### SEC-03. 세션 키는 계정당 1칸인데 로그인 계열은 여러 개 살아 있어, 두 기기가 번갈아 401→재발급을 반복한다
+
+**중요도: 중간 · 유형: 운영 · 증거: 코드 확인(부하 규모는 추론)**
+
+- 현상:
+  - 세션 바인딩 값은 `USER_LOGIN_KEY_<userId>` 하나다. 새 로그인은 이 값을 자기 visitor 값으로 덮어쓴다.
+  - 그러나 로그인은 다른 기기의 refresh 계열을 폐기하지 않는다(발급 스크립트는 세대만 확인한다). 회전 스크립트도 "세션을 세운 계열이 나인가"를 보지 않는다.
+  - 그래서 기기 A가 요청하면 세션 값이 B라 401 → A가 refresh에 성공해 세션 값을 A로 되돌림 → 다음에 B가 요청하면 401 → B가 refresh로 되돌림이 반복된다. 단위 테스트도 "같은 사용자의 다른 로그인 계열은 살아 있다"를 정상으로 고정하고 있다.
+  - Zabbix 연동 계정은 refresh마다 기존 Zabbix API 토큰을 전부 지우고 새로 만든다. 한쪽의 refresh가 다른 쪽이 쓰던 Zabbix 토큰을 무효화한다.
+- 영향: 한 계정을 두 브라우저(또는 PC와 다른 PC)에서 동시에 쓰면 양쪽 모두 요청 주기마다 401과 재발급이 발생한다. 화면은 대체로 동작하지만 15초 폴링 화면에서는 요청 수가 늘고, BE 로그에 401이 쌓이며, Zabbix에는 토큰 삭제·생성 호출이 반복된다. 관리자 계정이 하나뿐이라(SEC-01) 여러 운영자가 같은 계정으로 동시에 접속하는 상황이 실제로 생긴다. "한 계정은 한 곳에서만"이라는 정책이 의도였다면 지켜지지 않고, "여러 기기 허용"이 의도였다면 불필요한 왕복이 생긴다.
+- 보완 제안: 정책을 하나로 정한다.
+  - (가) 단일 세션: 로그인 시 그 사용자의 다른 계열을 폐기한다(세대 +1 후 새 세대로 발급). 이전 기기는 다음 요청에서 로그인 화면으로 간다.
+  - (나) 다중 세션: 세션 키를 계열 단위(`…_<userId>:<family>` 또는 visitor 집합)로 바꿔 서로 덮어쓰지 않게 하고, refresh 때 Zabbix 토큰을 무조건 재발급하지 않는다(만료 임박일 때만).
+- 완료 조건: 같은 계정으로 두 visitor가 번갈아 20회 요청할 때 (가)에서는 이전 기기가 한 번에 로그아웃되고, (나)에서는 `/auth/refresh` 호출이 0회임을 확인하는 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/RedisRefreshTokenStore.java:41-48`(발급)·`:55-75`(회전)·`:81-88`(세션 복원), `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/VisitorSessionChecker.java:56-72`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/AuthService.java:169-181`·`:334-348`, `moveseye-be-spring/src/test/java/com/dmove/moveseye/auth/RefreshTokenServiceTest.java:143-154`
+
+### SEC-04. 로그인 실패 제한이 사용자명 기준 고정 창이라 제3자가 특정 계정을 계속 잠글 수 있다
+
+**중요도: 중간 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: 사용자명 기준 카운터가 15분 창에서 10회에 닿으면, 올바른 비밀번호를 포함한 모든 로그인 시도가 `TOO_MANY_REQUESTS`로 거부된다(비밀번호 검증 전에 판정). 존재하지 않는 사용자명에 대한 실패도 카운터를 올린다. IP 기준 제한은 한 IP당 15분 50회라, 한 출발지에서 15분마다 5개 계정을 잠글 수 있다. 화면은 이 거부를 일반 "로그인 실패"로만 보여 준다.
+- 영향: 사용자명을 아는 사람이 15분마다 틀린 비밀번호 10번을 보내면 그 계정은 계속 로그인할 수 없다. 관리자 계정명이 고정(`admin`)이고 하나뿐이라(SEC-01) 관리자 로그인을 막기 쉽다. 이미 로그인한 세션은 영향받지 않는다.
+- 보완 제안: 사용자명 단독 잠금 대신 "사용자명 + IP" 조합 카운터로 판정하고, 사용자명 단독 카운터는 지연(응답 지연·점진적 대기)에만 쓴다. 또는 잠금 중에도 올바른 비밀번호 + 이메일 코드로 풀 수 있는 경로를 둔다. 화면에는 "잠시 후 다시 시도" 문구와 남은 시간을 표시한다.
+- 완료 조건: 다른 IP에서 10회 실패한 뒤에도 정상 IP의 올바른 로그인이 통과하는 테스트, 화면이 요청 제한을 구분해 안내하는 것.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/AuthRateLimiter.java:32-55`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/AuthService.java:57-66`, `moveseyee_fe/src/pages/authentication/SignIn.tsx:87-91`
+
+### SEC-05. 이메일 인증 흐름이 미완성이다 — 화면이 없고, 발급한 임시 비밀번호가 어디로도 전달되지 않는다
+
+**중요도: 중간 · 유형: 미완성 · 증거: 코드 확인**
+
+- 현상:
+  - `GET /auth/verify?type=VERIFY_EMAIL`이 성공하면 미인증 계정의 비밀번호를 무작위 8자로 바꾸고 모든 세션을 끊는다.
+  - 그 비밀번호를 보내는 `sendWelcome`은 로그 한 줄만 남기고 아무것도 보내지 않는다.
+  - 인증 메일의 링크는 `<basePath>/verify-email?token=…`인데, FE 라우트와 BE 경로 어디에도 `/verify-email`이 없다.
+  - FE는 이 흐름을 호출하지 않는다(종류 enum만 있다).
+  - 계정을 만들 때 `email_verified`는 항상 false이고, 이 흐름 외에는 true로 바꾸는 코드가 없다. 즉 모든 계정이 "미인증"이다.
+- 영향: 화면으로는 도달할 수 없어 일반 사용자에게 드러나지 않는다. 그러나 공개 API이므로 누군가 `POST /auth/resend`로 인증 메일을 보내게 할 수 있고(IP당 15분 20회), 메일을 받은 사용자가 코드를 API에 넣으면 본인 비밀번호가 알 수 없는 값으로 바뀐다. Zabbix에서 동기화된 계정에 최초 비밀번호를 주는 수단으로 설계됐지만 실제로는 쓸 수 없어, 그런 계정은 관리자가 비밀번호를 직접 넣어 줘야 한다. 계약 문서는 "발급된 비밀번호만 환영 메일로 보낸다"고 적고 있어 구현과 다르다.
+- 보완 제안: 둘 중 하나로 정리한다. (가) 흐름을 완성 — FE 인증 화면, 환영 메일 발송, 링크 경로 정정. (나) 흐름을 제거 — `VERIFY_EMAIL` 종류의 발송·검증을 거부하고, 동기화 계정의 온보딩은 "관리자가 이메일 등록 → 사용자가 비밀번호 재설정"으로 문서화한다. 임시 비밀번호를 메일로 보내는 방식보다 (나)가 단순하고 안전하다.
+- 완료 조건: (가)면 미인증 계정이 화면에서 인증을 마치고 받은 비밀번호로 로그인하는 E2E, (나)면 `type=VERIFY_EMAIL` 요청이 거부되는 테스트와 관련 코드 삭제.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/AuthService.java:307-316`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/UserService.java:247-267`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/email/EmailServiceImpl.java:41-46`·`:61-64`, `moveseyee_fe/src/types/auth.ts:54`(종류 정의만 있음), `_workspace/features/auth-license/zm-157-permission/contract_zm-157-permission-enforcement.md` §3 "이메일 인증" 행
+
+### SEC-06. 권한 검사가 메서드별 수동 호출이고, 누락을 잡는 구조 테스트가 없다
+
+**중요도: 중간 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: 인증만 있으면 통과가 기본이고, 권한은 각 컨트롤러 메서드 첫 줄에서 판정 함수를 불러야 걸린다. 검사가 빠진 메서드는 에러 없이 모든 로그인 사용자에게 열린다. 구조를 강제하는 ArchUnit 테스트는 라이선스(`LicenseArchitectureTest`), OTLP 패키지 방향, APM 아카이브 게이트 3개뿐이고, "모든 컨트롤러 메서드는 판정 함수를 부르거나 공개 목록에 있어야 한다"는 규칙은 없다. `PermissionEnforcementControllerTest`는 모듈별 대표 API 30건만 본다.
+- 영향: 새 API를 추가하며 첫 줄 검사를 빠뜨리면 테스트도 화면도 정상으로 보인다. 과거에 사용자·설정 컨트롤러의 `@Roles`가 통째로 무시되던 사고와 같은 종류다. 현재 컨트롤러 83개를 스크립트로 훑은 결과(§2.10 표)에서 의도 밖 누락은 찾지 못했다. 다만 그 확인은 일회성 수작업이고, "판정 함수 호출이 본문에 있는가"만 본 것이라 올바른 키로 판정하는지까지는 보지 않았다.
+- 보완 제안: ArchUnit 규칙을 추가한다 — `@RestController`의 매핑 메서드는 (a) 판정 함수(`AdminAccessChecker`, `DmovePermissionChecker`, `ApmAccessChecker`, `*AdminAccess`, `VisitorSessionChecker`) 중 하나를 호출하거나 (b) 명시적 허용 목록(본인 API·공유 API·공개 API)에 있어야 한다. 허용 목록을 늘리려면 테스트를 고쳐야 하므로 리뷰에 걸린다. 대안은 `@AdminOnly`·`@RequiresPermission` 어노테이션 + 인터셉터로 바꾸고 "어노테이션 없는 매핑 금지"를 규칙으로 두는 것이다(변경 범위가 크다).
+- 완료 조건: 검사 없는 매핑 메서드를 하나 추가하면 빌드가 실패하는 것.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/config/SecurityConfig.java:113`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/UserController.java:73-97`, `moveseye-be-spring/src/test/java/com/dmove/moveseye/auth/security/PermissionEnforcementControllerTest.java`, `moveseye-be-spring/src/test/java/com/dmove/moveseye/license/LicenseArchitectureTest.java`
+
+### SEC-07. `LicenseArchitectureTest` A5-c가 현재 코드에서 실패한다 — 검사가 한 단계 위임만 따라가는데 실제는 두 단계다
+
+**중요도: 중간 · 유형: 미완성 · 증거: 코드 확인(테스트 실행 결과는 기존 기록)**
+
+- 현상:
+  - A5-c는 라이선스 게이트 면제를 받은 기계 클라이언트용 컨트롤러의 모든 `@LicenseExempt` 메서드가 `LicenseProvider.current()`에 닿는지 본다. 판정 함수 `reachesLicenseCheck`는 메서드 자신, 또는 **같은 클래스의 메서드 한 단계**까지만 따라간다.
+  - `ApmOtlpController`의 수신 메서드 3개(`receiveMetrics`·`receiveTraces`·`receiveLogs`)는 `receive()`를 부르고, `receive()`는 동시 적재 상한 처리를 한 뒤 `receiveAdmitted()`를 부르며, 라이선스 확인(`licenseProvider.current()`)은 `receiveAdmitted()` 안에 있다. 두 단계라 테스트가 닿지 못한다.
+  - 이 구조는 2026-09-28 커밋 `78cd40b`(적재 동시 상한 429 도입)에서 생겼고 테스트는 그때 고쳐지지 않았다.
+  - **실제 라이선스 확인은 코드에 있다.** 미보유·만료면 403을 돌려준다. 즉 게이트가 뚫린 것이 아니라 테스트의 추적 깊이가 모자란 것이다.
+- 영향: 게이트 우회를 막는 핵심 구조 테스트가 계속 빨간 상태라, 누군가 실제로 라이선스 확인을 지워도 "원래 실패하던 테스트"로 묻힌다. 전체 테스트를 통과 기준으로 삼는 절차가 있다면 매번 예외 처리해야 한다.
+- 보완 제안: `reachesLicenseCheck`를 같은 클래스 안의 호출을 방문 집합과 함께 재귀로 따라가도록 바꾼다(깊이 상한 3~4). 또는 라이선스 확인을 `receive()` 앞부분으로 옮긴다 — 다만 현재 순서(동시 상한 → 인증 → 용도 → 라이선스)는 의도된 것이므로 테스트 쪽을 고치는 편이 맞다.
+- 완료 조건: A5-c 통과, 그리고 `receiveAdmitted()`의 라이선스 확인을 지우면 A5-c가 실패하는 것을 한 번 확인(음성 대조).
+- 근거: `moveseye-be-spring/src/test/java/com/dmove/moveseye/license/LicenseArchitectureTest.java:252-276`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/premium/apm/collector/ingest/ApmOtlpController.java:237-242`·`:332-382`·`:385-419`(확인은 `:414`)
+
+### SEC-08. `GET /users/host-groups`가 데이터 범위 없이 전 호스트 그룹과 소속 호스트 이름을 모든 로그인 사용자에게 준다
+
+**중요도: 중간 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: `GET /users/host-groups`와 `GET /users/host-groups/{id}`는 관리자 검사가 없고(필터 선택지용으로 의도), Zabbix를 거치지 않고 로컬 `host_group` 사본을 조회한다. 응답에는 그룹 이름, Zabbix 그룹 id, `hosts`(그룹에 속한 호스트 id·이름 목록)가 들어 있다. 호출자의 Zabbix 권한으로 거르지 않는다. 페이지 크기(`limit`)에 상한 검증이 없어 한 번에 전체를 받을 수 있다.
+- 영향: 담당 호스트 그룹만 보도록 제한한 사용자도 이 API로 전체 호스트 그룹 구성과 호스트 이름을 알 수 있다. 메트릭·이벤트 본문은 나가지 않지만, 호스트 이름과 그룹 구조 자체가 고객사 내부에서 구분해 관리하는 정보일 수 있다. 호스트 5천 대 규모에서는 `limit`을 크게 준 한 번의 호출이 큰 JSON을 만든다.
+- 보완 제안: 비관리자는 같은 목록을 사용자 Zabbix 토큰으로 조회한 결과(`GET /hosts/hostgroups`가 쓰는 경로)로 대체하거나, 로컬 사본을 사용자에게 보이는 그룹 id 집합으로 거른다. 상세 조회는 `HostGroupVisibilityChecker`를 거친다. `limit`에 상한(예: 200)을 건다. FE 호출처(문제 목록 필터, 그룹 모달)는 응답 형식이 같으면 바꿀 것이 없다.
+- 완료 조건: 호스트 그룹 A만 볼 수 있는 계정으로 호출했을 때 A만 나오고, 다른 그룹 id의 상세가 거부되는 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/UserController.java:321-328`·`:361-366`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/HostGroupService.java:59-86`·`:321-325`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/dto/response/HostGroupResponseDto.java`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/common/response/BasePageDto.java:14`
+
+### SEC-09. 자산·HW 비용·지리 맵·네트워크 맵은 기능 권한도 데이터 범위도 없고, 맵은 로그인 사용자 누구나 수정·삭제한다
+
+**중요도: 중간 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: 자산 조회 5개 API, HW 비용 조회 3개 API는 검사 없이 모든 로그인 사용자에게 열려 있다. 이 데이터는 자체 DB에 있어 Zabbix 권한으로 걸러지지 않는다. 지리 맵은 좌표 편집만 관리자 전용이고 클러스터 생성·수정·삭제·대표 지정은 누구나 가능하다. 네트워크 맵은 7개 API 전부가 그렇다(작성자 기록과 낙관적 잠금만 있다). 역할 편집의 `mapView` 칸과 리포트 칸은 어디에서도 쓰이지 않는다.
+- 영향: 호스트 그룹 하나만 맡은 사용자도 전사 자산 목록, 구매가·감가상각 같은 비용 정보, 전체 네트워크 구성도를 보고, 다른 사람이 만든 맵을 지울 수 있다. Zabbix 미연동 계정(자산 담당자 등)에게 이 기능을 열어 두려는 의도는 문서에 있으나, "누구에게나"와 "권한을 준 사람에게"는 다르다.
+- 보완 제안: 이미 정의돼 있지만 쓰이지 않는 칸을 연결한다 — 맵 조회는 `mapView.mapList.view`, 맵 쓰기는 `mapView.mapList.edit`, 자산·비용 조회에는 새 칸(`asset`)을 추가한다. 기본 템플릿에서 `view`를 켜 두면 기존 동작이 유지되고, 고객이 끌 수 있게 된다. 데이터 범위(자산의 연결 호스트가 보이는가)까지 적용할지는 별도 결정이다.
+- 완료 조건: 해당 칸을 끈 역할의 사용자가 맵·자산·비용 API에서 200 + body 403을 받는 테스트, 역할 편집 화면에서 칸 잠금 해제.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/asset/AssetController.java:63-100`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/cost/CostController.java:67`·`:113`·`:123`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/geomap/GeoClusterController.java:62-131`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/networkmap/NetworkArchitectureController.java:29-35`·`:48-110`, `moveseyee_fe/src/constants/permissionLabels.ts:47-63`
+
+### SEC-10. 여러 화면이 함께 쓰는 API는 권한 칸을 적용하지 않는다
+
+**중요도: 중간 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: `GET /hosts/hostgroups`, `/hosts/server`, `/hosts/detail/{hostid}`, `/hosts/hostgroup-problems`, `/hosts/search`, `GET /event/problems`, `/event/bells`, `PUT /event/isRead`, `GET /event/stream`, `/home/**`은 역할 권한 칸을 보지 않는다. 데이터 범위는 사용자 Zabbix 토큰이 지킨다.
+- 영향: 역할에서 "서버 모니터링 보기"나 "이벤트 보기"를 끈 사용자도 주소를 직접 부르거나 AI 어시스턴트·MCP 도구를 통하면, 자신의 Zabbix 범위 안에서 서버 목록·호스트 상세·문제 목록을 받을 수 있다. 화면 메뉴는 숨겨지므로 "메뉴를 끄면 그 데이터에 닿지 못한다"고 기대한 관리자의 의도와 다르다.
+- 보완 제안: 공유 API마다 "이 API를 쓰는 화면들의 칸 중 하나라도 있으면 허용"(`requireAnyView`)을 적용한다. 예: `/event/problems`는 `byHost` 또는 홈 위젯 권한. 홈·검색·벨처럼 칸이 없는 화면은 "모니터링·이벤트 칸이 하나도 없으면 빈 결과"로 처리한다. 막기 전에 호출 화면 전수 표가 필요하다.
+- 완료 조건: 모니터링·이벤트 칸이 전부 꺼진 역할로 위 API를 불렀을 때 빈 결과 또는 거부가 나오고, 홈·사이드바가 깨지지 않는 것.
+- 근거: `moveseye-docs/features/권한-강제와-세션-회수.md` §4.3, `_workspace/features/auth-license/zm-157-permission/tasks_zm-157-후속.md` §4 7번, `moveseye-be-spring/src/main/java/com/dmove/moveseye/host/HostController.java`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/event/EventController.java`
+
+### SEC-11. 로그인·계정·역할·권한·라이선스 변경의 감사 기록이 없다
+
+**중요도: 중간 · 유형: 운영 · 증거: 코드 확인**
+
+- 현상: 로그인 성공·실패, 비밀번호 변경, 계정 생성·삭제·비활성화, 역할 권한 변경, MCP 권한 변경을 남기는 테이블이 없다(마이그레이션 V1~V69에서 해당 테이블 없음). `AuthService`의 로그는 잠금 대기 초과와 Zabbix 로그아웃 실패 두 가지뿐이고, 로그인 실패는 공통 오류 로그에 오류 코드만 남는다(사용자명·IP 없음). 라이선스는 `license` 행의 등록자·등록 시각·해지 시각과 서버 로그만 있다. 호스트·Zabbix 설정 변경에는 변경 기록 테이블이 있는 것과 대비된다.
+- 영향: 계정 탈취 시도, 권한 상승, 계정 삭제의 행위자와 시각을 사후에 확인할 수 없다. 관리자 계정을 공유하는 현재 구조(SEC-01)에서는 더 그렇다. 감사 대응이 필요한 고객사(금융 등)에서 요구될 가능성이 높다.
+- 보완 제안: `user_change_log`(행위자·대상·동작·전후 값 요약·시각·출발지 IP)와 `auth_event`(로그인 성공·실패·잠금·로그아웃·재설정, 사용자명·IP·visitor) 두 테이블을 만들고, 기존 `host_change_log` 패턴을 따른다. 보존 기간은 리포트 보존 설정에 편입한다.
+- 완료 조건: 위 동작마다 한 행이 남는 통합 테스트, 관리 콘솔에서 조회 가능한 화면 또는 최소한 조회 API.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/AuthService.java:76`·`:146`, `moveseye-be-spring/src/main/resources/db/migration/`(해당 테이블 없음), `_workspace/features/auth-license/zm-157-permission/tasks_zm-157-후속.md` §4 4번
+
+### SEC-12. HTTP 배포에서는 토큰이 평문으로 오가고, FE와 BE가 서로 다른 사이트면 인증 쿠키가 전송되지 않는다
+
+**중요도: 중간 · 유형: 운영 · 증거: 기존 기록 + 추론**
+
+- 현상:
+  - 인증 쿠키의 `Secure`는 기본 켜짐이다. HTTP 배포에서는 끄지 않으면 브라우저가 쿠키를 버려 로그인 이후 전부 401이 된다(실서버 첫 배포에서 확인된 기록). 끄면 access·refresh 토큰이 네트워크에 평문으로 오간다.
+  - `SameSite` 기본값은 `Strict`다. 브라우저 규격상 FE 페이지와 BE가 다른 사이트(등록 도메인이 다르거나, 서로 다른 IP 주소)면 FE에서 BE로 보내는 요청에 이 쿠키가 실리지 않는다. `SameSite=None`으로 바꾸려면 `Secure`가 필수라 HTTP에서는 쓸 수 없다. 이 부분은 규격에 따른 추론이며 실행해 확인하지 않았다.
+- 영향: 폐쇄망에서 "FE 서버 IP"와 "BE 서버 IP"를 따로 두고 HTTP로 설치하면 로그인이 유지되지 않을 수 있다. 같은 호스트의 다른 포트, 또는 같은 등록 도메인의 서브도메인이면 동작한다. HTTP로 운영하는 동안은 같은 네트워크의 제3자가 쿠키를 가로채 세션을 쓸 수 있다(visitor 값도 헤더로 평문 전송된다).
+- 보완 제안: 설치 가이드에 지원 배치를 명시한다 — (권장) FE 웹 서버가 `/api`를 BE로 프록시해 한 오리진으로 제공 + TLS. (차선) 같은 호스트명의 다른 포트. 기동 시 `COOKIE_SECURE=false`이면 경고 로그를 남긴다. 운영 프로필에서 HTTP를 허용할지는 정책으로 정한다.
+- 완료 조건: 설치 가이드에 배치별 필수 환경변수 표, HTTP+서로 다른 IP 배치에서의 실측 결과 기록.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/AuthCookieFactory.java:28-36`·`:56-64`, `moveseye-be-spring/src/main/resources/application.yml:274-277`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/config/SecurityConfig.java:126-141`
+
+### SEC-13. 서명 키 하나(`JWT_SECRET`)로 4종 토큰을 서명하고 무중단 교체 수단이 없다. 운영 키 교체 여부는 미확인
+
+**중요도: 중간 · 유형: 운영 · 증거: 코드 확인(운영 상태 미확인)**
+
+- 현상: `JWT_SECRET` 하나가 access 토큰, MCP 토큰, OTP 토큰을 서명하고, APM 내보내기의 계획 토큰 키도 여기서 파생된다. 토큰 종류는 `typ` 클레임으로 구분한다. 검증기는 키 하나만 받는다(키 id·이전 키 병행 검증 없음). 32바이트 미만이면 기동을 막지만, 그 오류 문구는 더 이상 쓰지 않는 외부 비밀 저장소 경로를 안내한다. BE 작업 가이드에는 "운영 `JWT_SECRET` 교체"가 남은 일로 적혀 있고, 이번 확인으로는 운영 값을 알 수 없다.
+- 영향: 키가 약하거나 유출되면 임의 사용자·관리자의 access 토큰을 위조할 수 있다(세션 바인딩 검사는 visitor 값과 Redis 세션이 맞아야 하므로 추가 장벽이지만, MCP 토큰은 그 검사를 면제받는다 — 다만 `gen` 대조와 DB 재확인은 거친다). 키를 바꾸면 전원이 다시 로그인하고 MCP 연결이 끊기고 진행 중인 재설정 링크가 무효가 된다. 오류 문구를 따라가면 운영자가 존재하지 않는 저장소를 찾게 된다.
+- 보완 제안: 검증기에 "현재 키 + 이전 키" 목록을 받아 교체 기간 동안 둘 다 검증하게 한다(라이선스 공개키 목록과 같은 방식). 토큰 종류별로 파생 키를 쓰면 한 종류의 유출이 다른 종류로 번지지 않는다. 오류 문구를 환경변수 기준으로 고친다. 운영 키 교체는 배포 점검표에 넣는다.
+- 완료 조건: 이전 키로 서명한 토큰이 교체 기간에 통과하고 이후 거부되는 테스트, 오류 문구 수정, 운영 키 길이·교체일 확인 기록.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/JwtTokenProvider.java:42-63`(문구 `:57-58`), `moveseye-be-spring/src/main/resources/application.yml:164`·`:250-254`, `moveseye-be-spring/CLAUDE.md` §1 "운영 JWT_SECRET 교체"
+
+### SEC-14. 해지하거나 DB를 잃은 뒤에는 등록 기한이 지난 같은 키를 다시 등록할 수 없다
+
+**중요도: 중간 · 유형: 운영 · 증거: 코드 확인**
+
+- 현상: 등록은 항상 `verify()`를 거치고, `verify()`는 `activationDeadline`(기본 발급 후 7일)이 지났으면 `LICENSE_ACTIVATION_EXPIRED`로 거부한다. 최초 등록과 재등록을 구분하지 않는다(같은 `jti`가 과거에 등록됐는지 보지 않는다 — 조회 메서드는 있으나 호출되지 않는다). 해지는 즉시 잠금이다.
+- 영향: 관리자가 실수로 해지하거나, DB를 초기화·이전하면서 `license` 테이블을 잃으면, 발급 후 7일이 지난 유효한 키로는 복구할 수 없고 공급사에 재발급을 요청해야 한다. 그동안 설치본은 로그인과 라이선스 화면만 되는 잠금 상태다. 운영 가이드는 "키를 분실하면 다시 보내주면 된다", "새 키를 등록하면 바로 풀린다"고 적고 있어 이 조건이 빠져 있다. 해지 확인창도 이 점을 알리지 않는다.
+- 보완 제안: (가) 같은 `jti`가 이 설치본에 등록된 이력이 있으면 등록 기한을 보지 않는다(이력 행은 지우지 않으므로 판정 가능. DB를 잃은 경우는 여전히 재발급). (나) 해지 확인창에 "발급 후 N일이 지난 키는 다시 등록할 수 없다"를 표시하고, 해지 전에 등록 기한 경과 여부를 서버가 알려 준다. (다) 지원 문서에 재발급 절차를 넣는다.
+- 완료 조건: 등록 기한이 지난 키를 해지 후 재등록했을 때의 동작이 문서와 일치하는 통합 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/application/LicenseService.java:48-52`·`:96-105`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/crypto/LicenseKeyVerifier.java:67-76`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/domain/LicenseRepository.java:18`, `_workspace/guides/guide_license.md` §6
+
+### SEC-15. 비밀번호 규칙이 화면·API·경로마다 다르다
+
+**중요도: 중간 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상:
+  - BE: 생성·수정·본인 변경은 "8자 이상"만(상한 없음), 재설정은 "8~32자". 복잡도 규칙 없음.
+  - FE: 새 비밀번호 입력은 "대문자 1개 이상 + 숫자 1개 이상 + 특수문자(`@$!%*?&` 중) 1개 이상, 허용 문자는 영문·숫자·그 7개 특수문자뿐, 8자 이상". 소문자는 요구하지 않는다. `#`, `-`, `_` 같은 흔한 특수문자가 들어가면 거부한다. 입력 칸 길이 상한은 64자다.
+  - bcrypt는 72바이트까지만 반영한다(BE에 상한 검증 없음).
+  - 비밀번호 이력·만료·유출 목록 대조는 없다.
+- 영향: API를 직접 부르면 `aaaaaaaa` 같은 값이 저장된다. 반대로 화면에서는 비밀번호 관리자가 만든 강한 비밀번호(`-`·`#` 포함)가 거부된다. 33자 이상 비밀번호는 생성·변경은 되는데 재설정에서는 거부된다. Zabbix 연동 계정은 같은 비밀번호가 Zabbix에도 들어가므로 Zabbix 쪽 비밀번호 정책과 어긋나면 Zabbix 호출이 실패할 수 있다(추론).
+- 보완 제안: 규칙을 BE 한 곳(공용 검증기)에 두고 모든 경로가 쓰게 한다. 길이 중심(예: 10~72바이트)으로 단순화하고 허용 문자 제한을 없앤다. FE는 같은 규칙을 표시만 한다. 규칙 값은 설정으로 뺀다.
+- 완료 조건: 네 경로(생성·관리자 수정·본인 변경·재설정)가 같은 입력에 같은 결과를 내는 테스트, FE 정규식이 BE 규칙과 일치.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/dto/request/CreateUserDto.java:30-31`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/dto/request/UpdateMyProfileDto.java:30-31`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/dto/request/ResetPasswordDto.java:19-21`, `moveseyee_fe/src/constants/index.ts:14`·`:26`, `moveseyee_fe/src/components/user-roles/PasswordConfirmFields.tsx:67`
+
+### SEC-16. 비밀번호 재설정 전 과정을 코드 발급 후 3분 안에 끝내야 한다
+
+**중요도: 낮음 · 유형: 사용성 · 증거: 코드 확인**
+
+- 현상: 코드 만료는 발급 후 3분이다. 코드 확인(ACTIVE→VERIFIED)뿐 아니라 재설정 단계의 조회와 소비(VERIFIED→DEACTIVE)도 같은 만료 시각을 조건으로 한다. 코드 확인으로 받은 재설정 토큰(JWT)의 수명은 30분이지만 DB 조건이 먼저 걸린다.
+- 영향: 메일 수신이 1~2분 걸리면 코드 입력과 새 비밀번호 두 번 입력을 남은 시간 안에 끝내야 한다. 넘기면 "다시 인증받으세요"로 코드 입력 단계로 돌아가고, 재전송 버튼은 180초 뒤에야 활성화된다.
+- 보완 제안: 코드 확인 시 만료를 연장한다(확인 후 10분 등). 또는 "코드 확인 기한 3분"과 "재설정 기한"을 별도 컬럼으로 둔다.
+- 완료 조건: 코드 확인 4분 뒤 재설정이 성공하는 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/common/constants/AppConfig.java:10`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/OtpService.java:34-38`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/repository/OtpRepository.java:20-26`, `moveseyee_fe/src/pages/authentication/PasswordReset.tsx:19-22`·`:217`
+
+### SEC-17. 비밀번호 찾기가 계정 존재·이메일 유무를 구분해 알려 주고, 코드 난수원이 보안용이 아니다
+
+**중요도: 낮음 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: 공개 API `POST /auth/forgot-password`(및 `onlyCheckExisted`)는 없는 사용자에 `USER_NOT_FOUND`, 이메일 없는 계정에 `USER_NOT_HAS_EMAIL`을 돌려준다. 로그인은 두 경우를 하나로 합쳤지만 이 경로는 구분한다. IP당 15분 20회 제한은 있다. 6자리 코드는 `ThreadLocalRandom`으로 만든다. 코드 확인은 GET이라 코드와 사용자명이 URL 쿼리에 실린다. 계정별 발송 횟수 상수(`MAX_RESEND_OTP` 등)는 정의만 있고 쓰이지 않는다.
+- 영향: 사용자명 목록을 가진 사람이 어떤 계정이 존재하고 이메일이 등록돼 있는지 느리게 확인할 수 있다. 코드 추측은 사용자명당 3분 5회 제한이 있어 실효성이 낮다. URL의 코드는 프록시·액세스 로그에 남을 수 있다(3분 뒤 무효).
+- 보완 제안: 발송 요청은 존재 여부와 무관하게 같은 성공 응답을 준다(화면 문구: "등록된 이메일이 있으면 코드를 보냈습니다"). 코드는 `SecureRandom`으로 만든다. 코드 확인을 POST로 바꾼다. 쓰지 않는 상수는 지운다.
+- 완료 조건: 없는 사용자와 있는 사용자의 응답이 같은 것, 난수원 교체.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/AuthService.java:189-206`·`:212`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/AuthController.java:119-124`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/common/constants/AppConfig.java:11-12`
+
+### SEC-18. 사용자 삭제에 자기 자신·관리자 보호가 없고, 설계와 달리 삭제가 즉시 영구 삭제다
+
+**중요도: 낮음 · 유형: 정확성 · 증거: 코드 확인**
+
+- 현상: 상태 변경에는 "자기 자신 금지·관리자 금지" 보호가 있지만, `DELETE /users`는 대상의 Zabbix 역할 유형이 Super admin인지만 본다. `userRole=ADMIN` 계정이나 요청자 자신의 id를 넣어도 막지 않는다. 화면 목록에는 관리자 계정이 나오지 않아 실수할 여지는 작다. FE는 `isHard: true`를 보내지만 BE 요청 형식에는 그 필드가 없다. 사용자 관리 설계서는 "비활성화가 기본, 영구 삭제는 사용자명 입력 확인"을 정했으나 현재는 체크박스 선택 후 바로 영구 삭제다.
+- 영향: API를 직접 부르면 유일한 관리자 계정을 지울 수 있고, 그러면 화면으로 복구할 수 없다(SEC-01). 삭제된 사용자가 남긴 기록(자산 활동, 맵 작성자 등)은 이름 문자열로만 남는다.
+- 보완 제안: 삭제에 상태 변경과 같은 보호(`requireDeactivatable`)를 적용한다. 삭제 확인에 사용자명 입력을 요구하거나, 삭제를 "비활성화 후 N일 뒤 정리"로 바꾼다.
+- 완료 조건: 자기 자신·관리자 삭제 요청이 거부되는 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/UserService.java:396-403`·`:863-900`, `moveseyee_fe/src/pages/user-roles/UserList.tsx:283-285`·`:292-294`, `_workspace/features/auth-license/user-management/devdesign_user-management.md`
+
+### SEC-19. 로그인·코드 확인 응답이 사용자 엔티티를 그대로 내보낸다
+
+**중요도: 낮음 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: `LoginResponseDto`와 `VerifyOtpResponseDto`가 JPA 엔티티 `User`(및 `Otp`)를 그대로 담는다. `password`와 `otps`만 직렬화에서 제외돼 있고, `zabbixToken`·`zabbixPassword`·`zabbixUser`·`zabbixEmail`·`mcpPermission`·`statusLocked`·소속 그룹 등 나머지 컬럼은 전부 응답에 실린다. `zabbix_password` 컬럼에 값을 쓰는 코드는 현재 없어 보통 null이다. 코드 확인 응답(공개 API)의 `otp` 객체에는 코드 값이 들어 있다(호출자가 이미 아는 값).
+- 영향: 지금은 민감한 값이 실제로 나가는 경로를 찾지 못했다. 그러나 엔티티에 컬럼을 추가하면 자동으로 공개 응답에 실리는 구조다. 구 관리 API(`POST /admin/users`)도 엔티티를 그대로 반환한다(현재는 도달 불가).
+- 보완 제안: 두 응답을 전용 DTO(`UserBasicResponseDto` 등 기존 것 재사용)로 바꾸고, 엔티티의 `zabbix_*` 레거시 컬럼에 `@JsonIgnore`를 붙이거나 컬럼 자체를 정리한다. FE가 로그인 응답의 `user`에서 쓰는 필드를 먼저 확인한다.
+- 완료 조건: 로그인·코드 확인 응답 JSON에 `zabbixToken`·`zabbixPassword` 키가 없는 것을 단언하는 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/dto/response/LoginResponseDto.java:14-17`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/dto/response/VerifyOtpResponseDto.java:11-16`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/domain/User.java:54-56`·`:116-126`
+
+### SEC-20. 쓰이지 않는 API·상수·함수가 남아 있다
+
+**중요도: 낮음 · 유형: 미완성 · 증거: 코드 확인**
+
+- 현상:
+  - `/admin/users`(GET·POST), `/admin/users/zabbix-users`, `/admin/usrgrps`, `/admin/roles` — `@RolesGuarded`+`@Roles(ADMIN)`인데 인터셉터가 JWT의 `roleid`(숫자 문자열 또는 없음)를 `"ADMIN"`과 비교하므로 누구도 통과하지 못한다. FE 호출처도 없다.
+  - `PATCH /users/update-email`, `GET /users/zabbix/list-user`, `GET /users/zabbix/user-detail` — FE 호출처 없음.
+  - `GET·PATCH /users/zabbix-info/{id}` — FE에 서비스 함수(`getZabbixInfo`·`updateZabbixInfo`)만 있고 호출처 없음.
+  - `LicenseRepository.findByJtiOrderByActivatedAtAsc` — 운영 코드 호출처 없음(주석은 폐기된 재사용 방지 설계를 설명).
+  - `AppConfig.MAX_RESEND_OTP`·`RESEND_OTP_BEFORE_SECONDS`, `User.resendOtp`·`firstSendOtp` — 쓰이지 않음.
+  - 라이선스 코드 주석 일부가 이전 설계("등록일부터 기간 시작", "jti 기준 최초 활성화 시각 고정")를 설명한다(`LicenseType`, `LicenseKeyException.ALREADY_EXPIRED`, `License.jti`).
+  - `app.sync.enabled` 설정은 남아 있으나 읽는 코드가 없다.
+- 영향: 공격 표면과 유지 비용이 늘고, 주석을 믿고 동작을 잘못 이해하게 된다. 특히 `/admin/**`는 "관리자 API가 있다"는 인상을 주지만 동작하지 않는다.
+- 보완 제안: 호출처가 없는 API와 상수를 삭제한다. 삭제 전 AI 서버 도구 목록에서 쓰는지 확인한다. 라이선스 주석을 현재 동작에 맞춘다.
+- 완료 조건: 삭제 후 BE·FE·AI 빌드와 테스트 통과.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/user/admin/AdminUserController.java:29-37`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/auth/security/RolesInterceptor.java:31`·`:48-53`, `moveseyee_fe/src/services/setting.api.ts:59-76`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/domain/LicenseRepository.java:12-18`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/common/constants/AppConfig.java:11-12`
+
+### SEC-21. 로그인 화면의 "로그인 상태 유지"가 동작하지 않고, 요청 제한·잠금 화면 안내가 대상에 맞지 않는다
+
+**중요도: 낮음 · 유형: 사용성 · 증거: 코드 확인**
+
+- 현상: 로그인 폼의 `remember` 값은 제출 처리에서 읽지 않는다. 세션 수명은 체크 여부와 무관하게 같다. 요청 제한(`TOO_MANY_REQUESTS`)은 일반 "로그인 실패" 문구로 표시된다. 잠금 화면의 "라이선스 등록" 버튼은 관리자 전용 화면으로 이동하므로 일반 사용자가 누르면 404 화면으로 간다.
+- 영향: 사용자가 체크박스에 기대한 동작(브라우저를 닫아도 유지 등)이 일어나지 않는다. 계정이 잠긴 사용자는 비밀번호가 틀렸다고 생각해 계속 시도하고, 그 시도는 잠금 창 안에서 모두 거부된다. 라이선스가 없는 설치본에서 일반 사용자는 할 수 있는 일이 없는 버튼을 본다.
+- 보완 제안: 체크박스를 지우거나 실제 동작(예: refresh 수명 연장)을 연결한다. 요청 제한은 전용 문구로 안내한다. 잠금 화면은 관리자에게만 버튼을 보이고 일반 사용자에게는 "관리자에게 문의" 문구를 보인다.
+- 완료 조건: 세 화면 동작의 단위 테스트.
+- 근거: `moveseyee_fe/src/pages/authentication/SignIn.tsx:32`·`:47-58`·`:87-91`·`:163-165`, `moveseyee_fe/src/pages/license/LockdownPage.tsx:51`, `moveseyee_fe/src/routes/routes.tsx:1009-1014`
+
+### SEC-22. 역할 편집 화면의 상세 조회 캐시 키에 역할 id가 없다
+
+**중요도: 낮음 · 유형: 정확성 · 증거: 코드 확인(발현은 추론)**
+
+- 현상: 역할 상세 조회의 캐시 키가 `[DETAIL_PERMISSION]`뿐이다. 역할 A를 편집한 뒤 역할 B를 열면, B의 응답이 오기 전까지 캐시된 A의 데이터가 폼에 채워진다(신선도 0이라 곧 다시 조회한다).
+- 영향: B의 조회가 실패하거나 늦는 동안 사용자가 저장을 누르면 A의 권한 구성이 B의 id로 저장될 수 있다(추론). 정상 네트워크에서는 잠깐의 깜빡임으로 끝난다.
+- 보완 제안: 키에 역할 id를 넣는다(`[DETAIL_PERMISSION, id]`). 조회가 끝나기 전에는 저장 버튼을 잠근다.
+- 완료 조건: 역할 A→B 이동 시 B 응답 전 폼에 A 데이터가 없음을 확인하는 테스트.
+- 근거: `moveseyee_fe/src/pages/user-roles/UserRoleUtility.tsx:68`
+
+### SEC-23. 라이선스는 시계 되돌리기·여러 서버 복사·공개키 추가를 막지 못한다
+
+**중요도: 낮음 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: 만료 판정은 서버의 현재 시각(`LocalDateTime.now(clock)`)만 본다. 마지막으로 본 시각을 기록해 역행을 감지하는 장치는 없다. 키는 설치본에 묶이지 않아(하드웨어·설치 id 클레임 없음) 같은 키를 여러 서버에 등록할 수 있다. `startsAt`은 표시용이라 시작일 전에도 등록 즉시 전 기능이 열린다. `maxHosts`는 강제하지 않는다. 공개키는 클래스패스의 `license/public-*.pem` 전부를 신뢰하므로, 서버 파일에 접근할 수 있는 사람은 자기 공개키를 추가해 자체 서명 키를 쓸 수 있다.
+- 영향: 서버 관리자 권한을 가진 고객이 작정하면 기간·대수 제한을 우회할 수 있다. 화면 사용자 수준에서는 불가능하다. 내부 운영 가이드가 앞의 두 가지를 "막지 못한다"로 이미 명시하고 있다(설계상 수용).
+- 보완 제안: 정책 판단 사항이다. 비용이 작은 순서로 — (1) 마지막 관측 시각을 DB에 남기고 큰 역행(예: 48시간 초과)을 감지하면 경고 배너와 로그를 남긴다. (2) 공개키를 클래스패스 스캔 대신 JAR 내부의 고정 목록으로만 읽는다. (3) 설치 id를 키에 묶는 것은 폐쇄망 재설치·이전 시 재발급 부담이 커서 권하지 않는다.
+- 완료 조건: 채택한 항목별 테스트(역행 감지 로그, 외부 경로 공개키 무시).
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/provider/SignedKeyLicenseProvider.java:162-192`, `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/crypto/LicenseKeyVerifier.java:42`·`:194-209`, `_workspace/guides/guide_license.md` §8
+
+### SEC-24. 라이선스 판정 조회가 실패하면 "검증 실패" 잠금 화면이 뜬다
+
+**중요도: 낮음 · 유형: 실패처리 · 증거: 코드 확인(화면은 추론)**
+
+- 현상: `SignedKeyLicenseProvider.current()`는 캐시가 만료된 뒤 DB 조회가 3회 연속 예외를 내면 `INVALID`(잠금)를 돌려준다. 이전에 성공한 판정을 연장하지 않는다(의도된 fail-closed). FE 잠금 화면은 `INVALID`를 "위조·공개키 불일치, 지원 문의"로 안내한다.
+- 영향: DB가 잠깐 불안정할 때 관리자·사용자에게 "라이선스 검증 실패" 화면이 보일 수 있다(추론). DB가 완전히 내려가면 다른 API도 실패하므로 구분 의미가 작지만, 커넥션 풀 고갈 같은 부분 장애에서는 원인을 라이선스로 오해하게 된다.
+- 보완 제안: 판정 실패를 별도 상태(예: `UNAVAILABLE`)로 구분해 FE가 "일시적으로 확인할 수 없음, 다시 시도"로 안내한다. 접근 차단 자체는 유지한다.
+- 완료 조건: 조회 예외 시 응답 상태가 `INVALID`와 구분되는 테스트.
+- 근거: `moveseye-be-spring/src/main/java/com/dmove/moveseye/license/provider/SignedKeyLicenseProvider.java:80-104`, `moveseyee_fe/src/pages/license/LockdownPage.tsx:25-45`
+
+### SEC-25. 세션 만료 시 알림 벨이 무한 로딩되던 문제의 현재 상태를 확인하지 못했다
+
+**중요도: 낮음 · 유형: 실패처리 · 증거: 기존 기록**
+
+- 현상: 2026-07-21 기록에 "세션 만료 시 로그인 화면으로 가지 않고 상단 알림 벨이 무한 로딩된다"가 보류 항목으로 남아 있다. 이후 axios 인터셉터에는 (a) refresh 실패 시 로그인 화면으로 이동, (b) 취소된 요청은 같은 키의 대체 요청이 실제로 있을 때만 대기 상태로 두고 그렇지 않으면 실패로 돌려주는 처리가 들어갔다. 코드상으로는 원인으로 지목됐던 "영구 대기" 경로가 좁혀졌으나, 브라우저에서 재현 여부를 확인하지 않았다.
+- 남은 경로(추론): refresh는 성공했는데 재시도한 요청이 다시 401인 경우(SEC-03의 기기 간 교대, 관리자의 Zabbix 토큰 실패 등)에는 로그인 화면으로 가지 않고 오류만 반환된다. 이때 화면이 오류를 어떻게 보이는지는 화면마다 다르다.
+- 보완 제안: 세션 만료를 강제로 만든 브라우저 테스트(쿠키 삭제, Redis 세션 키 삭제 두 경우)로 알림 벨·목록 화면의 동작을 확인하고 결과를 기록한다. "재발급 후에도 401"이면 로그인 화면으로 보내는 처리를 넣는다.
+- 완료 조건: 두 경우 모두 10초 안에 로그인 화면으로 이동하는 것을 확인한 기록.
+- 근거: `moveseyee_fe/src/services/axiosInstance.ts:183-233`
+
+### SEC-26. 자산 지도 화면 소스에 외부 지도 서비스 액세스 토큰이 하드코딩돼 있다
+
+**중요도: 낮음 · 유형: 보안 · 증거: 코드 확인**
+
+- 현상: 두 화면 파일에 지도 서비스의 공개 액세스 토큰 문자열이 소스에 직접 들어 있다. 공개(브라우저 노출 전제) 토큰 형식이지만 저장소와 빌드 산출물에 고정돼 있다.
+- 영향: 토큰 소유 계정의 사용량이 고객 설치본·저장소 열람자에 의해 소진될 수 있고, 교체하려면 FE를 다시 빌드해야 한다. 이 화면들은 자산 영역의 구 지도 화면이라 영역 담당 문서에서 유지 여부를 함께 판단해야 한다.
+- 보완 제안: 빌드 환경변수로 옮기고 기존 토큰은 폐기·교체한다. 구 화면을 쓰지 않으면 삭제한다.
+- 완료 조건: 소스에서 토큰 문자열이 사라지고 기존 토큰이 무효화된 것.
+- 근거: `moveseyee_fe/src/pages/asset/MapViewList.tsx:29`, `moveseyee_fe/src/pages/asset/ServerLocationList.tsx:25`, `_workspace/features/infra/scale-call-guard/audit_scale-5000-hosts.md` §2 S4
+
+## 5. 기존 문서와의 차이 (drift)
+
+| 기존 문서 | 문서의 서술 | 현재 코드 | 조치 제안 |
+|---|---|---|---|
+| [화면 가이드 — 라이선스](../pages/%EC%84%A4%EC%A0%95/solutions--%EB%9D%BC%EC%9D%B4%EC%84%A0%EC%8A%A4.md) | "유효 기간은 등록일부터 계산된다. 발급받고 며칠 뒤에 등록해도 손해가 없다" | 만료 시각은 발급 때 정해져 키에 서명된다(시작일 0시 + 기간). 늦게 등록하면 그만큼 사용 기간이 줄고, 등록 기한(기본 7일)이 지나면 등록이 거부된다 | 해당 절을 "기간은 키에 들어 있다, 등록 기한은 별개"로 교체 |
+| 〃 | 등록 거부 원인에 "이미 사용된 키 — 다른 설치본에서 등록한 키가 아닌가(재사용 방지)" | 다른 설치본 등록 여부는 확인하지 않는다. 같은 키를 여러 서버에 등록할 수 있다 | 행 삭제. 실제 거부 사유 5종(`errorCode`)으로 표 교체 |
+| 〃 | "사이드바 설정 > 라이선스" | 헤더 ⚙ 관리 콘솔의 "접근" 묶음 | 진입 경로 수정 |
+| 〃 | 만료 단계를 정상 / 읽기 전용 / 그 이후 3단으로 설명 | 만료 임박(30일 전) → 유예(전 기능) → 읽기 전용(실시간 유지 30일) → 읽기 전용(저장 데이터만) | 유예 단계와 프리미엄이 유예 종료 즉시 닫히는 점 추가 |
+| [화면 가이드 — 마이 페이지](../pages/%EC%84%A4%EC%A0%95/solutions--%EB%A7%88%EC%9D%B4-%ED%8E%98%EC%9D%B4%EC%A7%80.md) | "이 화면의 조회·저장은 관리자 계정에서만 동작한다" | 모든 사용자가 `GET/PUT /users/my-profile`로 조회·저장한다 | 권한 절 교체 |
+| 〃 | "연결된 앱(MCP)의 연결은 비밀번호 변경으로 끊기지 않는다" | 비밀번호 변경은 세대를 올려 MCP 토큰도 다음 요청에서 401이 된다 | 문장 교체 |
+| 〃 | "비밀번호를 바꾸면 지금 쓰는 기기도 다시 로그인해야 할 수 있다" | 현재 기기는 새 refresh 쿠키를 받아 유지된다 | 문장 삭제 |
+| 〃 | 화면 구성에 "알림 — 알림 관련 설정" | 그 영역은 화면에 없다 | 행 삭제 |
+| [권한 강제와 세션 회수](../../features/solutions--%EA%B6%8C%ED%95%9C-%EA%B0%95%EC%A0%9C%EC%99%80-%EC%84%B8%EC%85%98-%ED%9A%8C%EC%88%98.md) | §6.3 "마이 페이지는 `PATCH /users/zabbix-info/{id}`(관리자 전용)로 저장한다" | `PUT /users/my-profile`로 바뀌었다 | §6.3·§13 열린 항목 갱신 |
+| 〃 | §10 "로그인 화면은 `FAILED_TO_ACQUIRE_LOCK`을 별도로 처리하지 않는다" | 전용 안내 문구로 처리하고, 그 밖의 실패 응답도 성공으로 넘기지 않는다 | 경고 문단 삭제 |
+| 〃 | §6.4 MCP 재확인 표에 세대 대조가 없고, §13에 "IP 기준 제한·토큰 종류 구분·계정 상태 전용 API·그룹 리포트 가시성"이 계획으로 남아 있다 | 네 항목 모두 구현돼 있다(`gen` 클레임, `AuthRateLimitProperties`, `typ` 클레임, `PATCH /users/{id}/status`, `HostGroupVisibilityChecker`) | 표와 열린 항목 갱신, 기준 커밋 갱신 |
+| 〃 | §10 표의 경로 `/auth/verify-otp` | 실제 경로는 `GET /auth/verify` | 경로 수정 |
+| 〃 | 머리말 "미푸시·미병합, 런타임 미검증" | master에 병합됐고 dev 서버·MCP 12항목 실측 기록이 있다(`_workspace/features/auth-license/zm-157-permission/e2e_zm-157-mcp.md`) | 상태 문단 갱신 |
+| [관리자 가이드](../solutions--%EA%B4%80%EB%A6%AC%EC%9E%90-%EA%B0%80%EC%9D%B4%EB%93%9C.md) §3-9·§3-11 | "사용자 유형(관리자↔일반) 변경", "다른 관리자가 사용자 관리에서 비밀번호를 초기화한다" | 사용자 유형(`userRole`)을 바꾸는 화면·API가 없고, 관리자 계정은 사용자 목록에 나오지 않는다. 관리자는 기본 계정 하나다 | 실제 복구 절차(DB 직접 수정)로 교체하거나 SEC-01 해결 후 갱신 |
+| 〃 §3-5 | 동기화 on/off를 `SYNC_ENABLED`로 설명 | 설정 > 스케줄러의 `user_sync` 작업이 정한다. 환경변수는 읽히지 않는다 | 절 수정 |
+| 〃 §3-10 | "관리자가 마이 페이지에서 자기 비밀번호를 바꾸면 지금 쓰는 기기도 다시 로그인해야 할 수 있다" | 현재 기기는 유지된다 | 문장 삭제 |
+| 〃 §3-2 | 권한 키 표에 `asset` 키 | 역할 데이터에 `asset` 칸이 없다(같은 문서 주석이 이미 언급) | 표에서 삭제 |
+| [Credential 보호 정책](../../operations/solutions--%EC%8B%9C%ED%81%AC%EB%A6%BF-%EB%B3%B4%ED%98%B8-%EC%A0%95%EC%B1%85.md) | 저장 모델·암호화 방식·키 보관이 모두 TBD(초안, 2026-08-05) | 환경변수 정본, AES-256-GCM `enc:v1:`, `CREDENTIAL_ENCRYPTION_KEY` 필수로 결정·구현됨 | §3 표를 결정 사항으로 채우고 남은 TBD(회전 절차·로그 마스킹)만 유지 |
+| `moveseye-license-issuer/README.md` "알아둘 것" | "기간은 고객이 등록한 날부터 시작. 키에 만료일이 없고 `durationDays`만 들어간다", "jti 기준으로 최초 활성화 시각 고정" | 키에 `startsAt`·`expiresAt`이 들어가고 `durationDays`는 없다. jti 기준 고정 로직은 없다 | 해당 문단 교체, `--start` 옵션 설명 추가 |
+| 〃 "제품과 맞춰야 하는 것" | 제품 쪽 사본 위치 `…/license/`, "네 파일을 그대로 복사" | 제품 쪽은 `license/crypto/LicenseClaims.java`, `license/domain/entitlement/{Edition,Feature,LicenseType}.java`로 패키지가 다르다. 그대로 복사하면 패키지 선언이 어긋나 컴파일되지 않는다 | 경로와 "패키지 선언 줄은 유지" 절차로 수정. 제품 `LicenseClaims` 주석의 경로도 함께 수정 |
+| `_workspace/guides/guide_license.md` §6 | "키를 분실하면 다시 보내주면 된다", "새 키를 등록하면 바로 풀린다" | 등록 기한이 지난 키는 다시 등록할 수 없다(SEC-14) | 조건 추가 |
+| `_workspace/features/auth-license/zm-157-permission/contract_zm-157-permission-enforcement.md` §3 | "발급된 비밀번호만 환영 메일로 보낸다" | 환영 메일은 발송되지 않는다(SEC-05) | 계약 문구 정정 또는 구현 |
+| `moveseye-be-spring/CLAUDE.md` §3 #0 | "로그인 실패 10회/15분" 제한만 언급 | IP 기준 제한(50회/15분, 발송 20회/15분)이 추가됐다 | 보강 |
+
+## 6. 검증 상태와 미확인 사항
+
+- **이번에 한 것** — BE `auth/`·`user/`·`license/`·`config/`와 관련 `common/`·`engine-zabbix` 코드, FE 인증·사용자 관리·라이선스 화면과 `axiosInstance`·`useAuth`·`PageWrapper`, 발급 도구 소스를 읽고 기존 문서·계약·백로그와 대조했다. 컨트롤러의 권한 검사 유무는 `@RestController` 전체를 스크립트로 훑은 뒤 검사 없는 매핑을 눈으로 분류했다.
+- **하지 않은 것** — 빌드, 테스트 실행, 서버 기동, HTTP 호출, 브라우저 확인. 따라서 아래는 확인하지 못했다.
+  - SEC-02: Zabbix 접속 실패 시 관리자 요청의 실제 HTTP 상태와 화면 모습.
+  - SEC-03: 두 기기 동시 사용 시 실제 401·refresh 빈도와 Zabbix 토큰 재발급 호출 수.
+  - SEC-07: A5-c의 실패 메시지(원인은 코드로 확인했고, 실패 사실은 2026-10-01~02 작업 기록에 근거).
+  - SEC-12: HTTP + 서로 다른 IP 배치에서의 쿠키 동작.
+  - SEC-25: 세션 만료 시 화면 동작.
+  - 운영 환경의 `JWT_SECRET`·`COOKIE_SECURE`·`CORS_ALLOWED_ORIGINS` 실제 값.
+  - AI 서버 쪽 MCP 토큰 처리와 알림 요약 캐시의 사용자 분리(AI 저장소 소관).
+  - Redis Cluster·다중 BE 인스턴스에서의 세션 스크립트 동작.
+- **과거 검증 기록** — 권한 강제·세션 세대: `_workspace/features/auth-license/zm-157-permission/zm-157_permission-fix.md`(단위·통합·dev 서버 실측), `_workspace/features/auth-license/zm-157-permission/e2e_zm-157-mcp.md`(MCP 12항목). 라이선스: `_workspace/features/auth-license/license/review_license-kernel.md`와 설계서 §6 완료 판정 19항목(그중 프리미엄 실제 API 판정은 APM 도입 이후 별도 확인 필요).
+
+## 7. 관련 문서
+
+- [기능별 상세 가이드 색인](solutions--README.md) · [전 제품 문제점·보완점 종합 리포트](../../overview/solutions--product-gap-report.md)
+
+- 화면별 가이드: [라이선스](../pages/%EC%84%A4%EC%A0%95/solutions--%EB%9D%BC%EC%9D%B4%EC%84%A0%EC%8A%A4.md) · [마이 페이지](../pages/%EC%84%A4%EC%A0%95/solutions--%EB%A7%88%EC%9D%B4-%ED%8E%98%EC%9D%B4%EC%A7%80.md) · [연결된 앱](../pages/%EC%84%A4%EC%A0%95/solutions--%EC%97%B0%EA%B2%B0%EB%90%9C-%EC%95%B1.md) · [사용자 관리](../pages/Zabbix-%EA%B4%80%EB%A6%AC/solutions--%EC%82%AC%EC%9A%A9%EC%9E%90-%EA%B4%80%EB%A6%AC.md)
+- 가이드: [관리자 가이드 §3](../solutions--%EA%B4%80%EB%A6%AC%EC%9E%90-%EA%B0%80%EC%9D%B4%EB%93%9C.md) · [MCP 연결 가이드](../solutions--MCP-%EC%97%B0%EA%B2%B0-%EA%B0%80%EC%9D%B4%EB%93%9C.md) · [문제 해결](../solutions--%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0.md)
+- 기능·결정: [권한 강제와 세션 회수](../../features/solutions--%EA%B6%8C%ED%95%9C-%EA%B0%95%EC%A0%9C%EC%99%80-%EC%84%B8%EC%85%98-%ED%9A%8C%EC%88%98.md) · [ADR-0002 역할 권한 BE 강제와 세션 세대](../../decisions/solutions--ADR-0002-%EC%97%AD%ED%95%A0-%EA%B6%8C%ED%95%9C-BE-%EA%B0%95%EC%A0%9C%EC%99%80-%EC%84%B8%EC%85%98-%EC%84%B8%EB%8C%80.md)
+- 운영·기술: [Credential 보호 정책](../../operations/solutions--%EC%8B%9C%ED%81%AC%EB%A6%BF-%EB%B3%B4%ED%98%B8-%EC%A0%95%EC%B1%85.md) · [설치·배포 가이드](../../operations/solutions--%EC%84%A4%EC%B9%98-%EB%B0%B0%ED%8F%AC-%EA%B0%80%EC%9D%B4%EB%93%9C.md) · [API 카탈로그](../../technical/solutions--API-%EC%B9%B4%ED%83%88%EB%A1%9C%EA%B7%B8.md)
+- 작업 증거(저장소 밖 `_workspace`):
+  - [ZM-157 문서 지도](../../../_workspace/features/auth-license/zm-157-permission/solutions--INDEX_zm-157-permission.md) · [후속 과제](../../../_workspace/features/auth-license/zm-157-permission/solutions--tasks_zm-157-%ED%9B%84%EC%86%8D.md)
+  - [권한↔API 매핑 계약](../../../_workspace/features/auth-license/zm-157-permission/solutions--contract_zm-157-permission-enforcement.md) · [후속 계약](../../../_workspace/features/auth-license/zm-157-permission/solutions--contract_zm-157-followups.md) · [클라우드 권한 계약](../../../_workspace/features/cloud/aws-monitoring/solutions--contract_cloud-infra-permission.md)
+  - [프리미엄 에디션 설계](../../../_workspace/features/auth-license/license/solutions--devdesign_premium-edition.md) · [사용자 관리 설계](../../../_workspace/features/auth-license/user-management/solutions--devdesign_user-management.md) · [라이선스 운영 가이드](../../../_workspace/guides/solutions--guide_license.md)
+  - [대용량 전수 감사](../../../_workspace/features/infra/scale-call-guard/solutions--audit_scale-5000-hosts.md) · [설치형·스케일아웃 진단](../../../_workspace/features/platform/architecture/solutions--audit_architecture-onprem-scaleout.md)
+- 발급 도구: `moveseye-license-issuer/README.md`(별도 저장소)
+
+## 변경 이력
+
+| 날짜 | 변경 |
+|---|---|
+| 2026-10-06 | 최초 작성 — 소스 정적 대조 기준 |

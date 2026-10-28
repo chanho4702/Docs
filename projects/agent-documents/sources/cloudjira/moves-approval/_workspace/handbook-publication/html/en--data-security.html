@@ -1,0 +1,103 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386">한국어</a></p>
+<p>This explains app data handling for administrators and security reviewers. Moves Approval runs on Atlassian Forge and currently stores app data in Forge SQL and Key-Value Store. It uses no external-service transfer or customer-operated server connection.</p>
+<h2>What is stored</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Content and purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requests and decisions</td>
+<td>Page ID, title, version, area identifier/hash, account IDs, steps, status, times, deadline</td>
+</tr>
+<tr>
+<td>Notes and reasons</td>
+<td>Review notes, rejection/withdrawal reasons, and audit events</td>
+</tr>
+<tr>
+<td>Inbox and notifications</td>
+<td>Account roles and request/result notices</td>
+</tr>
+<tr>
+<td>Signature and PIN</td>
+<td>Signature image, salted PIN hash, failure count; no plain-text PIN</td>
+</tr>
+<tr>
+<td>Delegation</td>
+<td>Approver and delegate account IDs, period, and note</td>
+</tr>
+<tr>
+<td>Settings and change log</td>
+<td>Policies, spaces, lines, groups, registrations, administrators, retention, and changes</td>
+</tr>
+</tbody>
+</table>
+<p>Names, email addresses, and profile pictures are read from Confluence for display rather than stored in the app. Page bodies are not retained. Bodies are read as needed for version/area checks and certificate fingerprints.</p>
+<h2>Permissions and Confluence changes</h2>
+<p>User actions follow that user's Confluence permissions. Lists and details are restricted to viewable pages. Background checks and page-update handling may read with app permissions when no user context exists, but do not return those bodies to users.</p>
+<table>
+<thead>
+<tr>
+<th>Change in Confluence</th>
+<th>Condition</th>
+<th>Identity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insert a stamp box</td>
+<td>Requester selects insertion and no box already exists</td>
+<td>Requester; successful insertion raises the page version.</td>
+</tr>
+<tr>
+<td>@mention comment</td>
+<td>Confluence notification policy enabled</td>
+<td>User performing the action, with comment permission.</td>
+</tr>
+</tbody>
+</table>
+<p>Comments are visible to page readers and may remain after app removal. Restricting app access does not change the visibility of existing Confluence comments.</p>
+<h2>Retention and downloads</h2>
+<p>Finished records default to three years, with forever or 1, 3, 5, or 10 years available. Age alone does not delete them: an administrator exports and deletes the covered range. Open requests are excluded. In-app notifications are cleaned up after 180 days and settings logs after one year. Users can change or remove their signatures, PINs, and delegations.</p>
+<p>Excel and PDF files may include names, notes, and reasons. Customers manage their retention, sharing, and disposal after download. The app does not retain certificate PDF copies. App data after uninstall follows Forge platform policy.</p>
+<h2>Why permissions are requested</h2>
+<table>
+<thead>
+<tr>
+<th>Permission group</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read pages and content</td>
+<td>Titles, versions, areas, update detection, certificate fingerprints</td>
+</tr>
+<tr>
+<td>Write pages</td>
+<td>Requester-selected stamp insertion</td>
+</tr>
+<tr>
+<td>Read spaces and content permissions</td>
+<td>Space selection and view/edit checks</td>
+</tr>
+<tr>
+<td>Read users and groups</td>
+<td>Approver/Cc search and group membership</td>
+</tr>
+<tr>
+<td>Read/write comments</td>
+<td>Optional @mention notifications</td>
+</tr>
+<tr>
+<td>App storage</td>
+<td>Approval records and settings</td>
+</tr>
+</tbody>
+</table>
+<h2>Data-related requests</h2>
+<p>Manage signatures, PINs, and delegation in the personal screens. Individual decisions are organizational audit records and cannot be edited or deleted by users. Route other requests through the site administrator to support. This is a technical product description; also consult the operator's published privacy policy and terms.</p>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205422605">Data management</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">Marketplace review</a></p>

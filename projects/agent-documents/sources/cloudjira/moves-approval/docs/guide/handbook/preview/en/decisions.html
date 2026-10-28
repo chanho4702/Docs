@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Approve, reject, and bulk approve · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/decisions.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a class="active" aria-current="page" href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; User guides</div><h1>Approve, reject, and bulk approve</h1><p class="lede">Review the target page and version when your step is active. A step advances when its required count is met; a rejection ends the entire request.</p>
+<p><strong>Requirements:</strong> Page view permission and an active approver or valid delegate role. Set up your <a href="signature-pin.html">PIN</a> first if required by policy.</p>
+<h2 id="section-0">Review and decide</h2>
+<ol>
+<li>Open a request under <strong>Approval inbox → My turn</strong>.</li>
+<li>Read the request note, target version, current step, and earlier decisions.</li>
+<li>If the page has changed, use <strong>View changes</strong> to compare versions. For an area request, inspect images and attachments on the source page as well as the text preview.</li>
+<li>Select <strong>Approve</strong> if you agree. Otherwise select <strong>Reject</strong>, enter a reason, and confirm. A reason is required by default.</li>
+<li>Enter your PIN if requested, then check that the decision is recorded.</li>
+</ol>
+<p><img src="../assets/ma-06-approval-details.jpg" alt="Approval details with target version, change warning, three-step progress, audit timeline, and decision buttons"></p>
+<p><em>MA-06 · The widened details dialog keeps the target version, step state, audit trail, and decision controls together.</em></p>
+<h2 id="section-1">Decision results</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Change</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approve</td>
+<td>Records your decision</td>
+<td>The next step opens once the required count is met.</td>
+</tr>
+<tr>
+<td>Pass the final step</td>
+<td>Changes the overall status</td>
+<td>The request becomes approved.</td>
+</tr>
+<tr>
+<td>Reject</td>
+<td>Changes the overall status</td>
+<td>The request ends immediately without waiting for others.</td>
+</tr>
+<tr>
+<td>Cancel / Back</td>
+<td>Closes an unconfirmed dialog</td>
+<td>Does not undo an already confirmed decision.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rejection reasons remain in request history. With Confluence notifications enabled, page comments may also expose them to other page readers.</p>
+<h2 id="section-2">Approve several requests</h2>
+<p>Under <strong>My turn</strong>, review each page and target version before selecting its checkbox. Use <strong>Approve N selected</strong> to process up to 50 requests. Enter a required PIN once for the batch.</p>
+<p>Check the approved and failed counts. For failures, recheck the latest status, permissions, and deadline. Overdue requests cannot be selected. Rejections are handled individually.</p>
+<p><img src="../assets/ma-07-bulk-approval.jpg" alt="Two requests selected in the approval inbox with the bulk approval action enabled"></p>
+<p><em>MA-07 · Selection state before bulk approval. Review the per-request success and failure result after processing.</em></p>
+<h2 id="section-3">When a decision is unavailable or mistaken</h2>
+<p>Check earlier steps, finished status, deadline, and page permission. Confirmed decisions cannot be reversed. An open request can be withdrawn by its requester and replaced; a finished request requires a new request. See <a href="history-resubmit.html">changes, withdrawal, and resubmission</a>.</p>
+<div class="pager"><a href="inbox.html"><small>← PREVIOUS</small>Approval inbox</a><a href="history-resubmit.html"><small>NEXT →</small>Changes, withdrawal, resubmission, and version history</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">Review and decide</a><a href="#section-1">Decision results</a><a href="#section-2">Approve several requests</a><a href="#section-3">When a decision is unavailable or mistaken</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

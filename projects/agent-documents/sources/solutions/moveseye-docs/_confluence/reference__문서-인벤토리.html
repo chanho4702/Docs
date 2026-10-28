@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 문서 인벤토리</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 문서 인벤토리</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 문서 관리자, 개발 리더, 운영 리더</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> C:/solutions/moveseye-docs</div></div>
+<h1>MovesEye 문서 인벤토리</h1>
+<h2>1. 현재 문서 세트</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>ID</th><th>문서</th><th>대상</th><th>상태</th><th>다음 review trigger</th></tr></thead>
+<tbody>
+<tr><td>H1</td><td><code>README.md</code> 문서 허브</td><td>전체</td><td>current</td><td>문서 추가·경로 변경</td></tr>
+<tr><td>G1</td><td><code>문서-운영규칙.md</code> 운영 규칙</td><td>작성자</td><td>current</td><td>역할·정본 정책 변경</td></tr>
+<tr><td>P1</td><td><code>product/제품-개요.md</code> 제품 개요</td><td>도입·신규</td><td>current</td><td>capability·edition 변경</td></tr>
+<tr><td>P2</td><td><code>product/제품-소개서.md</code> 제품 소개서</td><td>고객·영업</td><td>current</td><td>기능 제공 범위·edition 변경</td></tr>
+<tr><td>U1</td><td><code>guides/빠른-시작.md</code> 빠른 시작</td><td>신규 사용자</td><td>current</td><td>메뉴·초기 설정 변경</td></tr>
+<tr><td>U2</td><td><code>guides/사용자-가이드.md</code> 사용자 가이드</td><td>사용자·관리자</td><td>current</td><td>route·SideNav 변경</td></tr>
+<tr><td>U3</td><td><code>guides/관리자-가이드.md</code> 관리자 가이드</td><td>시스템 관리자</td><td>current</td><td>권한 키·scheduler job·license 정책 변경</td></tr>
+<tr><td>U4</td><td><code>guides/문제-해결.md</code> 문제 해결 가이드</td><td>사용자·지원</td><td>current</td><td>신규 알려진 이슈·오진 사례</td></tr>
+<tr><td>U5</td><td><code>guides/pages/</code> 화면별 가이드 27종 + 색인</td><td>사용자·운영·지원</td><td>current</td><td><strong>SideNav 메뉴 추가·삭제·이름 변경</strong>, 화면 구성 변경</td></tr>
+<tr><td>U5-APM</td><td><code>guides/pages/모니터링/애플리케이션-모니터링.md</code>, <code>수집기-설치.md</code></td><td>사용자·관리자·설치·지원</td><td>review</td><td>APM 브라우저 렌더·배포 검증 완료 시 <code>current</code>. <code>ApmInstallGuideService</code> 문구·<code>ApmInstallVersions</code> 버전 변경 시 수집기 설치 문서 동기화</td></tr>
+<tr><td>U6</td><td><code>guides/자주-묻는-질문.md</code> FAQ</td><td>고객·사용자·관리자·지원</td><td>review</td><td>신규 반복 문의, 기능 제공 상태([제공]/[개발 중]/[예정]) 변경</td></tr>
+<tr><td>T1</td><td><code>technical/아키텍처.md</code> 아키텍처</td><td>개발·운영</td><td>current</td><td>module·인증·data flow 변경</td></tr>
+<tr><td>T2</td><td><code>technical/데이터-모델.md</code> 데이터 모델</td><td>BE·운영</td><td>current</td><td>Flyway migration 추가</td></tr>
+<tr><td>T3</td><td><code>technical/API-카탈로그.md</code> API 카탈로그</td><td>개발·연동</td><td>current</td><td>controller 추가·응답 규약 변경</td></tr>
+<tr><td>O0</td><td><code>operations/설치-배포-가이드.md</code> 설치·배포 가이드</td><td>설치·인프라</td><td>review</td><td>env 변수·Dockerfile·Flyway 최신 버전 변경</td></tr>
+<tr><td>O1</td><td><code>operations/운영자-런북.md</code> 로컬·검증 Runbook</td><td>개발 운영</td><td>review</td><td>env·기동 변경, runtime 재현 검토</td></tr>
+<tr><td>O2</td><td><code>operations/프로덕션-런북.md</code> Production Runbook</td><td>운영 책임자</td><td>draft/실행 금지</td><td>owner·pipeline·backup/restore·rollback·escalation 확정</td></tr>
+<tr><td>O3</td><td><code>operations/시크릿-보호-정책.md</code> Credential 정책</td><td>보안·운영</td><td>draft/production 차단</td><td>secret store·masking·권한·rotation 검증</td></tr>
+<tr><td>FH1</td><td><code>features/README.md</code> 기능 문서 hub</td><td>기능 담당</td><td>review</td><td>첫 stable 기능 문서 승격</td></tr>
+<tr><td>DH1</td><td><code>decisions/README.md</code> ADR hub</td><td>기술 리더</td><td>current</td><td>ADR 추가·대체</td></tr>
+<tr><td>D1</td><td><code>decisions/ADR-0001-문서-정본과-옵시디언.md</code></td><td>문서 관리자</td><td>current/accepted</td><td>정본 platform 변경</td></tr>
+<tr><td>R1</td><td><code>reference/용어집.md</code> 용어집</td><td>전체</td><td>current</td><td>도메인 용어·계약 변경</td></tr>
+<tr><td>R2</td><td>이 문서 인벤토리</td><td>문서 관리자</td><td>current</td><td>문서 상태 변경</td></tr>
+<tr><td>L1</td><td><code>releases/릴리스-노트.md</code> 릴리스 노트</td><td>전체</td><td>draft</td><td>실제 배포 기준 확정</td></tr>
+</tbody></table>
+<h2>1.1 템플릿과 작업 규칙</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>문서</th><th>용도</th><th>상태</th></tr></thead>
+<tbody>
+<tr><td><code>AGENTS.md</code></td><td>문서 저장소 작업 규칙</td><td>current</td></tr>
+<tr><td><code>templates/기능-문서-템플릿.md</code></td><td>기능 문서</td><td>template</td></tr>
+<tr><td><code>templates/ADR-템플릿.md</code></td><td>ADR</td><td>template</td></tr>
+<tr><td><code>templates/런북-템플릿.md</code></td><td>운영 절차</td><td>template</td></tr>
+<tr><td><code>templates/릴리스-템플릿.md</code></td><td>릴리스</td><td>template</td></tr>
+</tbody></table>
+<h2>2. 기존 문서</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>경로</th><th>현재 역할</th><th>상태·조치</th></tr></thead>
+<tbody>
+<tr><td><code>C:\solutions\제품소개_신규입사자.md</code></td><td>상세 제품 온보딩</td><td>유지. P1과 중복되는 부분은 차기 review에서 통합</td></tr>
+<tr><td><code>C:\solutions\moveseye_개발자_온보딩.md</code></td><td>개발자 입문</td><td>유지. 최근 cost/scheduler/engine 변화 월간 점검 필요</td></tr>
+<tr><td>각 repo <code>README.md</code></td><td>build·module 설명</td><td>repo 정본으로 유지</td></tr>
+<tr><td>각 repo <code>AGENTS.md</code>/<code>CLAUDE.md</code></td><td>작업 규칙</td><td>문서 세트로 복사하지 않음</td></tr>
+<tr><td><code>_workspace/design_*.md</code>, <code>devdesign_*.md</code></td><td>진행 중·과거 설계</td><td>기능 완료 시 핵심만 <code>features/</code>로 승격</td></tr>
+<tr><td><code>_workspace/contract_*.md</code></td><td>BE↔FE 경계 계약</td><td>코드와 OpenAPI 반영 후 기능 문서에 결과 연결</td></tr>
+<tr><td><code>_workspace/e2e_*.md</code></td><td>runtime QA 증거</td><td>기능 문서의 검증 근거로 연결</td></tr>
+</tbody></table>
+<h2>3. 다음 작성 우선순위</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>우선</th><th>문서</th><th>완료 조건</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Production Runbook draft 승격</td><td>환경별 배포 경로, owner, backup restore, rollback 검증 포함</td></tr>
+<tr><td>2</td><td>Credential 정책 draft 승격</td><td>secret store, masking, rotation, 최소권한 검증 포함</td></tr>
+<tr><td>3</td><td>설치·배포 가이드 <code>review</code> → <code>current</code></td><td>실제 신규 환경 설치 1회 수행으로 절차 검증</td></tr>
+<tr><td>4</td><td>라이선스 기능 문서 승격</td><td>구현 완료 후 <code>_workspace/designs/devdesign_premium-edition.md</code>에서 핵심 승격</td></tr>
+<tr><td>5</td><td>기능 문서 승격</td><td>자산·비용·맵·Zabbix 관리·scheduler부터 작성</td></tr>
+<tr><td>6</td><td>릴리스 기준선</td><td>배포 version·commit·migration·검증 evidence 연결</td></tr>
+<tr><td>7</td><td>사용자 매뉴얼 screenshot</td><td>안정화된 화면만 task별 보조 이미지 추가</td></tr>
+</tbody></table>
+<blockquote><p>완료: API 카탈로그(T3, 2026-08-11). 자동 생성이 아니라 수기 작성이므로 controller 추가 시 갱신이 필요하다.</p></blockquote>
+<h2>3.1 파일명 규칙</h2>
+<p>문서 파일명은 <strong>한글 케밥 표기</strong>를 쓴다(<code>관리자-가이드.md</code>). 예외는 도구·플랫폼이 파일명으로 인식하는 것뿐이다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>유지하는 파일</th><th>이유</th></tr></thead>
+<tbody>
+<tr><td><code>README.md</code>(루트·각 하위 디렉터리)</td><td>git 호스팅이 디렉터리 진입 시 자동 렌더링한다</td></tr>
+<tr><td><code>AGENTS.md</code></td><td>에이전트 도구가 파일명으로 찾는다</td></tr>
+<tr><td><code>.gitignore</code></td><td>도구 규약</td></tr>
+</tbody></table>
+<h2>4. 분기별 감사 질문</h2>
+<ol>
+<li>현재라고 쓴 기능이 실제 배포 환경에서 동작하는가?</li>
+<li>route가 있지만 placeholder인 기능을 제품 기능처럼 설명하지 않았는가?</li>
+<li>최신 Flyway version과 데이터 모델 baseline이 같은가?</li>
+<li>OpenAPI와 FE service path가 일치하는가?</li>
+<li>secret·실계정·운영 URL이 문서에 들어가지 않았는가?</li>
+<li><code>_workspace</code>에서 완료됐지만 stable 문서로 승격되지 않은 기능이 있는가?</li>
+<li>Obsidian의 결정 노트와 current 문서가 서로 연결되는가?</li>
+<li>마지막 review 이후 독자 질문이 문서에 반영됐는가?</li>
+</ol>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-05</td><td>최초 인벤토리와 작성 backlog 생성</td></tr>
+<tr><td>2026-08-11</td><td>신규 5종 등록(제품 소개서·관리자 가이드·문제 해결·API 카탈로그·설치 배포 가이드). 문서 파일명 한글화 및 규칙 명문화</td></tr>
+<tr><td>2026-08-11</td><td><strong>제품 포지셔닝 리뉴얼</strong> — 다중 데이터소스(Zabbix·Prometheus·Datadog·Elastic) 종합 모니터링 기준으로 8개 문서 갱신</td></tr>
+<tr><td>2026-08-11</td><td>화면별 가이드 25종 신설(U5) — SideNav 구조 그대로 디렉터리 구성</td></tr>
+<tr><td>2026-09-01</td><td>FAQ 신설(U6, <code>guides/자주-묻는-질문.md</code>) — 13영역 90문항, 2026-08-11 이후 기능 반영. 사실 검증 전이라 <code>review</code></td></tr>
+<tr><td>2026-09-01</td><td><strong>APM 고객 문서 신설</strong>(U5-APM) — <code>애플리케이션-모니터링.md</code>(화면·상태 5종·알람 규칙·Zabbix 액션 연결)·<code>수집기-설치.md</code>(온보딩 3단계·60초 검증·문제 해결, <code>ApmInstallGuideService</code> 문구와 동일). 정정: <code>준비-중인-모니터링.md</code>에서 APM 절 제거·"Prometheus·Datadog 소스 필요" 문구 삭제, 제품 소개서 "Datadog: APM"→"외부 APM 읽기 연동(P4 후보)"·"APM [예정]"→"[제공(P1)]·트레이스/서비스 맵 [P2]", FAQ·사용자 가이드·라이선스 문서 링크 갱신</td></tr>
+</tbody></table>
+</body></html>

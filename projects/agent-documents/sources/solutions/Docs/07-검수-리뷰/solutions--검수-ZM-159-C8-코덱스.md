@@ -1,0 +1,13 @@
+- R1 · 필수 · `src/main/java/com/dmove/moveseye/host/HostService.java:381` · H3 캐시 키는 `from/to`를 분 단위로 내리지만 실제 집계는 정확한 초 범위를 사용해 서로 다른 요청이 같은 키에 충돌한다 · 동일 사용자 요청 `[61,179]`와 `[119,121]`은 모두 키 `60:120`을 사용하지만 집계 범위는 다르므로, 두 번째 요청이 첫 번째 결과를 반환할 수 있다. 현재 테스트도 `[61,179] → 60:120`만 고정하고 충돌을 검증하지 않는다 · 정확한 `from/to`를 키에 포함하거나, 키와 실제 집계 범위를 모두 동일한 분 경계로 정규화하라.
+
+- R2 · 필수 · `src/main/java/com/dmove/moveseye/host/HostService.java:1077` · H2-a의 RPC 호출 수가 요청 기간에 비례해 제한 없이 증가하며 논리 조회 단위의 호출·시간 예산도 적용되지 않는다 · 90일 창은 91개 버킷이고 모두 비어 있지 않으면 버킷당 총계 1회와 등급 5회로 546회, 여기에 최근 목록 호출이 추가된다. `DateRangeFilterDto`에는 최대 기간 검증이 없고 `countHistory`는 `ZabbixQueryExecutor`의 `max-calls`·deadline을 거치지 않아 임의의 긴 요청이 수천 회의 순차 RPC를 만들 수 있다 · 최대 기간/버킷 수를 제한하고, count 호출 전체에 공유 호출·시간 예산을 적용하라. 장기 범위는 사전 집계 또는 더 거친 버킷으로 전환해야 하며 단순 병렬화는 연결 풀과 Zabbix 부하만 키운다.
+
+- R3 · 필수 · `engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/alert/ZabbixAlertAdapter.java:623` · 새 `countHistory`가 이상 응답을 오류가 아닌 0건으로 확정한다 · 실제 위임 대상인 `ZabbixEventServiceImpl.java:33-34`는 `null`, 객체, 비정수 응답을 `asLong(0)`으로 변환한다. 따라서 응답 스키마 이상이나 중간 계층 오류가 H2/H4의 정상적인 0건으로 반환되고 H2 결과는 캐시될 수도 있다. 신규 테스트는 서비스를 mock하여 정상값 7만 반환하므로 이 경로를 잡지 못한다 · `ZabbixQueryExecutor.strictCount`와 같은 엄격 파서를 사용해 음이 아닌 정수 이외에는 `ZABBIX_API_ERROR`로 실패시키고 회귀 테스트를 추가하라.
+
+- R4 · 권장 · `engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/alert/ZabbixAlertAdapter.java:666` · 완전한 스캔의 `stopReason`이 계약상 `NONE`이 아니라 문자열 `"null"`이 된다 · `ZabbixQueryExecutor.scanByCursor`의 정상 완료 결과에는 reason이 설정되지 않으므로 `String.valueOf(result.getReason())`가 `"null"`을 반환한다. `AlertScanOutcome` 문서는 완전 결과를 `NONE`으로 규정하지만 테스트는 이를 확인하지 않는다 · `result.getReason() == null ? "NONE" : result.getReason().name()`으로 정규화하거나 executor가 정상 완료에도 `NONE`을 설정하게 하라.
+
+- R5 · 필수 · `engine-api/src/main/proto/engine.proto:541` · Java 포트에 추가된 `countHistory`, `scanHistory`, `AlertScanOutcome`이 proto 계약 사양서에 반영되지 않았다 · proto의 `AlertPort`는 여전히 `CountActive/ListActive/ListHistory/Acknowledge`만 선언한다. `engine-api/README.md:82-85`는 Java 계약 변경 시 proto 동기화를 명시하며, 새 record 자체도 대응 proto 메시지가 있다고 문서화한다 · `CountHistory` 요청·응답과 server-streaming 형태의 `ScanHistory` 페이지/최종 outcome 계약을 proto에 추가하고 README의 AlertPort 메서드 목록도 갱신하라.
+
+- R6 · 권장 · `src/test/java/com/dmove/moveseye/host/HostGroupMonitoringTest.java:434` · H2-a 테스트가 중점 검수 대상인 다중 버킷 경계와 여섯 번째 등급 산식을 고정하지 못한다 · 현재 범위 `1000..2000`은 1시간 미만이라 버킷 하나만 생성되며, 총계와 앞의 5개 등급 합이 다른 경우도 없다. 따라서 첫 부분 버킷, 정확한 경계 시각, 마지막 부분 버킷, `총계−5등급 합` 회귀가 깨져도 통과한다 · 최소 2개 이상의 버킷과 경계 시각 사건을 두고 `[from, nextStart−1]`, 마지막 `[start,to]`를 검증하며, 총계를 5개 등급 합보다 크게 stub하여 나머지가 여섯 번째 등급에 들어가는 테스트를 추가하라.
+
+FE에서는 H4 응답 중 `name`과 `statusCounts`만 실제 사용하며 AI 서버에는 해당 API 참조가 없었다. 시그니처 호출처도 컨트롤러와 테스트가 함께 갱신되어 이 부분에서는 추가 파손을 찾지 못했다. 지시대로 빌드·테스트는 실행하지 않았다.

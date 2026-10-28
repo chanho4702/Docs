@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Data, security and privacy</title><style>body{margin:0;background:#f5f7fa;color:#172b4d;font:16px/1.75 system-ui,-apple-system,"Malgun Gothic",sans-serif}main{max-width:1000px;margin:32px auto;padding:40px 48px;background:white;border:1px solid #dfe4eb;border-radius:12px}h1{font-size:30px;line-height:1.3;border-bottom:3px solid #1868db;padding-bottom:22px}h2{margin-top:36px;font-size:22px}a{color:#0c66e4}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dfe4eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eef3fa}img{max-width:100%;height:auto;border:1px solid #dfe4eb}code{background:#eef1f6;padding:2px 4px;border-radius:3px}li{margin:7px 0}blockquote{border-left:4px solid #1868db;padding-left:16px;color:#44546f}@media(max-width:700px){main{margin:0;padding:20px}table{display:block;overflow:auto}h1{font-size:25px}}@media print{body{background:white}main{border:0;margin:0;padding:0}h2{break-after:avoid}table,img{break-inside:avoid}}</style><main><h1>Data, security and privacy</h1>
+<p>This page explains product data behavior. It does not replace the vendor's privacy policy, contract or support policy.</p>
+<h2>Information processed</h2>
+<table>
+<thead>
+<tr>
+<th>Information</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atlassian account IDs, teams and roles</td>
+<td>Identify authors, approvers and permitted viewers</td>
+</tr>
+<tr>
+<td>Issue, project and worklog identifiers, work dates and duration</td>
+<td>Link requests, aggregate time and compare current records</td>
+</tr>
+<tr>
+<td>Requests, decisions, reasons and signature-related information</td>
+<td>Process approvals and retain history</td>
+</tr>
+<tr>
+<td>Worklog fingerprints, changes and descriptions according to settings</td>
+<td>Detect changes and support audits</td>
+</tr>
+<tr>
+<td>Connection state and cryptographic keys</td>
+<td>Authenticate the optional Workforce channel</td>
+</tr>
+</tbody>
+</table>
+<p>App data is stored in Forge SQL and KVS. Original Jira records remain in Jira. Exported spreadsheets and certificates are separate customer-managed copies. Disabling full-description retention does not necessarily remove fingerprints or short previews.</p>
+<h2>Access and integration</h2>
+<p>User-facing Jira access uses user permissions by default, with visibility checks for lists, details and exports. Events, worklog controls, validators and integration channels use limited app-permission paths where no user session is available. Automatic status application uses the requester's permissions.</p>
+<p>When connected, the apps exchange organization, linked-issue, write-decision and approval-related information over a signed channel. Do not interpret this as a claim of <strong>no outbound communication</strong> or <strong>Runs on Atlassian certification</strong>. Consult the finalized vendor policies for support, data location, subprocessors and deletion requests.</p>
+<h2>Retention and deletion</h2>
+<p>Code defaults for worklog-change history are 12 months for ordinary records and 36 months for linked records; certification and control history default to 0, meaning indefinite retention. Check the actual site settings. Reaching a retention age does not automatically delete every record. Export confirmation and protected-record exclusions apply.</p>
+<p>Deleting an issue or losing permission can make its original content unavailable. Do not treat the app as an archive guaranteed to recover every deleted issue.</p>
+<p><a href="00-index.html">Documentation home</a> · <a href="../ko/11-data-security-privacy.html">한국어</a></p>
+</main></html>

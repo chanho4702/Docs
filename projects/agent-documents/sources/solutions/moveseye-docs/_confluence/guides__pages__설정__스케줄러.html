@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>스케줄러</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>스케줄러</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 시스템 관리자, 운영 책임자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/setting/scheduler/SchedulerManagement.tsx + scheduler/BuiltInJobs.java</div></div>
+<h1>스케줄러</h1>
+<blockquote><p><strong>사이드바</strong> 설정 &gt; 스케줄러 <strong>경로</strong> <code>/setting/schedulers</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>배치 작업의 <strong>실행 여부와 주기</strong>를 관리한다. 화면 안내대로 <strong>저장하면 재기동 없이 즉시 적용</strong>된다 — cron이 코드에 박혀 있지 않고 DB 설정을 따르기 때문이다.</p>
+<h2>화면 구성</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>열</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td>작업</td><td>배치 이름</td></tr>
+<tr><td>사용 여부</td><td>사용 / 중지</td></tr>
+<tr><td>주기</td><td><code>N분마다</code>, <code>매일 HH:mm</code>, <code>매주 요일 HH:mm</code>, <code>매월 D일 HH:mm</code></td></tr>
+<tr><td>다음 실행</td><td>예정 시각 (없으면 '예정 없음')</td></tr>
+<tr><td>마지막 실행</td><td>결과와 시각 (없으면 '이력 없음')</td></tr>
+<tr><td>옵션</td><td>작업별 추가 설정</td></tr>
+<tr><td>동작</td><td><strong>지금 실행</strong> · 편집</td></tr>
+</tbody></table>
+<h2>등록된 배치</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>작업</th><th>하는 일</th><th>성격</th></tr></thead>
+<tbody>
+<tr><td><code>asset_sync</code></td><td>호스트 → 자산 동기화</td><td>수집</td></tr>
+<tr><td><code>event_sync</code></td><td>이벤트·문제 동기화</td><td>수집 (짧은 주기)</td></tr>
+<tr><td><code>event_cleanup</code></td><td>오래된 이벤트 정리</td><td>정리</td></tr>
+<tr><td><code>report_weekly</code></td><td>주간 리포트 생성</td><td>집계</td></tr>
+<tr><td><code>report_monthly</code></td><td>월간 리포트 생성</td><td>집계</td></tr>
+<tr><td><code>report_cleanup</code></td><td>만료 리포트 삭제</td><td>정리</td></tr>
+<tr><td><code>user_sync</code></td><td>사용자 동기화</td><td>수집</td></tr>
+</tbody></table>
+<h2>주기 설계</h2>
+<ul>
+<li><strong><code>event_sync</code>는 짧게</strong>(1분 수준) 돌아야 장애를 빨리 잡는다. 대신 무겁다.</li>
+<li><strong>리포트 집계는 오래 걸린다.</strong> 이벤트 동기화와 겹치는 시간대를 피한다.</li>
+<li>배치 스레드 풀 크기는 서버 설정(<code>SCHEDULER_POOL_SIZE</code>, 기본 4)이다. 등록 배치가 7개이므로 전부 겹치면 대기가 생긴다.</li>
+</ul>
+<h2>실행 이력 읽는 법</h2>
+<h3>부분 실패는 성공으로 찍힌다</h3>
+<p>🔴 <strong>가장 중요한 함정이다.</strong> 40개 그룹 중 2개가 실패해도 결과는 "성공"이고, 실패는 <strong>요약 문자열에만</strong> 남는다.</p>
+<pre>ok=38 fail=2</pre>
+<p><strong>성공 표시만 보고 전건 처리됐다고 판단하지 않는다.</strong> 요약을 읽는다.</p>
+<h3>전건 실패</h3>
+<p>실패로 기록되며 <strong>다음 실행은 취소되지 않는다.</strong> 원인을 고치면 다음 주기에 자연 복구된다.</p>
+<h2>주의할 점</h2>
+<h3>수동 실행을 연타하지 않는다</h3>
+<p>"지금 실행"을 눌렀는데 반응이 없어 보여도 다시 누르지 않는다. <strong>이전 실행이 아직 돌고 있을 수 있다.</strong></p>
+<h3>파괴적 동기화 — <code>user_sync</code></h3>
+<p>🔴 사용자 동기화는 <strong>Zabbix에 없는 로컬 계정을 제거할 수 있다.</strong> 그래서 서버 설정(<code>SYNC_ENABLED</code>)의 기본값이 꺼짐이다.</p>
+<p>옵션의 <strong>'Zabbix 반영' / '가져오기만'</strong> 구분을 확인한다. 제품에서만 만든 계정이 있다면 켜기 전에 백업한다.</p>
+<h3>정리 배치는 라이선스와 무관하게 돈다</h3>
+<p><code>event_cleanup</code>·<code>report_cleanup</code>은 라이선스가 만료돼도 계속 실행된다. 멈추면 만료된 설치본의 디스크가 무한정 차기 때문이다. 이 두 배치는 외부 수집 없이 자기 DB만 정리한다.</p>
+<h3>다음 실행이 '예정 없음'이면</h3>
+<p>배치가 비활성 상태이거나 주기가 설정되지 않은 것이다.</p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>리포트 관리</strong></li>
+<li><strong>자산 목록</strong></li>
+<li><strong>관리자 가이드 — 스케줄러 관리</strong></li>
+</ul>
+</body></html>

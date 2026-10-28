@@ -6,7 +6,7 @@ updated: 2026-10-28
 # APM 심층 진단 설계
 
 - 요청: 기능 평가·심층 진단 방향 설명 후 사용자가 ‘일단 설계만’ 요청. 제품 코드·DDL·서버·배포 변경 없음.
-- 정본: [설계 v0.2](C:/solutions/_workspace/features/apm/deep-diagnostics/devdesign_apm-deep-diagnostics.md), [문서 검수](C:/solutions/_workspace/features/apm/deep-diagnostics/review_apm-deep-diagnostics-design.md).
+- 정본: [설계 v0.2](../agent-documents/sources/solutions/_workspace/features/apm/deep-diagnostics/solutions--devdesign_apm-deep-diagnostics.md), [문서 검수](../agent-documents/sources/solutions/_workspace/features/apm/deep-diagnostics/solutions--review_apm-deep-diagnostics-design.md).
 - 현재 관찰 기준: BE df1b39f, FE edf667c, Java 확장 5c87950. SOLO-CLAUDE에서 Codex는 설계·검수만 수행.
 
 ## 제안한 방향

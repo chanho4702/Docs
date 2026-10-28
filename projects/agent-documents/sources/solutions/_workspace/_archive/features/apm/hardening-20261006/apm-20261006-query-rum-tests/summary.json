@@ -1,0 +1,107 @@
+{
+  "classes": 14,
+  "tests": 135,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suites": [
+    {
+      "name": "com.dmove.moveseye.otel.OtelArchitectureTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.core.metric.ApmResolutionTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ApmRumControllerTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ApmRumIngestMvcTest",
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumParserTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumSanitizerTest",
+      "tests": "16",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumSchemaIT",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.ingest.RumStoreTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.security.RumSecurityTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.rum.token.RumTokenServiceTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.service.red.ApmExportGridParityTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.service.red.ApmQueryResourceLimitTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.service.red.ApmSeriesSelfExplainTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.service.status.ApmAvailabilityServiceTest",
+      "tests": "23",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+# APM 순위 9~10 준비 — 환경·선택 범위·수동 갱신
+
+작성: 2026-10-06, FE 담당. 상태: **읽기 전용 조사와 구현 계획만 완료**. 제품 소스 편집·테스트·서버 기동·커밋은 하지 않았다.
+
+기준 FE `59186c0399ec6815831b370f474b5cf81082a8a1`, BE `22eeff8b42936679ec1694c5910156defe2c7e16`. 순위 5의 BE 편집은 다른 담당자가 진행 중이다. 선행 감사는 [apm-20261006-review-frontend.md](../04-%EB%B6%84%EC%84%9D-%EA%B0%90%EC%82%AC/solutions--APM-%EC%A0%84%EB%B0%98-%EC%9E%AC%ED%8F%89%EA%B0%80-%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-%EC%A1%B0%EC%82%AC-%ED%9D%90%EB%A6%84-%EC%84%A4%EC%B9%98-%EA%B2%BD%ED%97%98.md)이며, 아래는 현재 파일을 다시 대조한 결과다. BE 계약 확정 전 FE에서 없는 필드를 추측해 보내거나 결과를 클라이언트에서 잘라 문제를 가리지 않는다.
+
+## 1. 실제 연결 상태
+
+아래 경로는 `moveseyee_fe/src/` 기준이다.
+
+| 화면 | 현재 실제 데이터 요청 | 환경 적용 상태 | 수동 갱신 상태 |
+|---|---|---|---|
+| 트레이스 | `useApmTraces`, `useApmTraceScatter` | `useApmTraceFilters.ts:78~103`에서 env 누락. 서비스 옵션의 overview만 env 적용 | `ApmTracesPage.tsx:27`의 `useApmRefresh`로 목록·산점도·옵션 갱신은 이미 구현 |
+| 오류 | 목록, 열린 그룹 상세·시계열, 오류 CSV | `ApmErrorExplorer.tsx:53`의 목록과 상세의 요청 모두 env 없음. CSV도 env 계약 없음 | `ApmErrorsPage.tsx:47`에서 옵션용 overview만 `refetch()` |
+| DB | 그룹 목록, 시스템 Sankey, 열린 그룹 상세·시계열 | `ApmDbExplorer.tsx:53~56`에서 env 없음 | `ApmDbCallsPage.tsx:47`에서 옵션용 overview만 `refetch()` |
+| 외부 호출 | 서비스×target 목록, 선택 target 시계열 | `ApmDependencyExplorer.tsx:62~65`에서 env 없음 | `ApmDependenciesPage.tsx:45`에서 옵션용 overview만 `refetch()` |
+| 개요 | `useApmOverview`, `useApmServicesOverview`, 별도 live snapshot/SSE | 집계와 옵션은 env 적용 | `ApmOverviewPage.tsx:240,245,275`에서 overview만 재조회. 상대창·옵션은 전진/갱신하지 않음 |
+| 서비스 목록 | `useApmServicesOverview` | env 적용 | `ApmServiceListPage.tsx:353,435`의 툴바와 첫 사용 안내 모두 같은 기존 창 재조회 |
+| 서비스 맵 | map, 옵션 overview, 열린 edge series | map은 env 적용. 기존 계약상 호출자 환경만 제한 | `ApmServiceMapPage.tsx:152`에서 map만 기존 창 재조회. 열린 edge·옵션은 누락 |
+| 서비스 상세 | 고정 service의 활성 탭 | 서비스 경로가 정본이고 툴바에 env 선택기가 없음 | `useApmRefresh` 사용 중이지만 등록 목록에 오류/DB 상세·series와 dependency series가 빠짐. custom 창에서는 열린 상세가 갱신되지 않을 수 있음 |
+
+`useApmTimeRange.ts:97~113`은 자동 갱신 OFF일 때 tick을 만들지 않는다. 이 경우 `refetch()`만 호출해도 상대 from/to는 그대로다. 기존 `useApmRefresh.ts`는 `flushSync(refreshApmTimeRange)` 후 활성 query만 `cancelRefetch:false`로 재조회하므로 재사용하는 것이 최소 변경이다.
+
+`useApmTimeRange.ts:163`의 환경 변경은 env와 offset만 변경한다. `trService/errService/dbService/depService`, 오류·DB 그룹, dependency target이 남을 수 있다. `useQueryParams.tsx:65`는 현재 렌더의 URL 스냅샷으로 다음 URL을 만들므로 같은 이벤트에서 `setEnv`와 선택 해제를 따로 호출하면 뒤 호출이 앞 호출을 덮는다. **환경 변경과 선택 초기화는 한 번의 updateParams로 처리해야 한다.**
+
+## 2. BE 선행 계약 필요사항
+
+### 공통 필터 규칙 제안
+
+BE 담당자가 다음을 `_workspace/contract_apm-query-controls-20261006.md`에 확정한 후 FE가 소비한다. 이 문서는 최종 API 계약이 아니다.
+
+- `env?: string | null`: 생략·null·빈 문자열은 기존 전체 환경 의미. 비어 있지 않으면 서비스의 환경에 정확히 일치하는 데이터만 집계한다. trim·최대 길이·대소문자 규칙은 기존 `/services/overview`와 맞춘다.
+- 전역 화면에서 `service`와 `env`를 함께 주면 **교집합**으로 처리한다. 없는 service와 환경 불일치에 대한 오류/빈 결과 규칙을 명시한다. 권장안은 없는 service는 기존 `APM_SERVICE_NOT_FOUND`, 존재하지만 다른 환경이면 목록·series는 빈 결과이며 다른 환경 데이터는 절대 반환하지 않는 것이다.
+- count, pagination, LIMIT, histogram 합산과 scatter sampling **이전에 SQL 모집단을 제한**한다. 전체 결과를 받은 후 Java/FE에서 env별로 제거하면 페이지·총계·표본이 틀리므로 금지한다.
+- 환경 옵션은 현재 env로 걸러진 행에서 추출하지 않는다. 기존 overview의 전역 `envs` 규약을 유지한다.
+- 집계 상세의 groupId는 고유하지만 현재 UI 범위가 맞는지를 증명하지 않는다. 선택 서비스/환경을 상세와 series에서도 검증할 수 있어야 한다. 기존 권한 및 raw-text 마스킹 정책은 유지한다.
+
+### endpoint별 변경
+
+| endpoint | 현재 BE/FE 입력 | 필요한 계약 |
+|---|---|---|
+| `GET /apm/traces`, `/apm/traces/scatter` | from/to/service/involved/route/status/minMs/maxMs | 두 endpoint에 같은 env 필터. `ApmTraceQueryService.Filter`와 공통 `where`에 반영하여 목록·total·산점도 일치 |
+| `GET /apm/errors` | from/to/service/q/sort/order/limit/offset | env 추가. 목록/total/CSV의 공통 조건 공유 |
+| `GET /apm/errors/{groupId}`, `/{groupId}/series` | from/to만 | 선택 범위 `service?`, `env?` 추가 권장. 불일치면 기존 그룹 not-found 계열을 일관되게 사용하고 다른 서비스의 스택/series를 반환하지 않음 |
+| `GET /apm/db/queries` | from/to/service/system/q/sort/order/limit/offset | env 추가. count·rows 동일 조건 |
+| `GET /apm/db/systems` | from/to/service | env 추가. 쿼리 목록과 동일한 서비스/환경 범위로 Sankey·시스템 옵션 계산 |
+| `GET /apm/db/queries/{groupId}`, `/{groupId}/series` | from/to만 | 오류 상세와 동일한 service/env 범위 검증 |
+| `GET /apm/dependencies`, `/apm/dependencies/series` | from/to/service, series에 target | env 추가. 기준은 외부 target의 환경이 아니라 **호출 서비스 환경**. 선택 행 series는 이미 있는 service 파라미터로 제한 가능 |
+| `GET /apm/exports/error-groups/plan`, `/apm/exports/error-groups` | from/to/service/q/format/gzip/rawText 등 | env 추가. 계획의 count와 실제 파일 내용에 동일 적용. 계획 응답에 적용 env를 명시하고 planToken 요청 지문에도 포함 |
+
+#### 트레이스 env + involved 의미는 반드시 먼저 확정
+
+현재 `ApmTraceQueryService.java:116~143`은 `involved=false`이면 `root_service_id`, true이면 `service_ids` 배열에 선택 서비스가 있는지 검사한다. trace는 여러 환경을 지날 수 있으므로 다음 중 무엇을 의미하는지 계약 없이 FE가 결정하면 안 된다.
+
+권장안: 서비스 미선택의 env 필터는 루트 서비스 환경으로 제한한다. 서비스를 선택한 경우 그 서비스의 환경이 env와 일치하는지를 먼저 확인하고, `involved=true`는 다른 환경에서 시작했더라도 그 선택 서비스를 거친 trace를 포함하는 기존 의미를 유지한다. 화면 도움말에 '선택 서비스가 속한 환경'과 '루트에서 시작' 조건을 구분한다. 대안으로 env를 언제나 루트 환경에 적용할 경우 `service=prod&involved=true&env=prod`가 dev 루트→prod 참여 trace를 제외함을 명시해야 한다. BE가 선택한 규칙을 목록·scatter·total에 똑같이 적용한다.
+
+#### 내보내기 영향
+
+`TApmExportParams`, `ApmExportButton`이 클릭 시 고정하는 scope, `ApmExportModal` 요청, `useApmExportPlan` query key, BE `ApmExportRequest`와 `ApmExportPlanToken.fingerprint`, `ApmErrorGroupExporter`에서 호출하는 `ApmErrorQueryService.countForExport/streamForExport` 모두 현재 env가 없다. 타입 한 곳만 추가해서는 완료되지 않는다.
+
+개요 RED export는 현재 '전체 서비스·전체 환경'이라는 별도 안내가 있다. 이를 이번에 화면 env와 맞출지 계약에 명시해야 한다. 최소 필수는 오류 CSV의 환경 일치다. 공통 export에 env를 추가한다면 `red-series`는 소속 서비스 조회까지 적용하고, `endpoints`는 필수 service와 교집합 검사해야 한다. 지원하지 않는 dataset에서 env를 조용히 무시하지 않는다. 새 계획 응답의 env가 없거나 다르면 FE는 환경이 적용됐다고 표시하거나 다운로드를 진행하지 않도록 호환 정책을 정한다.
+
+trace ID 단건·flame·compare는 선택 ID 자체의 상세이므로 환경별 span을 잘라서는 안 된다. 이 작업에서 trace 상세를 환경 필터로 파편화하지 않는다.
+
+## 3. FE 최소 변경
+
+### 환경 연결과 선택 상태
+
+1. `types/apm.ts`: trace/error/DB/dependency 입력과 scoped group 상세/series, export 입력·계획 응답을 BE 계약대로 확장한다. 입력 공통화는 해당 도메인 범위에 한정한다.
+2. `services/apm.api.ts`: 기존 axiosInstance/clean 경로로 env·service를 전달한다. 새 endpoint나 별도 axios는 필요 없다.
+3. `hooks/useApm.ts`: `traceFilterKey` 및 오류·DB·dependency·그룹 상세/series·export 계획 query key에 적용 범위가 빠짐없이 포함돼야 한다. env를 API에만 추가하면 캐시가 환경 간 재사용된다.
+4. `useApmTraceFilters`와 Error/DB/Dependency Explorer: 전역 화면은 URL env를 실제 요청까지 전달한다. 서비스 상세의 `fixedServiceUid`는 기존처럼 우선한다. 상세 툴바에 env가 없는데 상속 URL env 때문에 고정 서비스가 가려지지 않도록, fixed 모드에서는 service의 실제 env를 넘기거나 불필요한 전역 env를 생략하는 규칙을 계약에 맞춰 통일한다.
+5. 툴바의 환경 변경을 화면이 원자적으로 처리할 수 있도록 `ApmToolbar`에 선택적 callback 또는 초기화할 URL key 목록을 추가한다. env·offset과 해당 화면 service·group/target·DB system을 **한 번에** 갱신한다. 옵션 조회가 비어 있거나 실패했다는 이유만으로 기존 선택을 자동 삭제하지 않는다.
+6. 오류/DB 패널에 service/env를 전달한다. 오래된 deep link와 서비스 상세의 다른 groupId 조합은 BE scope 검증 결과를 일반 오류/범위 안내로 표시한다. 로딩 중 다른 환경의 이전 상세가 확정값처럼 남지 않도록 query key와 placeholder 정책을 확인한다.
+7. Export scope는 클릭 시 from/to뿐 아니라 env도 고정한다. 열린 모달은 메인 페이지가 갱신되어도 같은 계획을 유지하며, 다운로드에는 확정한 env와 planToken을 보낸다.
+
+### 외부 호출 행 선택
+
+현재 행의 `apmDependencyKey`는 `serviceUid|target`인데 URL 선택은 `depTarget` 하나이고 `selectedRow`도 target만 검색한다. 클릭한 B 행 대신 A의 혼재 경고를 빌릴 수 있다.
+
+최소 수정안은 **목록 필터 `depService`와 행 선택의 서비스 식별자를 분리**하는 것이다. `APM_DEPENDENCY_PARAM`에 선택용 key(예: `depSelectedService`)를 추가하고 한 번의 URL 갱신에 target+row.serviceUid를 저장한다. 목록은 기존 전역 필터로 유지하고 series만 선택 서비스+target으로 조회한다. selectedRow·강조·차트 제목·mixedBounds는 동일한 두 축으로 매칭한다. 단순히 `depService=row.serviceUid`로 덮으면 클릭할 때마다 전체 목록도 좁아지므로 권장하지 않는다.
+
+- fixed 서비스 탭에서는 fixedServiceUid가 선택용 URL보다 우선한다.
+- 환경/목록 서비스 변경 시 target과 선택 서비스 쌍을 함께 초기화한다.
+- 기존 `depTarget` 단독 deep link는 선택 서비스나 fixed 서비스가 없으면 명시적으로 행을 다시 선택하게 한다. 임의로 첫 행을 고르지 않는다.
+- DTO의 `serviceUid`는 nullable이고 BE는 `ApmServiceRefLookup`에서 찾지 못하면 null을 반환한다. 이런 행은 service를 생략한 전체 합산 series로 연결하지 않는다. 조회 불가 안내 또는 BE가 보장하는 안정 식별자 계약이 필요하다. 최소안은 해당 행의 드릴다운을 막고 안내하는 것이다.
+- 전 서비스 합산은 API의 기존 기능으로 유지할 수 있지만, 행 클릭의 기본 결과로 쓰지 않는다. 별도 합산 UX는 이번 최소 수정에 필요하지 않다.
+
+### 수동 갱신 query key 목록
+
+모든 표의 새로고침·첫 사용 안내 버튼은 같은 `useApmRefresh` 결과를 사용한다. 상세가 닫혀 비활성인 query는 `type:active`에 의해 호출되지 않아야 한다.
+
+| 화면 | 최소 갱신 key 집합 |
+|---|---|
+| 트레이스 | 기존 `SERVICES`, `TRACES`, `TRACE_SCATTER` 유지 |
+| 오류 | `SERVICES`, `ERROR_GROUPS`, `ERROR_GROUP_DETAIL`, `ERROR_GROUP_SERIES` |
+| DB | `SERVICES`, `DB_SYSTEMS`, `DB_QUERIES`, `DB_QUERY_DETAIL`, `DB_QUERY_SERIES` |
+| 외부 호출 | `SERVICES`, `DEPENDENCIES`, `DEPENDENCY_SERIES` |
+| 개요 | `OVERVIEW`, `SERVICES`. live snapshot의 재시도는 별도 판단하되 SSE를 수동 재연결하지 않음 |
+| 서비스 목록 | `SERVICES` — 툴바와 onboarding 버튼 모두 같은 handler |
+| 서비스 맵 | `SERVICES`, `SERVICE_MAP`, `EDGE_SERIES` |
+| 서비스 상세 | 기존 집합에 `ERROR_GROUP_DETAIL`, `ERROR_GROUP_SERIES`, `DB_QUERY_DETAIL`, `DB_QUERY_SERIES`, `DEPENDENCY_SERIES` 보충 |
+
+대시보드 배치 저장 query와 홈 위젯 query는 분석 새로고침 대상이 아니다. export 계획은 클릭 때 고정한 scope를 유지해야 하므로 일반 새로고침 집합에 넣지 않는다. 닫힌 탭을 열거나 전체 캐시를 무차별 invalidate하지 않는다. 자동 폴링 스케줄의 전면 통합·AbortSignal·SSE 정책은 순위 16 등의 별도 범위다.
+
+## 4. 실제 행위 검증 계획
+
+현재는 **미실행**이다. 테스트 개수나 실데이터 결과를 추정해 완료로 보고하지 않는다.
+
+### BE 계약·DB 검증
+
+공유 DB 사용은 리더가 직렬 실행한다. prod-A/dev-A(같은 displayName), prod-B와 다음 fixture를 둔다: 서로 다른 오류 그룹/SQL 그룹, 같은 외부 target, dev 루트→prod 참여 trace, env를 알 수 없는 trace. 데이터별 요청 수·오류·latency·mixedBounds를 다르게 해 섞임을 쉽게 판별한다.
+
+- env별 list/total/scatter/DB systems/dependency series가 SQL 제한 결과와 일치한다. 서비스/환경 불일치, 존재하지 않는 env, service 없음, 공백 env의 기존 호환을 확인한다.
+- pagination 2페이지 이상에서 total·페이지가 env 필터를 먼저 적용한 결과인지 확인한다. scatter 전체 count와 표본은 같은 모집단이다.
+- 그룹 상세/series에 다른 service/env를 보내면 다른 그룹의 스택/쿼리/시계열이 나오지 않는다. 기간에 데이터가 없는 정상 그룹의 기존 0건과 범위 불일치를 구분한다.
+- CSV plan의 env/count와 다운로드 행이 일치한다. env를 바꿔 이전 planToken으로 다운로드하면 거절된다. raw-text 권한 회귀를 함께 유지한다.
+- dependency null UID 처리와 target에 `:`, `/`, 공백이 있는 경우 URL 인코딩을 확인한다.
+
+### React 행위 검증
+
+기존 `apmAggScreens.test.tsx`는 useApm hooks를 mock해서 배선만 검사한다. 이를 통과해도 실제 요청/query key/갱신 동작이 검증된 것은 아니다. 새 통합 테스트는 실제 페이지+Explorer+useApmTimeRange+useApmRefresh+QueryClient+MemoryRouter를 렌더하고, API 서비스만 응답 fixture로 대체한다. `useDmoveQuery` 소비자는 payload를 직접 받는 현재 언랩 규칙을 유지한다.
+
+| 시나리오 | 관측할 결과 |
+|---|---|
+| 서비스 미선택 상태에서 prod→dev 전환 | API 인자와 query key의 env 변경, 보이는 행·total·Sankey·scatter 변경, 이전 env 응답 미재사용 |
+| prod 서비스·열린 group·offset이 있는 상태에서 dev 전환 | URL 한 번 갱신, 서비스/group/offset 및 필요한 DB system 초기화, 새 env가 덮어써지지 않음 |
+| fixed 서비스 탭에 다른 서비스/group URL 주입 | 고정 service 요청 유지, 범위 밖 상세 표시 거부 |
+| 동일 target의 A·B 행 중 B 선택 | 목록은 전체 유지, series service=B, 차트 제목·선택 강조·mixedBounds가 B와 일치 |
+| null serviceUid 행, target 단독 옛 링크 | 전체 합산으로 자동 조회하지 않고 재선택/불가 안내 |
+| OFF + 상대 1h에서 2분 경과 후 수동 갱신 | 버튼을 누르기 전 요청 없음. 누른 후 분 경계 정렬한 새 from/to로 필요한 endpoint를 각각 한 번 요청 |
+| 같은 분 안에서 수동 갱신 | query key가 같아도 필요한 실제 데이터는 재조회 |
+| custom 범위에서 수동 갱신 | from/to·필터·정렬 유지, 목록·열린 상세·series 모두 재조회 |
+| 닫힌 그룹·숨은 서비스 탭 | inactive query 요청 0회. 현재 화면과 무관한 query도 재조회하지 않음 |
+| 요청 중 중복 클릭·일시 실패 후 재시도 | 불필요한 취소/중복 요청 방지, 버튼 상태 복원, 실패가 빈 정상 데이터로 바뀌지 않음 |
+| export 모달을 연 후 시간/환경 변경 | 이미 고정한 scope/계획 유지, 계획과 파일의 env 일치 |
+
+기존 `useApmRefresh.test.tsx`는 실제 QueryClient와 두 query로 상대창/고정창/실패 복구를 검증한다. 공통 동작은 이 테스트를 유지하고, 새 화면의 **실제 handler가 올바른 key 집합을 사용한다는 통합 시험**을 추가해야 한다. 분 경계 직전 클릭도 넣어 한 클릭에서 서로 다른 소비자가 다른 시간창을 만들지 않는지 확인한다.
+
+회귀 후보: `apmAggScreens.test.tsx`, `apmTraceScreens.test.tsx`, `apmTraces.test.ts`, `useApmRefresh.test.tsx`, `ApmOverviewPage.test.tsx`, `ApmServiceListPage.test.tsx`, export 관련 스위트. 최소 변경 후 해당 범위 Jest와 전체 tsc, 최종 빌드를 수행한다.
+
+### 실제 브라우저 검증
+
+BE 계약/DB 시험이 통과한 후 허가된 런타임에서 시행한다. 공유 :3000/:5173을 임의 재시작하지 않는다.
+
+1. 브라우저에 prod/dev fixture가 실제 보이는 상태에서 환경 변경→행 선택→상세/series→오류 CSV까지 진행한다. Network의 요청 인자·응답 모집단과 화면 값을 함께 기록한다.
+2. 자동 OFF로 2분 대기 후 오류/DB/dependency/개요/목록/맵에서 각각 수동 갱신한다. 실제 데이터 endpoint의 요청과 from/to 전진을 HAR 또는 네트워크 로그로 남긴다. 옵션 overview 한 개만 재조회되는 경우 실패다.
+3. custom 과거창·열린 group/edge에서는 시간 범위를 보존하면서 화면 본문과 열린 상세가 갱신되는지 확인한다.
+4. target이 같은 B 행을 선택한 링크를 새 탭에서 열어도 B 범위가 유지되고, 뒤로가기·환경 변경 후 잘못된 선택이 남지 않는지 확인한다.
+5. CSV를 실제 내려받아 env 열과 서비스 목록을 확인한다. query mock 브라우저 시험과 실제 BE 연결 시험을 문서에서 구분한다.
+
+## 5. 구현 순서와 완료 조건
+
+1. BE가 env/involved·교집합·scoped 상세·export 토큰·null UID 정책을 확정하여 계약 작성.
+2. BE Controller→공통 SQL 조건→count/series/export 연결 및 DB/권한 회귀 검증.
+3. FE types→API→query key→화면/URL 선택 연결. 기존 사용자 편집 보존.
+4. FE 수동 갱신 handler 통일과 열린 상세 key 보충.
+5. 정적 계약 대조→실제 React 요청 시험→실제 BE 브라우저 흐름→문서/커밋.
+
+완료는 'env가 요청에 붙었다'가 아니라 **같은 조작이 목록·total·표본·차트·열린 상세·내보내기에서 같은 명시적 모집단을 유지하고, 새로고침이 원하는 창의 활성 데이터를 실제로 다시 요청하는 것**이다. 페이지네이션/경량 서비스 검색의 전면 개선(순위 13), 일반 요청 취소·복합 부하, RUM 범위 확장은 별도 후속으로 유지한다.

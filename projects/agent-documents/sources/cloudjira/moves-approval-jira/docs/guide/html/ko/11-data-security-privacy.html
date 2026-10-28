@@ -1,0 +1,42 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>데이터·보안·개인정보 안내</title><style>body{margin:0;background:#f5f7fa;color:#172b4d;font:16px/1.75 system-ui,-apple-system,"Malgun Gothic",sans-serif}main{max-width:1000px;margin:32px auto;padding:40px 48px;background:white;border:1px solid #dfe4eb;border-radius:12px}h1{font-size:30px;line-height:1.3;border-bottom:3px solid #1868db;padding-bottom:22px}h2{margin-top:36px;font-size:22px}a{color:#0c66e4}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dfe4eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eef3fa}img{max-width:100%;height:auto;border:1px solid #dfe4eb}code{background:#eef1f6;padding:2px 4px;border-radius:3px}li{margin:7px 0}blockquote{border-left:4px solid #1868db;padding-left:16px;color:#44546f}@media(max-width:700px){main{margin:0;padding:20px}table{display:block;overflow:auto}h1{font-size:25px}}@media print{body{background:white}main{border:0;margin:0;padding:0}h2{break-after:avoid}table,img{break-inside:avoid}}</style><main><h1>데이터·보안·개인정보 안내</h1>
+<p>이 문서는 제품의 데이터 동작을 설명합니다. 공급자의 개인정보 처리방침·계약·지원 정책을 대신하지 않습니다.</p>
+<h2>처리하는 정보</h2>
+<table>
+<thead>
+<tr>
+<th>정보</th>
+<th>목적</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atlassian account ID·팀·역할</td>
+<td>작성자·승인자·열람 범위 판단</td>
+</tr>
+<tr>
+<td>이슈·프로젝트·워크로그 식별자, 작업 일시와 시간</td>
+<td>요청 연결·집계·현재 원본 대조</td>
+</tr>
+<tr>
+<td>요청·결정·사유·서명 관련 정보</td>
+<td>결재 처리와 이력</td>
+</tr>
+<tr>
+<td>워크로그 지문·변경 정보, 설정에 따른 설명</td>
+<td>변경 감지·감사</td>
+</tr>
+<tr>
+<td>연결 상태와 암호학적 키</td>
+<td>선택 Workforce 채널 인증</td>
+</tr>
+</tbody>
+</table>
+<p>앱 데이터는 Forge SQL과 KVS에 저장됩니다. Jira 원본은 Jira에 남습니다. 다운로드한 엑셀·증명서 등은 고객이 별도로 관리하는 사본입니다. 설명 원문 보관이 꺼져 있어도 지문과 짧은 미리보기까지 없어지는 것은 아닙니다.</p>
+<h2>권한과 연결</h2>
+<p>사용자 화면의 Jira 조회는 사용자 권한을 기본으로 하며 목록·상세·내보내기에 열람 범위를 적용합니다. 이벤트·워크로그 보호·validator·연동 채널 등 사용자 세션이 없는 경로에서는 제한된 앱 권한을 사용합니다. 상태 자동 적용은 요청자 권한을 사용합니다.</p>
+<p>Workforce 연결 시 서명된 앱 간 채널로 조직·연결 이슈·쓰기 판정·승인 관련 정보를 주고받습니다. 따라서 <strong>외부 통신 없음</strong>이나 <strong>Runs on Atlassian 인증</strong>을 주장하지 않습니다. 지원·데이터 지역·하위 처리자·삭제 요청 절차는 확정된 공급자 정책을 확인하세요.</p>
+<h2>보관과 삭제</h2>
+<p>워크로그 변경 이력의 코드 기본값은 일반분 12개월, 연동분 36개월이며 인증·통제 이력은 0(무기한)입니다. 실제 사이트 설정을 확인하세요. 보관 기간 경과만으로 모든 기록이 자동 삭제되는 것은 아닙니다. 내보내기 확인과 보호 대상 제외 조건이 적용됩니다.</p>
+<p>이슈 삭제·권한 상실 후 원본을 볼 수 없을 수 있습니다. 앱이 삭제된 이슈의 내용을 항상 복구해 주는 보관소라고 가정하지 마세요.</p>
+<p><a href="00-index.html">문서 홈</a> · <a href="../en/11-data-security-privacy.html">English</a></p>
+</main></html>

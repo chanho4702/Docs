@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>EC2 대시보드</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>EC2 대시보드</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 사용자, 클라우드 담당자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/cloud-infra-monitoring/aws-resources/EC2Dashboard.tsx</div></div>
+<h1>EC2 대시보드</h1>
+<blockquote><p><strong>사이드바</strong> 모니터링 &gt; 클라우드 인프라 모니터링 &gt; AWS 리소스 모니터링 &gt; EC2 대시보드</p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>EC2 인스턴스 현황을 <strong>집계 관점</strong>에서 보는 화면이다. 개별 인스턴스를 찾는 것이 아니라 전체 규모와 분포를 파악한다.</p>
+<h2>화면 구성</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>위젯</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>총 인스턴스 수</strong></td><td>선택 리전 기준 전체 대수</td></tr>
+<tr><td><strong>인스턴스 유형</strong></td><td>유형별 분포 (t3.medium 등)</td></tr>
+<tr><td><strong>인스턴스 상태 비율</strong></td><td>running·stopped 등 상태별 비율</td></tr>
+<tr><td><strong>리전별 배포 상태</strong></td><td>리전에 걸친 분포</td></tr>
+<tr><td><strong>상태 확인</strong></td><td>헬스 체크 결과</td></tr>
+</tbody></table>
+<p>상단의 <strong>리전 필터</strong>로 범위를 조정하며, "전체"를 선택하면 모든 리전을 합산한다.</p>
+<h2>사용 흐름</h2>
+<ol>
+<li>리전을 선택하거나 전체로 둔다.</li>
+<li>총 대수와 상태 비율로 규모를 파악한다.</li>
+<li>유형 분포에서 <strong>비용에 영향이 큰 대형 인스턴스</strong> 비중을 확인한다.</li>
+<li>개별 인스턴스를 봐야 하면 <strong>EC2 목록</strong>으로 이동한다.</li>
+</ol>
+<h2>주의할 점</h2>
+<ul>
+<li><strong>stopped 인스턴스도 집계에 포함된다.</strong> "총 인스턴스 수"를 가동 중인 대수로 읽지 않는다. 상태 비율을 함께 본다.</li>
+<li>전체 리전 조회는 리전마다 API를 호출하므로 느리다.</li>
+<li>수치는 조회 시점 기준이며 자동 갱신되지 않는다.</li>
+<li>비용은 이 화면에서 다루지 않는다. 자산 비용은 <strong>비용</strong> 화면이다.</li>
+</ul>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>EC2 목록</strong></li>
+<li><strong>VPC 그룹 목록</strong></li>
+</ul>
+</body></html>

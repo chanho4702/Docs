@@ -1,0 +1,7 @@
+You are implementing a batch of product decisions in the Forge Jira app repository C:\CloudJira\moves-approval-jira.
+IMPORTANT encoding: files are UTF-8 Korean. In PowerShell always read with `[Console]::OutputEncoding=[Text.Encoding]::UTF8; Get-Content -Raw -Encoding UTF8 <path>` and never write files with Set-Content/Out-File defaults; use apply_patch for edits.
+Read these first, in order, and follow them strictly: AGENTS.md, CLAUDE.md, .claude/skills/forge-backend-dev/SKILL.md, .claude/skills/forge-frontend-dev/SKILL.md, then _workspace/decisions-2026-10-11/00_input/requirement.md (the task spec, in Korean).
+A previous run was stopped midway. It only edited docs/guide/{ko,en}/09-admin-guide.md and 11-data-security-privacy.md (T4 guide text) — review those edits, keep what is correct, and continue. The working tree also contains other uncommitted, already-verified work from other features; do not revert or rewrite it.
+Implement T1~T4 fully. Respect every constraint in the spec's "공통 제약": do not edit the listed files, do not run git add/commit/push or any forge command. Code comments and the report in Korean, identifiers in English.
+Work incrementally and run the relevant tests often. At the end run: npm test, npm run merge, npm run test:ui, npm run build:ui, npx forge lint — all must pass. Fix failures you cause.
+Write the final report to _workspace/decisions-2026-10-11/02_codex_report.md as specified, and print a short Korean summary as your final answer.

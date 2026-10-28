@@ -1,0 +1,109 @@
+# §4 무엇을 만들었나 — 메뉴 14 · 단계 P1~P5 · 데이터 모델
+
+> **MovesEye APM 종합 안내서** 분책 04/18 · 원본 절 **§4.1~4.3** · 마지막 갱신 **2026-09-17**(원본 `apm-handbook.md` 2026-09-14 작성분을 옮긴 뒤, 2026-09-17 P5 반영 — 메뉴 수·단계 표 P5 행·V58·V59).
+>
+> **이 문서를 읽으면 알게 되는 것**
+> 1. 메뉴 14개(사이드바 **9**(P5 실시간 관제 포함, FE `master` 병합 `4e4062f`·기본 전부 꺼짐) / 설정 ⚙ 2 / 비노출 4)와 서비스 상세 탭 11개가 어디서 열리고 어느 단계 산출물인지
+> 2. P1~P5 각 단계가 무엇을 얼마나 어떻게 검증하고 들어왔는지(날짜·커밋·핵심 수치·QA)
+> 3. V38~V59 마이그레이션이 만든 표가 각각 무엇을 담는지
+>
+> **전제 문서** — 이전 [03-constraints.md](solutions--03-constraints.md) · 다음 [05-menus-and-tabs.md](solutions--05-menus-and-tabs.md) · 목차 [00-index.md](solutions--00-index.md). P5 전체는 [18-p5-realtime.md](solutions--18-p5-realtime.md). 용어는 [14-glossary.md](solutions--14-glossary.md), 출처 전체는 [17-sources.md](solutions--17-sources.md).
+> **표기**: 🔴 = 어기면 데이터가 조용히 틀리는 규칙 · ⚠️ = 알고 있어야 하는 한계 · ✅ = 실측으로 확인된 것.
+
+## 4. 무엇을 만들었나 — 한눈에
+
+> 이 장을 읽으면: ① 메뉴 14개와 서비스 상세 탭 11개가 각각 어디서 열리고 어느 단계 산출물인지, ② P1~P5가 무엇을 얼마나 어떻게 검증하고 들어왔는지, ③ V38~V59 마이그레이션이 만든 표가 각각 무엇을 담는지 알게 된다.
+
+### 4.1 메뉴 14개 — 사이드바 9 / 설정 ⚙ 2 / 비노출 4
+
+설계(v1.1 S1)는 "상위 6개만 사이드바"였다. 구현은 그 6개에 **P4에서 RUM**이 더해졌고, 2026-09-16 **SLO가 사이드바에 노출**되면서(FE `3a09b33` — 화면과 라우트는 있는데 메뉴에 없어 주소를 직접 쳐야 열리던 것) 8개가 됐다. 이어 2026-09-17 **P5.2 실시간 관제**가 FE `master`에 병합되며(`4e4062f`) **현행 9개**가 됐다(`SideNav.tsx:337~421` 실사 — `overview`·`realtime`·`services`·`service-map`·`traces`·`synthetics`·**`slo`**·`collectors`·`rum`; `show: canViewApm`, 수집기만 `canEditApm`). 🔴 SLO는 **헤더 ⚙ 설정에서도 그대로 열린다**(두 곳에서 열림 — 사용자 결정).
+
+⚠️ **미푸시**이며, 🔴 **실시간 관제는 기본값이 전부 꺼져 있어**(§10.9) 메뉴는 보여도 켜기 전에는 화면에 아무것도 흐르지 않는다. 자세한 병합 경위는 [18-p5-realtime.md](solutions--18-p5-realtime.md) §10.6. 각 화면의 뜻은 [4.5절](solutions--05-menus-and-tabs.md) 사전에서 다시 푼다.
+
+| # | 메뉴 | 진입 | 단계 | 한 줄 |
+|---|---|---|---|---|
+| 1 | APM 개요 | 사이드바 | P1(+Live P1.5) | 전 서비스 상태 도넛·StatCard 4·서비스×시간 히트맵·Top5·최근 알람·배포 스트립·에러 버짓 위험 SLO·맵 미니 + 상단 **실시간 토글** |
+| 2 | 서비스 목록 → 상세 | 사이드바 | P1~P3 | 카드/표, 상세 탭 11(아래) |
+| 3 | 서비스 맵 | 사이드바 | P2 | React Flow + dagre, 노드 SERVICE/DB/HTTP/QUEUE, 엣지 굵기=rps·색=오류율 |
+| 4 | 트레이스 탐색 → 상세 | 사이드바 | P2 | 산점도(brush)·목록·**워터폴(직접 구현)**·플레임·크리티컬 패스 |
+| 5 | 에러 분석 | 비노출(검색·URL·상세 탭) | P2 | 예외 그룹(지문)·추이·스택 뷰어 |
+| 6 | DB 호출 분석 | 비노출 | P2 | 정규화 SQL 그룹·p95·총시간·흐름도 |
+| 7 | 외부 호출 분석 | 비노출 | P2 | 의존 대상별 지연·오류·타임아웃 |
+| 8 | 메시징·배치 | 비노출(개요 카드·검색) | P3 | 큐/토픽 처리량·소비 지연 + 배치 잡 표·간트 |
+| 9 | 합성 감시 → 상세 | 사이드바 | P3 | Zabbix 웹 시나리오 CRUD·24h 가용성·p95·30일 캘린더·실패 사유 한글화 |
+| 10 | SLO → 상세 | **사이드바**(09-16 노출, `3a09b33`) + 헤더 ⚙ 설정 | P3 | 목표·에러 버짓 게이지·번다운·캘린더·번 알람 |
+| 11 | 사용자 경험(RUM) → 페이지 상세 | 사이드바(P4에서 추가 — 설계는 비노출) | P4 | 페이지 표(PV·세션·LCP/INP/CLS p75·JS 오류)·Vitals 분포 5카드·환경 분포·timing 평균 워터폴 |
+| 12 | 알람 규칙 | 헤더 ⚙ 설정 | P1 | 규칙 5종(+SLO_BURN)·미리보기·발화 이력·Zabbix 상태 진단 |
+| 13 | 수집기 | 사이드바(edit) | P1(+P4 탭·P5 라이브 카드) | 상태 / 토큰·설정 생성 / 설치 가이드(os×stack) / 등록·설정 / **브라우저(RUM)** |
+| 14 | **실시간 관제** → `?tab=active\|xview` | 사이드바(개요 다음 2번째) | **P5.2·P5.3** | 요청 관제(속도계 3·이퀄라이저·동시 요청 타일·서비스 타일·관제실 모드) / X-View(스트리밍 산점도·브러시 표·점 패널·일시정지). ✅ 2026-09-17 FE `master` 병합(`4e4062f`, ⚠️ 미푸시). 🔴 **기본값이 전부 꺼짐** — 켜기 전엔 화면에 아무것도 흐르지 않는다 |
+
+**서비스 상세 탭 11**: 개요 · 트랜잭션 · 트레이스 · 에러 · 데이터베이스 · 외부 호출 · 런타임 · 인스턴스(P4 K8s 열·배지) · 배포 · 합성 감시 · 설정. 설계의 12번째 **로그 탭은 미개방**(로그 도메인 선행). 그 밖에 홈 위젯 3종(`apm_status`·`apm_slow_services`·`apm_alerts`), 리포트 관리의 APM 주간/월간 행, AI 툴 11종·'/' 명령 5.
+
+### 4.2 단계 P1~P5 — 무엇·핵심 수치·검증
+
+| 단계 | 날짜(커밋) | 무엇 | 핵심 수치 | 검증 |
+|---|---|---|---|---|
+| **P1 기반+메트릭** | 08-31~09-01 (BE `3b67d01`→`ee8ad09`, FE `223ae83`→`5f25846`) | R1·R10·R11·R14 실측 → V38~V43 · OTLP 수신·토큰·등록 엔진·허용목록·1m 적재·롤업 3단·보존·알람(Zabbix 브리지·평가·드리프트) · 화면 10(개요·목록·상세 5탭·알람 3탭·수집기 4탭) | 14테이블, 배치 5종, 알람 kind 5, 히스토그램 패밀리 4 | self-monitoring 종단 3회차 · 코덱스 3회(🔴 5) · 로직 분석 A1~A29 · P1 QA 결함 8 |
+| **P1.5 실시간(Live)** | 09-01 (BE `1b43bb1`, FE `57dbd2b`) | 인메모리 10초 링 + SSE(`/apm/live/stream`) · V43 family UNIQUE · R3 성능 수술 3건 | 창 15분·틱 10초·힙 ≈29MB | 코덱스 4차(🔴 세션 바인딩 우회) · Live QA 결함 0(화면 도달 중앙값 ≈14초·최악 ≈23초) |
+| **P2 트레이스** | 09-02 (BE 9커밋 `e63c2e8`~`c5aac1a`, FE 8커밋) | `/v1/traces` 수신(advisory lock·논리 dedup·SQL 정책) · V44~V47 · 트레이스 롤업 4종(엣지·예외·DB 쿼리·의존) · 조회 EP 17 · 배포 감지·웹훅·전후 비교 · 워터폴·맵·에러·DB·의존 화면 | tail 오류 100%/느림 100%/정상 2%(실측 2.02%) · 스팬 7일 | 코덱스 5회(🔴 4+4+1+2+1) · P2 QA 3,790요청·결함 15+3 |
+| **권한 옵션** | 09-03 (BE `4264f57`, FE `8ced9ed`) | 역할 축 → DMOVE 권한 `applicationMonitoring/apm` · V48 백필 | view 36·edit 26 EP | 권한 QA 8/8 |
+| **P3 운영 심화** | 09-07~08 (BE `e386e61`→`05e830d`, FE `8da4251`→`fd87470`, AI `533d4c0`→`84ad916`) | SLO(V51·V53) · 홈 위젯 3 · AI 툴 11 · 합성 감시(V52, `zabbix/httptest` 계약) · 메시징/배치(V54·V56) · 리포트(V55, SPI 편입) · 설치 가이드 출처 31 | 번 알람 OR·값 규약 `>0/0/-1` · 배치 규약 `job.name` | 코덱스 3회전(🔴 15) · P3 QA PASS 74/FAIL 3·결함 23 → 2회차 전건 PASS·신규 6 |
+| **P4 RUM·K8s** | 09-08~14 (BE `8ec9e1c`→master `6af7c46`→`p4-qafix`, FE worktree) | RUM 보안 계층·수신·5분 UPSERT·조회 5 EP·토큰/origin/스니펫 6 EP · K8s 옵션·관측기·인스턴스 9필드 · V57 | 상한 3종·Vitals 격자 2 | **코덱스 구현·Claude 검수**(🔴4 🟡16 🟢5 + 변이 A4·B5) · P4 QA PASS 92/FAIL 1(D1 HIGH) |
+| **P5.6 비동기 표시** | 09-15 (FE master `8845c49`·`e782752`) | 트레이스 상세 워터폴 확장 5항목 — 링크 팝오버·같은/다른 trace 이동·부모 종료 이후 마커/해칭·관련 스팬만 보기·빈 상태(+kind별 자기 시간). **BE 0**, 라이브 파이프라인 비의존 | 링크 적재 상한 32/스팬 · 마커 경계 `childEnd > parentEnd + 1ms` | 코덱스 구현·Claude 검수(🔴2 🟡13 → 전건 반영) · ✅ **R-P5.6 출시 게이트 PASS**(D-1 링크 191건 100% 보존 · D-3 10/10 · D-5 프로덕션 빌드 정지 228 ms) |
+| **P5.1 라이브 파이프라인(BE)** | 09-16 (BE master `f4031ef` → `84edbb9` → `d5f631a` → `3c76a74` → `8d6f730` → `8e1cc05`, 병합 `8df357d`) | Collector `traces/live` 분기 → `POST /apm/otlp-live/v1/traces`(🔴 **기본 OFF**) → dedup 60초 → 1초 버킷 집계 → `LiveSpanRing`+arena → SSE `GET /apm/live/spans/stream` · Collector 설정 생성·설치 가이드 gate·운영 관측(**V59**) · SSE 계약 골든 23 | 창 900초(907칸) · 슬롯 45 B · 전역 base 1,300k/emphasis 50k · 본문 상한 2 MiB×2 · 배치 1,000 · 토큰당 rps 10/burst 20 · 사용자당 연결 4 · ✅ 힙 arena 1.4M 슬롯 **61.13 MiB** | 7단계 전부 코덱스 구현·Claude 검수(🔴 3+2+1+0+3+3 → 반영) · `:test` **3,624 green** · ⚠️ **R2′·R-P5″ 미실행**(§10.8) |
+| **P5.2·P5.3 화면** | 09-16~17 (FE **`p5-xview`** `1f09355`·`be86881`·`09392b7`·`106fcc6`·`d28d89f`, 09-17 `master` 병합 `4e4062f`) | 실시간 관제 메뉴(active·xview 2탭) · SSE 훅 `useApmLiveSpans` · 스트리밍 산점도 5계열 · 속도계 3종·이퀄라이저·타일·관제실 모드 | 투영 재작성 913k점 2,326.9 → **186~326 ms** · 표본 동등성 `displayed 251,924`·`keepRatio 0.3454` 고정 | 코덱스 검수 P5.2 🔴3+🔴2 · P5.3 🔴6 → 반영. ✅ **`master` 병합**(⚠️ 미푸시) · 🔴 **실 BE 연결·브라우저 프레임 실측 미실시** |
+
+테스트 현황(09-14 기준 P4 마감): BE **3,088** green(303 suites, 실 PG IT 포함) · FE **2,759**(선재 실패 2) · AI **139**. P5.1 7단계 커밋 시점 BE **3,624** green — ⚠️ 검수 당시에는 5·6단계가 선별 실행(424건 / 371건)이었다.
+
+🔴 **P5는 "만들었다"와 "출시했다"가 다르다.** BE·FE(화면 둘 포함) 모두 master에 병합됐지만(둘 다 ⚠️ 미푸시) **라이브 수신이 기본 꺼짐**이고, 출시 게이트인 **R2′(격리 CPU 재측)**가 아직 안 돌았다. 전체 그림은 [18-p5-realtime.md](solutions--18-p5-realtime.md).
+
+### 4.3 데이터 모델 — 마이그레이션 22개가 만든 표를 "무엇을 담나"로
+
+| 마이그레이션 | 표 | 무엇을 담나 |
+|---|---|---|
+| **V38** `apm_p1` | `apm_service`·`apm_instance` | 서비스(자연키 `(name_norm, env_norm)`, 불변 `service_uid`, 상태 ACTIVE/PENDING_APPROVAL/HIDDEN, apdex_t·slow_threshold·호스트 수동 매핑) / 인스턴스(버전·호스트·마지막 수신) |
+| | `apm_receive_token`·`apm_collector`·`apm_otlp_receipt` | 토큰(해시·kind·scopes·회수) / 수집기 상태(버전·큐·전송 실패·샘플링 드롭) / 영수증(본문 sha256, 재전송 dedup) |
+| | `apm_hist_bounds` | 히스토그램 경계 카탈로그(`bounds`·`family`) — 삭제 금지 |
+| | `apm_metric_1m/5m/1h` 🔷 | 시계열 3단. 행 = (서비스, [인스턴스], 메트릭, dims_hash, 버킷) + count·sum·min·max·hist_counts·bounds_id·exemplar |
+| | `apm_ingest_drop_stat`·`apm_pending_service`·`apm_setting` | "받았는데 왜 저장이 다른가" 카운터(사유×메트릭) / APPROVE 모드 대기열 / 전역 설정·워터마크 키-값 |
+| | `apm_alert_rule`·`apm_alert_event` | 알람 규칙(전역/서비스별, kind·임계·창) / 발화 이력(`zbx_eventid`) |
+| V39 | `apm_setting.updated_by` | 설정 변경 책임 소재(원문 SQL opt-in 감사) |
+| V40 | 집계 `apm_int_array_sum` | 롤업의 히스토그램 벡터 원소별 합(STRICT 아님이 핵심) |
+| V41 | `apm_alert_rule_binding` | 규칙×대상별 Zabbix 객체 매핑(itemid·triggerid·cache_ready·drift·error) |
+| V42 | binding ORPHANED | 대상 집합에서 빠진 쌍의 상태 |
+| V43 | `UNIQUE(bounds, family)` | 같은 숫자 격자를 family별로 딴 줄로(초/ms 1000배 오독 방지) |
+| **V44** `apm_trace` | `apm_span`·`apm_trace_summary` 🔷 | 스팬 원본(7일, PK에 `start_ts`) / 트레이스당 요약 1행(루트·시작·지속·오류·스팬 수·`sampled_reason`) |
+| | `apm_service_edge_5m`·`apm_error_group(+_1h)`·`apm_db_query_group(+_5m)`·`apm_dependency_5m`·`apm_deployment` | 맵 엣지 / 예외 지문 그룹+시간 버킷 / SQL 정규화 그룹+5분 / 외부 의존 5분 / 배포 마커(AUTO·WEBHOOK) |
+| V45 | PG 함수 `apm_error_message_norm`·`apm_sql_norm`, BRIN 2 | 지문 정규화를 DB 안에서(롤업이 `INSERT…SELECT`로 남게) |
+| V46 | 트레이스 롤업 `min_ns/max_ns` | 백분위 클램프(관측 적을 때 보간이 실측보다 커지는 것 방지) |
+| V47 | `apm_metric_*.exemplar_value` | exemplar 값의 정본을 OTLP exemplar 자신으로(CUMULATIVE `max` 고정 800배 사고) |
+| V48 | `dmove_permission` 백필 | 역할 행에 `applicationMonitoring/apm` view=true·edit=false |
+| **V51** `apm_slo` | `apm_slo`·`apm_slo_snapshot` | SLO 정의(`def_version`) / 일 스냅샷(`finalized`·당시 정의·good double) |
+| **V52** | `apm_synthetic_binding`·`apm_messaging_5m`·`apm_job_run` | 서비스↔웹 시나리오 연결 1줄 / 큐·토픽 5분(오퍼레이션·`lag_*`) / 배치 실행 이력(`UNIQUE(trace_id, span_id)`) |
+| V53 | `apm_zbx_cleanup` + SLO 검수 반영 | 지운 규칙의 Zabbix 객체 정리 큐(행 삭제 전 id 옮겨 적기) |
+| V54 | `apm_span` 부분 인덱스(루트 INTERNAL) | 완료 시각으로 잡을 줍는 경로(15분 창 밖 배치 누락 해소) |
+| **V55** | `apm_report_snapshot` | 주간/월간 APM 리포트(기간당 1행, 본문 `services[]`) |
+| V56 | `apm_job_run.service_id` SET NULL | 서비스를 지워도 배치 이력은 남는다 |
+| **V57** `apm_rum_kubernetes` | `apm_receive_token` 4열 · RUM 표 7종 · `apm_hist_bounds` 2행 · `apm_instance` K8s 9필드 | origin allowlist·상한 / 페이지·세션·영수증·timing·오류 5분 + 스팬 7일 + 오류 그룹 / `rum_ms`·`rum_score` / pod·node·namespace·deployment·restart_count·restarted_at·oom_at·pending·seen_at |
+| **V58** `home_widget_dashboard_key` | `home_widget.dashboard_key` 1열 + 복합 인덱스 | **APM 대시보드가 홈 위젯 인프라를 재사용**하기 위한 스코프 키 — `'home'` / `'apm:overview'` / `'apm:service:<uuid>'`(정본 `home.DashboardKey`). 🔴 새 표가 아니라 **컬럼 가산**인 이유: 카탈로그·EP·시드 로직이 두 벌이 되면 위젯 추가마다 두 곳을 고쳐야 한다. 기존 행은 전부 `'home'` 기본값 |
+| **V59** `apm_collector_live_observation` | `apm_collector_log_1m` | **P5.1 6단계 운영 관측** — Collector 로그 신호를 (토큰, 인스턴스, 파이프라인, 컴포넌트, 1분 버킷)별로 계수: `statement_warn`(OTTL 문장 실패)·`condition_warn`(조건 평가 실패)·`gate_warn`(feature gate 누락)·`partial_warn`/`partial_spans`. 🔴 **원문 로그는 저장하지 않는다** · 🔴 **WARN은 샘플링된 관측 횟수이지 손실 수가 아니다**(주석에 명시) · 90초 무관측은 `null`(0 아님) |
+
+🔷 = 일 파티션. V49·V50은 APM 밖(이벤트), V58도 APM 밖(홈 위젯)이나 APM 대시보드가 쓴다. 공통 규칙: 시각 `NOT NULL`·`DEFAULT now()` 금지(V30 교훈) · enum은 varchar · 정규화 컬럼은 NULL 대신 `''`(PG UNIQUE는 NULL을 중복으로 안 본다) · 파티션 표는 엔티티 없이 JDBC 전용.
+
+⚠️ **P5 라이브에는 표가 하나도 없다.** 라이브 스팬은 DB에 들어가지 않는다(전역 슬롯 arena·인메모리 15분·휘발) — V59가 만드는 것은 **Collector 관측 로그 계수**뿐이다. [18-p5-realtime.md](solutions--18-p5-realtime.md) §10.3.
+
+**더 보기**: `features/apm/core/contract_apm.md` §1 · `features/apm/core/devdesign_apm.md` §7(⚠️ 번호 V36~V39는 구 표기) · `features/apm/dashboards/devdesign_apm-dashboards.md` §2(V58) · `features/apm/realtime/devdesign_apm-realtime.md` §2.2·§7.1 6단계(V59) · `db/migration/V38~V59`.
+
+---
+
+## 더 보기 — 내부 정본(이 문서에서 근거로 인용한 것)
+
+경로는 `C:\solutions\_workspace\` 기준, 코드는 각 레포 `src/main/java/com/dmove/moveseye/` 기준. 절별 정확한 위치(§·#·클래스)는 본문 각 절 끝의 **더 보기** 줄에 있고, 아래는 그것을 문서 단위로 모은 것이다.
+
+- 문서·코드 경로: `features/apm/core/contract_apm.md` · `features/apm/core/devdesign_apm.md` · `features/apm/realtime/devdesign_apm-realtime.md` §7.1 · `features/apm/dashboards/devdesign_apm-dashboards.md` · `features/apm/realtime/contract_apm-p5-live.md` §7.3(사이드바 실사) · `db/migration/V38~V59`
+- 관련 분책: 이전 [03-constraints.md](solutions--03-constraints.md) · 다음 [05-menus-and-tabs.md](solutions--05-menus-and-tabs.md) · 목차 [00-index.md](solutions--00-index.md) · 용어 [14-glossary.md](solutions--14-glossary.md) · P5 전체 [18-p5-realtime.md](solutions--18-p5-realtime.md) · 출처 전체 [17-sources.md](solutions--17-sources.md)
+
+## 출처 — 외부 공식 문서(이 문서에 쓰인 것만)
+
+이 문서 본문에는 외부 URL을 직접 인용한 줄이 없다. 전체 목록은 [17-sources.md](solutions--17-sources.md) D.1.
+

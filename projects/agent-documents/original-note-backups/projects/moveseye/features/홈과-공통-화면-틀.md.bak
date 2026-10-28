@@ -1,0 +1,49 @@
+---
+type: feature-map
+tags: [moveseye, feature-map, home, navigation, design-system]
+updated: 2026-10-19
+---
+
+# 홈·공통 화면 틀 — 위젯 대시보드·내비·관리 콘솔·도움말·오류 UX
+
+> 기능 지도 [[무브스아이-기능-지도]] · 허브 [[moveseye]] · 링크는 `C:\solutions` 로컬 파일(file://)이라 이 PC에서만 열린다. 읽기용 사본은 [[2026-10-07-docs-reading-repo]].
+
+**한 줄** — 홈 위젯 대시보드(위젯 22종)와 사이드바·모바일·관리 콘솔·전역 검색, 화면 도움말, 다크 모드·언어, 라우트 가드, 공통 오류 화면.
+
+**상태** — 현행(현재 소스 기준). 설정 ⚙은 관리 콘솔(`/setting/**`)로 분리(ZM-161, 2026-09-22). APM 수집기·알람 규칙도 콘솔로 이동(10-01).
+
+## 정본 문서 (moveseye-docs)
+- [홈과 공통 화면 틀(상세 가이드)](file:///C:/solutions/moveseye-docs/guides/features/홈과-공통-화면-틀.md)
+- [홈 화면 가이드](file:///C:/solutions/moveseye-docs/guides/pages/홈.md)
+- [준비 중인 모니터링](file:///C:/solutions/moveseye-docs/guides/pages/모니터링/준비-중인-모니터링.md)
+
+## 설계·기획 (_workspace)
+- [devdesign_home](file:///C:/solutions/_workspace/features/home/home-widgets/devdesign_home.md)
+- [devdesign_home-widgets](file:///C:/solutions/_workspace/features/home/home-widgets/devdesign_home-widgets.md)
+- [devdesign_design-system](file:///C:/solutions/_workspace/features/home/design-system/devdesign_design-system.md)
+- [devdesign_chart-drilldown](file:///C:/solutions/_workspace/features/events/lld-management/devdesign_chart-drilldown.md)
+- [efficiency_custom-dashboard](file:///C:/solutions/_workspace/features/home/custom-dashboard/efficiency_custom-dashboard.md)
+- [plan_custom-dashboard](file:///C:/solutions/_workspace/features/home/custom-dashboard/plan_custom-dashboard.md)
+
+## 계약 (_workspace/contract_*)
+- [contract_home](file:///C:/solutions/_workspace/features/home/home-widgets/contract_home.md)
+- [contract_home-widgets](file:///C:/solutions/_workspace/features/home/home-widgets/contract_home-widgets.md)
+- [contract_custom-dashboard](file:///C:/solutions/_workspace/features/home/custom-dashboard/contract_custom-dashboard.md)
+- [contract_zm114-error-ux](file:///C:/solutions/_workspace/features/home/error-ux/contract_zm114-error-ux.md)
+
+## 보고·검수·QA 증거
+- [e2e_chart-drilldown](file:///C:/solutions/_workspace/features/events/lld-management/e2e_chart-drilldown.md)
+- [qa_chart-drilldown](file:///C:/solutions/_workspace/features/events/lld-management/qa_chart-drilldown.md)
+- [review_custom-chart-responsive](file:///C:/solutions/_workspace/features/infra/chart-incremental/review_custom-chart-responsive.md)
+- [review_monitoring-kpi-strip-and-sider-rail](file:///C:/solutions/_workspace/features/infra/kpi-strip/review_monitoring-kpi-strip-and-sider-rail.md)
+- [review_zm-161-admin-console](file:///C:/solutions/_workspace/features/home/admin-console/review_zm-161-admin-console.md)
+
+## 경험 노트 (Vault)
+[[2026-08-18-home-widget-dashboard]] · [[2026-08-20-design-system-and-help]] · [[2026-08-25-zm114-error-ux]] · [[2026-08-27-chart-drilldown]] · [[2026-09-22-zm161-admin-console]] · [[2026-10-01-apm-collectors-to-admin-console]] · [[2026-06-17-custom-chart]] · [[2026-07-13-network-maps]]
+
+## 열린 항목
+- FE 라이선스 게이트 컴포넌트(`FeatureGate`)가 실제 위젯에 미부착
+- 홈 위젯 `fleetOff`가 리전 0개일 때 'no data'로 뜸
+
+## 이웃 영역
+[[인프라-모니터링]] · [[apm-조회와-분석]] · [[설정과-운영-기반]]

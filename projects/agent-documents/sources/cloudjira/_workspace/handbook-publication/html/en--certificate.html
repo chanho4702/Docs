@@ -1,0 +1,48 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204538048">한국어</a></p>
+<p>Keep a finished request's target version, approval line, and decision history as a PDF. Anyone who can view the page can download it. Open requests have no certificate button.</p>
+<h2>Download a certificate</h2>
+<ol>
+<li>Open a finished request from the page or inbox.</li>
+<li>Verify the request ID, status, and target version currently shown. Expanding <strong>Approval history by version</strong> does not change the PDF target to an earlier request.</li>
+<li>Select <strong>Approval certificate (PDF)</strong> beside the dialog title.</li>
+<li>Open the downloaded file and verify the page, request ID, version, decisions, and issue time.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-12</strong> — A real test-request PDF showing the target version, stamp box, and document fingerprint.</p>
+</blockquote>
+<h2>Read the PDF</h2>
+<table>
+<thead>
+<tr>
+<th>Content</th>
+<th>How to use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Page and request</td>
+<td>Identify the target, requester, time, and note.</td>
+</tr>
+<tr>
+<td>Target and current versions</td>
+<td>Check whether approval applies to the current page.</td>
+</tr>
+<tr>
+<td>Stamps and history</td>
+<td>Review decision makers, times, delegation, and reasons.</td>
+</tr>
+<tr>
+<td>Document fingerprint</td>
+<td>SHA-256 of the target version's body. Area approvals also use the full page body.</td>
+</tr>
+<tr>
+<td>Issue information</td>
+<td>Check the issuer, issue time, and request ID.</td>
+</tr>
+</tbody>
+</table>
+<h2>Limits to understand</h2>
+<p>If the target version cannot be read, the PDF is issued without a fingerprint. Check for that condition even when download succeeds. The main PDF content is rendered as images, limiting search and copying. The request ID and fingerprint are also included as text in page footers and document properties.</p>
+<p>The fingerprint helps identify content. The certificate alone does not establish a separate security certification or legally qualified electronic signature. Downloaded files contain names and reasons; keep them in your organization's records location.</p>
+<h2>Troubleshooting</h2>
+<p>If the button is missing, check finished status and page permission. Retry a failed download. For repeated failure, include the request ID, time, and error message in a <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">support request</a>.</p>

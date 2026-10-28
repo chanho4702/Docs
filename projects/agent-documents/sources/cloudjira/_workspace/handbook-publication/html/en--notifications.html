@@ -1,0 +1,81 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570847">한국어</a></p>
+<p>Cc recipients follow requests without deciding. Notifications announce requests and results. Being copied or notified does not grant access to the source page.</p>
+<h2>Follow a copied request</h2>
+<p>Find it under <strong>Approval inbox → Cc</strong>. A copied group expands to its members when the request is saved. People joining the group later are not added automatically.</p>
+<p>Cc recipients receive in-app notices for creation, final approval, rejection, withdrawal, and expiry. Intermediate step approvals are different from final approval.</p>
+<h2>Notification channels</h2>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Location and behavior</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>In-app</td>
+<td><strong>Notifications</strong> in the inbox</td>
+<td>Policy controls request, result, reminder, and due-soon notices.</td>
+</tr>
+<tr>
+<td>Confluence</td>
+<td>@mention comments on the target page</td>
+<td>Requires comment permission for the user performing the action.</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>Sent by Confluence according to personal notification settings</td>
+<td>The app does not send email directly.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Screenshot · MA-13</strong> — Inbox notifications and an @mention comment for the same test request.</p>
+</blockquote>
+<h2>Recipients by event</h2>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>In-app</th>
+<th>@mention comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request created</td>
+<td>All approvers and Cc</td>
+<td>First-step approvers</td>
+</tr>
+<tr>
+<td>Next step opens</td>
+<td>Distinguish from the creation notice</td>
+<td>New-step approvers</td>
+</tr>
+<tr>
+<td>Final approval</td>
+<td>Requester and Cc</td>
+<td>Requester and Cc</td>
+</tr>
+<tr>
+<td>Rejection</td>
+<td>Requester, undecided approvers, Cc</td>
+<td>Requester</td>
+</tr>
+<tr>
+<td>Expiry</td>
+<td>Requester, undecided approvers, Cc</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Reminder / due soon</td>
+<td>Current-step approvers; due soon also includes requester</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>People are not notified about their own action. Withdrawal notifies undecided approvers and Cc in the app, and also the requester if someone else withdrew it.</p>
+<h2>Missing notifications</h2>
+<p>Check in-app policy → event and recipient role → active step → comment permission → personal Confluence settings. A comment failure does not necessarily mean approval failed; inspect the actual decision record.</p>
+<p>Reminder and deadline checks run once a day. Decisions after the deadline are blocked without waiting for that job. Administrators configure channels and timing in <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832821">global policy</a>.</p>

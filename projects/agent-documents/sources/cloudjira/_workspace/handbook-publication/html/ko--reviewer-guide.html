@@ -1,0 +1,132 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">English</a></p>
+<p>심사자가 설치부터 문서 승인·권한·기록 보관까지 재현하는 절차입니다. 아래 표는 기대 결과이며 실제 실행 결과나 심사 통과 보고서가 아닙니다.</p>
+<h2>앱과 문서</h2>
+<p>Moves Approval for Confluence는 Confluence Cloud 페이지 또는 특정 영역에 순차 승인을 요청하고 결정·버전별 이력을 기록합니다. 결재선·승인 그룹·참조·위임·서명 PIN·일괄 승인·결재란·PDF 증명서를 지원합니다.</p>
+<p>사용 안내는 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205225985">빠른 시작</a>, 설치는 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122">설치와 준비</a>, 데이터 항목과 권한은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386">데이터·보안</a>을 확인합니다. 이 앱의 문서를 Jira 또는 Confluence Data Center용 안내로 사용하지 않습니다.</p>
+<h2>테스트 준비</h2>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>준비</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>설치 버전</td>
+<td>제출 담당자가 설치 링크, 제출한 버전과 접근 방법을 제공합니다.</td>
+</tr>
+<tr>
+<td>요청자 A</td>
+<td>테스트 문서 편집 권한</td>
+</tr>
+<tr>
+<td>승인자 B·C</td>
+<td>문서 보기 권한. 댓글 검증에는 댓글 작성 권한도 준비</td>
+</tr>
+<tr>
+<td>제한 확인 사용자 D</td>
+<td>대상 문서 보기 권한 없음</td>
+</tr>
+<tr>
+<td>테스트 문서</td>
+<td>페이지 승인용 문서와 영역 매크로가 있는 문서</td>
+</tr>
+<tr>
+<td>특수 기록</td>
+<td>마감 경과·보관 기간 경과 테스트 기록의 링크, 요청 ID와 날짜</td>
+</tr>
+</tbody>
+</table>
+<h2>실행과 기대 결과</h2>
+<p>각 종료 시나리오는 별도 요청으로 실행하고, 바꾼 정책은 다음 테스트 전에 원래 조건으로 복원합니다.</p>
+<table>
+<thead>
+<tr>
+<th>확인</th>
+<th>실행</th>
+<th>기대 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>진입·설치</td>
+<td>업무함, 페이지 승인 창, 관리자 설정 열기</td>
+<td>화면이 로드되며 기본 페이지 편집도 정상 동작</td>
+</tr>
+<tr>
+<td>순차 승인</td>
+<td>A가 B → C 순서로 요청하고 각각 승인</td>
+<td>C는 먼저 결정할 수 없고 최종 단계 뒤 승인 완료</td>
+</tr>
+<tr>
+<td>반려·회수</td>
+<td>별도 요청에서 B 반려, 다른 요청에서 A 회수</td>
+<td>각 종료 상태·사유·처리 이력 기록</td>
+</tr>
+<tr>
+<td>문서 수정</td>
+<td>진행 중 편집 후 새 버전으로 다시 상신</td>
+<td>편집만으로 종료되지 않으며 재상신 시 이전 요청 종료·새 요청 생성</td>
+</tr>
+<tr>
+<td>영역</td>
+<td>영역 요청 후 매크로 삭제</td>
+<td>페이지 전체와 별도 상태, 영역 제거 시 자동 회수</td>
+</tr>
+<tr>
+<td>권한</td>
+<td>D가 목록과 상세 접근 시도</td>
+<td>제한 문서 정보가 노출되지 않음</td>
+</tr>
+<tr>
+<td>마감</td>
+<td>준비한 기한 초과 요청에서 결정·새 요청 시도</td>
+<td>결정 거절, 새 요청 시 지난 요청 만료</td>
+</tr>
+<tr>
+<td>PIN·위임</td>
+<td>PIN 필수와 유효한 위임으로 각각 결정</td>
+<td>PIN 확인, 원 승인자와 실제 대리 처리자 기록</td>
+</tr>
+<tr>
+<td>참조·알림</td>
+<td>참조 지정 후 생성·결과와 댓글 확인</td>
+<td>참조는 결정 불가, 댓글 권한 실패가 결정 기록을 되돌리지 않음</td>
+</tr>
+<tr>
+<td>일괄 승인</td>
+<td>현재 차례인 여러 요청 선택 후 처리</td>
+<td>요청별 성공·실패 건수 확인</td>
+</tr>
+<tr>
+<td>파일</td>
+<td>종료 요청 PDF, 업무함 Excel 다운로드</td>
+<td>대상 버전·요청 ID 확인, 목록 내보내기 범위 확인</td>
+</tr>
+<tr>
+<td>기록 정리</td>
+<td>기간 지난 기록 내보내기 후 삭제</td>
+<td>확정한 내보내기 범위만 삭제, 진행 중 요청 제외</td>
+</tr>
+<tr>
+<td>언어</td>
+<td>한국어·영어 설정의 계정으로 확인</td>
+<td>같은 기능과 대응 문서 이용 가능</td>
+</tr>
+<tr>
+<td>라이선스</td>
+<td>유료 출시 구성에서 비활성 상태 확인</td>
+<td>새 요청·결정 차단, 설정 접근 가능</td>
+</tr>
+</tbody>
+</table>
+<p>실행자는 제출 버전, 날짜·시간대, 계정 역할, 실제 결과와 화면 증빙을 기록합니다. 마감·보관 테스트를 위해 운영 데이터 날짜를 변경하지 않습니다.</p>
+<h2>제출 자료 확인</h2>
+<ul>
+<li>공개 Documentation URL과 한·영 페이지·이미지의 로그인 없는 열람을 확인합니다.</li>
+<li>지원 채널·운영 주체·개인정보처리방침·이용약관의 실제 공개 주소를 확정합니다.</li>
+<li>리스팅 설명·가격·평가판·이미지를 실제 제출 버전과 맞춥니다.</li>
+<li>보안·개인정보 질문과 필요한 partner 검증에 답하고, 테스트 결과를 심사 티켓에 첨부합니다.</li>
+</ul>
+<p>최종 제출 조건은 <a href="https://developer.atlassian.com/platform/marketplace/app-approval-guidelines/">Atlassian 앱 심사 가이드</a>와 <a href="https://developer.atlassian.com/platform/marketplace/data-privacy-guidelines/">데이터 개인정보 가이드</a>를 기준으로 확인합니다. 문서를 게시했다는 사실만으로 심사나 보안 인증이 완료되는 것은 아닙니다.</p>

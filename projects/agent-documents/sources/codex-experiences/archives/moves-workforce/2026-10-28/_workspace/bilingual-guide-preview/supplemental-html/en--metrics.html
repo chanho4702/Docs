@@ -1,0 +1,79 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173244513">한국어</a></p>
+<h2>Align the basis before comparing</h2>
+<p>This customer reference explains effort, utilization, progress, and cost. Align the period, included projects, work items and people, units, and aggregation timestamp. Missing or not-yet-aggregated values are not zero.</p>
+<h2>Working days, MD, and MM</h2>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Calculation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Working value of a day</td>
+<td>Weekends 0, weekdays 1, public holidays use the configured work ratio</td>
+</tr>
+<tr>
+<td>Base MD</td>
+<td>Sum of each day&#39;s working value in the period</td>
+</tr>
+<tr>
+<td>Recorded MD</td>
+<td>Recorded hours divided by standard hours per day</td>
+</tr>
+<tr>
+<td>1MM</td>
+<td>Working-day basis of the relevant month after weekdays and holidays</td>
+</tr>
+<tr>
+<td>Recorded MM</td>
+<td>Recorded MD divided by the applicable 1MM working-day basis</td>
+</tr>
+</tbody></table>
+<p>For periods spanning months, check the monthly basis applied by the screen. Monthly charts use each month&#39;s own basis. With an eight-hour day, 16 hours is 2MD.</p>
+<h2>Utilization and available capacity</h2>
+<p>Utilization is recorded MD divided by effective available MD. Capacity reflects elapsed working days, public holidays, and personal leave; future days are excluded. If capacity is unavailable or zero, read N/A rather than inventing a small denominator.</p>
+<p>Overlapping schedules use the lowest work ratio for the day and cannot deduct more than that day&#39;s capacity. Organization-wide capacity counts overlapping participation dates for one person once. Project ratios cannot be summed or averaged to reconstruct that organization-wide denominator.</p>
+<p>MM is absolute effort; utilization is relative to capacity. With 1.6MD recorded and 1.4MD available, utilization is about 114%. If that month&#39;s 1MM basis is 20MD, recorded effort is 0.08MM.</p>
+<h2>Progress and delay</h2>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Calculation and limitation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Completion</td>
+<td>Sum of issue progress × planned MD, divided by total planned MD</td>
+</tr>
+<tr>
+<td>Effort consumption</td>
+<td>Accumulated worklogs; not a direct completion measure</td>
+</tr>
+<tr>
+<td>Schedule</td>
+<td>Elapsed project working days divided by total project working days</td>
+</tr>
+<tr>
+<td>Completion–schedule gap</td>
+<td>Completion minus schedule, in percentage points</td>
+</tr>
+</tbody></table>
+<p>Done issues contribute 100%, To Do contributes 0%, and in-progress issues use actual divided by planned effort, capped at 100%. This is an approximation. Unestimated issues are excluded from the weighted denominator. The progress screen is a whole-project snapshot without an independent period filter.</p>
+<p>Confirmed delay describes completed work finishing after its due date, separately from early completion. Predicted delay compares an estimated finish based on remaining effort with the planned finish. Predictions are optimistic approximations that do not fully model concurrency, dependencies, or resource contention.</p>
+<h2>Portfolio T, S, and R signals</h2>
+<ul>
+<li>T: completion minus schedule, compared with the configured progress threshold.</li>
+<li>S: the share of remaining To Do work, compared with configured caution and risk thresholds.</li>
+<li>R: underuse and overload based on utilization. A project&#39;s people-based signal and organization-wide utilization can have different denominators.</li>
+</ul>
+<p>Use the installed site&#39;s settings. A progress threshold of 5 means <strong>5 percentage points</strong>, not 5 percent of another measure.</p>
+<h2>Planned labor cost and salary policy</h2>
+<p>Individual policy uses a project amount or prorated annual salary. Level-band policy uses a representative annual value; a valid lower-and-upper-bound midpoint can be used where no representative value is specified.</p>
+<p>Annual prorating uses calendar days including the end date, divided by 30.4375 for allocated months. Cost is annual amount ÷ 12 × allocated months. This is separate from MD/MM working-day conversion. People without a determinable price must be reviewed as unpriced.</p>
+<p>Planned labor cost, entered budget, and accounting payments are different. The current consumed-cost KPI allocates planned labor cost by schedule progress; it is not a record of actual worklog-based payments. Worklogs can be used for issue-level allocation without changing that overall consumption basis.</p>
+<p>Changing salary policy can hide incompatible cost snapshots. Requesting aggregation is not proof of completion; verify that the last aggregation timestamp changed.</p>
+<h2>Team aggregation</h2>
+<p>Grouping uses current team membership. Responsible teams represent ownership; worklog teams represent actual contribution. People and issue counts are deduplicated within their applicable scope, while effort contributions are summed across projects. Team utilization and hierarchy rollups recombine numerators and denominators rather than averaging ratios.</p>
+<p>Related guides: <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046926">Analysis and reports</a>, <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047452">General settings</a>, and <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203817004">Glossary</a>.</p>

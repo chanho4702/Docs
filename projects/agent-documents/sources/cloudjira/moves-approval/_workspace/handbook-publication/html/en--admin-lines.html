@@ -1,0 +1,59 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832795">한국어</a></p>
+<p>Save a reusable approval order so requesters can select it at once, such as <code>Technical review → Owner approval</code>.</p>
+<p><strong>Location:</strong> Settings → <strong>Approval lines</strong>.</p>
+<h2>Create a line</h2>
+<ol>
+<li>Select <strong>Add approval line</strong> and enter its name and description.</li>
+<li>Choose the first-step approvers, add subsequent steps, and arrange their order.</li>
+<li>Review step names and required counts. A group must occupy its step alone.</li>
+<li>Set the default deadline, spaces, and enabled status, then save.</li>
+<li>On a page in a target space, open <strong>Request approval → Use an approval line</strong> and select the new line. Verify its steps and deadline.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-17</strong> — Approval-line editor with name, description, steps, deadline, and spaces.</p>
+</blockquote>
+<h2>Fields</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Condition</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Required; up to 255 characters</td>
+<td>Make its purpose recognizable.</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Optional</td>
+<td>Explain applicable documents or situations.</td>
+</tr>
+<tr>
+<td>Default deadline</td>
+<td>1–365 days; blank uses the target space policy, or the global default if no override exists</td>
+<td>It is days after requesting, not a fixed date.</td>
+</tr>
+<tr>
+<td>Steps</td>
+<td>Approvers, order, and required count</td>
+<td>Steps open in order; empty steps are invalid.</td>
+</tr>
+<tr>
+<td>Spaces</td>
+<td>Empty means all</td>
+<td>Selected spaces restrict where the line is offered.</td>
+</tr>
+<tr>
+<td>Enabled</td>
+<td>Controls selection for new requests</td>
+<td>Existing requests remain when disabled.</td>
+</tr>
+</tbody>
+</table>
+<h2>After editing or deleting</h2>
+<p>Requests keep a copy of the line from creation time. Editing or deleting the saved line does not change an open request's people or order. Check new defaults in a new request form and existing requests in their own details.</p>
+<p>For a missing line, check enabled status → spaces → approver registration and page access. Manage membership under <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204832829">approval groups</a>.</p>

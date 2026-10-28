@@ -12,6 +12,8 @@
 
 ## 🗂 Projects
 
+- [[projects/agent-documents/INDEX|Claude·Codex 통합 문서함]] — 프로젝트 문서 전문·첨부·자동 메모를 출처별로 모은 전체 문서함(2026-10-28).
+
 > 프로젝트가 생길 때마다 아래에 한 줄씩 추가합니다.
 
 - confluence-approval-dc — Confluence DC 승인 워크플로 P2 앱 (C9/C10 어댑터). (active)
@@ -136,7 +138,7 @@
   - [[2026-10-06-feature-guides-and-gap-report]] — 📚 제품 전체 13개 영역 기능별 상세 가이드(약 12,200행·기능 절 197)+전 제품 문제점 종합 리포트(309건, 높음 28). 정적 대조·코드 변경 0. 🔴 홈 위젯 트랜잭션 우회·스왑 단위 뒤바뀜·Zabbix 전체 교체 위험·OAuth 스킴 대소문자·`spring.mail` 매핑 소실. 교훈: 높음은 근거 행 재확인 · 경로는 기계 검사 · 어댑터가 프록시 경계를 벗긴다
   - [[2026-10-19-db-monitoring-design]] — 🗄 DB 모니터링(PREMIUM) 설계 v1.1: 조사 3갈래(상용 8종·Zabbix/OTel·국내)+코덱스 독립 제안+검수 🔴11 반영. 결정=에이전트리스 JDBC 폴러 1차·Zabbix는 상관/발견·OTel은 R7 후·5s 샘플·Oracle 팩 객체 금지·만료부터 폴러 정지. 교훈: **커널 원칙을 설계서 한 줄로 예외 처리 금지 · "재사용" 주장은 결합도 확인 · 대조 표에서 상대 제안 좁혀 적지 말 것**. Q1~Q21 대기
   - [[2026-10-22-datadog-dbm-gap]] — 🗄 Datadog DBM 전수 대조 → 설계 v1.2(G1~G49·Q22~Q30·공수 299~405). 결정=**GA 플랜은 Oracle·MSSQL 캐시만**(PG `EXPLAIN`도 테이블 권한 검사)·전용 DB 객체 생성 없음(선택 패키지 안 철회)·PG Q는 서버 1회+namespace 예산·`maxDbTargets`. 교훈: **타사 문서는 원문 재확인(요약이 "필요 시만"을 "안 쓴다"로 바꿈) · 비용 "낮음"은 분기·중복 제거 세어 본 뒤 · 내 안을 먼저 적고 코덱스에 반대할 자유를 주는 협의 형식**. 같은 날 v1.3 §16 인사이트 카탈로그(I1~I28)+코덱스 3차 🔴10 반영 — **구두 설명을 설계서에 옮기면 "충분·다음 후보·N일·기본 OFF"가 전부 새 계약**
-  - [[2026-10-28-db-monitoring-worklog]] — 🗄 DB 모니터링(ZM-172) **시간순 작업 이력** 10-19~10-28: 커밋 10(`3ea1e66`→`5490711`, 미푸시)·코덱스 검수 9차(6~9차 연속 보류→비용 묶음 제시→사용자 A)·결정 6건·측정 사실·이월(WS-10 V93에 N6·N7, WS-4 FE, HA N1). 교훈: **커밋·검수·결정 세 축을 따로 표로** — 검수 차수 ≠ 커밋 차수
+  - [[2026-10-28-db-monitoring-worklog]] — 🗄 DB 모니터링(ZM-172) **시간순 작업 이력** 10-19~10-28: 커밋 10(`f2d3318`→`b8c528c`, 10-28 master ff 병합·미푸시)·코덱스 검수 9차(6~9차 연속 보류→비용 묶음 제시→사용자 A)·결정 6건·측정 사실·이월(WS-10 V93에 N6·N7, WS-4 FE, HA N1). 교훈: **커밋·검수·결정 세 축을 따로 표로** — 검수 차수 ≠ 커밋 차수
   - [[2026-10-01-apm-ux-isolated-fix]] — APM UX 우선 개선을 Codex 전용 worktree/브랜치(675b5ee)에 구현, 원본·공유 서버 유지, 새로고침·탐색 맥락·오류/빈 상태·메뉴 개선 및 실제 브라우저 검증
   - [[2026-10-01-apm-collectors-to-admin-console]] — 🧭 APM 수집기·알람 규칙을 관리 콘솔(`/setting/apm/**`)로 이동: 레이아웃은 메뉴가 아니라 **주소**가 정한다 · 옛 주소는 `LegacyPathRedirect` · 콘솔 라우트는 `ApmRetentionProvider` 직접 감쌈 · 진입점 5곳 확인 규칙
   - [[2026-10-02-zm156-apm-cold-archive]] — 🗄 ZM-156 APM 콜드 아카이브: DROP 직전 (데이터셋, 날짜) ZIP + **못 떨구면 안 지우는 DROP 게이트**(꺼짐 = 옛 코드 byte-identical·ArchUnit), 공통 기반 premium 밖, 결정 Q1 A안·보류 7일·로그 감사. 코덱스 BE 5회(fail-open·삭제↔DROP 경쟁·partial 충돌·lost update) · master V69(미푸시) · 🔴 배포 전 볼륨 마운트
@@ -154,6 +156,7 @@
   - [[2026-10-27-zm175-zabbix-web-scenario]] — Zabbix Web 시나리오 관리(유료 WEB_SCENARIO) 푸시: APM 합성 감시와 코드 분리, 단계 id 보존, 이력에 비밀값 없음, 대상 필터 하나. 교훈: 비제어 공용 필터는 URL만 지워선 화면이 안 지워진다
   - [[2026-10-28-runtime-verification-and-actor-fix]] — ZM-155·콜드 아카이브 S6 실측 통과 + 감사 행위자 이름 null(APM 9곳) ActorResolver·ArchUnit 수정. 교훈: "N개 파일"은 같은 타입·같은 메서드를 센 뒤에
   - [[2026-10-28-zabbix-proxy-management]] — 🚧 Zabbix 프록시·프록시 그룹(기본 기능) 구현·검수 중. 🔴 PSK는 결과 TLS에서 빠지면 Zabbix가 지움·모드만 바꾸면 암호화가 조용히 꺼짐. 교훈: 실측 한 번을 규칙으로 일반화하지 말 것
+  - [[2026-10-28-pc-migration-handoff]] — 🧳 PC 교체 인계: 문서 905개·패치 2·번들 7을 `_pc-migration-2026-10-28/`에, 복원 순서·Vault에 안 넣은 비밀값(.env·라이선스 개인키)·남은 작업 16건
   - [[무브스아이-기능-지도]] — 🗺 **기능 영역 15개 노드**(홈·인프라·이벤트·자산·맵·Zabbix 구성/운영·클라우드·APM 조회/수집·AI·인증·기반·프리미엄·문서)에 정본 문서(moveseye-docs)·설계·계약·보고·검수·Vault 노트 링크를 모은 MOC. 이슈 번호 → 노드 표 포함(2026-10-19)
   - [[moveseye-overview]] — 📘 서비스 개요 + 개발규칙/구조 (처음 이해할 때 보는 2관점 온보딩)
   - [[moveseye-documentation-system]] — 📚 제품 문서 정본(`moveseye-docs`)·`_workspace`·Obsidian MOC의 3층 구조와 문서 승격 규칙
@@ -251,6 +254,8 @@
 - [[commit-message-hygiene]] — ✍️ 커밋 위생: 승인 뒤에만·푸시 금지·`git add -A` 금지·`#ZM-XX [TYPE] 제목 -날짜`·**메시지에 "검수 반영" 같은 절차 단어 금지**(바뀐 내용만)·트레일러 금지·워크트리 rebase ff-only·`git apply --check`
 - [[bash-heredoc-and-inline-quoting]] — 🔥 Bash 툴 heredoc이 백슬래시(`\n`·`\b`)를 접어 JSON·정규식을 깨뜨리고, 큰따옴표 인라인 스크립트 안의 백틱은 **명령으로 실행**된다(0바이트 파일 생성 사고). 역슬래시·백틱·한글 섞인 편집은 Write/Edit 또는 파일 스크립트
 - [[code-graph-tools-trial]] — 🧪 코드 그래프 도구 시험(미도입): Graft는 Windows 설치 불가(VS Build Tools), codebase-memory-mcp는 코덱스 샌드박스 ACL로 거부(env 2개로 우회)·모듈 간 IMPLEMENTS 누락·기본 제외가 실제 패키지를 빼먹음, OpenMontage는 AGPL·`PYTHONUTF8=1`
+
+- [[vault-git-sync-docs-repo]] — 📦 옵시디언 Vault 2개를 GitHub `chanho4702/Docs`의 `13-옵시디언-볼트/`에 git subtree로 푸시(2026-10-28). 걸러낸 것: Python 런타임·이력서·토큰·전자책. 함정: URL 오타(chanho470≠chanho4702)·longpaths·autocrlf 가짜 변경·Bash 병렬 cd 경합
 
 ### 🟨 Frontend (`topics/frontend/`)
 - [[jest-mock-identity-render-loop]] — 🔥 jest mock이 매 렌더 새 `URLSearchParams`를 주면 effect deps가 바뀌어 **동기 무한 렌더 루프**(timeout도 못 끊음) + 중단된 jest 고아 워커 26개·4.2GB가 다음 실행을 멈춘다. mock은 참조 캐시, 멈추면 `-t`로 이분 탐색·워커 정리

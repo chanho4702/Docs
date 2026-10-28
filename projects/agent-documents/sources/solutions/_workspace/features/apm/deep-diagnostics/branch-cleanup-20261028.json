@@ -1,0 +1,656 @@
+﻿{
+    "createdAt":  "2026-10-28T05:42:33.5851415+00:00",
+    "rules":  "merged into local mainline; no active worktree; no activity within 48h; protected names retained; git branch -d only",
+    "branches":  [
+                     {
+                         "repo":  "C:\\solutions\\Docs",
+                         "branch":  "main",
+                         "sha":  "bc1ba3b9a509ab50a8cf30d979e48a2f944a5d5a",
+                         "upstream":  "origin/main",
+                         "base":  "main",
+                         "lastActivity":  1791301214,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-ai",
+                         "branch":  "ZM-157",
+                         "sha":  "959ebf59292b64a0258da3e1816f5565199a68d4",
+                         "upstream":  "",
+                         "base":  "main",
+                         "lastActivity":  1789691710,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-ai",
+                         "branch":  "main",
+                         "sha":  "f9aa53d26197869b26b6009467b07111c8ac0c75",
+                         "upstream":  "origin/main",
+                         "base":  "main",
+                         "lastActivity":  1793084682,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be",
+                         "branch":  "ZM-71",
+                         "sha":  "e3c61b0fb1f40892cd0a8cf8c3529069da3bf575",
+                         "upstream":  "origin/ZM-71",
+                         "base":  "master",
+                         "lastActivity":  1781770716,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be",
+                         "branch":  "develop",
+                         "sha":  "21a5f82889b2d026ffdcbea4976bfdc4b793aea4",
+                         "upstream":  "origin/develop",
+                         "base":  "master",
+                         "lastActivity":  1780556640,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be",
+                         "branch":  "master",
+                         "sha":  "21a5f82889b2d026ffdcbea4976bfdc4b793aea4",
+                         "upstream":  "origin/master",
+                         "base":  "master",
+                         "lastActivity":  1780555903,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-116",
+                         "sha":  "0e2aad5c07026be14fb22ce5d8c6cac3fae35ff4",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1787723266,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-118",
+                         "sha":  "c2c4123c973c05c4f1f68169baedd8c46d0a93e4",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1787727669,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-119",
+                         "sha":  "d54d55cc441758da0423ad49381b4bf13f2e55f7",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1787818681,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-123",
+                         "sha":  "922a708d0452b0e7538ad19cb524157d913d1ead",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1788420442,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-151",
+                         "sha":  "3741f370fa20a4b9337df1d6c32b0eb86586776f",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1789982195,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-155-followup",
+                         "sha":  "1d50f6ea6df8bc3a19447f027b11fd6e66885b26",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792555888,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-157",
+                         "sha":  "6dc8e2e2bbde24401f4ee557c4329e3fa8317ed3",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1789691980,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-172",
+                         "sha":  "6e255e3da1c1acdc088866675a42619bd3e12578",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1793092519,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-69",
+                         "sha":  "c5e09f38682b0a781bdb3c150a24238e73ef2e3c",
+                         "upstream":  "origin/ZM-69",
+                         "base":  "master",
+                         "lastActivity":  1784352782,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-71",
+                         "sha":  "5a61967fd0f6d8e94221df50502a2f04d46e2f8a",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1783318576,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-79",
+                         "sha":  "d54d55cc441758da0423ad49381b4bf13f2e55f7",
+                         "upstream":  "origin/ZM-79",
+                         "base":  "master",
+                         "lastActivity":  1787818869,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "ZM-87",
+                         "sha":  "fdae5e3a39e25d10173b894fce9e4752c43cae62",
+                         "upstream":  "origin/ZM-87",
+                         "base":  "master",
+                         "lastActivity":  1785977074,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-alert-atomicity",
+                         "sha":  "3de55ec76e7c6bdbdfdf2af79108d7574975fdf7",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1791434462,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-alert-history",
+                         "sha":  "1a366320b33e2876e37528b78ebcb6d56eec6cf3",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792627097,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-binding-status-labels",
+                         "sha":  "edd28fa26e261723b1640487aa2fb16dd69c9d59",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792656182,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-c05-followup",
+                         "sha":  "ab78f4f3f7e599137d93dd9ce6ebb46b22f1f930",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1791361093,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-incidents-menu",
+                         "sha":  "b61d33e321a247450d1956e4af76884ae014901c",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1791636135,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-legacy-hold-rt3",
+                         "sha":  "47d94437dd0cfe34807c4d820c33edec76432179",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1791685714,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-query-controls",
+                         "sha":  "1c094a164b56682ed57ae0d3bbae9092760280b4",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1791418223,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-review-security-retention",
+                         "sha":  "ce9e662b707d004a3f0cea2e7bb41fcf8d6c1700",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792651018,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "apm-trace-time-window",
+                         "sha":  "fd4fcfb83d874176053e113b4c2bd26a93e56a22",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1791362541,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "be-test-oom",
+                         "sha":  "04d03af3ef9bba543c25a2a0c41c130ce2637d7f",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792911201,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "codex/apm-deep-diagnostics-20261028",
+                         "sha":  "df1b39fe48ca70cec155c763021e7692fce17e44",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1793165722,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "develop",
+                         "sha":  "6dfd2750283d4d79b4773df1987008fdbe7931cc",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1787213565,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "fix-collector-live-runtime-flaky",
+                         "sha":  "7c86e5d940b987a90a1029df850933f6d61cb5f1",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792659907,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "master",
+                         "sha":  "df1b39fe48ca70cec155c763021e7692fce17e44",
+                         "upstream":  "origin/master",
+                         "base":  "master",
+                         "lastActivity":  1793161628,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "p5-live",
+                         "sha":  "8df357d1b45f323d011cdb1a7333f6a57119029a",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1789554157,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "wide-review-r2",
+                         "sha":  "5599fa857c8275e6b7cc72368749ba53dccd1717",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792718443,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "wide-review-r3",
+                         "sha":  "d420340edf35fc98342b9ecc6f5d95bf39149fa5",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792732086,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "wide-review-r5",
+                         "sha":  "cb7d08cda06c88e40e27875a444a3a248b395243",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792908798,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-be-spring",
+                         "branch":  "zabbix-proxy",
+                         "sha":  "df1b39fe48ca70cec155c763021e7692fce17e44",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1793163159,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-docs",
+                         "branch":  "main",
+                         "sha":  "b3186143f0f9ca974c276c18b2f2537d6e393529",
+                         "upstream":  "",
+                         "base":  "main",
+                         "lastActivity":  1791294089,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-license-issuer",
+                         "branch":  "ZM-172",
+                         "sha":  "16cfa81e487c7054dee9feade65258737d30481d",
+                         "upstream":  "",
+                         "base":  "main",
+                         "lastActivity":  1792659564,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-license-issuer",
+                         "branch":  "main",
+                         "sha":  "44bb3e0c670e25705f1e60d9770c8b741b591110",
+                         "upstream":  "origin/main",
+                         "base":  "main",
+                         "lastActivity":  1793083668,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-otel-extension",
+                         "branch":  "codex/apm-deep-diagnostics-20261028",
+                         "sha":  "5c87950cfeb014d839e5ea23fa766f7a5084181c",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1793165740,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseye-otel-extension",
+                         "branch":  "master",
+                         "sha":  "5c87950cfeb014d839e5ea23fa766f7a5084181c",
+                         "upstream":  "origin/master",
+                         "base":  "master",
+                         "lastActivity":  1791360678,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-116",
+                         "sha":  "fb878fac54ebd5cd13044e2100a25c05bb48d0f9",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-118",
+                         "sha":  "3fbcd57ff423df581e8eecc8358dcf9aa16c824b",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-119",
+                         "sha":  "7f23be327be80f790a3f3d57fb53bf2eee37b2c8",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-123",
+                         "sha":  "ef951b063da0e50740f3ebdff0726083686140f0",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-132",
+                         "sha":  "293f662e0f9e13fc64b4243a54b193a00a47c466",
+                         "upstream":  "origin/ZM-132",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-135",
+                         "sha":  "0f044f695e25e1d5c9aa8633538c98eae0789d4e",
+                         "upstream":  "origin/ZM-135",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-155-followup",
+                         "sha":  "080bc20d50c583f42b8303c3fbe5449f41b7fc87",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792555889,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-157",
+                         "sha":  "4bc2c73603235e3ced36e878fc95d4e2525b5be0",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1789692707,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-172",
+                         "sha":  "4c301fdabce6e35b58bc4c3c5874e4ce8389ae5c",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792646905,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-70",
+                         "sha":  "6b69dfc281fdd418d73f820273d9b0e50825af28",
+                         "upstream":  "origin/ZM-70",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-71",
+                         "sha":  "17b026119c01c99995ee4e09f9811cdde606960f",
+                         "upstream":  "origin/ZM-71",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "ZM-87",
+                         "sha":  "9782efceaf29b9170201377ce8ef4177abbd82ba",
+                         "upstream":  "origin/ZM-87",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "apm-alert-history",
+                         "sha":  "4c301fdabce6e35b58bc4c3c5874e4ce8389ae5c",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792628484,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "apm-binding-status-labels",
+                         "sha":  "058941d03231e84a6379ac5c2952ea93b541475f",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792656183,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "apm-review-security-retention",
+                         "sha":  "a06d1f802890d0c76a2862bf3865ec9f915ff3b4",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792651026,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "codex/apm-deep-diagnostics-20261028",
+                         "sha":  "edf667cd7c65d0be5f9c2e846813dea0190e66e2",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1793165732,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "codex/apm-ux-20261001",
+                         "sha":  "9dfcbe8f09641bbf211741d20f4c9853b4f37a8e",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1790902507,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "develop",
+                         "sha":  "32bcc760baa86e6e1b1dde41f5c5230e686f9361",
+                         "upstream":  "origin/develop",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "fix-apm-relative-text-test",
+                         "sha":  "b3d696db84b00660861bd718678647f7289e2bf4",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1792659534,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "master",
+                         "sha":  "edf667cd7c65d0be5f9c2e846813dea0190e66e2",
+                         "upstream":  "origin/master",
+                         "base":  "master",
+                         "lastActivity":  1793083662,
+                         "decision":  "protected",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "p5-xview",
+                         "sha":  "4e4062f0c213d317a663a9ecd2929ad87ac00772",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1789619301,
+                         "decision":  "candidate",
+                         "result":  "deleted"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "p56-async",
+                         "sha":  "ddc983b82714d8674dd3621e5576316b2b8809e3",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  null,
+                         "decision":  "recent-or-unknown-activity",
+                         "result":  "not-applied"
+                     },
+                     {
+                         "repo":  "C:\\solutions\\moveseyee_fe",
+                         "branch":  "zabbix-proxy",
+                         "sha":  "edf667cd7c65d0be5f9c2e846813dea0190e66e2",
+                         "upstream":  "",
+                         "base":  "master",
+                         "lastActivity":  1793164345,
+                         "decision":  "worktree-in-use",
+                         "result":  "not-applied"
+                     }
+                 ]
+}

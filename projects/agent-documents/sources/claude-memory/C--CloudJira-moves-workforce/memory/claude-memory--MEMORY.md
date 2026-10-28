@@ -1,0 +1,86 @@
+# Memory Index
+- [Project Deletion Background](claude-memory--project_deletion_background.md) — 프로젝트 삭제 백그라운드화 RFC-217(7e62730 develop, **푸시·배포 전**): 준비(발견+asUser 판정, verifiedBy 고정)=resolver, 해제·SQL=큐 컨슈머 이어달리기, 일괄 JQL·50건 PUT·429 재시도, 시간별 스윕 복구
+- [Collab Mode](claude-memory--project_collab_mode.md) — 프로젝트 「협업 모드」(2026-09-30 **구현·검증 완료, 커밋·배포 전**): 켜면 연결 이슈·워크로그를 asApp으로 조회(예외 경로 ⑥). 적용=작업관리·캘린더·대시보드(+칸반 모달), PROJECT write가 켬, 판정 `CollabAccess` 한 곳, 제한 알림(coverage). **부수 수정: 가드 키 불일치 스코프 우회(기존 구멍) 차단.** `_workspace/collab-mode/`
+- [Worklog Governance](claude-memory--project_worklog_governance.md) — 워크로그 거버넌스 요구 분석(09-29) + **외부 백엔드 설계 v2.1**(09-30, Codex 2회, Java+PG·RLS·월 파티션+locator·dirty-key 롤업·Forge 토큰 pull·2모드=고객 관리형 원격지·첨부 S3 원본·프론트 codemod). 잠금 사전 차단은 불가(권한 스킴). 문서 `_workspace/worklog-governance/` · **10-08 가시성 잠금 실측: 앱 역할 visibility=asApp만 걸고 풀 수 있고 관리자도 우회 불가 → 잠금 가능으로 결론 변경**(timespent 포함 여부 미실측)
+- [User Manual v3](claude-memory--project_user_manual_v3.md) — 사용자 매뉴얼 v3.0(2026-09-28): 폴더판 정본·단일 파일은 build-single.js 생성물, 권한은 화면 항목명 「 」 표기, 08-11 이후 기능 전부 반영, **그림 49장 캡처 계획만 있고 캡처 미수행**, 관리자 매뉴얼·FAQ·릴리스노트는 미갱신. v3.1(10-04) 5.6 문서 관리 추가
+- [Leader Team Unify RFC-204](claude-memory--project_leader_team_unify.md) — 팀장 소속 단일화(2026-09-28): 팀장=이끄는 팀 구성원 불변식, 겸임 없음 확정, 쓰기 4경로 강제+SEED 11 백필(onInstall·ensureSeed 양쪽), 읽기 보정 제거, isLeader 배지. 커밋 완료(54d130f)·**배포/E2E 전**
+- [Moves Workforce Docs → 흡수](claude-memory--project_confluence_page_property.md) — 컨플 문서↔이슈 연결: 별도 앱으로 만들었다가 **2026-09-30 Workforce 본체로 흡수 완료(커밋·배포 전)**. 문서 탭=연결·분류·해제·현황, 설정은 백오피스 `settings`(docCategories·docStaleDays), manifest에 Confluence 선택 호환+`search:confluence`(**메이저 버전**). 정본 `pages/projectDetail/documents/DOCUMENTS.md`. 애드온 저장소 `C:CloudJiramoves-workforce-docs`는 참고용, 삭제 미결
+- [Docs Folder Subscription](claude-memory--project_docs_folder_subscription.md) — 문서 관리 Confluence 폴더 구독 검토(2026-10-01): 가능·search 스코프 그대로·메이저 없음, 조회 시점 검색형+소형 SQL 테이블 권장, **기록만·보류**
+- [Member Allocation](claude-memory--project_member_allocation.md) — 참여 기간·투입률(계획 기반 모드) 설계 v1.1(2026-09-22, Codex 검토 반영, **구현 전**, `_workspace/member-allocation/`). 3컬럼+revision+asOfDate, 기간 외 워크로그는 비율 지표 제외(D7), 인력 분석은 명단 기준(D18), 비용은 P3 후순위
+- [Forge SQL SELECT 서브쿼리 거부](claude-memory--project_forge_sql_no_subquery_in_select.md) — Forge SQL은 SELECT 목록 안 EXISTS(… = ?) 서브쿼리를 **Unknown SQL execution error**로 거부(2026-09-30 실측). 새 SQL은 운영 통과한 형태만, 실패 로그는 e.cause.message
+- [Forge Field Key Suffix](claude-memory--project_forge_field_key_suffix.md) — Forge 필드 key 접미사는 **manifest key(projectIdField)**, 표시 이름 아님. 백엔드 FieldApi가 08-13~09-22 항상 null → 프로젝트 삭제·구독 스윕·트리거 전부 죽어 있었음(픽스처가 같은 가정이라 테스트는 통과). Forge SQL `LIMIT ?` 바인딩 불가
+- [API Exposure](claude-memory--project_api_exposure.md) — 외부 노출은 `core:apiRoute`(2026-09-16 실측): 마켓 재심사 없으나 **모듈 사용만으로 메이저 버전**+고객 관리자 승인, Runs on Atlassian 유지. **guardedDefine·PermissionMap·라이선스가 통째로 우회**되는 별개 진입점. 커스텀 스코프는 환경별 선등록·삭제불가·20개. 호출자 accountId 수신 여부 미검증(3LO 연동 1단계 남음)
+- [No Internal Jargon](claude-memory--feedback_no_internal_jargon.md) — 고객용 자료엔 EVM/AC·권한 키·ALL/MEMBER_ONLY·asUser·Forge SQL 같은 내부 용어 금지, 통용 표현으로 풀어 쓰고 마지막에 grep 전수 치환 (2026-09-14 지시)
+- [Product Intro PPT v2](claude-memory--project_product_intro_ppt_v2.md) — 제품 소개 PPT v2 44장 빌드(`_workspace/product-intro-ppt/build.js`, captures/ 넣고 npm run build로 자동 교체). **pptxgenjs LINE 음수 크기는 PowerPoint가 거부**(flip), 렌더 QA는 PowerShell COM. 사용자 "AI 티"=아이콘 카드 격자·칩 → 타이포·번호·실캡처 마커
+- [Period Report RFC-200](claude-memory--project_period_report.md) — 주간/월간 리포트: Codex 3단계 구현 완료(2026-09-08)했으나 **2026-09-22 사용자 지시로 폐기 → git stash@{0} 보관**(인력분석·삭제 saga 수정도 같은 stash). Codex exec는 --approve-for-me 단독, 메모리 부족 시 자식 프로세스 실패
+- [Status Lozenge RFC-199](claude-memory--project_status_lozenge_rfc199.md) — 상태 표시는 `components/lozenge/StatusLozenge.jsx` 진입점 2개로 통일(+작업관리 이슈 타입 필터 4뷰). **Atlaskit Lozenge 커스텀 색은 style로만** — appearance="accent-*"는 Forge에서 조용히 회색 강등. jsdom은 `var(--ds-*)` 버림. 커밋 완료(16e8870)·푸시 전
+- [Permission Audit 2026-09](claude-memory--project_permission_audit_2026_09.md) — 권한 감사(2026-09-03) → **RFC-198 로 3건 수정·커밋·develop 푸시 완료(2026-09-07), 배포·E2E 미수행**(세트 배정 상한 PermissionAssignment·scopedProjectIds fail-close+SYSTEM_PRINCIPAL·detail projectId 필수). 남은 것: 세트 삭제 참조·캐시 무효화·프로젝트 단위 역할. **전사 집계 asApp 배치는 의도된 결정(차트 일관성)**
+- [Moves UCM](claude-memory--reference_moves_ucm.md) — Dmove의 다른 제품 User & Contents Management 개요(라이선스 자동 회수·대시보드·민감정보 필터·암호화 블록), 2026-08-25 사용자 제공. Workforce 소개도 같은 구조로 `_workspace/moves-workforce-product-brief.md`
+
+- [Issue Map](claude-memory--project_issue_map.md) — 작업관리 4번째 뷰 이슈 맵(React Flow). **2026-09-30 커밋(Bitbucket) 연동 제거**, 같은 커밋에 「이슈 생성」(Jira 스페이스에 새 이슈 생성+자동 연결, 4뷰 공통+목록 그룹 하단) 추가(d7f956f, Jira 미검증)
+- [Calendar Redesign](claude-memory--project_calendar_redesign.md) — RFC-192 캘린더 디자인 개선(2026-09-02, 커밋됨): 월간=밀도·주간=상세, 공휴일은 칸 라벨. **+ 워크로그/이슈 표시 모드 토글**(프로젝트=간트 Task 재사용, myWork=프론트 JQL getMyIssuePeriods, 공용 components/calendar/issueEvents.js, 커밋 전). 공용 래퍼라 myWork도 바뀜, 실화면 확인 전
+- [Competitive Analysis](claude-memory--project_competitive_analysis.md) — 경쟁 분석 v2(2026-08-31): 직접 경쟁=ActivityTimeline·TeamBoard·Be On Time(순수 Forge, 추적), 우리만=급여 환산 원가+가시성 정책+팀관리형 자동. **우리 기능은 코드로 먼저 확인**(휴가 차감 있음·MD는 BigPicture도 있음)
+- [Forge History Router](claude-memory--project_forge_history_router.md) — 라우팅 MemoryRouter→Forge createHistory 어댑터(RFC-191, 2026-08-26 dev 실측 완료): 경로 세그먼트+?tab=/?view= 딥링크 동작. 탭 공백 원인은 Atlaskit Tabs panels[selected] 부재(CommonTab 수정). **브라우저 자동화 시 hidden 탭 함정** 기록
+- [Worklog Export](claude-memory--project_worklog_export.md) — Jira 전체 워크로그 CSV 추출(/worklog-export, 사이드바 A안): 프론트 requestJira 전용·resolver 없음, 권한키 WORKLOG_EXPORT(기존 설치는 Admin만 열림), RFC-190 커밋 완료(2026-08-26)·배포/E2E 미수행
+- [Work List Hierarchy](claude-memory--project_work_list_hierarchy.md) — 작업관리 **목록** 뷰 Jira parent 계층 펼치기(2026-09-07, 프론트 전용·커밋 전): 골격(fields:[parent])+상세(key IN) 2단 조회, 페이지=루트 N개+자손 전부. 요약 쿼리 재사용은 기각(상한 축이 전역이라 조용히 잘림), 쿼리키에 expandedKeys 금지, 선택⊆보이는행. **미검증: fields.parent.key 실응답**
+- [Work Bulk Apply](claude-memory--project_work_bulk_apply.md) — RFC-188 일괄 적용·제외 완료, **updateGanttSchedule은 부분 업데이트 계약**(undefined=미변경), 삭제=프로젝트 제외
+- [Dashboard Enhance](claude-memory--project_dashboard_enhance.md) — RFC-189 대시보드 강화 **M1~M6 전 모듈 완료**(위젯 7종+토폴로지 2종+필터 v018), updateChartFilter는 project_id 필수·error.cause 판별, E2E·배포 미수행
+
+- [Table Surface](claude-memory--project_table_surface.md) — RFC-184 공용 테이블: sortValue 정렬 계약(균일 제공), 죽은 화살표 자동 제거, 폭 동결, 컬럼 리사이즈
+- [Resizable Panels](claude-memory--project_resizable_panels.md) — RFC-185 패널 접기/너비조절 공용 레이아웃, 접기 버튼은 카드 헤더 안(PanelToggleButton), localStorage 화면 단위 저장
+
+- [DMOVE Brand Palette](claude-memory--reference_dmove_brand_palette.md) — 디무브 메인 테마 = 틸 스케일(PRIMARY #21ADAD), 새 UI 색상은 이 스케일에서 선택
+- [No asApp](claude-memory--feedback_no_asapp.md) — Jira API는 asApp 지양(마켓플레이스 심사 부담), 배치도 asApp 우회 말고 사용자 컨텍스트 경로로 이동
+
+- [Project Context](project_context.md) — moves-workforce Jira Forge 앱, RFC 브랜치 기반 개발
+- [RFC-125 MM Analysis](claude-memory--project_rfc125.md) — 이슈별/인력별 MM 분석 리포트 페이지 구현 완료
+- [Locales Structure](claude-memory--feedback_locales.md) — 번역은 kr/en 폴더에 추가 후 merge.js 실행, ko-KR.json/en-US.json 직접 수정 금지
+- [Resource Analysis Perf](claude-memory--project_resource_analysis_perf.md) — Resource 리포트는 프로젝트 단위 1회 페치+KVS 캐시, Forge SQL 적재는 배제됨
+- [Worklog Fetch Isolation](claude-memory--feedback_worklog_fetch_isolation.md) — 워크로그 N+1 최적화는 공통 경로 수정 말고 기능별 전용 병렬 페처로 분리
+- [Progress Page](claude-memory--project_progress_page.md) — 진척도 페이지(3층 모델, 프로젝트 디테일 최상위 탭), 2026-05-29 설계 확정·구현 대기
+- [Portfolio Dashboard](claude-memory--project_portfolio_dashboard.md) — 전사 통합 대시보드(/dashboard), 풀스택+T/S/R(Time/Scope/Resource) 재설계 완료·E2E 미수행, 가동률만 글로벌 지표
+- [Cost Analysis](claude-memory--project_cost_analysis.md) — 비용 분석(프로젝트상세 비용탭+Portfolio 인사이트), salary=기간 총단가, 풀스택 구현+검증 완료·E2E 미수행(2026-06-09)
+- [Analysis Review](claude-memory--project_analysis_review.md) — 분석 화면 지표 논리 감사(2026-06-11): 가동률 경과기간 분모·actualMm 동적·scopeBands 설정화·"인건비" 용어 적용, 완성률=공수근사 등은 의도된 한계로 InfoTip 처리
+- [Forge Node Premature Close](claude-memory--project_forge_node_premature_close.md) — forge deploy "Premature close"는 Node v24/v22.23 버그, nvm으로 22.22.0 전환해 회피
+- [NVM Env Broken](claude-memory--project_nvm_env_broken.md) — forge/node "node.exe 인식 안됨"은 NVM_HOME/NVM_SYMLINK 환경변수 소실이 원인, User 변수로 복구
+- [ComSpec npm run](claude-memory--project_comspec_npm_run.md) — npm run이 전부 exit 1(prebuild 실패로 build 중단)이면 ComSpec 환경변수 소실, cmd.exe로 복구
+- [Analysis Report Unify](claude-memory--project_analysis_report_unify.md) — 분석/리포트 UI 통일(2026-06-18, 커밋 6aff879): 진척율·비용 탭 이동, 테이블 CommonTable 통일, 차트 확장/로우토글 공용화(components/chart), 이슈비용 차트화(CostByIssue), 전체이슈 비용(mergeAllIssues)
+- [Forge SQL No FK Cascade](claude-memory--project_forge_sql_no_fk_cascade.md) — Forge SQL(TiDB)은 FK 미강제·ON DELETE CASCADE 무효·트랜잭션 미지원 → cascade 삭제는 앱 레벨 순차 멱등 DELETE로 구현(프로젝트 삭제 cascade 사례)
+- [SVAR Gantt](claude-memory--project_svar_gantt.md) — 이슈 연결 간트(projectDetail/gantt): @svar-ui/react-gantt MIT 사용(wx-react-gantt는 GPL 금지), open:true는 summary만(leaf 크래시), scale format은 함수, 컬럼=작업관리 UI 재사용. M1+M2 완료·커밋 전
+- [Forge readOnly Field Write](claude-memory--project_forge_readonly_field_write.md) — readOnly Forge 커스텀필드는 PUT /issue로 못 씀("Field does not support update") → /app/field/{id}/value (asApp, 숫자 issueIds)로 write. 간트 M3 관계편집 버그 원인
+- [Storage Monitor](claude-memory--project_storage_monitor.md) — DB 사용량 모니터링(앱 정지 예방), 1차=현재사용량+경고만(/backoffice/storage), 후속=종료프로젝트 아카이빙/엑셀추출. 2026-07-01 설계 착수
+- [Forge Storage Limits](claude-memory--reference_forge_storage_limits.md) — Forge SQL 1GiB/프로덕션(누적형·정지위험 핵심)·200테이블, KVS는 값240KiB·엔티티20종(용량누적 아님). 공식문서 수치
+- [SVAR PRO DIY](claude-memory--feedback_svar_pro_diy.md) — SVAR 무료빌드 PRO 제약은 번들 직접 분석해 커스텀 구현 OK(사용자 승인 2026-07-02), 마커 오버레이 전례
+- [Jira Search Index Lag](claude-memory--project_jira_search_index_lag.md) — 커스텀필드 write 직후 search/jql 재조회는 옛 값(인덱스 지연) → invalidate 대신 서버 응답 캐시 패치 (간트 상위지정 버그 원인)
+- [No Co-Author](claude-memory--feedback_no_coauthor.md) — 커밋 메시지에 Co-Authored-By Claude 트레일러 금지 (사용자 지시)
+- [KVS Entity Manifest Schema](claude-memory--project_kvs_entity_manifest_schema.md) — KVS 엔티티 새 필드는 manifest attributes 선언 필수(아니면 저장 시 422 semantic error), 스키마 반영엔 forge deploy 필요
+- [Permission Hardening](claude-memory--project_permission_hardening.md) — 권한 고도화(서버 가드 110키·fail-close·카탈로그 14키·projectScope) 구현+검증 완료(2026-07-03), E2E 미수행, _workspace/permission-hardening
+- [Resource Management](claude-memory--project_resource_management.md) — 자원관리 /resource: 2026-07-23 [인력현황|프로젝트배정] 2탭 재편(좌 카드+우 전사인원 좌우분할, v1 셀렉터형은 사용자 거부), 카드지표 lazy hydrate·computeQueueFlags 단일원천, 스킬편집→ProjectModal·관계도→인력현황. E2E 미수행
+- [Forge Field Key fieldsByKeys](claude-memory--project_forge_field_key_fieldsbykeys.md) — getCustomFieldId는 Forge key 반환, fields 조회 시 fieldsByKeys:true 필수(false면 앱 필드 조용히 누락, 작업이력 공란 원인)
+- [Salary Management](claude-memory--project_salary_management.md) — 급여 리뉴얼(2026-07-13): 백오피스=연봉, project_users=투입급여+salary_type, ANNUAL 환산=월할(연봉/12×개월수, 근무일 기반 거부), 인력관리 부모탭화
+- [Project Page Refactor](claude-memory--project_project_page_refactor.md) — /project 목록+칸반 리팩토링: P0 완료(권한=PROJECT write 통일, 상태 간헐 미표시={success,...rest} 스프레드 계약이 원인, StatusBadge 공용화), P1~P3 진행
+- [Forge Env Field Duplication](claude-memory--project_forge_env_field_duplication.md) — dev/prod 앱이 한 사이트 공존 시 같은 이름 필드 2벌(asApp은 자기 환경 필드만 write, JQL 이름 매칭 모호) — "실서버 작업이력 미표시"의 진짜 원인, 운영 사이트엔 단일 환경 앱만
+- [Team-Managed Field Gap](claude-memory--project_team_managed_field_gap.md) — 팀 관리형은 Forge 필드가 fields 응답에서 빠짐 → coworker·등록일·등록자·wbsParent는 **movesRms 이슈 프로퍼티로 이전 완료**(읽기는 전용 유틸만, 쓰기는 mergeIssueProperty). projectId만 커스텀 필드 유지
+- [Demo Seed](claude-memory--project_demo_seed.md) — 시연 데모 데이터 시더(웹트리거+scripts/demo-seed), staging 시딩 완료(2026-07-20), cleanup --yes로 초기화 가능
+- [FullCalendar Exclusive End](claude-memory--project_fullcalendar_exclusive_end.md) — allDay 이벤트 end는 exclusive, inclusive 저장 종료일은 렌더링 +1일 보정(연차 -6MD 사건 원인, 기존 +1일 오염 데이터 정정 필요)
+- [Resource Profile](claude-memory--project_resource_profile.md) — 자원관리 개선(2026-07-21): 인력 360도 드로어+Overview 재구성(완수율=spent/(spent+remaining)·할당이슈·참여프로젝트), Done 26주 한정·균등분할·기존 In-Progress 페처 불변으로 Match 무회귀, 풀스택+검증 완료·E2E 미수행(-26w JQL 배포검증 필요)
+- [Resource Allocation](claude-memory--project_resource_allocation.md) — 프로젝트 인력 배정 현황(/resource '배정 현황' 탭, 2026-07-21): ECharts graph N:M 프로젝트↔담당자 관계도, 중복배정 강조·프로젝트별 엣지색, 노드클릭 드로어 재사용, isProjectClosed alias 충돌회피, 풀스택+검증 완료·E2E 미수행(아바타 image:// CSP 배포검증 필요)
+- [My Page](claude-memory--project_my_page.md) — 마이페이지(/my-page) 개인 대시보드. v2 전면개편(2026-07-22, 프론트 전용): 좌우2분할(프로젝트 선택형|작업)·선택 단일스코프·차트3종·권한 매트릭스(카탈로그×store, roleName 추가)·전 섹션 필터. RMS프로젝트별 분해/팀대비 기여율은 산출 불가로 판정. E2E 미수행
+- [Work Assignment](claude-memory--project_work_assignment.md) — 작업 배정 탭(프로젝트상세>인력): 프로젝트내↔전사 이중스코프 후보테이블+배정실행, JQL 단일술어로 fieldsByKeys 함정 회피, 프로젝트내 가동률은 산출불가(배치 스냅샷 참고값). 풀스택 완료·E2E 미수행(2026-07-22)
+- [Project Work Views](claude-memory--project_work_views.md) — 프로젝트상세 작업관리 탭=[목록|트리|간트] 뷰전환 그룹(2026-07-22), 작업이력은 분석리포트로 이동. 트리는 간트 데이터/계층 재사용·읽기전용·좌구조/우상세, 필터공유는 tree↔gantt만
+- [License Enforcement](claude-memory--project_license_enforcement.md) — **정책 확정(2026-08-10)**: 차단은 INACTIVE 하나뿐, UNAVAILABLE은 원인별로 갈림(호출실패=통과 / 200-무라이선스=차단). 프론트도 같은 경계
+- [Team Management](claude-memory--project_team_management.md) — 팀 개념 도입 RFC-147: P0~P3 개발 종료(2026-08-03), N3-2만 보류 확정, 커밋·배포·E2E 미수행
+- [CI Build Lazy](claude-memory--project_ci_build_lazy.md) — **해소(2026-08-05)**: bundle:check 게이트가 Build를 깨 Deploy가 실행 안 됨 → 스테이징에 lazy 구버전 잔류(#426의 정체). 게이트 경고 강등 + 코드 스플리팅 재도입(main -49%). 로컬 검증은 `CI=true npm run build`
+- [Legacy Root No Concurrent](claude-memory--project_legacy_root_no_concurrent.md) — index.js가 ReactDOM.render라 startTransition·isPending 전부 무효, lazy의 #426은 Suspense 경계로만 막힌다
+- [Project Subscription](claude-memory--project_project_subscription.md) — RFC-171 프로젝트 구독(**스페이스만** → 이슈 자동 편입), 설계v3·구현·dev배포 확인 완료(2026-08-04), 보드 제거로 소유권 경합 해소, 중복 구독 허용은 미착수
+- [Team Analytics](claude-memory--project_team_analytics.md) — 팀별 분석 확충(RFC-174~176): 자원관리 팀 분석 탭 신설·대시보드 팀 축 제거·관계도 3레이어. P1 개발 완료(2026-08-03), 배포·E2E 미수행, 배포 전 권한 감사 필수
+- [Salary Policy](claude-memory--project_salary_policy.md) — **RFC-163** 급여 정책(등급 밴드 vs 인원별): 개인 연봉을 서버 응답에서 제거, 풀스택+검증 완료(2026-08-03)·커밋 전·E2E 미수행. fail-close 방향/Controller 게이팅 원리 포함
+- [Design System Convergence](claude-memory--project_design_system_convergence.md) — **RFC-178** UI 일관성 정리(2026-08-05, P0~P3 완료): Atlaskit 네이티브 수렴, 공용 지점 10개 신설(PageContainer/BentoGrid/Skeleton/chartPalette 등), 스피너 전면 제거. 새 화면은 여기부터 볼 것
+- [Code Quality Audit](claude-memory--project_code_quality_audit.md) — 로직 비대화·중복 감사(평가서 v1.1): 1·2단계 완료·커밋됨(2026-08-06), 3~4단계 대기, "하지 않기로" 확정한 4건 포함
+- [Forge KVS Empty String](claude-memory--reference_forge_kvs_empty_string.md) — KVS는 빈 문자열 저장 거부, 선택 필드는 속성 자체를 생략할 것(`|| ''` 금지)
+- [Skip Edge Cases](claude-memory--feedback_skip_edge_cases.md) — 리뷰 지적을 전부 고치지 말 것, 평범하게 쓰면 만나는 것만 대응하고 보류한 건 이유를 밝힐 것
+- [Avoid Overbuilding](claude-memory--feedback_avoid_overbuilding.md) — 버그 수정에 주석·테스트·부가 UI를 부풀리지 말 것, 3단 중첩 루프는 대개 중간 단계가 헛도는 신호
+- [Codex Review](claude-memory--feedback_codex_review.md) — 작업 마무리 시 `codex exec --sandbox read-only` 로 검토받기 (C:\Claude\codex)
+- [Test Fixes Wrong Assumption](claude-memory--feedback_test_fixes_wrong_assumption.md) — 테스트 통과는 설계 가정이 옳다는 증거가 아님, 플랫폼 제약은 mock으로 검증 불가
+- [No forge logs](claude-memory--feedback_no_forge_logs.md) — 진단 로그는 백엔드 console.log 금지, resolver 반환값으로 브라우저 콘솔에서 확인하게 설계
+- [Docs as MD for Confluence](claude-memory--feedback_docs_as_md_for_confluence.md) — 문서 작성 요청은 Claude Docs·Artifact 말고 Confluence에 붙일 md 파일로 (2026-09-30 정정)

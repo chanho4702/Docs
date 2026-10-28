@@ -1,0 +1,37 @@
+{
+  "status": "complete",
+  "completed_at": "2026-10-28T17:26:19",
+  "documents": 5240,
+  "attachments": 1140,
+  "existing_vault_notes": 1051,
+  "sha256_verified": 6393,
+  "bytes": 279682158,
+  "scan_errors": [],
+  "internal_link_failures": [],
+  "index_link_failures": [],
+  "existing_notes_relinked": 20,
+  "refreshed_documents": [
+    "C:\\Users\\DMOVE\\.claude\\projects\\C--CloudJira-moves-approval-jira\\memory\\MEMORY.md",
+    "C:\\Users\\DMOVE\\.claude\\projects\\C--solutions\\memory\\db-monitoring-design.md",
+    "C:\\Users\\DMOVE\\.claude\\projects\\C--solutions\\memory\\MEMORY.md",
+    "C:\\CloudJira\\moves-approval-jira\\_workspace\\RELEASE_GATE.md",
+    "C:\\solutions\\_workspace\\features\\apm\\deep-diagnostics\\progress_apm-deep-diagnostics-implementation.md",
+    "C:\\solutions\\_workspace\\features\\apm\\deep-diagnostics\\report_local-branch-cleanup.md",
+    "C:\\solutions\\_workspace\\features\\premium\\db-monitoring\\contract_db-monitoring.md",
+    "C:\\solutions\\_workspace\\features\\premium\\db-monitoring\\devdesign_db-monitoring.md",
+    "C:\\solutions\\_workspace\\features\\premium\\db-monitoring\\history_zm172-worklog.md",
+    "C:\\solutions\\_workspace\\features\\premium\\db-monitoring\\report_zm172-progress_2026-10-26.md",
+    "C:\\solutions\\_workspace\\features\\premium\\db-monitoring\\review_db-monitoring-design.md",
+    "C:\\solutions\\moveseye-be-spring\\AGENTS.md",
+    "C:\\solutions\\moveseye-be-spring\\CLAUDE.md",
+    "C:\\solutions\\moveseye-be-spring\\README.md"
+  ],
+  "added_after_initial_scan": [
+    "C:\\solutions\\moveseye-be-spring\\dbm-collector-core\\README.md",
+    "C:\\solutions\\moveseye-be-spring\\dbm-collector-core\\CLAUDE.md",
+    "C:\\Users\\DMOVE\\.claude\\projects\\C--solutions\\memory\\pc-migration-2026-10-28.md",
+    "C:\\Users\\DMOVE\\.claude\\projects\\C--CloudJira-moves-approval-jira\\memory\\handoff-2026-10-28-uncommitted-audit-fixes.md"
+  ],
+  "source_removed_after_snapshot": [],
+  "hub": "C:\\Users\\DMOVE\\claude-experiences\\projects\\agent-documents\\INDEX.md"
+}

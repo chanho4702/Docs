@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye 문서 운영 규칙</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye 문서 운영 규칙</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 기획, 개발, 운영, QA</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-05</div><div><strong>정본 위치:</strong> C:/solutions/moveseye-docs/문서-운영규칙.md</div></div>
+<h1>MovesEye 문서 운영 규칙</h1>
+<h2>1. 목표</h2>
+<p>문서는 코드 설명을 복사해 쌓는 공간이 아니다. 독자가 질문의 답을 찾는 <strong>탐색 경로</strong>, 현재 동작을 확인하는 <strong>기준선</strong>, 변경 이유를 복원하는 <strong>기억</strong>을 분리해 관리한다.</p>
+<h2>2. 세 층의 역할</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>층</th><th>위치</th><th>담는 것</th><th>담지 않는 것</th></tr></thead>
+<tbody>
+<tr><td>제품 문서 정본</td><td><code>C:\solutions\moveseye-docs</code></td><td>현재 제품·사용법·아키텍처·운영 기준</td><td>세션 로그, 미확정 아이디어</td></tr>
+<tr><td>작업 중 증거</td><td><code>C:\solutions\_workspace</code></td><td>설계안, <code>contract_*.md</code>, QA 결과, 진단 자료</td><td>영구 사용자 매뉴얼</td></tr>
+<tr><td>경험·결정 기억</td><td>Obsidian <code>claude-experiences</code></td><td>결정 이유, 교훈, 타임라인, 관련 노트 MOC</td><td>최종 문서의 전문 복사본</td></tr>
+</tbody></table>
+<p>Obsidian에는 최종 문서를 중복 저장하지 않는다. MOC에서 로컬 정본 경로를 안내하고, 변경 이유와 교훈만 위키링크로 연결한다.</p>
+<h2>3. 문서 유형</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>유형</th><th>질문</th><th>예시</th></tr></thead>
+<tbody>
+<tr><td><code>hub</code></td><td>어디서 무엇을 읽는가?</td><td><code>README.md</code></td></tr>
+<tr><td><code>product</code></td><td>이 제품은 누구의 어떤 문제를 푸는가?</td><td>제품 개요</td></tr>
+<tr><td><code>guide</code></td><td>목표를 이루려면 어떤 순서로 하는가?</td><td>빠른 시작, 사용자 가이드</td></tr>
+<tr><td><code>architecture</code></td><td>시스템은 어떤 경계와 흐름으로 구성되는가?</td><td>아키텍처, 데이터 모델</td></tr>
+<tr><td><code>runbook</code></td><td>운영 중 무엇을 확인하고 어떻게 복구하는가?</td><td>운영 Runbook</td></tr>
+<tr><td><code>feature</code></td><td>기능 하나의 설계·계약·검증은 무엇인가?</td><td>기능 문서</td></tr>
+<tr><td><code>decision</code></td><td>무엇을 왜 채택했는가?</td><td>ADR</td></tr>
+<tr><td><code>reference</code></td><td>반복해서 확인할 정확한 정의는 무엇인가?</td><td>용어집, 인벤토리</td></tr>
+<tr><td><code>release</code></td><td>어떤 기준선이 언제 바뀌었는가?</td><td>CHANGELOG</td></tr>
+</tbody></table>
+<h2>4. 상태와 메타데이터</h2>
+<p>모든 정식 문서는 아래 frontmatter를 갖는다.</p>
+<pre>---
+title: 문서 제목
+doc_type: guide
+audience: [운영자]
+status: draft        # draft | review | current | superseded
+owner: MovesEye 팀
+baseline: YYYY-MM-DD # 설명하는 코드·제품 기준일
+source_of_truth: 관련 코드/문서 경로
+reviewed_at: YYYY-MM-DD
+review_cycle: monthly
+deployment_scope: source | dev | qa | production
+---</pre>
+<ul>
+<li><code>draft</code>: 구조와 내용이 변할 수 있다.</li>
+<li><code>review</code>: 사실 검증 또는 독자 검토 중이다.</li>
+<li><code>current</code>: 현재 기준선으로 사용할 수 있다.</li>
+<li><code>superseded</code>: 새 문서로 대체됐다. 삭제하지 말고 상단에 대체 문서를 연결한다.</li>
+</ul>
+<p><code>reviewed_at</code>은 파일 수정일이 아니라 <strong>사실 원천을 다시 확인한 날</strong>이다.</p>
+<p>ADR은 문서 생명주기 <code>status</code>와 결정 상태 <code>decision_status</code>를 분리한다. 예: <code>status: current</code>, <code>decision_status: accepted</code>.</p>
+<p><code>current</code>가 실제 배포를 뜻하는 것은 아니다. 배포 사실을 주장하는 문서는 <code>be_commit</code>, <code>fe_commit</code>, <code>latest_flyway</code>, <code>deployment_scope</code>, <code>qa_evidence</code>를 기록한다. 공통 source 기준선은 root <code>README.md</code>를 참조할 수 있지만, 배포별 기준은 release 문서에 고정한다.</p>
+<h2>5. 정본 우선순위</h2>
+<ol>
+<li>실행되는 코드와 runtime 검증 결과</li>
+<li>기계 생성 계약: OpenAPI, Flyway migration, build dependency</li>
+<li>이 문서 세트의 current 문서</li>
+<li><code>_workspace</code>의 완료 전 설계·계약</li>
+<li>Obsidian 경험 노트와 과거 작업 기록</li>
+</ol>
+<p>낮은 순위 문서가 높은 순위와 다르면 낮은 문서를 갱신한다. 단, 코드가 확정된 제품 결정과 어긋난 정황이면 코드 결함으로 등록하고 임의로 문서를 맞추지 않는다.</p>
+<h2>6. 변경 트리거</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>변경</th><th>같은 변경에서 확인할 문서</th></tr></thead>
+<tbody>
+<tr><td>FE route·SideNav 변경</td><td>사용자 가이드, 빠른 시작, 제품 개요</td></tr>
+<tr><td>Controller·DTO 변경</td><td>기능 문서, 아키텍처, OpenAPI 링크</td></tr>
+<tr><td>Flyway migration·Entity 변경</td><td>데이터 모델, 운영 Runbook</td></tr>
+<tr><td>인증·권한 변경</td><td>제품 개요, 사용자 가이드, 운영 Runbook, 관련 ADR</td></tr>
+<tr><td>engine port·adapter 변경</td><td>아키텍처, 데이터 모델, 관련 기능 문서</td></tr>
+<tr><td>환경변수·기동 명령 변경</td><td>운영 Runbook, 개발자 온보딩</td></tr>
+<tr><td>릴리스·배포</td><td><code>releases/릴리스-노트.md</code>, 인벤토리 baseline</td></tr>
+</tbody></table>
+<h2>7. 기능 문서 생명주기</h2>
+<pre>아이디어/기획
+  ↓
+_workspace/devdesign_*.md 또는 design_*.md
+  ↓
+_workspace/contract_*.md (BE↔FE 경계)
+  ↓
+구현 + integration/functional QA 증거
+  ↓
+features/&lt;feature&gt;.md 로 핵심만 승격
+  ↓
+사용자·운영·아키텍처 문서에 필요한 변화 반영</pre>
+<p><code>_workspace</code>의 모든 산출물을 옮기지 않는다. 최종 동작, 불변식, 운영상 주의, 검증 근거만 안정 문서로 승격한다.</p>
+<h2>8. 문서 완료 조건</h2>
+<ul>
+<li>대상 독자와 해결하는 질문이 첫 화면에 보인다.</li>
+<li>코드 identifier와 경로는 실제 기준선과 일치한다.</li>
+<li>현재 기능과 계획 기능을 구분한다.</li>
+<li>비밀값·개인정보·실계정은 포함하지 않는다.</li>
+<li>정상 흐름뿐 아니라 실패·권한·빈 데이터 상태를 설명한다.</li>
+<li>관련 문서가 양방향으로 연결된다.</li>
+<li><code>baseline</code>, <code>reviewed_at</code>, 변경 이력이 갱신된다.</li>
+<li>배포 상태를 주장하면 commit·migration·환경·QA evidence가 있다.</li>
+<li>새 독자가 문서만으로 핵심 질문에 답할 수 있다.</li>
+</ul>
+<h2>9. 문체와 파일 규칙</h2>
+<ul>
+<li>파일 경로는 ASCII <code>kebab-case.md</code>, 제목과 본문은 한국어를 사용한다.</li>
+<li>메뉴명·API·class·field 같은 identifier는 코드 표기를 유지한다.</li>
+<li>한 문단에 한 주장만 둔다. “적절히”, “필요 시”처럼 조건 없는 표현은 피한다.</li>
+<li>Mermaid는 구조·흐름을 설명할 때만 사용한다.</li>
+<li>표에 들어간 상태는 <code>현재</code>, <code>부분</code>, <code>계획</code>, <code>보류</code> 중 하나로 명시한다.</li>
+<li>스크린샷은 화면 변화가 잦으므로 보조 자료로만 쓰고, 절차의 유일한 근거로 삼지 않는다.</li>
+</ul>
+<h2>10. 검토 주기</h2>
+<ul>
+<li>월간: 인벤토리, 빠른 시작, 운영 Runbook, 릴리스 노트</li>
+<li>분기: 제품 개요, 아키텍처, 데이터 모델, 용어집</li>
+<li>이벤트 기반: 보안·권한·schema·data source 경계 변경 직후</li>
+</ul>
+<p>문서 검토자는 가능하면 작성자가 아닌 사람으로 정한다. 독자 테스트에서 틀린 답이 나오면 해당 문서를 <code>review</code>로 내리고 보완한다.</p>
+</body></html>

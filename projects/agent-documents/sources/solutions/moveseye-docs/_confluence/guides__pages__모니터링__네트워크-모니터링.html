@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>네트워크 모니터링</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>네트워크 모니터링</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 사용자, 운영자, 네트워크 담당자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/monitoring/network-monitoring/NetworkMonitoring.tsx, NetworkMonitoringDetail.tsx</div></div>
+<h1>네트워크 모니터링</h1>
+<blockquote><p><strong>사이드바</strong> 모니터링 &gt; 네트워크 모니터링 <strong>경로</strong> <code>/monitoring/network-monitoring</code> → 상세 <code>/:id</code> → 그래프 <code>/:id/:graph</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>스위치·라우터 등 네트워크 장비를 목록으로 보고, 장비별 트래픽과 응답 상태를 확인하는 화면이다. 서버 모니터링과 구조는 같지만 <strong>대상 장비군과 주요 지표가 다르다.</strong></p>
+<h2>화면 구성</h2>
+<h3>목록</h3>
+<ul>
+<li><strong>호스트 그룹 필터</strong>와 <strong>조회 기간</strong></li>
+<li>장비별 상태와 주요 지표</li>
+</ul>
+<h3>상세</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>지표</th><th>의미</th></tr></thead>
+<tbody>
+<tr><td>인터페이스 트래픽</td><td>포트별 in/out</td></tr>
+<tr><td>응답 시간</td><td>장비 반응 지연</td></tr>
+<tr><td>패킷 손실</td><td>유실 비율</td></tr>
+<tr><td>CPU·메모리</td><td>장비 자체 부하(제공되는 장비에 한함)</td></tr>
+</tbody></table>
+<h2>사용 흐름</h2>
+<ol>
+<li>호스트 그룹으로 대상 장비를 좁힌다.</li>
+<li>응답 시간과 패킷 손실이 튀는 장비를 찾는다.</li>
+<li>상세에서 <strong>어느 인터페이스</strong>가 문제인지 좁힌다.</li>
+<li>트래픽 추이로 포화 여부를 판단한다.</li>
+</ol>
+<h2>주의할 점</h2>
+<ul>
+<li><strong>트래픽은 bps 원값이다.</strong> 바이트 단위 감각으로 읽으면 안 된다.</li>
+<li>장비가 <strong>Proxy를 통해 수집</strong>되는 경우, 값이 안 보이면 장비가 아니라 Proxy 문제일 수 있다. 호스트 관리 화면에서 수집 경로(monitored by)를 확인한다.</li>
+<li>네트워크 장비는 서버보다 <strong>수집 항목이 적은 경우가 많다.</strong> 특정 지표가 없는 것이 비정상은 아니다.</li>
+<li>인터페이스가 많은 장비는 목록이 길다. 실제로 쓰는 포트만 보려면 상세에서 필터링한다.</li>
+</ul>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>서버 모니터링</strong></li>
+<li><strong>네트워크 맵</strong></li>
+<li><strong>호스트 관리</strong></li>
+</ul>
+</body></html>

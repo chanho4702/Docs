@@ -1,0 +1,70 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173015049">한국어</a></p>
+<p>Compare workload, skills, and team membership before assigning people to projects. Permission sets with the same name can provide different visibility if their configuration has changed.</p>
+<h2>Required access and scope</h2>
+<p>Resource Management read allows people views; editing and assignment require the applicable write permission. Assigning Jira issues also requires Jira access. Team and people visibility depends on administrative permissions, project scope, and team-leader relationships. A visible menu does not imply access to the entire organization.</p>
+<p>See the organizational scope table in <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047763">Permissions and data visibility</a> for the exact all-organization, leading-team, and no-data conditions.</p>
+<h2>Review people</h2>
+<ol>
+<li>Check the last aggregation timestamp in the people view.</li>
+<li>Narrow candidates using team, role, level, and skill filters.</li>
+<li>Compare utilization, remaining work, and participating projects together.</li>
+<li>Open a person&#39;s details to review active work and experience.</li>
+</ol>
+<p>Utilization is an aggregated result, so recently entered work may not appear immediately. Distinguish no recorded activity from available capacity. A person&#39;s share of remaining work on a collaborative issue may be an approximation rather than their actual agreed allocation.</p>
+<h2>Assign people to a project</h2>
+<ol>
+<li>Select the target project in project assignment.</li>
+<li>Check its required skills and the candidates&#39; recorded skills.</li>
+<li>Compare skill match with workload and choose a candidate.</li>
+<li>Decide whether to assign an issue or register project membership only.</li>
+<li>After saving, check project membership and issue assignment separately.</li>
+</ol>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>06-resource-assignment.jpg</code> — Project Assignment showing the selected project and candidates with skill fit and workload.</p>
+</blockquote>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>06-resource-work-picker.jpg</code> — The candidate work picker in All view, distinguishing adding a coworker from setting the assignee.</p>
+</blockquote>
+<p>Skill match compares recorded information; it does not guarantee proficiency or availability. If candidates are missing, check user registration and the allowed visibility scope.</p>
+<h2>Teams and allocation relationships</h2>
+<ul>
+<li>The organization view shows team hierarchy and membership. Make organizational changes in <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203849768">team management</a>.</li>
+<li>Team analysis compares permitted teams and projects. Check whether subteams are included and whether current membership is used.</li>
+<li>The allocation graph shows project membership, including people who have not yet logged work.</li>
+<li>Do not assume removing a project allocation also clears Jira issue assignments. Review any remaining-work notice.</li>
+</ul>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Resource provides People, Organization, Team Analytics, and Project Assignment. Company-wide labels do not override the current permission/leadership scope.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>People / Organization / Team Analytics / Project Assignment</td>
+<td>Switch tabs for personal workload, membership, team aggregates, or project assignment.</td>
+<td>Check permitted scope for candidates, details, and graphs. Read/write, REPORT, and cost access are separate.</td>
+</tr>
+<tr>
+<td>Aggregation timestamp / no utilization</td>
+<td>Some figures such as utilization are aggregates. Unavailable data differs from 0%.</td>
+<td>Check last aggregation/freshness and original entries. Resource figures need not equal project-internal utilization.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+<!-- supplemental-guides:start -->
+
+<h2>Detailed guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047251">People overview in detail</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047300">Organization overview</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047338">Organization-wide team analysis</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047383">Project assignment in detail</a></li>
+</ul>
+<!-- supplemental-guides:end -->

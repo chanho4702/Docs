@@ -1,0 +1,8 @@
+# Moves Workforce 고객 소개 PPT 제작
+
+- 2026-09-08 제품 소개서 v1.1을 사실 근거로, 워크포스.pdf 2쪽 브로슈어를 시각 참고로 본문 12장과 부록 2장의 편집 가능한 PPTX를 제작했다.
+- PDF의 실제 비용·최종 비용 예측 문구는 가져오지 않고 일정 기준 소진 추정으로 구분했다. 최근 확장 기능은 제공 여부 확인 후 사용 부록에 분리했다.
+- PDF의 작은 UI 캡처는 조회 조건·민감정보를 검증할 수 없어 화면 자리 8개와 문의 연락처를 명시했다. 실제 UI처럼 보이는 가상 화면을 만들지 않았다.
+- Artifact Tool 이미지 crop+contain 미리보기에서 전체 원본이 축소 표시되어 PDF 렌더 단계에서 로고 영역을 추출했다. 번호 상자의 기본 텍스트 여백으로 두 자리 숫자가 줄바꿈되어 폭을 조정했다.
+- 최종 PPTX 14장·노트 14개와 파일 구조·16:9·글꼴 정책·재가져오기 검증을 통과했다. PowerPoint 네이티브 실행 검증은 별도다.
+- 관련: [[projects/agent-documents/sources/codex-experiences/projects/codex-experiences--moves-workforce-product-introduction-2026-09-08|moves-workforce-product-introduction-2026-09-08]]

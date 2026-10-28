@@ -1,0 +1,393 @@
+Browser tab: 961899423, Title: "Moves Workforce for Jira — How the app works on Jira and Confluence - Moves Workforce - Confluence", URL: "https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence".
+1 AXWebArea Moves Workforce for Jira — How the app works on Jira and Confluence - Moves Workforce - Confluence, URL: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence
+	2 container com-atlassian-confluence
+		3 container full-height-container
+			4 container confluence-ui
+				5 container
+					6 text Skip to:
+					7 content list
+						8 link Description: Top Bar, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence#_r2_
+						9 link Description: Sidebar, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence#side-navigation
+						10 link Description: Main Content, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence#AkMainContent
+				11 container unsafe-design-system-page-layout-root
+					12 container
+						13 button Collapse sidebar
+						14 pop up button (collapsed) Switch sites or apps, Secondary Actions: Expand
+						15 link Description: Confluence, Value: dmove-addons.atlassian.net/wiki
+						16 container
+							17 combo box (collapsed, settable) Description: Search, Secondary Actions: Expand
+							18 text Search, press enter to navigate to advanced search with your text query
+							19 button Open app connections
+						20 pop up button (collapsed) Description: Create, Secondary Actions: Expand
+						21 container Actions
+							22 content list
+								23 button Ask Rovo
+									24 text Ask Rovo
+								25 pop up button (collapsed) Notifications, Secondary Actions: Expand
+								26 button Help
+								27 pop up button (collapsed) tom@dmove.kr, Secondary Actions: Expand
+									28 text tom@dmove.kr
+					29 container Description: Sidebar, ID: side-navigation
+						30 content list
+							31 container
+								32 link Description: For you, Value: dmove-addons.atlassian.net/wiki/home
+							33 container
+								34 pop up button (collapsed) Recent, Secondary Actions: Expand
+							35 container
+								36 pop up button (collapsed) Starred, Secondary Actions: Expand
+							37 container
+								38 pop up button (collapsed) Spaces, Secondary Actions: Expand
+							39 container
+								40 button (collapsed) Apps, ID: :r19:, Secondary Actions: Expand
+						41 container
+							42 link Description: Moves Workforce, Value: dmove-addons.atlassian.net/wiki/spaces/MW/overview?homepageId=114327890
+							43 pop up button (collapsed) More actions, Secondary Actions: Expand
+							44 button Back to top, ID: scroll-to-top-button
+							45 button (expanded) Content, ID: :r38:, Secondary Actions: Collapse
+							46 pop up button (collapsed) Create Create, ID: contextual-create-content-button, Secondary Actions: Expand
+								47 image Create
+								48 text Create
+							49 pop up button (collapsed) Change view, Secondary Actions: Expand
+							50 content list
+								51 container contentTreeSearch
+									52 text field (settable) Search by title
+									53 text Results will update as you type.
+								54 content list
+									55 link Description: Privacy & Security Policy, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556931/Privacy+Security+Policy
+									56 link Description: Product Support service level agreement (SLA), Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/114556943/Product+Support+service+level+agreement+SLA
+									57 container (expanded) Secondary Actions: Collapse
+										58 link Description: (EN) Moves Workforce, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/120553474
+										59 content list
+											60 link Description: User Guide, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/120619009/User+Guide
+											61 link Description: User Guide, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/204046344
+											62 container (expanded) Secondary Actions: Collapse
+												63 link Description: Other Documents, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/203751457
+												64 content list
+													65 link Description: Change emoji, currently open book Moves Workforce for Jira — How the app works on Jira and Confluence, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence
+									66 link Description: (KR) Moves Workforce, Value: dmove-addons.atlassian.net/wiki/spaces/MW/folder/172195842
+								67 container
+									68 container
+										69 button Create
+							70 content list
+								71 container
+									72 link Description: Calendars, Value: dmove-addons.atlassian.net/wiki/spaces/MW/calendars
+						73 content list
+							74 container
+								75 link Description: Company hub , (opens new window), Value: dmove-addons.atlassian.net/wiki/company-hub
+								76 container Hub
+							77 container
+								78 link Description: Teams , (opens new window), Value: home.atlassian.com/o/de9f907e-4da9-477e-a3f8-913524242dcb/people?cloudId=e5ae7a68-7ea0-4167-b829-cd3d0b230ac4&xpis=eyJicmlkZ2UiOiJnbG9iYWxTaG9ydGN1dHMiLCJpZCI6IjE3OTExMTY3Njg3MDQiLCJzb3VyY2UiOiJjb25mbHVlbmNlIn0%3D
+								79 pop up button (collapsed) open menu, Secondary Actions: Expand
+							80 container
+								81 pop up button (collapsed) More, Secondary Actions: Expand
+						82 container
+							83 slider (settable, integer) Side Navigation Drag Handle, Value: 300
+							84 text Side Navigation Drag Handle
+					132 container
+						133 container object-header-container-id
+							134 text Moves Workforce for Jira — How the app works on Jira and Confluence
+							135 link Description: Published 2h ago, Value: dmove-addons.atlassian.net/wiki/spaces/MW/history/203718677
+							136 container Active people on page
+								137 content list Active people on page
+									138 button Tom Kim (Viewing)
+										139 image Tom Kim
+							140 link Description: Edit this content, Value: dmove-addons.atlassian.net/wiki/spaces/MW/pages/edit-v2/203718677, ID: editPageLink
+							141 container
+								142 button Share, Open - Anyone in the space can edit
+								143 button Copy link
+							144 pop up button (collapsed) More actions, ID: more-actions-trigger, Secondary Actions: Expand
+						145 container
+							146 container title-text
+								147 container Change emoji, currently :book:
+								148 container content-title-id
+									149 heading Moves Workforce for Jira — How the app works on Jira and Confluence, Value: 1, ID: heading-title-text
+										150 text Moves Workforce for Jira — How the app works on Jira and Confluence
+									151 button
+							152 container
+								153 pop up button (collapsed) By Tom Kim, Secondary Actions: Expand
+									154 text By Tom Kim
+								155 pop up button (collapsed) Read time 3 min, Secondary Actions: Expand
+									156 image Read time
+									157 text 3 min
+								158 button Listen
+								159 button (collapsed) Add a reaction, Secondary Actions: Expand
+									160 text Add a reaction
+							161 container content
+								162 container main-content
+									163 container
+										164 heading Summary, Value: 2
+											165 text Summary
+										166 button Copy link to Summary, ID: b4810757-7043-40ea-8f1e-c0636ae0ca96
+											167 image Copy
+										168 table
+											169 row
+												170 cell
+													171 text Product
+													172 button No sort applied to the column
+												173 cell
+													174 text Required?
+													175 button No sort applied to the column
+												176 cell
+													177 text What the app does there
+													178 button No sort applied to the column
+											179 row
+												180 cell
+													181 text Jira
+												182 cell
+													183 text Required
+												184 cell
+													185 text The whole app runs here. All screens are inside Jira.
+											186 row
+												187 cell
+													188 text Confluence
+												189 cell
+													190 text Optional
+												191 cell
+													192 container
+														193 text No screen inside Confluence.  Jira uses Confluence only to search pages and link them to projects and work items (the  Document Management  tab in Jira).
+										194 container
+											195 text Please open the app from Jira.  If you install the app only on Confluence, nothing appears there, because the app adds no Confluence module. Confluence is used only as a document source for the Jira screens.
+										196 heading 1. Installation, Value: 2, ID: 1.-Installation
+											197 text 1. Installation
+										198 button Copy link to 1. Installation, ID: 9543e667-d8af-4065-a1d9-3cd0560924fe
+											199 image Copy
+										200 content list
+											201 container
+												202 AXListMarker 1. 
+												203 text Install 
+												204 text Moves Workforce for Jira
+												205 text  on the 
+												206 text Jira
+												207 text  site.
+											208 container
+												209 AXListMarker 2. 
+												210 text (Optional) To use the document features, also add the app to 
+												211 text Confluence on the same site
+												212 text .
+												213 content list
+													214 container
+														215 AXListMarker ◦ 
+														216 text Without Confluence, every feature still works except linking new documents. The Document Management tab shows a "Not connected to Confluence" notice and runs in read-only mode.
+											217 container
+												218 AXListMarker 3. 
+												219 text The Jira administrator who installs the app gets full permissions in the app automatically.
+										220 heading 2. Using the app in Jira, Value: 2, ID: 2.-Using-the-app-in-Jira
+											221 text 2. Using the app in Jira
+										222 button Copy link to 2. Using the app in Jira, ID: fd9a3629-cb9a-4c70-9905-ce8ff28f8b6e
+											223 image Copy
+										224 heading 2.1 Opening the app, Value: 3, ID: 2.1-Opening-the-app
+											225 text 2.1 Opening the app
+										226 button Copy link to 2.1 Opening the app, ID: c6210ada-cf4d-49e0-8a3f-a68bb63fecb7
+											227 image Copy
+										228 text Jira top navigation → Apps → Moves Workforce
+										229 text The app opens as a full Jira page with a left sidebar. The default page is 
+										230 text My Work
+										231 text  (my worklogs). Sidebar menus: 
+										232 text My Work
+										233 text , 
+										234 text My Page
+										235 text , 
+										236 text Portfolio Dashboard
+										237 text , 
+										238 text Project Management
+										239 text , 
+										240 text Resource
+										241 text , 
+										242 text Worklog Export
+										243 text , and 
+										244 text Settings
+										245 text  (administration).
+										246 heading 2.2 Quick start for reviewers (about 5 minutes), Value: 3, ID: 2.2-Quick-start-for-reviewers-(about-5-minutes)
+											247 text 2.2 Quick start for reviewers (about 5 minutes)
+										248 button Copy link to 2.2 Quick start for reviewers (about 5 minutes), ID: 8ae758eb-972e-4b41-b663-5762fd46fbad
+											249 image Copy
+										250 content list
+											251 container
+												252 AXListMarker 1. 
+												253 text Create a project
+												254 text   Sidebar → 
+												255 text Project Management
+												256 text  → create a project (name, dates, status).
+											257 container
+												258 AXListMarker 2. 
+												259 text Add members
+												260 text   Open the project → 
+												261 text User Management
+												262 text  tab → add Jira users as project members.
+											263 container
+												264 AXListMarker 3. 
+												265 text Connect Jira work items
+												266 text   Open the project → 
+												267 text Work Management
+												268 text  tab → 
+												269 text Add work
+												270 text  → choose a Jira space (project) or individual work items.
+												271 content list
+													272 container
+														273 AXListMarker ◦ 
+														274 text Optional: subscribe to a Jira space so its new work items join the project automatically.
+											275 container
+												276 AXListMarker 4. 
+												277 text Log work in Jira
+												278 text   Log work on one of those work items in Jira. The app reads Jira worklogs, so it creates no separate time records.
+											279 container
+												280 AXListMarker 5. 
+												281 text View the results
+												282 content list
+													283 container
+														284 AXListMarker ◦ 
+														285 text Project → 
+														286 text Dashboard
+														287 text , 
+														288 text Progress
+														289 text , 
+														290 text Cost
+														291 text , 
+														292 text Project Calendar
+														293 text , 
+														294 text Analysis & Report
+														295 text  tabs: effort (man-day/man-month), utilization, progress, and cost.
+													296 container
+														297 AXListMarker ◦ 
+														298 text Sidebar → 
+														299 text Portfolio Dashboard
+														300 text : a view across all projects.
+													301 container
+														302 AXListMarker ◦ 
+														303 text Sidebar → 
+														304 text Resource
+														305 text : staffing status, project assignments, and team analysis.
+										306 heading 2.3 Inside a Jira work item, Value: 3, ID: 2.3-Inside-a-Jira-work-item
+											307 text 2.3 Inside a Jira work item
+										308 button Copy link to 2.3 Inside a Jira work item, ID: 211d4f4b-6d0e-42ac-89f7-1a7ce3e152a0
+											309 image Copy
+										310 text When a work item belongs to a Moves Workforce project, the work item view shows a 
+										311 text Moves Workforce
+										312 text  panel (in the Activity section and in the right-hand context area) with that item's worklog summary. Work items that are not linked to a project do not show the panel.
+										313 heading 2.4 Administration, Value: 3, ID: 2.4-Administration
+											314 text 2.4 Administration
+										315 button Copy link to 2.4 Administration, ID: 18f24733-67de-4257-9167-a55952a410bc
+											316 image Copy
+										317 text Sidebar → 
+										318 text Settings
+										319 text  (Jira administrators and users given permission): general settings, users, teams, roles, levels, skills, project statuses, permission sets, public holidays, and storage usage.
+										320 heading 3. Using Confluence with the app (optional), Value: 2, ID: 3.-Using-Confluence-with-the-app-(optional)
+											321 text 3. Using Confluence with the app (optional)
+										322 button Copy link to 3. Using Confluence with the app (optional), ID: 8c61db5c-ae22-498b-be62-1ad5c1649ac8
+											323 image Copy
+										324 text Confluence has 
+										325 text no app screen
+										326 text . The Confluence features live in the 
+										327 text Document Management
+										328 text  tab of a Jira project.
+										329 heading 3.1 Where, Value: 3, ID: 3.1-Where
+											330 text 3.1 Where
+										331 button Copy link to 3.1 Where, ID: cce89002-97e1-44c5-8e00-5ec97500c3cf
+											332 image Copy
+										333 text Jira → Apps → Moves Workforce → Project Management → (a project) → Document Management tab
+										334 heading 3.2 What you can do, Value: 3, ID: 3.2-What-you-can-do
+											335 text 3.2 What you can do
+										336 button Copy link to 3.2 What you can do, ID: a8998b31-0f96-4525-86c6-f6f27f2813b5
+											337 image Copy
+										338 content list
+											339 container
+												340 AXListMarker 1. 
+												341 text Click 
+												342 text Link documents
+												343 text .
+											344 container
+												345 AXListMarker 2. 
+												346 text Search Confluence pages (filter by space, optionally search page content). Select one or more pages.
+											347 container
+												348 AXListMarker 3. 
+												349 text (Optional) Choose the project work items to link them to. If you choose none, the pages are linked to the project itself as "Project documents".
+											350 container
+												351 AXListMarker 4. 
+												352 text (Optional) Choose a category (for example "Design" or "Test plan") and save.
+											353 container
+												354 AXListMarker 5. 
+												355 text The tab then shows:
+												356 content list
+													357 container
+														358 AXListMarker ◦ 
+														359 text Documents view
+														360 text : linked pages with space, category, linked work items, last modified date, and status.
+													361 container
+														362 AXListMarker ◦ 
+														363 text Work items view
+														364 text : each work item with its linked documents. You can filter work items that have no documents.
+													365 container
+														366 AXListMarker ◦ 
+														367 text Summary cards
+														368 text : number of linked documents, work items without documents, outdated documents, broken links, and missing required categories.
+										369 text Categories and the "outdated document" threshold are set in 
+										370 text Settings → General Settings → Documents
+										371 text .
+										372 heading 3.3 How the app accesses Confluence, Value: 3, ID: 3.3-How-the-app-accesses-Confluence
+											373 text 3.3 How the app accesses Confluence
+										374 button Copy link to 3.3 How the app accesses Confluence, ID: 826633cb-4420-429c-a3e0-ceb7c7092b01
+											375 image Copy
+										376 content list
+											377 container
+												378 AXListMarker • 
+												379 text Scope: 
+												380 text search:confluence
+												381 text  only. The app calls only the Confluence search API (
+												382 text /wiki/rest/api/search
+												383 text ).
+											384 container
+												385 AXListMarker • 
+												386 text Calls run 
+												387 text as the current user
+												388 text . Users see only the pages they already have permission to view in Confluence.
+											389 container
+												390 AXListMarker • 
+												391 text The app does 
+												392 text not
+												393 text  write to Confluence. Link information is stored on the Jira side: as Jira issue properties, or in Forge storage for project-level documents.
+											394 container
+												395 AXListMarker • 
+												396 text Without Confluence on the site: existing links remain visible, and searching or adding new links is disabled with a notice.
+										397 heading 4. Data and hosting, Value: 2, ID: 4.-Data-and-hosting
+											398 text 4. Data and hosting
+										399 button Copy link to 4. Data and hosting, ID: 4a9dc828-7f11-4515-bf0e-1b6eed9867b0
+											400 image Copy
+										401 content list
+											402 container
+												403 AXListMarker • 
+												404 text The app runs on Atlassian Forge (Runs on Atlassian). It has no external server and no third-party integration, so 
+												405 text no test credentials are required
+												406 text .
+											407 container
+												408 AXListMarker • 
+												409 text App data is stored only in Forge storage (Forge SQL and Forge Key-Value Store) and Jira issue properties.
+							410 container
+								411 pop up button (collapsed) Table of contents, Secondary Actions: Expand
+								412 button View all comments
+								413 button Open Details Panel
+								414 pop up button (collapsed) Description: Record a Loom video, Secondary Actions: Expand
+								415 button Remix page
+								416 container
+									417 button Open Rovo Chat
+										418 text Open Rovo Chat
+							419 container addCommentButton
+								420 button Add a general comment
+									421 image Add a comment
+									422 text Add a comment
+								423 button Add labels
+								424 button (collapsed) Add reaction Add a reaction, Secondary Actions: Expand
+									425 image Add reaction
+									426 text Add a reaction
+		121 container
+			122 heading Flag notifications. Press Escape to dismiss., Value: 2
+				123 text Flag notifications. Press Escape to dismiss.
+			124 button Close
+			125 image An image showing the latest new features available in Atlassian Rovo.
+			126 heading Your AI just got even better, Value: 2
+				127 text Your AI just got even better
+			128 container
+				129 text See the latest AI updates designed to help you get more out of your everyday work.
+			130 link Description: Click to view the latest Rovo feature updates on the Rovo What's New page , (opens new window), Value: atlassian.com/software/rovo/features/whats-new?utm_source=in-product-banner&utm_medium=inapp&utm_campaign=P:rovo*O:gdc*F:onboarding*C:wac*H:fy26q4*I:whats-new-rovo-conf-acm-13971*E:cloud*&utm_sfdc-campaign_id=701QB00000la1x4YAA
+			131 button Maybe later
+
+The focused UI element is 1 AXWebArea Moves Workforce for Jira — How the app works on Jira and Confluence - Moves Workforce - Confluence, URL: dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677/Moves+Workforce+for+Jira+How+the+app+works+on+Jira+and+Confluence

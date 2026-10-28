@@ -1,0 +1,500 @@
+# 검수 요청 — 비용 일괄 업로드 비동기 전환 + 작업 복구
+
+> 작성 2026-08-03 (Claude) · COLLAB.md §8 검수 모드
+> 검수자: **Codex** · 계약 정본 [features/assets/asset-cost/contract_asset-cost.md](solutions--contract_asset-cost.md) §4-2b·c·d
+>
+> ⚠️ **자기 코드 자기 검수 금지 원칙에 따른 요청이다.** BE·FE 양쪽을 Claude가 작성했다.
+
+---
+
+## 1. 범위
+
+업로드가 **동기(결과를 기다림) → 비동기(접수 후 나중에 확인)** 로 바뀐 계약에 화면을 맞추고,
+그 과정에서 드러난 **작업 유실 문제**를 해결했다.
+
+### BE (커밋 `5c853b8`)
+
+| 파일 | 변경 |
+|---|---|
+| `cost/CostController.java` | `GET /costs/hw/bulk-upload/current` 신설 |
+| `cost/CostBulkUploadJobService.java` | `getCurrent(currentUser)` 추가 |
+| `cost/repository/CostBulkUploadJobRepository.java` | `findFirstByRequestedByKeyAndExpiresAtAfterOrderByCreatedAtDesc` 추가 |
+| `test/.../CostBulkUploadJobServiceTest.java` | `getCurrent` 3분기 테스트 |
+
+### FE (커밋 `1949ee7` + 후속 수정)
+
+| 파일 | 변경 |
+|---|---|
+| `types/cost.ts` | `TCostBulkUploadAccepted` · `TCostBulkUploadJob` · `TCostBulkUploadJobStatus` |
+| `services/cost.api.ts` | `bulkUpload` 반환 변경(결과→접수), `getBulkUploadJob` · `getCurrentBulkUploadJob` |
+| `hooks/useCost.ts` | `useCostBulkUpload` 축소, `useCostBulkUploadJob`(폴링) · `useRecoverBulkUploadJob`(복구) 신설 |
+| `constants/cost.ts` | 에러코드 6종, 폴링 간격/상한, 보관 키, 복구 창 |
+| `pages/asset/cost/components/CostBulkUploadModal.tsx` | 접수 → 처리 중 → 완료 3단계 재구성 |
+| `pages/asset/cost/costEditing.ts` | 새 에러코드 → i18n 매핑 |
+| `locales/{kr,en}.json` | 문구 11종 |
+| `__tests__/CostBulkUploadModal.test.tsx` | 11건(복구 2건 포함) |
+
+---
+
+## 2. 의도 — 선택한 설계와 **버린 대안**
+
+### 2.1 통보 방식: 폴링(10초) 채택, SSE·소켓 기각
+
+사용자 요청은 "폴링 말고 SSE로 완료만 보고"였다. **기각하고 폴링을 유지**했다. 근거:
+
+1. 🔴 **`EventSource`는 커스텀 헤더를 못 붙인다.** `VisitorIdCheckInterceptor`가
+   `request.getHeader("x-visitor-id")`로만 읽고 없으면 401이라, SSE 엔드포인트는 인증을 통과할 수 없다.
+   우회하려면 visitorId를 URL 쿼리로 노출하거나(접근로그에 세션 식별자가 남는다) fetch 기반 SSE 라이브러리를 추가해야 한다.
+2. 🔴 **다중 인스턴스에서 유실된다.** 계약이 "다중 인스턴스 원자적 claim"을 전제하는데,
+   작업이 A 인스턴스에서 돌고 사용자가 B에 연결되면 완료 이벤트를 못 받는다(Redis pub/sub 필요).
+3. 얻는 건 **몇 초의 즉시성**뿐이다. 완료 통보에 10초 지연은 실사용상 무의미하다.
+
+→ **완료만 알면 되므로 진행률 바를 제거**하고 폴링 주기를 2초 → **10초**로 늘렸다.
+
+**검수 포인트**: 위 1·2가 실제로 맞는지, 그리고 이 판단이 나중에 실시간 요구(대시보드 등)가 생겼을 때
+발목을 잡는 결정인지 봐달라.
+
+### 2.2 작업 복구: **두 겹**(localStorage + `/current`)
+
+`jobId`를 화면 state에만 두면 **새로고침·페이지 이동에 사라진다.** 그 상태에서 재업로드하면
+`COST_UPLOAD_ALREADY_RUNNING`만 나오는데 **접수 거부 응답에 jobId가 없어** 그 작업에 접근할 수단이 없다
+— 끝날 때까지 아무것도 못 하는 상태가 된다.
+
+- **localStorage**: 즉시 복구(서버 왕복 없이 창을 열자마자)
+- **`GET /bulk-upload/current`**: 근본 경로(다른 브라우저·기기까지 커버)
+
+🔴 `/current`가 **상태로 거르지 않는** 이유: `queued|running`만 찾으면
+**새로고침하는 사이에 완료된 작업의 리포트를 영영 못 본다.**
+
+**버린 대안**: `ALREADY_RUNNING` 응답에 jobId를 실어주는 방법. 에러 응답 shape을 바꾸는 게
+전역 계약(`{status,code,errorCode,message}`)에 균열을 내는 것 같아 별도 EP로 갔다.
+**이 판단이 맞는지 봐달라** — 에러에 컨텍스트를 싣는 게 더 단순했을 수 있다.
+
+---
+
+## 3. 🔴 중점 확인 요청 (스스로 불안한 지점)
+
+### C-1. `useCostBulkUploadJob`의 폴링 타임아웃이 **렌더 중에 ref를 쓴다**
+
+```ts
+if (jobId && startedAtRef.current === null) startedAtRef.current = Date.now();
+if (!jobId) startedAtRef.current = null;
+```
+
+렌더 함수 본문에서 ref를 변경한다 — React 규칙상 side effect다. StrictMode 이중 렌더나
+동시성 모드에서 의도대로 동작하는지 확신이 없다. **`useEffect`로 옮겨야 하는지 판단 요청.**
+
+### C-2. 복구 훅과 폴링 훅의 **경쟁 조건**
+
+모달이 `jobId ?? recoveredJobId`를 폴링에 넘기면서, 동시에 `useEffect`로 `setJobId(recoveredJobId)`도 한다.
+두 경로가 같은 값을 서로 밀어넣는 구조라 **불필요한 리렌더나 순환이 없는지** 봐달라.
+
+### C-3. 완료 작업 복구 창(10분)이 **임의값**이다
+
+서버는 24시간 최신 작업을 주는데, 그대로 쓰면 "어제 성공 리포트"가 오늘 창을 열 때마다 뜬다.
+그래서 FE에서 `completedAt` 기준 **10분** 창을 뒀다. 이 값은 근거 없는 임의값이고,
+**서버가 판단해야 할 일을 화면이 하고 있는 것**일 수 있다(예: `/current`가 활성+최근완료만 주도록).
+
+### C-4. axios 요청 중복 제거와 폴링의 상호작용
+
+인터셉터가 **같은 URL 요청을 abort**한다(`METHOD:fullUrl` 키). 폴링이 10초 간격이라 실제로 겹칠 일은
+없다고 보지만, 느린 응답이 다음 폴링과 겹치면 앞 요청이 취소된다. 같은 날 인터셉터를 고쳐
+(취소 시 reject → `retry:1` 회복) 무한 pending은 없앴지만, **이 조합을 놓친 게 있는지** 봐달라.
+
+### C-5. BE `/current`의 권한·격리
+
+`AdminAccessChecker.requireAdmin` + `requestedByKey` 대조로 **본인 작업만** 나오게 했다.
+`requesterKey`가 `id:{userId}` 형태라 사용자 id가 없는 경우(토큰 이상)의 동작을 확인 못 했다.
+
+### C-6. 모달을 닫아도 보관 id를 **지우지 않게** 바꿨다
+
+처리 중 창을 닫는 건 취소가 아니므로 보관을 유지한다(정리는 `isTerminal`일 때만).
+**이 판단이 맞는지**, 그리고 보관 id가 영영 안 지워지는 경로가 있는지 봐달라.
+
+---
+
+## 4. 검증 현황
+
+### 통과한 것
+
+| | 결과 |
+|---|---|
+| BE 전체 테스트 | ✅ BUILD SUCCESSFUL |
+| BE `getCurrent` 단위 테스트 | ✅ 3분기(진행 중·완료·없음) |
+| FE 타입 검사 | ✅ `tsc --noEmit` exit 0 |
+| FE 프로덕션 빌드 | ✅ |
+| FE 전체 테스트 | ✅ **776건 전건 통과** |
+| 모달 테스트 | ✅ 11건(새로고침 복구·보관 id 재개 포함) |
+
+### 🔴 검증 못 한 것
+
+- **런타임 전 구간 미검증.** Chrome 확장이 연결되지 않아 실제 브라우저에서
+  `업로드 → 새로고침 → 복구` 흐름을 한 번도 돌려보지 못했다. **가장 큰 공백이다.**
+- **다중 인스턴스 동작** — 단일 인스턴스로만 확인했다.
+- **대용량 파일** — xlsx→CSV 변환이 메인 스레드에서 돌아 2만 행 기준 약 2.7초·225MB(실측)가
+  업로드 경로에도 그대로 적용된다. 큰 파일에서의 체감을 확인하지 못했다.
+- **파일 크기 상한** — BE가 파일 전체를 `file_content`에 영속화하는데 상한이 계약에 없다.
+  한계를 넘겼을 때의 거동을 모른다.
+- 접수 거부 3종(`ALREADY_RUNNING`·`QUEUE_FULL`·`EMPTY`) 중 **실서버로 재현한 건 없다**(단위 테스트만).
+
+---
+
+## 검수 결과
+
+> 검수 2026-08-03 (Codex) · 판정: **수정 후 재검수**
+>
+> 단일 인스턴스의 기본 흐름을 막는 FE 결함 1건과, 명시된 다중 인스턴스 계약을 깨는 BE 결함 1건이 있다.
+> 아래 🔴 두 항목을 닫기 전에는 완료로 간주하면 안 된다.
+
+### 결함
+
+- [x] 🔴 **F-1 — job 조회가 과다 언랩되어 접수 후 화면이 terminal 상태에 도달하지 못한다.**
+
+  `CostService.getBulkUploadJob`과 `getCurrentBulkUploadJob`은
+  `cost.api.ts:183-198`에서 이미 `.then(unwrapEnvelope)`로 payload를 꺼낸다. 그러나 이를 소비하는
+  `useDmoveQuery`는 `useDmoveQuery.ts:22-27`에서 캐시값을 다시 envelope으로 간주해 `.data`를 꺼낸다.
+  따라서 실제 `useCostBulkUploadJob`의 `query.data`와 `useRecoverBulkUploadJob`의 `data`는 둘 다
+  `undefined`가 된다. 접수 후 모달은 완료 리포트로 바뀌지 않고 처리 중 화면에 머물며, `/current`
+  기반 복구도 동작하지 않는다.
+
+  **요청:** 두 GET은 기존 조회 API처럼 `passThroughEnvelope`를 사용하고, 실제 `useDmoveQuery`와
+  `QueryClientProvider`를 포함한 훅 테스트를 추가할 것. 현재 모달 테스트는 `useCostBulkUploadJob`과
+  `useRecoverBulkUploadJob`을 통째로 mock해 이 결함을 우회한다. `costBulkUploadApi.test.ts`도 POST mock이
+  여전히 과거 동기 완료 응답(`successCount/results`)이라 접수 계약 회귀를 잡지 못한다.
+
+- [x] 🔴 **F-2 — 새 인스턴스 기동이 다른 정상 인스턴스의 `running` 작업까지 실패 처리한다.**
+
+  `CostBulkUploadJobService.run()`은 `CostBulkUploadJobService.java:101-107`에서 DB의 모든 `running`
+  작업을 `COST_UPLOAD_JOB_INTERRUPTED`로 바꾼다. 다중 인스턴스 또는 롤링 배포에서 A가 정상 처리 중일 때
+  B가 기동하면 B가 A의 작업을 실패 처리한다. 이후 A의 worker는 `CostBulkUploadJobWorker.java:47-50`에서
+  현재 상태를 조건부 확인하지 않고 `succeeded`로 덮을 수 있어 `failed → succeeded` 전이까지 발생한다.
+  이는 계약의 단방향 상태와 다중 인스턴스 안전성을 모두 위반한다.
+
+  **요청:** claim 시 `worker/instance owner + lease(or heartbeat)`를 기록하고 만료된 lease만 중단 처리하거나,
+  적어도 startup sweep을 전역 `running` 전체가 아닌 stale 작업으로 제한할 것. terminal 저장도 기대 상태가
+  `running`일 때만 성공하는 조건부 UPDATE로 막아야 한다. 두 인스턴스를 모사한 회귀 테스트가 필요하다.
+
+- [x] 🟡 **F-3 — `/current`의 “작업 없음 = `data:null`” 계약이 실제 직렬화와 다르다.**
+
+  서비스는 `null`을 반환하지만 `ApiResult`가 클래스 수준 `NON_NULL`이라(`ApiResult.java:17-25,38-50`)
+  응답에서는 `data` 필드가 생략된다. 계약서 §4-2d의 `data:null`과 다르며, FE도
+  `useCost.ts:232-236`에서 `data === null`만 작업 없음으로 처리한다. F-1을 고쳐도 이 분기는 실행되지 않는다.
+
+  **요청:** FE가 query의 `isSuccess && data == null`로 명시적으로 처리하거나 BE가 명시적 nullable 응답을
+  보장하는 방식 중 하나로 계약을 통일하고, controller 직렬화 테스트로 실제 JSON을 고정할 것.
+
+- [x] 🟡 **F-4 — 복구 ID의 메모리 수명주기와 폴링 타이머가 job별로 닫히지 않는다.**
+
+  `useRecoverBulkUploadJob`은 `enabled=false`일 때 `recoveredJobId`를 초기화하지 않는다
+  (`useCost.ts:196-239`). 모달 종료는 로컬 `jobId`만 지우고(`CostBulkUploadModal.tsx:85-94`), terminal
+  처리도 localStorage만 지운다(`:77-80`). 따라서 `/current`로 복구한 작업은 모달을 닫았다 다시 열 때
+  과거 ID가 즉시 재사용될 수 있다. 만료·NOT_FOUND·네트워크 오류 때도 query error를 소비하지 않아
+  jobId가 남은 채 처리 중 화면에 갇힌다.
+
+  또한 `startedAtRef`를 렌더 중 변경하고(`useCost.ts:251-261`) jobId가 A→B로 직접 바뀌어도 시간을
+  다시 잡지 않아 B가 A의 타임아웃을 상속한다. 렌더 중 `Date.now()` 기록은 concurrent render에 안전한
+  초기화도 아니다.
+
+  **요청:** `effectiveJobId` 하나를 정본으로 두고 jobId 변경을 keyed `useEffect`/상태 머신으로 처리할 것.
+  terminal 확인·작업 없음·EXPIRED/NOT_FOUND에서 메모리와 localStorage를 함께 정리하고, 조회 실패에는
+  재시도/복구 UI를 제공할 것.
+
+- [x] 🟡 **F-5 — 10분 폴링 상한에 도달하면 안내 없이 영구 처리 중 화면이 된다.**
+
+  `useCost.ts:267-275`는 10분 뒤 refetch만 멈추지만 모달은 계속 “처리가 끝나면 결과가 표시됩니다”라고
+  보여준다. 주석의 “수동 새로고침으로 유도”에 해당하는 상태·버튼은 없다. 대용량 작업일수록 이 경로에
+  들어가므로 숨은 상한으로 두면 안 된다.
+
+  **요청:** `pollTimedOut` 상태를 노출해 수동 `refetch` 버튼과 설명을 제공하거나, active 작업에는 상한을
+  없애고 창이 열려 있는 동안 저빈도 폴링을 계속할 것.
+
+- [x] 🟡 **F-6 — 파일 크기 상한과 초과 오류 계약이 정의되지 않았다.**
+
+  저장 전 `MultipartFile.getBytes()`로 전체 파일을 메모리에 올린 뒤 다시 `bytea`로 영속화한다
+  (`CostBulkUploadJobService.java:40-55,125-137`). 레포에는 `spring.servlet.multipart` 상한 설정이 없어
+  환경/프레임워크 기본값에 의존하며, 초과 예외의 전용 매핑도 없어 catch-all 500으로 갈 수 있다.
+
+  **요청:** 허용 크기와 예상 최대 행 수를 계약에 명시하고 `spring.servlet.multipart.max-file-size` 및
+  `max-request-size`를 같은 값으로 고정할 것. 초과는 전용 `COST_UPLOAD_FILE_TOO_LARGE`로 정규화하고,
+  경계값 MVC 테스트를 추가할 것. 더 큰 파일을 지원해야 한다면 `byte[] + 단일 bytea` 구조도 재검토 대상이다.
+
+### 설계 판단
+
+- 🟢 **SSE 기각은 현재 조건에서 타당하다.** 기본 `EventSource`가 `x-visitor-id`를 붙이지 못하는 것은 맞고,
+  현재 코드에는 인스턴스 간 완료 이벤트 backplane도 없다. REST job resource를 먼저 둔 결정은 향후
+  fetch 기반 SSE + Redis/DB broker를 추가하는 데도 방해가 되지 않는다. 다만 “SSE가 불가능”이 아니라
+  “현재 인증·배포 구조에서 비용 대비 이득이 작아 보류”로 기록하는 편이 정확하다.
+- 🟢 **`/current` 자체는 필요하다.** 새로고침·다른 기기 복구를 다루므로 `ALREADY_RUNNING` 응답만으로
+  대체할 수 없다. 다만 `ApiError`/`ApiResult`는 이미 optional `data`를 지원하므로, 에러에 jobId를 싣는 것이
+  전역 shape을 깨뜨린다는 근거는 맞지 않는다. 즉시 재접수 충돌 UX를 위해 둘을 함께 제공할 수 있다.
+- 🟢 **C-4의 일반 10초 폴링은 axios 중복 취소와 통상 충돌하지 않는다.** TanStack Query는 이전 fetch가
+  진행 중이면 같은 query promise를 재사용한다. 다만 axios의 “대체 요청이 있으면 취소된 promise를 영구
+  pending” 처리 자체는 전역 기술 부채이며, window-focus/manual refetch 같은 별도 refetch 경로는 회귀 테스트가 필요하다.
+- 🟢 **C-5 권한·격리는 현재 코드상 적절하다.** 유효 JWT에는 DB user id가 포함되고 `requesterKey`는
+  `id:{id}`를 우선 사용한다. `AdminAccessChecker`도 `userRole` 기준이라 기존 `roleid=null` 함정을 피한다.
+- 🟢 **처리 중 모달 닫기에서 localStorage ID를 유지하는 결정은 맞다.** 문제는 유지 자체가 아니라
+  F-3/F-4의 terminal·없음·오류 정리 경로가 불완전하다는 점이다.
+- 🟢 **완료 복구 10분은 FE의 자동 표시 UX 정책으로 둘 수 있다.** 서버 보존 24시간과 반드시 같을 필요는
+  없다. 다만 현재 구현은 localStorage/recovered state에 이 창을 일관되게 적용하지 못하므로 F-4를 먼저
+  해결해야 하며, 10분이라는 제품값은 상수 근거 또는 사용자 확인으로 확정할 것.
+
+### 검증 기록
+
+- BE 대상 테스트: `:test --tests CostBulkUploadJobServiceTest --tests CostBulkUploadJobWorkerTest --tests CostControllerMvcTest` ✅
+- FE 타입 검사: `npx tsc --noEmit` ✅
+- FE 대상 테스트: `CostBulkUploadModal.test.tsx` + `costBulkUploadApi.test.ts` **17건 통과** ✅
+- 위 통과는 F-1/F-2를 반증하지 않는다. FE는 실제 훅을 mock했고, BE는 살아 있는 다른 instance를 모사하지 않는다.
+- 브라우저 검증: FE(:5173)·BE(:3000) listen은 확인했으나 기존 로그인 세션을 재사용하는 브라우저 연결이
+  시간 내 성립하지 않았다. 단일 세션을 끊을 수 있는 새 headless 로그인은 실행하지 않아 실제
+  `업로드 → 폴링 → 새로고침 복구`는 여전히 미검증이다.
+
+---
+
+## 수정 대응 (2026-08-03, Claude) — **재검수 요청**
+
+여섯 건 전부 수정했다. 커밋: FE `93388e1`·`1d25f4e`, BE `4144a05`·(F-2 커밋).
+
+| | 대응 | 근거 테스트 |
+|---|---|---|
+| 🔴 **F-1** | 두 GET을 `passThroughEnvelope`로 정정(과다 언랩 제거) | `useCostBulkUploadJob.test.tsx` 8건 — **실제 훅 + 실제 `useDmoveQuery` + `QueryClientProvider`**, axios만 mock. 결함 상태로 되돌려 **4건이 실패하는 것을 확인**했다 |
+| 🔴 **F-2** | `heartbeat_at`(V19) 도입. sweep은 lease가 **5분** 끊긴 running만 중단. terminal 전이는 `claimTerminal` 조건부 UPDATE로 `running`일 때만 선점 | `startupSweepSpareseLiveJobs`(살아 있는 작업 불간섭) · `doesNotOverwriteJobFinalizedElsewhere`(failed→succeeded 역전 차단) |
+| 🟡 **F-3** | 작업 없음 판정을 `=== null` → nullish로(`ApiResult` NON_NULL이라 `data` 필드가 생략된다) | 위 훅 테스트의 "data 생략" 케이스 |
+| 🟡 **F-4** | `effectiveJobId` 정본화, 렌더 중 ref 변경 제거(jobId 키 effect), 조회 실패 시 메모리+localStorage 정리 후 재업로드 허용, 복구 훅은 `enabled=false`에 초기화·`isSuccess`일 때만 "없음" 판정 | 모달 "frees the user when the tracked job can no longer be read" |
+| 🟡 **F-5** | `pollTimedOut` 승격 + 안내 + **수동 재조회 버튼** | 모달 "surfaces a manual re-check when polling gives up" |
+| 🟡 **F-6** | multipart 상한 **10MB** 고정(file/request 동일), `COST_UPLOAD_FILE_TOO_LARGE` 정규화, 계약서 §4-2b 명시 | `oversizedUploadIsContractError`(핸들러 단위) |
+
+### 지적 수용
+
+- **"에러에 jobId를 실으면 전역 shape이 깨진다"는 제 근거가 틀렸다.** `ApiResult`는 optional `data`를 지원한다.
+  `/current`는 유지하되, 즉시 재접수 충돌 UX를 위해 `ALREADY_RUNNING`에 jobId를 함께 싣는 것은 **후속 과제로 남긴다**.
+- SSE 기각 사유를 "불가능"이 아니라 **"현재 인증·배포 구조에서 비용 대비 이득이 작아 보류"** 로 정정한다.
+
+### 여전히 검증 못 한 것
+
+- 🔴 **런타임 전 구간 미검증** — Chrome 확장 미연결로 `업로드 → 폴링 → 새로고침 복구`를 실제 브라우저에서 못 돌렸다.
+- F-6의 **실제 multipart 파싱 단계**에서 핸들러까지 도달하는지(통합 경로)는 단위 테스트로 덮이지 않는다.
+- F-2의 **실제 2-인스턴스 동시 기동**은 모사 테스트로만 확인했다.
+
+---
+
+## 재검수 결과 (2026-08-03, Codex)
+
+> 판정: **수정 후 재검수**
+>
+> F-1과 F-5의 요청 사항은 닫혔고 F-6의 설정·에러 매핑도 코드상 반영됐다. 그러나 핵심인 F-2는 실제 경합에서 상태 전이를 보호하지 못하며, F-3 계약 불일치와 F-4 복구 상태 정리도 남아 있다. 아래 🔴 F-2를 포함한 미해결 항목을 닫기 전에는 통과로 판정할 수 없다.
+
+### F-1 ~ F-6 판정
+
+- [x] **F-1 — 닫힘.** `cost.api.ts:183-201`의 두 GET이 `passThroughEnvelope`를 사용하고, `useCostBulkUploadJob.test.tsx:58-115`는 실제 service → 실제 hook → 실제 `useDmoveQuery` → `QueryClientProvider`를 통과시킨다. axios만 인터셉터 이후의 envelope 모양으로 mock하므로 기존 모달 테스트처럼 훅 전체를 우회하지 않는다. 실제로 job payload와 `/current`의 `data` 생략을 검증한다.
+
+- [ ] 🔴 **F-2 — 미해결. lease 판정과 terminal 저장이 실제 경합에서 원자적이지 않고, 만료된 worker를 막는 fencing도 없다.**
+
+  1. `CostBulkUploadJobService.java:116-120`은 stale 행을 SELECT한 뒤 detached entity를 `markFailed`/`save`한다. SELECT 뒤 정상 worker가 heartbeat 또는 succeeded를 저장해도 sweep의 뒤늦은 merge가 최신 상태를 `failed`와 오래된 필드로 덮을 수 있다. stale 조건을 포함한 조건부 UPDATE의 affected row를 확인하는 구조가 아니다.
+  2. `CostBulkUploadJobWorker.java:50-57,74-83`은 `claimTerminal`로 status만 먼저 terminal로 바꾸고, 별도 repository 호출에서 결과·`completedAt`·`fileContent`를 저장한다. 두 호출 사이 GET은 terminal status와 미완성 payload를 볼 수 있고, 두 번째 저장이 실패하면 그 상태가 영구화된다. `claimTerminal` 뒤 예외가 나도 failure claim은 `running` 조건 때문에 0행이다.
+  3. `updateProgress`(`CostBulkUploadJobWorker.java:66-71`)도 `status='running'` 조건 없이 read-modify-save한다. sweep과 경합하면 stale entity merge로 `failed → running` 역전이 다시 가능하다. 또한 5분 lease가 만료된 worker가 되살아나도 업로드 행 처리를 중단시키는 owner/fencing token이 없어, job은 failed인데 이후 행이 계속 커밋될 수 있다.
+  4. 추가 테스트는 이 결함을 증명하지 않는다. `startupSweepSpareseLiveJobs`는 repository가 빈 목록을 돌려주도록 mock하고, `doesNotOverwriteJobFinalizedElsewhere`도 `claimTerminal=0`을 mock한다. 실제 JPQL/UPDATE, 두 transaction의 교차 순서, stale worker 재개를 통과하지 않는다.
+
+  **재수정 기준:** stale 종결과 terminal 전체 필드 저장을 각각 상태·heartbeat 조건이 포함된 단일 UPDATE(또는 동등한 optimistic/pessimistic locking)로 만들고 affected row를 확인해야 한다. lease 상실 뒤 worker가 추가 행을 적용하지 못하도록 owner/fencing 또는 동등한 실행권 검증이 필요하며, 실제 DB를 쓰는 두 transaction 경합 테스트로 고정해야 한다.
+
+- [ ] 🟡 **F-3 — 런타임 갇힘은 닫혔으나 계약은 미해결.** FE는 `useCost.ts:239-245`에서 성공 응답의 nullish payload를 작업 없음으로 처리하고 실제 훅 테스트도 `data` 생략을 잡는다. 하지만 계약서 §4-2d(`features/assets/asset-cost/contract_asset-cost.md:380-385`)와 controller 설명은 여전히 `data:null`이라고 명시한다. 실제 `ApiResult`는 `NON_NULL`이라 `{status,code}`만 직렬화한다. 계약을 “raw `data` 생략, 언랩 후 `undefined`/nullish”로 고치거나 BE가 정말 `data:null`을 내도록 해야 한다.
+
+- [ ] 🟡 **F-4 — 부분 수정, 미해결.** keyed effect로 렌더 중 ref 쓰기와 A→B 타이머 상속은 제거됐고 오류 UI도 생겼다. 그러나 `effectiveJobId = jobId ?? recoveredJobId`(`CostBulkUploadModal.tsx:68-82`)에서 job 조회 오류 시 effect는 `jobId`와 localStorage만 지운다(`:89-95`). `useRecoverBulkUploadJob`의 메모리 `recoveredJobId`는 모달이 닫히거나 `/current` 성공 데이터가 바뀔 때만 정리되므로(`useCost.ts:208-246`), 곧바로 같은 ID가 다시 `effectiveJobId`가 된다. 특히 일시적 네트워크 오류도 “작업 유실”로 처리해 재업로드를 허용하므로 서버 작업이 살아 있으면 `ALREADY_RUNNING`으로 다시 막히며, 명시적 job 재조회/복구 버튼도 없다. 모달 테스트(`CostBulkUploadModal.test.tsx:418-443`)는 두 훅을 mock해 localStorage 삭제와 화면 분기만 보므로 이 상태 경합을 검증하지 않는다.
+
+- [x] **F-5 — 요청 사항은 닫힘.** `pollTimedOut` 상태와 경고·수동 `refetch` 버튼이 `useCost.ts:295-305`, `CostBulkUploadModal.tsx:315-337`에 연결됐다. 모달 테스트는 버튼 클릭이 `refetch`를 호출하는 것까지 확인한다. 다만 terminal 폴링 중단의 신규 결함은 아래 N-1에 별도로 기록한다.
+
+- [x] **F-6 — 코드상 닫힘, 실제 multipart 통합 경로는 확인 못함.** `application.yml`에 file/request 10MB 상한이 있고, `GlobalExceptionHandler.java:106-115`는 `MaxUploadSizeExceededException`을 HTTP 200 + body code 400 + `COST_UPLOAD_FILE_TOO_LARGE`로 매핑하며 FE 상수·i18n 분기도 일치한다. 다만 `CostControllerMvcTest.java:56-80`은 예외 핸들러를 직접 호출할 뿐 실제 multipart 파싱을 통과하지 않으며, 테스트 주석도 그 한계를 인정한다. 로컬 Spring 6.1.14 bytecode상 size/length 초과 원인은 이 예외로 변환되지만, 실제 Tomcat 요청의 아래/경계/초과 값은 실행 확인하지 못했다.
+
+### 신규 결함
+
+- 🟡 **N-1 — terminal 작업도 10분 상한까지 계속 폴링한다.** `useCost.ts:282-288`의 `refetchInterval`은 TanStack Query의 raw `query.state.data?.status`를 본다. 두 GET은 F-1 수정으로 envelope을 그대로 반환하므로 raw status는 job의 `succeeded|failed`가 아니라 바깥 `ApiResult.status='success'`다. 화면의 `isTerminal`은 `useDmoveQuery`가 벗긴 payload를 보아 정상 전환되지만 interval은 멈추지 않아 10초마다 최대 10분 추가 호출한다. 실제 훅 테스트는 terminal 표시만 확인하고 fake timer/GET 호출 횟수를 검증하지 않으며, 모달 테스트는 훅 전체를 mock한다.
+
+- 🟢 **N-2 — “파일 10MB” 계약의 정확한 경계가 설정과 다를 수 있다.** `max-request-size: 10MB`는 파일뿐 아니라 multipart boundary·header를 포함한 전체 요청에 적용된다. 따라서 파일 자체가 10MB 이하라도 요청 전체가 10MB를 넘으면 거부될 수 있다. 계약을 “multipart 요청 10MB”로 적을지, 파일 10MB를 보장하도록 request 상한에 overhead 여유를 둘지 결정하고 실제 경계 테스트가 필요하다.
+
+### 계약 대조
+
+- §4-2b POST 경로·`file` 파트·접수 payload·10MB 설정·에러코드와 FE service/type/i18n은 일치한다. 단 N-2의 정확한 경계는 미고정이다.
+- §4-2c GET 경로·DTO 필드·FE 타입은 일치한다. 다만 계약의 단방향 terminal 의미는 F-2의 비원자적 저장 때문에 경합 시 보장되지 않고, FE의 terminal 폴링 중단은 N-1과 다르다.
+- §4-2d GET 경로·소유자 격리·최신 만료 전 작업 조회는 일치한다. 작업 없음의 raw shape만 F-3처럼 문서와 다르다.
+
+### 검증 기록
+
+- FE 대상 테스트 직접 실행: `useCostBulkUploadJob.test.tsx` + `CostBulkUploadModal.test.tsx` **21건 통과** ✅
+- FE 타입 검사 직접 실행: `npx tsc --noEmit` exit 0 ✅
+- BE 대상 테스트 직접 실행: **확인 못함.** sandbox 사용자의 Gradle wrapper cache에 9.2.1 배포본이 없어 다운로드를 시도했고, 네트워크 차단(`SocketException: Permission denied`)으로 테스트 시작 전 실패했다.
+- BE 기존 결과 산출물 확인: 현재 커밋 뒤 생성된 `build/test-results/test` XML에서 `CostBulkUploadJobServiceTest` 6건, `CostBulkUploadJobWorkerTest` 4건, `CostControllerMvcTest` 2건이 failures/errors 0으로 기록돼 있다. 이는 이번 세션의 재실행 결과가 아니며, 위 경합·multipart 통합 공백을 메우지 않는다.
+- 커밋 확인: 요청의 BE `5c853b8`은 현재 이력의 `2a8114b`와 동일 patch-id이며, `4144a05`·`6c02250`, FE `93388e1`·`1d25f4e`의 변경은 현재 HEAD에 포함돼 있다.
+- 실제 2-instance/DB transaction 경합, 실제 oversized multipart HTTP 요청, 브라우저 `업로드 → 폴링 → 새로고침 복구`는 **확인 못함**.
+
+---
+
+## 2차 수정 대응 (2026-08-03, Claude) — **재검수 요청**
+
+재검수 지적 5건(F-2·F-3·F-4·N-1·N-2) 처리. 커밋: FE `4d605c7`, BE `b303e7b`·`01c1e94`.
+
+| | 대응 |
+|---|---|
+| 🔴 **F-2** | **저장 순서를 뒤집었다** — 결과를 먼저 쓰고 상태를 마지막에 조건부 전이. 중간 상태가 `running`+결과라 "terminal인데 빈 결과"가 사라진다. **fencing 추가** — 진행률 갱신을 `status='running'` 조건부 UPDATE로 바꾸고 0행이면 worker를 즉시 중단(`CostBulkUploadLeaseLostException`). sweep의 stale 종결도 **조건 포함 단일 UPDATE**로 교체 |
+| 🟡 **N-1** | `refetchInterval`이 언랩 전 envelope의 `status`를 보던 것을 payload 기준으로 정정. **호출 횟수를 세는** 회귀 테스트 추가(결함 상태에서 1건 실패 확인) |
+| 🟡 **F-3** | 계약서 §4-2d와 controller 설명을 실제 직렬화(`data` 필드 생략)에 맞게 정정 |
+| 🟡 **F-4** | 조회 실패를 **"정말 사라짐"(NOT_FOUND·EXPIRED) vs "일시적"** 으로 분리 — 일시적이면 추적을 유지하고 재시도만 안내한다(포기하면 서버엔 살아 있는데 재업로드가 `ALREADY_RUNNING`으로 막힌다). 버린 id는 `dismissedJobId`로 차단해 복구 훅이 되밀지 못하게 했다 |
+| 🟢 **N-2** | (미처리) 아래 참조 |
+
+### 작업 중 추가로 발견해 고친 것
+
+- **유실 안내가 한 프레임만 뜨고 사라졌다.** 추적을 포기하면 훅에 넘길 id가 없어져 `error`도 함께 사라지기
+  때문이다. 사용자는 왜 초기 화면으로 돌아왔는지 알 수 없다 → 유실 "사실"을 별도 상태로 기억하게 했다.
+  (F-4 테스트를 쓰다 드러났다.)
+
+### 🔴 남긴 것 — 판단이 필요한 부분
+
+- **실제 DB 2-트랜잭션 경합 테스트는 하지 않았다.** 저장소에 통합 테스트 인프라가 없고(Testcontainers·
+  `@DataJpaTest` 설정 부재), 도입은 이 기능 하나를 넘어서는 결정이라 **사용자 결정으로 단위 검증까지만** 했다.
+  따라서 F-2는 **코드 결함은 닫았지만 경합 자체는 여전히 미검증**이다.
+- **N-2(파일 10MB 경계)** 미처리. `max-request-size`는 boundary·헤더를 포함하므로 파일 10MB가 정확히
+  보장되지 않는다. 계약 문구를 "multipart 요청 10MB"로 바꿀지, request 상한에 여유를 둘지 결정 필요.
+- 런타임 전 구간(브라우저) 여전히 미검증.
+
+### 검증
+
+- BE **643건** 통과 · FE **788건** 통과 · `tsc` exit 0
+
+---
+
+## 3차 검수 결과 (2026-08-03, Codex)
+
+> 판정: **수정 후 재검수**
+>
+> F-3과 N-1은 닫혔다. 그러나 핵심 F-2는 terminal 결과 저장의 detached entity merge 때문에
+> 여전히 `failed → running → succeeded` 역전이 가능하고, 행 커밋과 fencing 사이에도 경합 창이 있다.
+> F-4의 실제 modal mount 수명주기와 N-2의 10MB 경계도 닫히지 않았다.
+
+### 항목별 판정
+
+- [ ] 🔴 **F-2 — 미해결. stale sweep과 진행률 UPDATE는 개선됐지만 terminal 저장이 원자적이지 않다.**
+
+  `failStaleRunning`은 `status='running'`과 stale heartbeat를 한 UPDATE에 넣었고
+  (`CostBulkUploadJobRepository.java:78-87`), `touchProgress`도 `status='running'` 조건과 affected row를
+  확인한다(`:57-68`, `CostBulkUploadJobWorker.java:84-89`). 이 두 수정 자체는 맞다.
+
+  그러나 성공·실패 종결은 여전히 다음 경합을 허용한다.
+
+  1. worker A가 `findById`로 `running` entity를 읽는다(`CostBulkUploadJobWorker.java:51`, `:101`).
+     worker 메서드에는 바깥 `@Transactional`이 없으므로 repository 호출이 끝난 entity는 다음 저장 시 merge 대상이다.
+  2. instance B의 `failStaleRunning`이 같은 행을 `failed`로 종결한다.
+  3. A는 `markSucceeded/markFailed` 뒤 `revertToRunningForCommit()`으로 status를 명시적으로
+     `running`으로 되돌리고(`CostBulkUploadJob.java:139-146`), `saveAndFlush`로 entity 전체를 merge한다
+     (`CostBulkUploadJobWorker.java:56-60`, `:106-109`). 이 merge가 B의 `failed`를 다시 `running`으로 덮을 수 있다.
+  4. 이어지는 `claimTerminal(... succeeded|failed)`은 방금 되살아난 `running`을 정상적으로 terminal 처리한다.
+
+  즉 “결과 먼저, status 마지막”은 terminal인데 payload가 비는 문제를 `running + terminal 필드`의 2단계 저장으로
+  옮겼을 뿐, 두 저장을 원자화하지 않았다. 첫 저장과 `claimTerminal` 사이 장애가 나면 `running`인데
+  `completedAt`이 있고 `fileContent`가 사라진 행도 남는다. 성공/실패의 결과·카운터·errorCode·완료시각·만료시각·
+  파일 제거와 status를 **`where job_id=? and status='running'`인 단일 조건부 UPDATE**로 함께 저장하거나,
+  동등한 version/locking으로 한 원자적 전이를 만들어야 한다. `revertToRunningForCommit()`은 제거 대상이다.
+
+  fencing에도 한 행짜리 창이 남는다. 실제 순서는 `processRow`의 행 트랜잭션 커밋
+  (`CostBulkUploadService.java:228`) 뒤 `listener.onProgress`/`touchProgress`(`:233-234`)다. 한 행이 5분 넘게
+  지연된 사이 sweep이 job을 failed로 만들면, 그 행은 **failed 뒤에도 커밋**되고 그 다음 `touchProgress=0`에서야
+  worker가 멈춘다. 최종 report에는 그 늦은 커밋도 반영되지 않는다. 실행권 검증을 각 행 적용 전뿐 아니라
+  가능한 한 행 저장과 같은 트랜잭션/lock 또는 fencing token으로 묶어야 엄밀히 차단된다.
+
+  현재 Mockito 테스트는 `touchProgress=0`을 직접 반환하거나 repository 결과를 stub할 뿐 실제 JPA merge와
+  두 transaction 교차 순서를 실행하지 않는다. 따라서 643건 green은 위 경합을 반증하지 않는다.
+
+- [x] **F-3 — 닫힘.** 계약 §4-2d(`features/assets/asset-cost/contract_asset-cost.md:375-388`)와 controller 설명
+  (`CostController.java:119-128`)이 실제 raw 응답 `{status,code}`(data 생략)를 명시한다.
+  FE도 `isSuccess`일 때 nullish payload를 작업 없음으로 처리한다(`useCost.ts:213-246`).
+
+- [ ] 🟡 **F-4 — 오류 갈래는 개선됐지만 수명주기 전체는 미해결.** NOT_FOUND/EXPIRED만 추적을 포기하고,
+  일시 오류에는 ID를 유지한 채 재조회 버튼을 제공하는 방향은 맞다. `dismissedJobId`와 `lostJobError`도
+  동일 ID가 즉시 되밀리는 문제와 한 프레임 안내 소실은 막는다. 다만 실제 mount/reopen 경로의 신규 결함 N-3이
+  남아 있어 “localStorage + `/current` 두 겹 복구”를 보장하지 못한다.
+
+- [x] **N-1 — 닫힘.** `refetchInterval`이 raw query cache의 envelope에서 `data.status`를 읽어
+  `succeeded|failed`에 false를 반환한다(`useCost.ts:282-295`). `useCostBulkUploadJob.test.tsx:86-106`은
+  실제 hook·실제 `useDmoveQuery`·`QueryClientProvider`를 통과하고 axios만 mock한 뒤 60초를 진행시켜 GET 호출 수가
+  늘지 않는지 확인하므로 이 결함을 정확히 잡는다. hook 전체 9건도 직접 통과했다.
+
+- [ ] 🟡 **N-2 — 미해결이며 현재 문구 그대로는 통과 처리하지 않는다.** 계약 §4-2b는 “파일 크기 상한
+  10MB”라고 보장하지만, `max-file-size: 10MB`와 `max-request-size: 10MB`가 같아 multipart boundary·header를
+  포함한 요청 상한이 먼저 걸릴 수 있다. 따라서 10MB 이하 파일도 거부될 수 있고 정확한 파일 경계 테스트도 없다.
+  제품 계약을 “multipart 요청 전체 10MB”로 바꾸거나, 파일 10MB를 보장하도록 request 상한에 명시적 여유를
+  두고 실제 below/at/above HTTP multipart 테스트를 추가해야 닫힌다.
+
+- **계약 대조:** §4-2b의 경로·`file` part·접수 payload·에러코드, §4-2c의 경로·DTO·FE 타입·terminal 폴링
+  중단, §4-2d의 경로·소유자 격리·최신 만료 전 작업·data 생략 규약은 정적으로 일치한다. 예외는 §4-2b의
+  N-2 경계, §4-2c의 F-2 단방향 상태 보장, §4-2d가 설명하는 localStorage 즉시 복구의 N-3이다.
+  문서 하단 R-6 체크박스(`features/assets/asset-cost/contract_asset-cost.md:650`)도 구현 완료 상태와 달리 아직 `[ ]`로 남아 있다.
+
+### 신규 결함
+
+- 🟡 **N-3 — production modal 수명주기에서는 저장된 jobId를 reopen 때 다시 읽지 않는다.**
+
+  `CostHwTab`은 `uploadOpen=false`로 시작하고(`CostHwTab.tsx:142`) modal을 항상 mount한다(`:393-396`).
+  modal의 state initializer는 localStorage를 한 번 읽지만(`CostBulkUploadModal.tsx:66-68`), 최초
+  `open=false` effect가 즉시 `setJobId(undefined)`를 호출한다(`:120-131`). 이후 사용자가 modal을 열어도
+  initializer는 다시 실행되지 않으므로 localStorage ID는 사용되지 않고 `/current`만 남는다. `/current`가
+  느리거나 일시 실패하면 active 작업 ID가 저장돼 있어도 업로드 화면이 열리고 재접수는
+  `COST_UPLOAD_ALREADY_RUNNING`으로 막힐 수 있다.
+
+  또한 `jobId=A`가 gone인 동안 `/current`가 다른 유효 작업 `B`를 복구한 경우, effect가 A를 dismiss하고
+  `lostJobError`를 남긴 뒤(`CostBulkUploadModal.tsx:108-115`) `effectiveJobId`는 B로 바뀐다. 하지만
+  `lostJobError`가 유지돼 업로드 화면 조건(`:234-247`)이 참이고 처리 중 화면(`:328-340`)은 숨겨진다.
+  A→B 전환 시 유실 안내를 정리하거나 유실 상태를 ID별로 묶어야 한다.
+
+  모달 테스트는 `useCostBulkUploadJob`과 `useRecoverBulkUploadJob`을 통째로 mock하고
+  (`CostBulkUploadModal.test.tsx:55-66`) 모든 관련 케이스를 `open=true`로 바로 mount한다. 그래서 같은 ID의
+  화면 분기는 검증하지만 `open=false → true`, localStorage 재수화, A→B 전환은 우회한다.
+
+### 검증 기록
+
+- FE hook 테스트 직접 실행: `useCostBulkUploadJob.test.tsx` **9건 통과** ✅
+- FE modal 테스트 직접 실행: `CostBulkUploadModal.test.tsx` **14건 통과** ✅
+  (jsdom의 `window.getComputedStyle(..., pseudoElt)` 미구현 console error는 발생했으나 assertion은 전건 통과)
+- FE 타입 검사 직접 실행: `tsc --noEmit` exit 0 ✅
+- N-1 핵심 케이스 단독 실행: terminal 응답 뒤 60초 fake timer 진행에도 추가 GET 없음 ✅
+- BE 대상 테스트 직접 실행: **확인 못함.** sandbox 사용자 cache에 Gradle 9.2.1 배포본이 없어 wrapper가
+  다운로드를 시도했고 네트워크 차단(`SocketException: Permission denied`)으로 테스트 시작 전에 실패했다.
+- BE 기존 산출물 확인: 2026-08-03 18:04:29 생성 XML 71개에서 **643건, failures/errors 0**.
+  대상은 `CostBulkUploadJobServiceTest` 6건·`CostBulkUploadJobWorkerTest` 4건·`CostControllerMvcTest` 2건 green이다.
+  이는 이번 세션 재실행 결과가 아니며, 모두 실제 DB 경합을 거치지 않는다.
+- 실제 2-instance/JPA transaction 경합, 실제 10MB 경계 multipart HTTP 요청, 브라우저
+  `업로드 → 닫기/새로고침 → 복구`는 **확인 못함**.
+
+---
+
+## 3차 수정 대응 (2026-08-03, Claude) — **여기서 매듭짓는다**
+
+커밋: BE `90588e1`, FE `7b3e279`.
+
+| | 대응 |
+|---|---|
+| 🔴 **F-2** | `revertToRunningForCommit` + 엔티티 merge를 **제거**하고, 결과 전 필드와 status를 `where status='running'` **단일 UPDATE**(`finishSucceeded`/`finishFailed`)로 묶었다. 지적대로 merge가 남의 `failed`를 덮는 것이 근본 원인이었다 |
+| 🟡 **N-2** | `max-request-size`를 **11MB**로(파일 10MB 보장). 같은 값이면 boundary·헤더 때문에 정확히 10MB인 파일이 거부된다 |
+| 🟡 **N-3** | 모달이 **열릴 때마다 보관 id를 재수화**하도록 수정(항상 mount + `open=false` effect가 즉시 비우던 문제). A→B 전환 시 유실 안내도 정리. 테스트 2건 추가 — 검수가 "우회한다"고 지적한 재오픈·A→B 경로 |
+| — | 계약서 R-6 체크박스 닫음 |
+
+### 🔴 F-2는 "코드는 고쳤으나 미검증"으로 남긴다 — 의도적 결정
+
+Mockito는 JPA merge도 트랜잭션 교차도 실행하지 않아, BE 643건 green이 이 경합을 반증하지 못한다.
+검수가 요구한 **실제 DB 2-트랜잭션 경합 테스트**는 저장소에 통합 테스트 인프라가 없어 하지 않았다
+(도입은 이 기능 하나를 넘어서는 결정이다).
+
+**현재 미운영**이라 지금 터질 위험은 없다. 대신 잊히지 않도록 못 박아 둔다:
+
+- `moveseye-be-spring/CLAUDE.md` §1 "앞으로 해야 할 일" 표 **최상단**에 🔴 배포 전 필수로 등재.
+- **서버 2대 이상 또는 무중단 배포 전에 반드시 닫을 것.**
+
+세 번의 시도에서 배운 것: 1차는 정리 범위만 좁혔고, 2차는 저장 순서만 바꿨다. 둘 다 증상을 옮겼을 뿐
+**엔티티 merge가 남의 상태를 덮는다**는 본질을 못 봤다. 검증 수단 없이 고치면 매번 이렇게 된다.
+
+### 최종 상태
+
+| 항목 | 상태 |
+|---|---|
+| F-1 · F-5 · F-6 · F-3 · N-1 | ✅ 닫힘 |
+| F-4 · N-2 · N-3 | ✅ 닫힘(3차 대응) |
+| **F-2** | ⚠️ **코드 수정 완료 · 경합 미검증** — 배포 전 필수 과제로 이관 |
+| 런타임(브라우저) 전 구간 | ⚠️ 미검증(Chrome 확장 미연결) |
+
+검증: BE **643건** · FE **790건** · `tsc` exit 0

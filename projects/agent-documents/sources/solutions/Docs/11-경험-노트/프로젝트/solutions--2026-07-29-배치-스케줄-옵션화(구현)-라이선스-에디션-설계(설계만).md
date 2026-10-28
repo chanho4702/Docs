@@ -1,0 +1,40 @@
+---
+tags: [moveseye, scheduler, licensing, product, design, wip]
+updated: 2026-07-29
+---
+
+# 2026-07-29 — 배치 스케줄 옵션화(구현) + 라이선스·에디션 설계(설계만)
+
+같은 날 두 갈래가 진행됐다. 앞은 코드가 들어갔고, 뒤는 설계서만 나왔다.
+
+## 1) 배치 스케줄 옵션화 — 코드 cron → DB 설정 (ZM-98, BE 구현 완료)
+
+`@Scheduled` 애너테이션에 박혀 있던 cron을 DB로 끌어내 **화면에서 켜고/끄고/주기를 바꾼다**. 커밋 `0061254`(스케줄러 커널) + `755546b`(기존 배치 이관). FE는 작업 중(미커밋 — `constants/scheduler.ts` 신규, 설정 화면).
+
+- `V15__scheduler_setting.sql` — `job_key` 단위 설정(`interval|daily|weekly|monthly` + 시각/요일/일자). **시드는 현행 동작과 동일**하게 넣었다(이관으로 스케줄이 바뀌면 안 된다). `asset_sync`만 신규(60분) — 지금까지 수동 버튼만 있던 공백을 메움.
+- `V16__scheduler_run_log.sql` — "다음 실행"만 보이고 "마지막에 어떻게 됐는지"는 서버 로그를 뒤져야 했던 공백. 🔴 무제한 적재 금지: `event_sync`만으로 연 52만 행(~210MB)이라 **job별 보관 건수 상한**(`SchedulerRunLogPolicy`)을 두고 기록 후 초과분을 지운다 → 전체 300여 행(1MB 미만)으로 고정.
+- **성공을 남길지도 job마다 다르다** — 1분 주기 배치의 "성공" 기록은 노이즈지만, 자산 동기화(added/updated 숫자가 핵심)·사용자 동기화(로컬 계정 삭제)는 성공도 추적해야 한다.
+- FE 카탈로그는 `job_key`가 BE 시드와 1:1이되, **서버에 없는 key가 오면 key를 그대로 이름으로 표시**한다(운영 중 신규 job이 추가돼도 목록에서 사라지지 않게).
+
+## 2) 라이선스 & 에디션 설계서 v2 (`_workspace/devdesign_premium-edition.md`, 구현 0)
+
+DMOVE를 **STANDARD / PREMIUM 2티어 상용 제품**으로 파는 전제의 설계. PREMIUM = STANDARD + GPU·DB 모니터링 + APM(APM은 범위 밖, 별도 설계서).
+
+핵심 결정:
+
+- **P1 단일 배포본 + 런타임 언락** — 포크·빌드 프로파일 분기 기각. 프리미엄 코드는 배포본에 전부 포함되고 티어로 열린다.
+- **P2 코드 경계는 모듈이 아니라 `premium/` 패키지 + ArchUnit 역참조 차단**(모듈 승격은 조건 명시 후 유예).
+- **P3 3축 분리 + 합집합 판정** — `Capability`(소스가 가능한가) / `Edition`(구매 등급) / `Feature`(개별 기능). 판정식 = `editionDefaults(edition) ∪ features` → **티어 구성을 바꿔도 기존 고객 키를 재발급할 필요가 없다.**
+- **P4 게이팅 2레이어** — ①라이선스 잠금 게이트(전역·화이트리스트) ②기능 게이트(`@RequiresFeature`·블랙리스트). 누락이 곧 무상 제공이므로 **빌드/테스트가 게이팅을 강제**하는 게 목표.
+- **P7 키 = RS256 서명 JWT** + 전용 `license` 테이블. **P12 `exp`를 키에 넣지 않는다** — 기간제는 등록 시점에 만료일을 계산(늦게 등록해도 손해 없음). **P13 `jti` 기준으로 최초 활성화 시각을 고정**해 키 재사용 차단.
+- **P6 Flyway는 라이선스와 무관하게 항상 전량 실행** / **P11 키가 없으면 잠금 모드**(부트스트랩 문제 처리) / **P10 배치·스케줄러도 게이팅 대상**(HTTP 진입점이 없어 별도 처리).
+- 범위에서 뺀 것: 강력한 DRM·난독화·클럭 조작 방어. **온프레미스에서 완전 방어는 불가능하므로 서명(위조 방지)과 명백한 어뷰징 차단까지가 기술의 몫이고 그 이상은 계약이 방어선**이라고 명시했다.
+
+Capability 레지스트리의 출처가 [[projects/moveseye/2026-07-28-collector-engine-phase1|2026-07-28-collector-engine-phase1]]의 포트화라, 이 설계는 수집 엔진 작업 위에 얹힌다.
+
+## 상태
+
+- 스케줄러: BE 커밋 완료(ZM-87 브랜치, 미푸시 1). FE 미커밋. 런타임 검증 기록 없음.
+- 라이선스: **설계서만**. 단계 0(라이선스 커널)~2(DB 모니터링) 전부 미착수.
+
+관련: [[projects/moveseye/2026-07-28-collector-engine-phase1|2026-07-28-collector-engine-phase1]], [[projects/moveseye/2026-07-28-be-package-restructure|2026-07-28-be-package-restructure]], [[projects/moveseye/moveseye|moveseye]]

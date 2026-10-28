@@ -1,0 +1,24 @@
+---
+name: bash-heredoc-eats-backslash
+description: Bash heredoc으로 넘긴 스크립트에서 \n 같은 이스케이프가 실제 개행으로 접혀 JSON을 깨뜨린다
+metadata: 
+  node_type: memory
+  type: feedback
+  originSessionId: ab42e5c3-130a-4842-9019-8b9d096c0f46
+  modified: 2026-10-06T12:33:56.099Z
+---
+
+Bash 툴의 heredoc(`python - <<'PY' ... PY`)으로 스크립트를 넘길 때, 따옴표로 막은 heredoc인데도 **백슬래시 이스케이프가 접혀서 전달될 수 있다**. `"...있습니다\\n자격..."`처럼 JSON 문자열 안에 들어갈 `\n`(역슬래시+n 두 글자)을 쓰면 실제 개행 한 글자로 바뀌어, 파일에 쓰는 순간 **JSON이 `Invalid control character`로 깨진다**(2026-08-24 `locales/kr.json`을 실제로 깨뜨렸다).
+
+증상이 헷갈리는 이유: 같은 스크립트의 짧은 한글 조각 검색은 멀쩡히 통과하는데 `\n`을 포함한 긴 문자열만 `assert ... in s`에서 실패한다. 한글 정규화(NFC) 문제로 오진하기 쉽다.
+
+**Why:** 파일이 깨진 뒤에야 알게 되고, 그 파일이 로케일·설정처럼 앱 전체가 읽는 것이면 복구 전까지 빌드가 죽는다.
+
+**How to apply:**
+- 값 안에 `\n`이 들어가는 편집은 heredoc으로 하지 말고 **스크립트를 파일로 써서(Write) 실행**한다.
+- 굳이 heredoc을 쓸 거면 `NL = chr(92) + "n"` 처럼 **백슬래시를 코드로 조립**한다.
+- 편집 직후 `json.loads`로 **유효성을 다시 확인**한다. 깨졌으면 삽입한 블록만 잘라내 되돌린다(전체 재작성 금지 — 병행 세션의 diff가 커진다).
+
+**형제 함정 — 큰따옴표 인라인 스크립트 안의 백틱은 명령으로 실행된다(2026-10-06).** `node -e "…"`처럼 큰따옴표로 감싼 인라인 코드에 마크다운 백틱(`` `경로.md` ``)이 들어가면 Bash가 명령 치환으로 실행한다. 그날은 백틱 안의 `.md` 파일 두 개가 셸 스크립트로 실행됐고, 문서 3행의 `> **상태:` 가 리다이렉트로 해석돼 `C:\solutions`에 0바이트 파일이 생겼다(삭제함). 백틱 안 내용은 결과 문자열에서도 통째로 사라진다. 한글·백틱·따옴표가 섞인 본문 편집은 인라인 스크립트가 아니라 **Edit/Write 도구 또는 파일로 쓴 스크립트**로 한다.
+
+관련: [[projects/agent-documents/sources/claude-memory/C--solutions/memory/claude-memory--curl-hangul-cp949-false-500|curl-hangul-cp949-false-500]]

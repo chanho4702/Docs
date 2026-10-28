@@ -1,0 +1,109 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Data, security, and privacy · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/data-security.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a class="active" aria-current="page" href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; Support and review</div><h1>Data, security, and privacy</h1><p class="lede">This explains app data handling for administrators and security reviewers. Moves Approval runs on Atlassian Forge and currently stores app data in Forge SQL and Key-Value Store. Approval data is never sent outside, and no customer-operated server connection is used. The only external transfer is the <strong>error diagnostics</strong> described below.</p>
+<h2 id="section-0">What is stored</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Content and purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Requests and decisions</td>
+<td>Page ID, title, version, area identifier/hash, account IDs, steps, status, times, deadline</td>
+</tr>
+<tr>
+<td>Notes and reasons</td>
+<td>Review notes, rejection/withdrawal reasons, and audit events</td>
+</tr>
+<tr>
+<td>Inbox and notifications</td>
+<td>Account roles and request/result notices</td>
+</tr>
+<tr>
+<td>Signature and PIN</td>
+<td>Signature image, salted PIN hash, failure count; no plain-text PIN</td>
+</tr>
+<tr>
+<td>Delegation</td>
+<td>Approver and delegate account IDs, period, and note</td>
+</tr>
+<tr>
+<td>Settings and change log</td>
+<td>Policies, spaces, lines, groups, registrations, administrators, retention, and changes</td>
+</tr>
+</tbody>
+</table></div>
+<p>Names, email addresses, and profile pictures are read from Confluence for display rather than stored in the app. Page bodies are not retained. Bodies are read as needed for version/area checks and certificate fingerprints.</p>
+<h2 id="section-1">Permissions and Confluence changes</h2>
+<p>User actions follow that user's Confluence permissions. Lists and details are restricted to viewable pages. Background checks and page-update handling may read with app permissions when no user context exists, but do not return those bodies to users.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Change in Confluence</th>
+<th>Condition</th>
+<th>Identity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insert a stamp box</td>
+<td>Requester selects insertion and no box already exists</td>
+<td>Requester; successful insertion raises the page version.</td>
+</tr>
+<tr>
+<td>@mention comment</td>
+<td>Confluence notification policy enabled</td>
+<td>User performing the action, with comment permission.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Comments are visible to page readers and may remain after app removal. Restricting app access does not change the visibility of existing Confluence comments.</p>
+<h2 id="section-2">Retention and downloads</h2>
+<p>Finished records default to three years, with forever or 1, 3, 5, or 10 years available. Age alone does not delete them: an administrator exports and deletes the covered range. Open requests are excluded. Records of pages permanently deleted from Confluence are included, exported with titles, notes, and reasons blanked (Confluence does not tell these apart from pages whose restrictions also block the app, so those are handled the same way). In-app notifications are cleaned up after 180 days and settings logs after one year. Users can change or remove their signatures, PINs, and delegations, and they are deleted automatically when the Atlassian account is closed.</p>
+<p>Excel and PDF files may include names, notes, and reasons. Customers manage their retention, sharing, and disposal after download. The app does not retain certificate PDF copies. App data after uninstall follows Forge platform policy.</p>
+<h2 id="section-3">Why permissions are requested</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Permission group</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read pages and content</td>
+<td>Titles, versions, areas, update detection, certificate fingerprints</td>
+</tr>
+<tr>
+<td>Write pages</td>
+<td>Requester-selected stamp insertion</td>
+</tr>
+<tr>
+<td>Read spaces and content permissions</td>
+<td>Space selection and view/edit checks</td>
+</tr>
+<tr>
+<td>Read users and groups</td>
+<td>Approver/Cc search and group membership</td>
+</tr>
+<tr>
+<td>Read/write comments</td>
+<td>Optional @mention notifications</td>
+</tr>
+<tr>
+<td>App storage</td>
+<td>Approval records and settings</td>
+</tr>
+<tr>
+<td>Personal data reporting</td>
+<td>Report stored account IDs to Atlassian and erase personal data of closed accounts</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-4">Error diagnostics</h2>
+<p>When configured with a Sentry DSN, the app sends unhandled screen errors to <strong>Sentry</strong> (US region). The client removes user context, request URLs and payloads, cookies, extra data, and breadcrumbs, and does not enable console-log collection. The error message and stack trace are still included; if an error itself contains personal or page data, those fields could contain it. Do not configure the DSN until that residual risk is accepted or the error payload is further sanitized. Without a DSN, the app does not initialize Sentry.</p>
+<h2 id="section-5">Data-related requests</h2>
+<p>Manage signatures, PINs, and delegation in the personal screens. Individual decisions are organizational audit records and cannot be edited or deleted by users. The app reports stored account IDs to Atlassian's Personal data reporting API every 7 days; for closed accounts it deletes signatures, PINs, delegations, and received notifications, and removes them from the approver list and settings administrators. Account IDs in approval and audit records follow the retention policy. Route other requests through the site administrator to support. This is a technical product description; also consult the operator's published privacy policy and terms.</p>
+<p><a href="admin-data.html">Data management</a> · <a href="reviewer-guide.html">Marketplace review</a></p>
+<div class="pager"><a href="faq.html"><small>← PREVIOUS</small>Troubleshooting and support</a><a href="reviewer-guide.html"><small>NEXT →</small>Marketplace reviewer walkthrough</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">What is stored</a><a href="#section-1">Permissions and Confluence changes</a><a href="#section-2">Retention and downloads</a><a href="#section-3">Why permissions are requested</a><a href="#section-4">Error diagnostics</a><a href="#section-5">Data-related requests</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

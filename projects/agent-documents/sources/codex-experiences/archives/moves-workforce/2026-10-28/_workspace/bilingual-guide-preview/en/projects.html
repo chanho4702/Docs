@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Project management</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Project management</h1>
+<p><a href="index.html">Guide home</a> · <a href="../ko/projects.html">한국어</a></p>
+<blockquote>
+<p>Review draft: English screenshots were captured on the designated staging site on 2026-10-04 and are shared by both language guides. The deployed version and role-specific access and save operations remain under review.</p>
+</blockquote>
+<p>Create Moves Workforce projects and manage their dates, budgets, and status. One app project can contain issues linked from multiple Jira spaces.</p>
+<h2>Required access</h2>
+<p>The list and details require <strong>Project read</strong> access; creating, editing, and deleting require <strong>Project write</strong>. Kanban uses separate <strong>Kanban read and write</strong> permissions. Visible projects also depend on your project scope.</p>
+<!-- detailed-walkthrough:start -->
+
+<h2>Create an example project and verify it</h2>
+<p><strong>Path:</strong> Jira → Apps → Moves Workforce → Project Management → add project. This app project groups work from Jira spaces. It is different from creating a Jira space.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example and meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Name</td>
+<td>Demo website launch. Use a name you can find again in the list.</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Choose your organization&#39;s starting status from the available options. Names vary by site configuration.</td>
+</tr>
+<tr>
+<td>Start / end dates</td>
+<td>2026-10-05 / 2026-10-30. These define the planned project period.</td>
+</tr>
+<tr>
+<td>Project cost</td>
+<td>The budget in your organization&#39;s currency; this field is not an automatically calculated salary-based labor cost.</td>
+</tr>
+<tr>
+<td>Required skills</td>
+<td>Skills to compare when assigning people. Select them when your skill catalog is ready.</td>
+</tr>
+</tbody></table>
+<ol>
+<li>Enter the name, status, dates, and other applicable fields in the add dialog. Follow required-field markers and validation messages.</li>
+<li>Save, then search the list for the name. Check for an existing entry before trying to add the same project again.</li>
+<li>Click the <strong>project name</strong> to open its detail page. Clicking a blank part of the row can open a summary drawer instead.</li>
+<li>Check the saved name, status, dates, budget, and selected skills in the detail view.</li>
+<li><a href="project-people.html">Add project members</a> and <a href="project-work.html">link existing Jira issues</a>. Empty member and work lists immediately after creation can simply mean these steps have not been completed.</li>
+</ol>
+<p>If the dialog asks you to retry saving skills, the basic project may already exist. Follow the retry guidance in the open dialog and check the existing project. Repeatedly creating new projects can duplicate the management unit for the same work.</p>
+<!-- detailed-walkthrough:end -->
+
+<h2>Create a project</h2>
+<ol>
+<li>Open <strong>Project Management</strong> and add a project.</li>
+<li>Enter its name, status, start date, and end date.</li>
+<li>Enter the project budget in the project cost field. This is separate from calculated labor cost.</li>
+<li>Select required skills. These are used to compare candidates during assignment.</li>
+<li>Save, then add <a href="project-people.html">people</a> and <a href="project-work.html">work</a> in the project details.</li>
+</ol>
+<p><img src="../images/en/04-project-list-drawer.jpg" alt="Project list with the row summary drawer open. Clicking a project name opens the detail page."></p>
+<p>Project list with the row summary drawer open. Clicking a project name opens the detail page.</p>
+<p>If the basic project details were saved but the app asks you to save skills again, check the retained selection and save result before retrying.</p>
+<h2>Use the list and Kanban</h2>
+<ul>
+<li>Search by name in the list. Click a project name to open its details, or an empty area of a row to open its summary drawer.</li>
+<li>Each Kanban card represents one project. Moving it to another column changes the project&#39;s status.</li>
+<li>A disallowed transition may be rejected. If a card returns to its original column, check the message and configured status flow.</li>
+<li>Use the load-more control in the completed column, when present, to retrieve older projects.</li>
+</ul>
+<h2>Before deleting a project</h2>
+<p>Deleting a project removes related app membership, configuration, and linking data and cannot be undone. <strong>It does not delete the Jira issues themselves.</strong></p>
+<ol>
+<li>Check the project name and impact before confirming deletion.</li>
+<li>Check completion in the deletion progress dialog.</li>
+<li>If deletion fails, inspect the reason and use the retry action.</li>
+<li>If linked Jira issues cannot be accessed, ask an administrator who can access them to retry.</li>
+</ol>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>What to check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Only the list or Kanban is visible</td>
+<td>The separate permissions for both features</td>
+</tr>
+<tr>
+<td>A participating project is missing</td>
+<td>Project membership and project visibility scope</td>
+</tr>
+<tr>
+<td>Project cost differs from labor cost</td>
+<td>Whether you are comparing an entered budget with calculated labor cost</td>
+</tr>
+<tr>
+<td>Deletion does not complete</td>
+<td>The failed stage and the executing user&#39;s Jira access</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>The list and kanban manage Moves Workforce projects. Distinguish them from Jira spaces and Jira workflow statuses.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Name search / clear / pagination</td>
+<td>Search projects and move between pages. Clearing filters does not delete projects.</td>
+<td>Check search conditions and visibility scope before diagnosing a missing project.</td>
+</tr>
+<tr>
+<td>Project name / blank row area</td>
+<td>The name opens the detail page; a blank row area opens the summary drawer.</td>
+<td>Use Open detail page in the drawer to access all project functions.</td>
+</tr>
+<tr>
+<td>Add Project / Save project</td>
+<td>Name, status, start date, and end date are required. Budget is optional and represents the planned project amount.</td>
+<td>Resolve field errors and save. Creation does not automatically add members or issues.</td>
+</tr>
+<tr>
+<td>Required skills: category/search/select/remove</td>
+<td>Select required skills from the catalog. Removing a selected skill removes a project requirement, not the dictionary entry.</td>
+<td>Previously selected skills missing from the catalog can have an unknown label. Do not treat failed loading as an empty requirement list.</td>
+</tr>
+<tr>
+<td>Edit / reload / retry partial save</td>
+<td>Edit the existing project. Failed detail/skill loading can lock saving. A skills failure after basic information was saved differs from total creation failure.</td>
+<td>Follow retry guidance in the open dialog and check the existing project; do not repeatedly create new projects.</td>
+</tr>
+<tr>
+<td>Move a kanban card</td>
+<td>Change an app project&#39;s status along the allowed flow. This does not bulk-change Jira issue statuses.</td>
+<td>If the card returns, check the transition and write access. Show more in the completed column loads additional historical projects.</td>
+</tr>
+<tr>
+<td>Delete project / retry deletion</td>
+<td>After confirmation, remove project-related app data such as member/team assignments, subscriptions, dashboards, Gantt structure, and skill mappings. Original Jira issues are preserved.</td>
+<td>This cannot be undone. Review the failed stage/inaccessible issues, resolve access, and use Retry deletion. Some stages may already have completed.</td>
+</tr>
+</tbody></table>
+<p>Check deletion progress and whether the dialog permits closing. Closing it does not reverse deletion stages already completed.</p>
+<!-- control-reference:end -->
+
+<!-- supplemental-guides:start -->
+
+<h2>Detailed guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046659">Project details</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046679">Project detail screens and access</a></li>
+</ul>
+<!-- supplemental-guides:end -->
+</body></html>

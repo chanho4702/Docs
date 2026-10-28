@@ -1,0 +1,97 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205225985">한국어</a></p>
+<p>Use this walkthrough to send a test page through two approval steps. The requester submits the page, a reviewer and a final approver decide in order, and the requester checks the result. On a newly installed site, complete <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537962">Administrator setup</a> first.</p>
+<h2>Before you start</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Example</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Page</td>
+<td>Operating procedure — review copy</td>
+<td>A published Confluence page that the requester can edit.</td>
+</tr>
+<tr>
+<td>Requester</td>
+<td>Author A</td>
+<td>Needs page edit permission and access to the app.</td>
+</tr>
+<tr>
+<td>Approvers</td>
+<td>Reviewer B and owner C</td>
+<td>Both must be able to view the page.</td>
+</tr>
+<tr>
+<td>Order</td>
+<td>Step 1 B → Step 2 C</td>
+<td>Put the two people in separate steps.</td>
+</tr>
+<tr>
+<td>Deadline</td>
+<td>A future time that allows review</td>
+<td>Choose a real deadline rather than copying an example date.</td>
+</tr>
+</tbody>
+</table>
+<h2>1. Submit the page</h2>
+<ol>
+<li>Open the published test page and select <strong>Request approval</strong> below its title.</li>
+<li>Under <strong>Pick approvers</strong>, add B to the first step. Select <strong>Add step</strong> and add C to the second.</li>
+<li>Name the steps <code>Content review</code> and <code>Final approval</code>. Check that each requires one approval.</li>
+<li>Enter a deadline and a request note, such as <code>Please review the procedure and ownership details.</code></li>
+<li>To show progress in the page, select <strong>Add a stamp box to the top of the page</strong>, then submit the request.</li>
+<li>Check the target version and first-step status. Inserting a new stamp box increases the page version by one.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-01</strong> — Request dialog with B and C in separate steps, the deadline, note, and stamp box option.</p>
+</blockquote>
+<h2>2. Decide in order</h2>
+<ol>
+<li>B opens Confluence <strong>Apps → Moves Approval → My turn</strong>.</li>
+<li>Open the request row, review the page, request note, and target version, then select <strong>Approve</strong>. If the site requires a PIN, set up <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204800006">My signature and PIN</a> first.</li>
+<li>Check that B's decision is recorded and C's step is now open.</li>
+<li>C opens the request under their own <strong>My turn</strong>, reviews it, and approves. C cannot decide before the first step is complete.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-02</strong> — Approval details showing B's recorded approval and C's active step.</p>
+</blockquote>
+<h2>3. Check the result</h2>
+<p>Reopen the page and check the stamp box and status below the title. In approval details, check both people and decision times. Download an <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205160455">approval certificate PDF</a> if needed.</p>
+<table>
+<thead>
+<tr>
+<th>Completion check</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Order</td>
+<td>B decided before C.</td>
+</tr>
+<tr>
+<td>Final status</td>
+<td>Approved.</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>The approved version is identified.</td>
+</tr>
+<tr>
+<td>History</td>
+<td>Both decisions and times are recorded.</td>
+</tr>
+</tbody>
+</table>
+<p>Editing the page after approval does not approve the new version. See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205193233">Changes, withdrawal, and resubmission</a>.</p>
+<h2>If you cannot continue</h2>
+<ul>
+<li>If B cannot find the request, check the tab, filters, and page view permission.</li>
+<li>If C has no decision buttons, check whether the first step has finished.</li>
+<li>If the request was rejected or expired, create a new request rather than reopening the finished request.</li>
+<li>A request may exist even if a stamp box is missing. Check approval details before submitting again.</li>
+</ul>

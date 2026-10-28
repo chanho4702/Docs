@@ -1,0 +1,5 @@
+version: 1
+scopes:
+  read:organization:custom:
+    displayName: Read organization teams and users
+    description: Read teams, team leaders and members, and users with their team membership, within the authenticated user's existing Workforce team and user management permissions.

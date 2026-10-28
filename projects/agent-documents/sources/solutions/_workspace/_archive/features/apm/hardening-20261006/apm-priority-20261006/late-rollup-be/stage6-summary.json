@@ -1,0 +1,35 @@
+{
+  "base": "22eeff8 + stage5/6/RUM source snapshot",
+  "suites": [
+    {
+      "name": "com.dmove.moveseye.premium.apm.trace.rollup.ApmRollupTransactionRollbackIT",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.717"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.trace.rollup.ApmTraceReclassificationIT",
+      "tests": "15",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "6.222"
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.trace.rollup.ApmTraceRollupIT",
+      "tests": "20",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "4.509"
+    }
+  ],
+  "totals": {
+    "tests": 39,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

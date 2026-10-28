@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>호스트 그룹</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>호스트 그룹</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 사용자, 운영자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/monitoring/host-group/HostGroup.tsx, HostGroupDetail.tsx</div></div>
+<h1>호스트 그룹</h1>
+<blockquote><p><strong>사이드바</strong> 모니터링 &gt; 호스트 그룹 <strong>경로</strong> <code>/monitoring/host-group</code> → 상세 <code>/monitoring/host-group/:id</code></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>담당 시스템 묶음(그룹) 단위로 상태를 비교하고, 이상이 있는 그룹에서 개별 호스트로 내려가는 화면이다. <strong>운영자가 가장 자주 쓰는 진입점</strong>이다.</p>
+<p>호스트 그룹은 단순한 분류가 아니라 <strong>권한의 경계</strong>이기도 하다. 내게 권한이 없는 그룹은 목록에도, 집계 수치에도 나타나지 않는다.</p>
+<h2>화면 구성</h2>
+<h3>목록</h3>
+<p>그룹별 상태 요약을 표로 본다. 문제 수와 정상 비율을 그룹끼리 비교하는 것이 목적이다.</p>
+<h3>상세 (그룹 선택 시)</h3>
+<p>다섯 개 탭으로 구성된다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>탭</th><th>내용</th><th>언제 보나</th></tr></thead>
+<tbody>
+<tr><td><strong>리소스 추이</strong></td><td>CPU·메모리·디스크·트래픽의 시계열</td><td>부하 변화 시점을 찾을 때</td></tr>
+<tr><td><strong>알람 추이</strong></td><td>기간별 알람 발생 흐름</td><td>장애가 잦아지는 추세인지 볼 때</td></tr>
+<tr><td><strong>호스트 목록</strong></td><td>그룹에 속한 호스트와 현재 상태</td><td>개별 호스트로 내려갈 때</td></tr>
+<tr><td><strong>호스트 분류</strong></td><td>기기 분류별 구성</td><td>그룹의 장비 구성을 파악할 때</td></tr>
+<tr><td><strong>리포트</strong></td><td>주간·월간 집계 리포트</td><td>정기 보고 자료가 필요할 때</td></tr>
+</tbody></table>
+<h2>사용 흐름</h2>
+<p>권장 탐색 순서다.</p>
+<ol>
+<li><strong>문제 수와 정상 비율</strong>을 확인한다.</li>
+<li><strong>리소스 추이</strong>에서 avg/max를 전환해 본다. 평균은 정상인데 최대가 튀는 경우가 흔하다.</li>
+<li>급격한 변화가 <strong>언제 시작됐는지</strong> 시점을 찾는다.</li>
+<li><strong>알람 추이</strong>와 시점이 겹치는지 대조한다.</li>
+<li><strong>호스트 목록</strong>에서 해당 호스트로 내려간다.</li>
+</ol>
+<h2>주의할 점</h2>
+<ul>
+<li><strong>avg만 보고 판단하지 않는다.</strong> 평균은 짧은 스파이크를 숨긴다. max로 전환해 순간 부하를 확인한다.</li>
+<li>차트가 비어 있다고 장애가 아니다. 해당 아이템이 그 그룹의 호스트에 없을 수 있다.</li>
+<li>리포트 탭의 데이터는 배치가 생성한다. 최근 기간이 비어 있으면 리포트 배치 실행 이력을 확인한다(<strong>스케줄러</strong>).</li>
+<li>그룹 목록이 비었다면 권한 문제다. 관리자에게 호스트 그룹 데이터 범위를 요청한다.</li>
+</ul>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>서버 모니터링</strong></li>
+<li><strong>호스트 그룹별 이벤트</strong></li>
+<li><strong>리포트 관리</strong></li>
+</ul>
+</body></html>

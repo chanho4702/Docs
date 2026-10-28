@@ -1,0 +1,11 @@
+2026-10-15 실행 원본
+Approval 기존 로직: 6 suites / 151 tests 통과
+check:bundle: OK
+Approval HEAD 0c52170 / Workforce HEAD 80e7d31 및 실행 당시 작업 트리
+
+신규 API 상호 호출·3LO 갱신·위임 인가·쓰기 예약·ACK·cursor는 미실행. 기존 프로퍼티 계약 테스트를 신규 API 성공 증거로 사용하지 않음.
+사용자와 개발 측 후속 시험의 실제 결과·판정·증거 칸은 Word 부록 B에 공란으로 제공.
+
+실행 명령
+npm test -- --runInBand --runTestsByPath src/resolver/worklogCertification/__test__/WorklogRequestService.test.js src/resolver/worklogControl/__test__/WorklogControlService.test.js src/resolver/worklogControl/__test__/WorklogControlGateway.test.js src/resolver/worklogHistory/__test__/WorklogHistoryService.test.js src/integration/workforce/__test__/writeGate.parity.test.js src/integration/workforce/__test__/certificationDoc.test.js --json --outputFile=tmp/stradvision-proposal-20261015/test-results.json
+npm run check:bundle

@@ -1,0 +1,71 @@
+---
+type: feature-map
+tags: [moveseye, feature-map, monitoring, hostgroup, chart, report]
+updated: 2026-10-19
+---
+
+# 인프라 모니터링 — 호스트 그룹·서버·네트워크·차트 조회·리포트
+
+> 기능 지도 [[무브스아이-기능-지도]] · 허브 [[moveseye]] · 링크는 `C:\solutions` 로컬 파일(file://)이라 이 PC에서만 열린다. 읽기용 사본은 [[2026-10-07-docs-reading-repo]].
+
+**한 줄** — 호스트 그룹(5탭)·서버·네트워크 모니터링, 차트 조회 방식(요약 문턱·증분 커서·사본 서빙), 헬스체크·라이브체크, 주·월 그룹 리포트, 리포트 관리(APM 탭 분리), 대용량 호출 방어.
+
+**상태** — 현행. ZM-136 차트 증분(09-14)·ZM-159 대용량 호출 방어(09-21)·ZM-167 리포트 관리 APM 탭 분리(09-22)까지 master 반영.
+
+## 정본 문서 (moveseye-docs)
+- [인프라 모니터링(상세 가이드)](file:///C:/solutions/moveseye-docs/guides/features/인프라-모니터링.md)
+- [서버 모니터링](file:///C:/solutions/moveseye-docs/guides/pages/모니터링/서버-모니터링.md)
+- [네트워크 모니터링](file:///C:/solutions/moveseye-docs/guides/pages/모니터링/네트워크-모니터링.md)
+- [호스트 그룹](file:///C:/solutions/moveseye-docs/guides/pages/모니터링/호스트-그룹.md)
+- [리포트 관리](file:///C:/solutions/moveseye-docs/guides/pages/설정/리포트-관리.md)
+- [모니터링 갱신과 SSE](file:///C:/solutions/moveseye-docs/technical/모니터링-갱신과-SSE.md)
+- [모니터링 데이터처리 개념](file:///C:/solutions/moveseye-docs/technical/모니터링-데이터처리-개념.md)
+- [ZM-130-131 차트 조회 다이어트](file:///C:/solutions/moveseye-docs/improvements/ZM-130-131-차트-조회-다이어트.md)
+- [ZM-136 차트 증분 조회](file:///C:/solutions/moveseye-docs/improvements/ZM-136-차트-증분-조회.md)
+
+## 설계·기획 (_workspace)
+- [plan_hostgroup-monitoring](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/plan_hostgroup-monitoring.md)
+- [report_zm-136_monitoring-chart-epic](file:///C:/solutions/_workspace/features/infra/chart-incremental/report_zm-136_monitoring-chart-epic.md)
+- [devdesign_zm-159-scale-call-guard](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_zm-159-scale-call-guard.md)
+- [devdesign_zm-159-c5-metric-completeness](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_zm-159-c5-metric-completeness.md)
+- [devdesign_zm-159-c7-truncation-notice](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_zm-159-c7-truncation-notice.md)
+- [devdesign_zm-159-c8-group-alert-scan](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_zm-159-c8-group-alert-scan.md)
+- [devdesign_zm-159-ta2-problem-cursor](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_zm-159-ta2-problem-cursor.md)
+- [INDEX_zm-159-scale-call-guard](file:///C:/solutions/_workspace/features/infra/scale-call-guard/INDEX_zm-159-scale-call-guard.md)
+- [backlog_zm-159-후속](file:///C:/solutions/_workspace/features/infra/scale-call-guard/backlog_zm-159-후속.md)
+- [tickets_scale-hardening](file:///C:/solutions/_workspace/features/infra/scale-call-guard/tickets_scale-hardening.md)
+- [devdesign_load-test-synthetic-mock](file:///C:/solutions/_workspace/features/infra/scale-call-guard/devdesign_load-test-synthetic-mock.md)
+
+## 계약 (_workspace/contract_*)
+- [contract_hostgroup-monitoring](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/contract_hostgroup-monitoring.md)
+- [contract_hostgroup-list-perf](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/contract_hostgroup-list-perf.md)
+- [contract_hostgroup-recently-viewed](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/contract_hostgroup-recently-viewed.md)
+- [contract_group-report](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/contract_group-report.md)
+- [contract_group-report-hosts](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/contract_group-report-hosts.md)
+- [contract_host-healthcheck](file:///C:/solutions/_workspace/features/infra/host-checks/contract_host-healthcheck.md)
+- [contract_host-livecheck](file:///C:/solutions/_workspace/features/infra/host-checks/contract_host-livecheck.md)
+- [contract_disk-current](file:///C:/solutions/_workspace/features/infra/host-checks/contract_disk-current.md)
+- [contract_disk-detail](file:///C:/solutions/_workspace/features/infra/host-checks/contract_disk-detail.md)
+- [contract_monitoring_chart_incremental](file:///C:/solutions/_workspace/features/infra/chart-incremental/contract_monitoring_chart_incremental.md)
+- [contract_report-management](file:///C:/solutions/_workspace/features/infra/report-management/contract_report-management.md)
+- [contract_report-management-apm-split](file:///C:/solutions/_workspace/features/infra/report-management/contract_report-management-apm-split.md)
+- [contract_monitoring-coverage](file:///C:/solutions/_workspace/features/zabbix-ops/monitoring-coverage/contract_monitoring-coverage.md)
+
+## 보고·검수·QA 증거
+- [zm-159_scale-call-guard(보고)](file:///C:/solutions/_workspace/features/infra/scale-call-guard/zm-159_scale-call-guard.md)
+- [zm-159 쉬운 설명](file:///C:/solutions/_workspace/features/infra/scale-call-guard/zm-159_쉬운-설명_무엇을-왜-고쳤나.md)
+- [review_zm-159-c1c2…c8·defects](file:///C:/solutions/_workspace/features/infra/scale-call-guard/review_zm-159-defects.md)
+- [review_hostgroup-detail](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/review_hostgroup-detail.md)
+- [review_hostgroup-problems-lightscan](file:///C:/solutions/_workspace/features/infra/hostgroup-and-reports/review_hostgroup-problems-lightscan.md)
+- [review_report-management-apm-split](file:///C:/solutions/_workspace/features/infra/report-management/review_report-management-apm-split.md)
+- [e2e_report-management-apm-split](file:///C:/solutions/_workspace/features/infra/report-management/e2e_report-management-apm-split.md)
+
+## 경험 노트 (Vault)
+[[host-group-feature/README]] · [[2026-06-17-custom-chart]] · [[2026-06-25-livecheck-disk-units]] · [[2026-09-14-zm136-chart-incremental-handover]] · [[2026-09-21-zm159-scale-call-guard]] · [[2026-08-21-monitoring-coverage-api]] · [[2026-08-21-monitoring-coverage-runtime-qa]] · [[2026-09-07-zabbix-load-next-steps]] · [[2026-09-22-zm151-156-backlog-sprint]] · [[moveseye-history-scan-held-budget]]
+
+## 열린 항목
+- ZM-159 후속: A-2 커서·16MiB·부하 시험(`backlog_zm-159-후속.md`)
+- 인터페이스 차트 실물 미확인
+
+## 이웃 영역
+[[이벤트와-알림]] · [[Zabbix-구성-관리]] · [[설정과-운영-기반]]

@@ -1,0 +1,172 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326913">가이드 홈</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047251">English</a></p>
+<h2>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>인력 상세 드로어</td>
+<td>「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>보유 스킬 편집</td>
+<td>「자원관리」 쓰기 (자기 팀원에 한해 <strong>팀장</strong>도 가능)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>보이는 인원은 관리자·PMO·PM이면 전사, <strong>팀장이면 자신이 이끄는 팀 인원</strong>입니다.</li>
+<li>스킬 선택지는 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173408343">7.6 스킬 관리</a>에서 「스킬 관리」 권한으로 정의합니다.</li>
+</ul>
+<p><strong>언제 쓰나</strong> — <strong>개인 단위로</strong> 누가 바쁘고 누가 여유인지, 어떤 스킬을 가졌는지 확인할 때.</p>
+<blockquote>
+<p><strong>[이미지 삽입 위치 · 추가 캡처 필요]</strong> 인력 현황 — ① 요약 카드(총 인원·여유·적정·과부하)와 마지막 집계 ② 필터(스킬·직무·등급·팀·직군·투입가능만) ③ 인력 표(가동률 밴드·완수율·작업량) ④ 행 클릭으로 열린 인력 상세 드로어.</p>
+</blockquote>
+<h2>상단 요약</h2>
+<p><strong>총 인원 · 여유 · 적정 · 과부하</strong> 카드와 <strong>마지막 집계</strong> 시각이 표시됩니다.</p>
+<blockquote>
+<p>가동률은 <strong>배치 집계</strong> 값입니다. 방금 등록한 인원이나 방금 쌓인 워크로그는 다음 집계 전까지 반영되지 않습니다. &quot;집계 데이터가 오래되었습니다&quot; 안내가 뜨면 그 시점 기준으로 해석하세요.</p>
+</blockquote>
+<h2>목록 컬럼</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>인력</td>
+<td>이름·아바타</td>
+</tr>
+<tr>
+<td>팀 / 직무 / 등급</td>
+<td>소속과 직무 정보</td>
+</tr>
+<tr>
+<td>가동률</td>
+<td>배치 집계 기준. 밴드(여유/적정/과부하 주의/과부하/실적없음)로 색 구분</td>
+</tr>
+<tr>
+<td>완수율</td>
+<td><code>소비시간 ÷ (소비 + 남은 작업량)</code>. <strong>완료 상태이며 최근 26주 안에 수정된 이슈만</strong> 집계</td>
+</tr>
+<tr>
+<td>작업량</td>
+<td>처리 / 남은 / 할당. 진행도 % = 처리 ÷ 할당</td>
+</tr>
+<tr>
+<td>할당 이슈</td>
+<td>담당·협업으로 연결된 이슈 수</td>
+</tr>
+<tr>
+<td>참여 프로젝트</td>
+<td>참여 중(미종료) 프로젝트 수</td>
+</tr>
+<tr>
+<td>보유 스킬</td>
+<td>등록된 스킬 태그</td>
+</tr>
+</tbody></table>
+<p><strong>필터</strong>: 스킬 · 직무 · 등급 · 팀 · 직군 · <strong>투입가능만</strong></p>
+<blockquote>
+<p>가동률 밴드의 경계값(과소 / 과부하 / 심한 과부하)은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342802">7.1 일반 설정</a>에서 조정합니다.</p>
+</blockquote>
+<h2>인력 상세 드로어</h2>
+<p>행을 클릭하면 오른쪽에 상세가 열립니다.</p>
+<table>
+<thead>
+<tr>
+<th>구역</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>부하</strong></td>
+<td>진행중 이슈 수, 남은 작업량(시간)</td>
+</tr>
+<tr>
+<td><strong>진행 중 작업</strong></td>
+<td>이슈별 상태·프로젝트·마감·참여 형태(담당/협업)·<strong>내 몫</strong></td>
+</tr>
+<tr>
+<td><strong>경험</strong></td>
+<td>프로젝트 참여 이력(역할·기간·상태)</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>&quot;내 몫&quot;은 근사치입니다.</strong> 여러 명이 참여한 이슈는 남은 작업량을 <strong>참여 인원으로 균등 분할</strong>한 1인 기대 몫으로 계산합니다. 실제 분담 비율과 다를 수 있습니다.</p>
+</blockquote>
+<h2>스킬 편집</h2>
+<p>드로어의 <strong>스킬 편집</strong>으로 보유 스킬을 지정합니다(쓰기 권한 필요).</p>
+<ul>
+<li>선택지는 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173408343">7.6 스킬 관리</a>에서 정의한 사전을 따릅니다.</li>
+<li>여기 등록한 값이 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173408318">6.4 프로젝트 배정</a>의 <strong>적합도</strong> 계산에 쓰입니다.</li>
+<li>본인 스킬은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172326921">마이페이지</a>에서도 직접 편집할 수 있고, 팀장은 마이페이지의 <strong>내 팀</strong>에서 팀원 스킬을 편집할 수 있습니다.</li>
+</ul>
+<h2>문제 해결</h2>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인과 해결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>가동률이 &quot;데이터 없음&quot;입니다</td>
+<td>아직 집계 전이거나 해당 기간 워크로그 실적이 없습니다</td>
+</tr>
+<tr>
+<td>일부 인원만 보입니다</td>
+<td>팀장 권한이면 자신이 이끄는 팀 인원만 보입니다</td>
+</tr>
+<tr>
+<td>스킬 필터에 원하는 스킬이 없습니다</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173408343">7.6 스킬 관리</a>에서 사전에 먼저 등록해야 합니다</td>
+</tr>
+<tr>
+<td>완수율이 낮게 나옵니다</td>
+<td>완료 상태 이슈 중 <strong>최근 26주 안에 수정된 이슈만</strong> 집계합니다. 완료일이 아닌 수정일 기준입니다</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>버튼·입력 항목과 처리 결과 상세</h2>
+<p>인력 현황은 허용된 사람들의 현재 부하·스킬과 프로젝트 이력을 확인하는 조회 화면입니다.</p>
+<table>
+<thead>
+<tr>
+<th>버튼·입력 항목</th>
+<th>기능·사용 조건·변경 대상</th>
+<th>결과 확인과 문제 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>역할·레벨·스킬·팀·하위 팀·가용만</td>
+<td>필터를 조합해 후보를 좁힙니다. 가용만은 현재 가동률·부하 기준이며 계정 접근 범위를 넓히지 않습니다.</td>
+<td>전체 열람 또는 담당 팀 범위를 확인하고 필터를 풀어 결과를 비교합니다.</td>
+</tr>
+<tr>
+<td>이름·인력 상세·작업·경험</td>
+<td>선택한 사람의 부하 요약, 진행 작업, 참여 프로젝트 이력을 엽니다.</td>
+<td>진행 작업의 분담 추정과 실제 워크로그를 구분합니다. 프로젝트 수는 종료 여부에 따라 다릅니다.</td>
+</tr>
+<tr>
+<td>스킬 편집·저장</td>
+<td>허용된 대상의 보유 스킬만 변경합니다. 역할·급여·권한을 바꾸는 동작은 아닙니다.</td>
+<td>저장 후 대상 이름과 스킬 목록을 확인합니다. 사전 항목 추가는 설정에서 별도로 수행합니다.</td>
+</tr>
+<tr>
+<td>가동률·업무량·완료율</td>
+<td>현재 부하 신호를 읽습니다. 자원 화면 완료율은 spent÷(spent+remaining) 기준이며 My Page의 이슈 개수 완료율과 다릅니다.</td>
+<td>완료 상태 작업은 최근 26주 안에 수정된 이슈를 대상으로 하며 완료일 기준 필터가 아닙니다. 공유 작업 분담 추정도 확인하고 업무량·생산성을 같은 의미로 해석하지 않습니다.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

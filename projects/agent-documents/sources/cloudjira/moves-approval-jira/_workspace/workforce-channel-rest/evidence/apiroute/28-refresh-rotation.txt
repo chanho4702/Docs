@@ -1,0 +1,4 @@
+# 2026-10-20T13:35:16+09:00 refresh 회전
+1차 refresh: 200 access 바뀜= true refresh 바뀜= true 
+옛 refresh 재사용: 200 새 토큰 발급됨
+T30-after-refresh 200 2687ms

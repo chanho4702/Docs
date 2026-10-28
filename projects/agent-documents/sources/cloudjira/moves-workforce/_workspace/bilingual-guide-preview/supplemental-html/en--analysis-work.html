@@ -1,0 +1,96 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342748">한국어</a></p>
+<h2>Purpose and access</h2>
+<p>Use work analysis to compare planned effort with recorded work and investigate estimation or delivery risks. Report read and access to the project are required. Planned effort comes from Jira Original Estimate; actual effort comes from worklogs. Hours are converted to MD using the configured hours per day.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Work analysis: overview charts, filters, issue table, and a selected issue&#39;s detail panel.</p>
+</blockquote>
+<h2>Overview charts</h2>
+<table>
+<thead>
+<tr>
+<th>Chart</th>
+<th>What it shows</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Estimation accuracy</td>
+<td>Actual-to-planned effort for completed issues with estimates. Unestimated and unfinished issues are excluded and counted separately</td>
+</tr>
+<tr>
+<td>Planned versus actual by assignee</td>
+<td>Summed planned and actual MD. Unassigned issues form a separate group. The overview shows at most 15 people; use the table for the full result</td>
+</tr>
+</tbody></table>
+<h2>Read the issue table</h2>
+<p>Filter by Jira space, assignee, status, or issue type. Excel export saves the current result.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Status, assignee, participants</td>
+<td>Ownership and collaborators</td>
+</tr>
+<tr>
+<td>Start date and due date</td>
+<td>Schedule</td>
+</tr>
+<tr>
+<td>Planned effort, MD</td>
+<td>Original Estimate converted to MD</td>
+</tr>
+<tr>
+<td>Expected finish</td>
+<td>Approximation based on planned effort, resources, and working days</td>
+</tr>
+<tr>
+<td>Actual effort, MD</td>
+<td>Accumulated worklogs, with a consumption bar and an overrun badge above 100%</td>
+</tr>
+<tr>
+<td>Variance</td>
+<td>Actual minus planned effort; shown for completed issues</td>
+</tr>
+</tbody></table>
+<p>The effort colors distinguish within plan, overrun, and severe overrun. The standard ranges are at or below 100%, 100–130%, and at least 130%. A positive variance means more effort than planned; a negative variance means less.</p>
+<h2>Investigate an issue</h2>
+<p>Select an issue to open its cumulative effort chart and original worklogs. The actual line is compared with a uniform planned line between the start and due dates. Today, due date, expected finish, and actual-minus-planned variance provide context.</p>
+<p>Use worklog records to identify who worked, when, and for how long. High effort can indicate underestimated scope, rework, or blockers; it does not prove completion. An expected finish after the due date is a reason to review the plan.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Work analysis compares project issues&#39; plans and cumulative effort, with worklog details for investigation.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Search / space-work filters / pages</td>
+<td>Narrow the issue list and move between pages without editing worklogs.</td>
+<td>Distinguish filtered-list results from whole-project figures.</td>
+</tr>
+<tr>
+<td>Planned MD / actual MD / deviation / estimated end</td>
+<td>Plan uses Original Estimate; actual uses Jira worklogs. Estimated end is derived from resources, plan, and workdays, not a guaranteed due date.</td>
+<td>Distinguish over/under deviations for done issues from missing plans. Conversion uses working-hour settings.</td>
+</tr>
+<tr>
+<td>Select row / View Analysis / expand / close</td>
+<td>Inspect the selected issue&#39;s chart and worklogs in a drawer or expanded view. Closing does not delete data.</td>
+<td>Check selected key/detail title and compare actual authors/durations.</td>
+</tr>
+<tr>
+<td>Export Excel</td>
+<td>Export analysis-list data, separately from organization-wide Worklog Export.</td>
+<td>Check filters, targets, and units; interpret exported data within any partial-query limits.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

@@ -1,0 +1,55 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205357057">한국어</a></p>
+<p>Monitor storage, export finished records past retention, and then clean them up. Available to app administrators. Deletion cannot be undone.</p>
+<p><strong>Location:</strong> Settings → <strong>Data management</strong>. Review administration events in <strong>Change log</strong>.</p>
+<h2>Check storage</h2>
+<p>Compare usage with the limit shown. The current app displays a 1 GiB reference, with warning at 80% and critical at 90%. Sizes and row counts are statistical estimates. Refresh and check the measurement time.</p>
+<h2>Export and clean up records</h2>
+<ol>
+<li>Choose retention according to organizational rules: forever, or 1, 3, 5, or 10 years. The default is three years.</li>
+<li>Check the count and oldest date of records past retention. Open requests are excluded.</li>
+<li>Select <strong>Export to Excel</strong> and wait for download completion.</li>
+<li>Open the file and check the <strong>Requests, Approvers, and History</strong> sheets. Store it in the approved records location.</li>
+<li>Compare the last-export date and count with the file, then select the control to delete the exported records. Recheck the target and confirm deletion.</li>
+<li>Check the result, remaining count, and <strong>Change log</strong>.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot · MA-20</strong> — Storage, retention, last export, and deletion scope in data management.</p>
+</blockquote>
+<h2>Retention and deletion scope</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Finished approval records</td>
+<td>Never automatically deleted for age alone. Manual deletion is limited to the confirmed export scope.</td>
+</tr>
+<tr>
+<td>Open requests</td>
+<td>Excluded from retention cleanup.</td>
+</tr>
+<tr>
+<td>Related decisions, history, inbox entries, notifications</td>
+<td>Removed with the request.</td>
+</tr>
+<tr>
+<td>In-app notifications</td>
+<td>Automatically cleaned up after 180 days.</td>
+</tr>
+<tr>
+<td>Settings change log</td>
+<td>Automatically cleaned up after one year.</td>
+</tr>
+</tbody>
+</table>
+<p>Records that pass retention after export are outside the old deletion scope. Export again to include them. The inbox list export has different scope and sheets from this retention export.</p>
+<h2>Read the change log</h2>
+<p>Review time, user, area, action, and detail. It records policy, space, line, group, registration, administrator, and retention actions. Request-specific decisions belong in the request's audit timeline instead.</p>
+<blockquote>
+<p><strong>Screenshot · MA-21</strong> — Change-log columns and test policy/export events.</p>
+</blockquote>
+<p>If deletion is unavailable, first check whether export of that range completed. Do not delete before preserving the records you need.</p>

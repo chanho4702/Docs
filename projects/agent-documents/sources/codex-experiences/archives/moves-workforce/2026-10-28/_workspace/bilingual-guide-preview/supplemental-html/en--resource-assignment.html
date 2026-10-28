@@ -1,0 +1,89 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173408318">한국어</a></p>
+<h2>Required access</h2>
+<p>Project read or Resource management read opens projects and their work. The candidate list requires Resource management read and is restricted to the permitted organizational people scope. Assignment requires Project write or Resource management write; changes to Jira assignees also require Jira assignment permission. Project required skills use Project write, and people&#39;s skills use the applicable resource or self/team-lead permission.</p>
+<p>Read-only resource access does not permit assignment. Candidates must be registered in People management. Project visibility scope still applies.</p>
+<h2>Three panels</h2>
+<table>
+<thead>
+<tr>
+<th>Panel</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Projects</td>
+<td>Search and status filters; due-date signals, unassigned or overdue work, and options to include ended or over-schedule projects</td>
+</tr>
+<tr>
+<td>Work</td>
+<td>Open issues and currently allocated people for the selected project</td>
+</tr>
+<tr>
+<td>Organization-wide people</td>
+<td>Roles, levels, skills, fit, load signals, and assignment actions</td>
+</tr>
+</tbody></table>
+<p>Collapse panels from their headers or resize their boundaries. Date labels such as D-7, D-DAY, or D+3 provide schedule context.</p>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>06-resource-assignment.jpg</code> — Project, work, and candidate panels with fit and load signals.</p>
+</blockquote>
+<h2>Assign a person</h2>
+<ol>
+<li>Select a project.</li>
+<li>Compare candidate skills, fit, and load.</li>
+<li>Select Assign, then choose issues or add the person as a project member without assigning an issue.</li>
+<li>For a team, review the Team assignment confirmation and its target count.</li>
+<li>Verify project membership and Jira assignee changes separately.</li>
+</ol>
+<p>Fit compares project required skills with the person&#39;s registered skills. It is not meaningful if either set is missing. Required skills can be configured in the project form or this screen; people&#39;s skills are maintained in the people overview or applicable My Page path.</p>
+<blockquote>
+<p><strong>[Image insertion point]</strong> <code>06-resource-work-picker.jpg</code> — Issue selection in the assignment dialog. Distinguish project membership from changing a Jira assignee.</p>
+</blockquote>
+<h2>Team assignment and removal</h2>
+<p>Already assigned members are excluded. Review the team, person count, and project before execution. There is no bulk cancellation: remove people individually. Removing project membership does not automatically clear the assignee on already assigned Jira issues; read the affected-issue notice.</p>
+<h2>Allocation graph</h2>
+<p>The graph links projects, teams, and people using project membership, not worklog contribution. A person who has not started work can still appear. Filters include project and progress state, with an option for ended projects. Large graphs initially limit projects and provide Show all. Selecting a person opens details.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Allocation graph with project, team, and person nodes, filters, and an example of one person linked to multiple projects.</p>
+</blockquote>
+<p>Project-detail work assignment begins with that project&#39;s people. This screen starts with the broader candidate pool and compares multiple projects. Use project analysis to inspect actual contribution.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Project Assignment adds permitted candidates to project rosters or assigns Jira work as assignee/coworker. These are separate actions.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Project search / status / include closed</td>
+<td>Choose a project. Closed/overdue inclusion broadens the project candidates.</td>
+<td>Changing the selected project changes fit requirements; check project visibility scope.</td>
+</tr>
+<tr>
+<td>Candidate team / descendants / skill fit</td>
+<td>Compare permitted people by membership and required-skill fit. The Company resources label does not guarantee access to every employee.</td>
+<td>Inspect fit, workload, and unregistered-user notices together.</td>
+</tr>
+<tr>
+<td>Assign to project / Assign whole team</td>
+<td>Add the person or a team&#39;s unassigned members to the roster. Existing members are excluded.</td>
+<td>Review actual targets/results. Undoing requires individual roster removals.</td>
+</tr>
+<tr>
+<td>Set assignee / Add coworker / Confirm</td>
+<td>Choose issues and save an assignee/coworker, without automatically replacing roster registration.</td>
+<td>You can continue assigning Jira work after the non-member warning, but the project roster is not updated automatically. Add roster membership separately when required and verify both results. Jira access for assigning an issue differs from editing coworker properties.</td>
+</tr>
+<tr>
+<td>Remove roster member / assignment graph / Show all</td>
+<td>Remove roster relationships or inspect project/team/person assignments. The graph follows roster assignment, not actual logged work.</td>
+<td>Not-yet-started people can appear. Check Jira assignee relationships separately after removal.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

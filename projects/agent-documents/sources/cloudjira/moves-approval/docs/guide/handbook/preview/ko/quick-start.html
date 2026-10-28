@@ -1,0 +1,91 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>빠른 시작 — 첫 문서 승인 · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">본문으로 이동</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">로컬 검토본 · 게시 전</span><div class="search"><input id="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../en/quick-start.html">English ↗</a><button id="menu" class="menu" aria-expanded="false">목차</button></div></header><div class="layout"><nav class="sidenav" aria-label="문서 목차"><a class="navhome " href="index.html">한국어 가이드</a><h2>시작하기</h2><ul><li><a class="active" aria-current="page" href="quick-start.html">빠른 시작 — 첫 문서 승인</a></li><li><a  href="installation.html">설치와 사용 준비</a></li><li><a  href="glossary.html">개념과 상태 이해하기</a></li></ul><h2>사용자 가이드</h2><ul><li><a  href="page-approval.html">페이지 승인 요청</a></li><li><a  href="area-approval.html">영역 승인</a></li><li><a  href="inbox.html">승인 업무함</a></li><li><a  href="decisions.html">승인·반려와 일괄 승인</a></li><li><a  href="history-resubmit.html">수정·회수·재상신과 버전 이력</a></li><li><a  href="signature-pin.html">내 서명과 PIN</a></li><li><a  href="delegation.html">결재 위임과 대리 결재</a></li><li><a  href="stamp-box.html">문서의 결재란</a></li><li><a  href="certificate.html">결재 증명서 PDF</a></li><li><a  href="notifications.html">참조와 알림</a></li></ul><h2>관리자 가이드</h2><ul><li><a  href="admin-setup.html">관리자 초기 설정</a></li><li><a  href="admin-policy.html">전역 정책과 상태 표시명</a></li><li><a  href="admin-spaces.html">적용 스페이스와 개별 정책</a></li><li><a  href="admin-lines.html">결재선 관리</a></li><li><a  href="admin-groups.html">승인 그룹 관리</a></li><li><a  href="admin-access.html">사용자·관리자와 접근 권한</a></li><li><a  href="admin-data.html">데이터 보관·내보내기와 변경 이력</a></li></ul><h2>지원과 심사</h2><ul><li><a  href="faq.html">문제 해결과 지원</a></li><li><a  href="data-security.html">데이터·보안·개인정보</a></li><li><a  href="reviewer-guide.html">Marketplace 심사 안내</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; 시작하기</div><h1>빠른 시작 — 첫 문서 승인</h1><p class="lede">이 안내에서는 테스트 문서를 두 사람이 차례로 승인합니다. 요청자가 문서를 올리고, 첫 승인자와 최종 승인자가 각각 결정한 뒤 문서에서 결과를 확인합니다. 처음 설치한 사이트는 <a href="admin-setup.html">관리자 초기 설정</a>을 먼저 완료하세요.</p>
+<h2 id="section-0">준비할 것</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>준비 대상</th>
+<th>이 안내의 예시</th>
+<th>확인할 점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문서</td>
+<td>제품 운영 절차 — 검토용</td>
+<td>게시된 Confluence 페이지이며 요청자가 편집할 수 있어야 합니다.</td>
+</tr>
+<tr>
+<td>요청자</td>
+<td>작성자 A</td>
+<td>문서 편집 권한과 앱 접근 권한이 필요합니다.</td>
+</tr>
+<tr>
+<td>승인자</td>
+<td>검토자 B, 책임자 C</td>
+<td>두 사람 모두 문서를 볼 수 있어야 합니다.</td>
+</tr>
+<tr>
+<td>승인 순서</td>
+<td>1단계 B → 2단계 C</td>
+<td>두 사람을 같은 단계에 넣지 않습니다.</td>
+</tr>
+<tr>
+<td>마감</td>
+<td>검토 가능한 미래 시각</td>
+<td>예시 날짜를 그대로 쓰지 말고 실제 일정을 정합니다.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-1">1. 요청자가 문서 승인 요청하기</h2>
+<ol>
+<li>게시된 테스트 문서를 열고 제목 아래 <strong>승인 요청</strong>을 누릅니다.</li>
+<li><strong>승인자 직접 선택</strong>에서 B를 첫 단계에 넣습니다. <strong>단계 추가</strong>로 두 번째 단계를 만들고 C를 넣습니다.</li>
+<li>단계 이름을 각각 <code>내용 검토</code>, <code>최종 승인</code>으로 입력합니다. 각 단계의 필요한 승인 수가 1인지 확인합니다.</li>
+<li>마감일과 요청 메모를 입력합니다. 예: <code>운영 절차와 담당자 정보를 검토해 주세요.</code></li>
+<li>문서 안에 진행 상태를 보이려면 <strong>문서 맨 위에 결재란 추가</strong>를 선택하고 <strong>승인 요청</strong>을 누릅니다.</li>
+<li>요청이 만들어진 뒤 승인 대상 버전과 1단계 진행 상태를 확인합니다. 결재란이 새로 들어갔다면 페이지 버전이 하나 올라갑니다.</li>
+</ol>
+<h2 id="section-2">2. 승인자가 차례대로 결정하기</h2>
+<ol>
+<li>B가 Confluence <strong>앱 → Moves Approval → 내 차례</strong>를 엽니다.</li>
+<li>요청 행을 열고 문서 내용, 요청 메모와 승인 대상 버전을 확인한 뒤 <strong>승인</strong>합니다. PIN 필수 정책이 켜져 있다면 먼저 <a href="signature-pin.html">내 서명과 PIN</a>을 설정합니다.</li>
+<li>상세 화면에서 B의 결정이 기록되고 C의 단계가 열렸는지 확인합니다.</li>
+<li>C가 자신의 <strong>내 차례</strong>에서 같은 요청을 열어 검토하고 승인합니다. C는 첫 단계가 끝나기 전에 결정할 수 없습니다.</li>
+</ol>
+<h2 id="section-3">3. 요청자가 결과 확인하기</h2>
+<p>문서를 다시 열어 결재란과 제목 아래의 승인 상태를 확인합니다. 승인 상세에서 두 단계의 처리자·결정 시각을 확인하고, 필요한 경우 <a href="certificate.html">결재 증명서 PDF</a>를 내려받습니다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>완료 확인</th>
+<th>기대 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>승인 순서</td>
+<td>B가 처리한 뒤 C가 처리했습니다.</td>
+</tr>
+<tr>
+<td>최종 상태</td>
+<td>승인 완료입니다.</td>
+</tr>
+<tr>
+<td>승인 버전</td>
+<td>승인 대상 버전이 명시되어 있습니다.</td>
+</tr>
+<tr>
+<td>결정 이력</td>
+<td>두 사람의 결정과 시각이 남습니다.</td>
+</tr>
+</tbody>
+</table></div>
+<p>승인 뒤 문서를 수정했다면 현재 버전까지 승인된 것은 아닙니다. <a href="history-resubmit.html">수정·회수·재상신</a>을 확인하세요.</p>
+<h2 id="section-4">진행되지 않을 때</h2>
+<ul>
+<li>B가 요청을 찾지 못하면 <strong>내 차례</strong> 탭과 필터, 페이지 열람 권한을 확인합니다.</li>
+<li>C에게 결정 버튼이 없으면 첫 단계가 완료됐는지 확인합니다.</li>
+<li>요청이 반려되거나 만료됐다면 종료된 요청을 되돌리지 않고 새 요청을 만듭니다.</li>
+<li>결재란이 없어도 요청은 만들어졌을 수 있습니다. 다시 요청하기 전에 승인 상세를 먼저 확인합니다.</li>
+</ul>
+<div class="pager"><span></span><a href="installation.html"><small>다음 문서 →</small>설치와 사용 준비</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>이 문서에서</strong><a href="#section-0">준비할 것</a><a href="#section-1">1. 요청자가 문서 승인 요청하기</a><a href="#section-2">2. 승인자가 차례대로 결정하기</a><a href="#section-3">3. 요청자가 결과 확인하기</a><a href="#section-4">진행되지 않을 때</a></aside></div><script>const items=[{"title":"빠른 시작 — 첫 문서 승인","text":"두 단계 승인 예제로 처음부터 끝까지 따라 합니다.","url":"quick-start.html"},{"title":"설치와 사용 준비","text":"앱 설치와 세 가지 진입점을 확인합니다.","url":"installation.html"},{"title":"개념과 상태 이해하기","text":"요청·단계·버전과 상태의 의미를 구분합니다.","url":"glossary.html"},{"title":"페이지 승인 요청","text":"페이지 전체의 승인자·순서·마감을 정합니다.","url":"page-approval.html"},{"title":"영역 승인","text":"문서 일부를 별도 대상으로 승인받습니다.","url":"area-approval.html"},{"title":"승인 업무함","text":"내 차례와 내 요청을 찾고 목록을 내보냅니다.","url":"inbox.html"},{"title":"승인·반려와 일괄 승인","text":"문서를 검토하고 개별·일괄 결정을 처리합니다.","url":"decisions.html"},{"title":"수정·회수·재상신과 버전 이력","text":"수정된 버전의 재승인과 이전 이력을 관리합니다.","url":"history-resubmit.html"},{"title":"내 서명과 PIN","text":"도장 이미지와 결정 확인용 PIN을 설정합니다.","url":"signature-pin.html"},{"title":"결재 위임과 대리 결재","text":"기간을 정해 대리인에게 결재를 맡깁니다.","url":"delegation.html"},{"title":"문서의 결재란","text":"문서와 템플릿에 결재란을 배치합니다.","url":"stamp-box.html"},{"title":"결재 증명서 PDF","text":"종료된 결재의 버전과 결정 증빙을 보관합니다.","url":"certificate.html"},{"title":"참조와 알림","text":"참조 역할과 앱·Confluence 알림을 구분합니다.","url":"notifications.html"},{"title":"관리자 초기 설정","text":"사용자가 첫 승인을 처리할 수 있게 준비합니다.","url":"admin-setup.html"},{"title":"전역 정책과 상태 표시명","text":"마감·알림·서명·접근 기본값을 정합니다.","url":"admin-policy.html"},{"title":"적용 스페이스와 개별 정책","text":"허용 스페이스와 개별 정책을 설정합니다.","url":"admin-spaces.html"},{"title":"결재선 관리","text":"반복되는 승인 순서를 저장합니다.","url":"admin-lines.html"},{"title":"승인 그룹 관리","text":"그룹 구성과 전원·1인 승인 조건을 정합니다.","url":"admin-groups.html"},{"title":"사용자·관리자와 접근 권한","text":"사용자 명부와 설정 관리 권한을 정합니다.","url":"admin-access.html"},{"title":"데이터 보관·내보내기와 변경 이력","text":"보관 기록을 내보내고 정리하며 변경을 추적합니다.","url":"admin-data.html"},{"title":"문제 해결과 지원","text":"증상별로 원인을 좁히고 지원을 요청합니다.","url":"faq.html"},{"title":"데이터·보안·개인정보","text":"데이터·권한·보관과 다운로드 범위를 확인합니다.","url":"data-security.html"},{"title":"Marketplace 심사 안내","text":"설치부터 권한·라이선스까지 심사 절차를 재현합니다.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="검색 결과가 없습니다.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

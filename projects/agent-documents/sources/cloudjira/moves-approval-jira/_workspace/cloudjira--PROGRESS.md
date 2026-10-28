@@ -1,0 +1,176 @@
+# PROGRESS
+상태: DONE
+갱신: 2026-10-13 by claude (linked-mode-ux 재검증 1 PASS, 커밋 전)
+## 현재
+slug: linked-mode-ux · Phase: 5 재검증 1 PASS(실패 0) · 커밋 전 — 다음은 (사람) 커밋 → 승인 앱 먼저 배포 → `_workspace/linked-mode-ux/04_spike_todo.md` A절 실측(U-1·U-7·U-4·U-5 최우선)
+(이전) slug: field-change-approval · Phase: 5 검증 완료(PASS) · 진행: 로드맵 표 8행 전부 검증 통과 — 남은 일은 배포·실측(사람) 또는 로드맵 행 추가
+## 다음 할 일
+1. (사람) 로드맵 표에 행이 추가되면 그 slug 의 Phase 1 준비부터 시작. 표가 그대로면 무인 회차는 할 일 없음 — 상태 DONE 유지
+2. (사람) 배포 회차: forge 등록·`--approve MAJOR_VERSION_RULE`·`--upgrade` 후 각 기능 `04_spike_todo.md` 최우선 실측(P21·P28·X21·H4·H15·W1·W2·W5·I2·C1~C3·C5·C16·C17)
+3. (사람) QUESTIONS 보안 확인 대기: Q72(asApp 1번 확장)·Q90·Q91, 그 밖 기본 가정 질문 답
+4. (선택, 백엔드 회차) field-change-approval 권고 — 보관 내보내기 `fieldChange` 에 `fieldName`·`fromDisplay`·`toDisplay` 추가(우선), R1(완료·상신 탭 과거 요청에 새 요청 값 표시)·R4(`supersedeOlder` 를 승인 요청만으로)·R5(그룹 키 결재선 다시 적용 자격)·R6(TargetRegistry 주석)
+## 주의 (다음 회차에 알릴 것)
+- field-change-approval 검증 요지
+  - PASS. 필수 수정 1건 검증자가 처리: `FieldChangeRepository.displayFor` 에 `commit_state='LIVE'` 조건 누락(생성 실패 잔존 부속 행이 결재 중 요청에 다른 값으로 붙음) → 조건 추가 + 회귀 테스트 1
+  - 권고 R1·R4·R5·R6, 보관 내보내기 표시값은 권고(우선). C24 는 미검증 유지. 새 질문 없음
+- field-change-approval 프론트 요지
+  - 신규 `static/ui/src/features/fieldChange/`(이슈 섹션·요청 폼 lazy·상세 헤더 다시 적용·규칙 관리), 엔트리 3곳·manifest·src 무변경. 쿼리키 `fieldChangeKeys`
+  - 연결: issue 엔트리 세 번째 칸, ••• 모달 종류 "필드 변경"·decide `apply` 결과 안내·`FIELD_CHANGE_CONFLICT` 재조회, 업무함 행/엑셀/일괄 승인 applyStatus 건수, 증명서 최상위 `fieldChange`, 알림·설정 이력·보관 엑셀
+  - 지시와 다름: 알림 kind 2 키 미추가(패널은 templateKey 만 씀), 알림 템플릿에 `{title}` 추가, 추가 키(적용 상태 6 등) — F-D1~F-D9
+  - issue 엔트리 7.7→10.9KB gz(C22). 미검증 C20~C24, QUESTIONS Q100(최종 승인 직후 결과 안내 1회)
+  - 백엔드 요청 미처리: 보관 내보내기 `fieldChange` 에 필드 이름·표시값 추가, 앱 밖 변경 행위자 계정 종류(C24)
+- field-change-approval 백엔드 요지
+  - 신규: `src/domain/fieldChange/`·`src/resolver/fieldChange/`·`FieldChangeTargetAdapter`·DDL `fieldChange.sql.js`(v033~v035). resolver 신규 8 3단계 등록(계약 테스트 통과), asApp 추가 없음·AGENTS.md 무변경
+  - 계약 차이 D1~D10: D1 미사용 프로젝트도 `fields[]`(전부 불가)·D2 단일 선택 옵션 없으면 폼 `options:null`, 생성 시 `FIELD_CHANGE_OPTIONS_UNAVAILABLE`·D3 적용 실패/비대상이면 `decideApproval.apply=null`·D4 증명서 `target.fieldChange=null`, 최상위 `fieldChange`·D5 사이트 규칙 필드 SQL 선조회(Jira ≤3회)·D6 다시 적용 자격 = 결재선 전원+대리·D7 검색어 2자 미만 빈 목록, 80자 초과 `INVALID_TARGET`·D8 effect 저장값 `EXPIRED_PENDING`·D9 `afterDecide` 옵션 `notify`(순환 import 해소, `moduleCycle.test.js`)·D10 이력 라벨 `detail.event.field_applied/apply_failed/apply_conflict`
+  - 권고: 어댑터에서 알림·업무함 서비스 import 금지 규약을 레지스트리 주석에 적기(미처리)
+  - 미검증 C16~C19 추가(다른 프로젝트 필드 id 400·상관 서브쿼리 TiDB·PUT 3초 상한 후 실제 적용·일괄 승인 예산 15초). 배포 최우선 C1·C2·C3·C5 그대로
+- field-change-approval 설계 요지
+  - resolver 신규 8(`getIssueFieldChanges`·`getFieldChangeForm`·`searchFieldChangeUsers`·`createFieldChangeApproval`·`applyFieldChange`·`listFieldChangeRules`·`saveFieldChangeRule`·`deleteFieldChangeRule`)·변경 9(`decideApproval` 응답 `apply`, `bulkApprove` `applyStatus` 등). 신규 에러 코드 12
+  - 엔진: 상태 머신·derive 무변경. `TargetKind.FIELD_CHANGE`·`ExpiryReason.FIELD_CHANGED`·EventType 3·scopeKey 빌더·선택 훅 `afterDecide`(일괄 승인 시간 예산 전달)
+  - scopeKey `FIELD_CHANGE:{issueId}:{fieldId}`. 새 요청 시 적용 안 된 이전 승인은 SUPERSEDED(적용 가능한 승인도 필드당 하나)
+  - v033 `field_change_rule`·v034 `field_change_request`(이전/새 값·적용 상태)·v035 `field_change_bypass`. 엔트리 3곳·manifest·scope 무변경, asApp 추가 없음(AGENTS.md 무변경, §6.3 문안만)
+  - 적용은 최종 결재자 asUser. 실패 시 승인 유지 + 요청자·결재자·Jira 관리자 "다시 적용"(누른 사람 asUser). 충돌: 결정 직전 = 만료(FIELD_CHANGED)·결정 거부, 승인 후 적용 직전 = CONFLICT 미적용, 조회·트리거 = 결재 중 만료. 적용 멱등은 조건부 UPDATE + 토큰
+  - QUESTIONS Q90(적용 주체)·Q91(되돌리기) 보안 — 사람 확인 필요, Q92~Q97 기본 가정. 미검증 C1~C15, 배포 최우선 C1·C2·C3(트리거 changelog 형식)·C5(asUser PUT 실패 코드)
+  - 용량: 이번 기능 연 ~71MB, 누적 연 ~465MB → 3년 보관 시 1GiB 초과 가능. 보관 정책 Q95 필요. 차단 가이드는 "요청자 역할 편집 권한 회수, 결재자 유지"
+- issue-approval 검증 요지
+  - PASS, 필수 수정 0. changeSinceRequest·canResubmit·canRequest·notAvailableReason·isStale 등 shape 정합, ISSUE/TRANSITION 비혼합 5층 확인, supersede·cancel 가드 확인
+  - 권고 R1(ISSUE 재상신 문구 "새 버전으로" → "다시 상신")·R2(••• 모달 일반 승인 상세에서 종류 선택 복귀 없음)·R3(describe 실패 시 changelog 매번 조회)·R4(이전 회차 요청 이중 조회)·R5(changelog 호출량 실측)
+  - 새 질문 없음(Q88·Q89 기존), 미검증 I1~I18 그대로. 배포 우선 I2·I6·I8/I10·I11·I15·I17
+- issue-approval 프론트 요지
+  - 엔트리 3곳·src 무변경. 신규 `features/issueApproval/`(모델·섹션·종합 화면), 변경 `entries/issue.jsx`·`entries/modal.jsx`·`transitionModel.js`·`ApprovalDetail.jsx`·`RequestForm.jsx`, i18n `issueApproval.json` + D1 4건
+  - ••• 모달: 종류 선택 → 같은 모달 안 일반 승인 폼·상세 / 상태 변경 승인 폼, 취소 시 종류 선택으로. `ALREADY_OPEN`·`RESUBMIT_NOT_ALLOWED` 면 재조회 후 상세
+  - D6 경고 문구를 한 문장 대신 줄 단위 조합(F-D2). 재상신 버튼은 서버 `canResubmit` 만 따름
+  - 미검증 I15(모달 medium 폭)·I16(이슈 요약 두 칸 높이·번들 7.7KB gz)·I17(••• 모달 요청 후 이슈 요약 즉시 갱신 없음, 포커스 재조회 의존)·I18(필드명 Jira 원문). 새 질문 없음
+- issue-approval 백엔드 요지
+  - 신규: `src/domain/issue/changeSince.js`·`IssueChangeReader`(asUser changelog)·`IssueApprovalChangeService`. 변경: ApprovalService(supersede 요청자 가드·canResubmit `|| canEdit` 제거·cancel 대상 열람 확인)·IssueTargetAdapter·JiraPermission·onIssueChanged(두 처리 각자 try/catch, `createOnIssueChanged` export)·NotificationService·ErrorCodes·manifest(••• title "Request approval")·DESIGN §2 ④ 한 줄
+  - 신규 resolver·테이블·마이그레이션·scope·엔트리 없음(v032 유지), asApp 추가 없음
+  - D3 프로젝트 사용 여부 못 읽으면 막음, D4 새 요청 가능할 때만 조회, D7 기준 시각과 같은 시각 변경은 "이후" 아님, D8 회수 열람 확인은 Jira 관리자도 적용·미등록 대상 종류 회수 `INVALID_TARGET`(=Q88)
+  - 미검증 I1~I14(04_spike_todo.md), 새 질문 Q88·Q89
+- issue-approval 설계 요지
+  - 상태 머신 무변경. 엔진에 선택 훅 `changeSince` 하나 추가. 수정 감지는 이슈 `updated` 1차 필터 → 기준 시각 이후일 때만 changelog, 결과는 저장하지 않고 조회 때 계산(Jira 호출 대부분 0회)
+  - 재상신: 이전 요청 SUPERSEDED + 새 요청 `prev_request_id`. 승인·반려로 끝난 이전 요청도 자동 연결
+  - 현재 코드 구멍 2건(백엔드가 고칠 것): `ApprovalService.supersede` 요청자 미확인, `cancelApproval` 대상 열람 미확인
+  - ISSUE/TRANSITION 비혼합 근거는 설계 §3.4(dedupe 접두·조회 조건·부속 JOIN·어댑터 선택·쿼리키). I4(Forge↔Jira 시계 차이) 크면 `v033_alter_*` 경로(§5)
+  - QUESTIONS Q81~Q87 추가(전부 기본 가정), 미검증 I1~I10(설계 §10)
+- worklog-history 검증 요지
+  - PASS, 필수 수정 0. asApp 은 사유 3종(trigger/sweep/project) 트리거·스윕 경로 한정, APP 쓰기 경로는 asUser. 이력 조회 형제 resolver 전부 본인/팀장/관리자 + 건별 permissions/check 로 좁힘
+  - 권고 R1(Q72 사람 확인 전)·R2(=Q80 수집 끔 시 탭 이력 숨김)·R3(탭 호출 증가, H22)·R4(제한 공개 워크로그 시작·시간 노출 — H14 후 재판단)·R5(JobLease 중복)·R6(NOT IN 서브쿼리)
+  - QUESTIONS Q80 추가, 미검증 H22 추가
+- worklog-history 프론트 요지
+  - 엔트리 추가 없음(3곳 무변경), src 무변경. 감사 검색은 설정 탭(lazy `importWithReloadOnce`), 보관 정리는 데이터 관리 탭
+  - 탭 이력은 표 아래 패널 하나(Q78), 감사 결과는 표 대신 공용 이력 목록, 사용자 필터는 단일 검색 Select
+  - 감사 엑셀 200건씩·10,000건 상한 잘림 안내, 내보내기 파일 생성 후에만 confirm, 삭제는 `remaining` 0 까지 반복
+  - `PERMISSION_TARGET_VIEW_DENIED` 이력 전용 문구, `masked` 문구는 제한 공개·열람 불가 이슈 공통
+  - 미검증 H20(탭 iframe 높이)·H21(설정 탭 11개 넘침), 질문 Q78·Q79
+- worklog-history 백엔드 요지
+  - 계약 차이 D1~D14 는 02_backend_report.md. 워크로그 상세 필드 3개는 `detail:true` 요청 때만(D1), 미러 `last_changed_at` 은 관측 시각(D3), APP 쓰기 경로 프로젝트 id 는 asUser(D13)
+  - APP 출처 기록은 Gateway 가 아니라 `WorklogService` 에(§4.1). Q72 기본 가정 (a)를 AGENTS.md asApp 1번에 "사람 확인 전" 표시와 함께 반영
+  - 미검증 H15~H19 추가. 최우선 H15(설명 없는 워크로그 `comment` 생략 = 빈 설명 가정, asApp 미제공 H2 와 구분 불가) — 배포 회차에 H4 와 함께 확인
+  - 새 질문 없음
+- worklog-history 설계 요지
+  - 미러(`worklog_mirror`)는 타임시트 스냅샷과 합치지 않는다(스냅샷은 제출 기간만·워크포스 계약 형식 고정, §1.1)
+  - 중복 방지: 이력 PK `(worklog_id, seq)` = 결정적 id, 미러 CAS(`rev = rev + 1`). 같은 이벤트·이벤트/스윕 경합은 두 번째가 차이 0 으로 무기록, 동시 처리는 INSERT IGNORE 후 진 쪽이 남은 차이만 다음 seq
+  - 용량 148MB/년(목표 150 — 여유 거의 없음). 바뀐 필드만 싣기·작성자=행위자는 `'='`·설명 지문 11자·프로젝트 인덱스 없음 전제. 원문 보관 켜면 +약 54MB
+  - 배포 최우선 실측 H4: 우리 화면 쓰기 응답(asUser)과 asApp `worklog/list` 값 표현이 다르면 APP 쓰기마다 가짜 수정 행. 구조적 한계 L1~L6(미관측 워크로그 삭제는 기록 없음 등)
+  - 새 에러 코드 없음. 이력 수정 resolver 없음, 삭제는 내보내기 확정 범위의 보관 정리 하나
+- transition-approval 프론트 요지
+  - 요청에 steps·flowId 를 보내지 않는다 — 결재선은 규칙 Flow 읽기 전용 표시(Q56)
+  - modal 엔트리: ••• 메뉴 진입 시 목록→폼/상세 같은 모달 안 전환, `TRANSITION_STATE_CHANGED` 면 상세 재조회. projectSettings 는 정적 안내 → 규칙 관리 화면
+  - issue 엔트리 첫 로드 공유 청크 포함 ~206KB(gz) — 상시 로드라 배포 후 실측(X30)
+  - 미검증 X27~X31, 질문 Q64(issuePanel 병행)·Q65(전역 끄기 확인 단계). 선택 권고: 증명서 이력 사유 열이 `TRIGGER` 원시 코드 표시
+- transition-approval 백엔드 요지
+  - 배포 최우선 X21: validator payload 에 목적 상태 id(`transition.to.id`)가 없으면 통과 처리 → 강제가 사실상 꺼짐. 첫 배포에서 `[VALIDATOR] PASS_NO_ISSUE` 로그 확인. X22~X26 은 04_spike_todo.md
+  - 결정 직전 이슈 조회 404 는 만료하지 않고 건너뜀(asUser 로 삭제·권한 없음 구분 불가), 삭제 만료는 트리거에서만
+  - 전역 비상 해제 정책 `transitionApprovalEnabled` 추가, `SettingsService.test.js` 의 commentNotifyEnabled 거절 단언을 허용으로 변경(Q3)
+- transition-approval 설계 요지
+  - scopeKey 를 DESIGN 의 `{transitionId}` 에서 **`{toStatusId}`** 로 변경(전환 id 는 워크플로 교체 시 바뀌어 규칙이 조용히 풀림). 규칙 키도 목적 상태 — X1(validator 입력에 목적 상태 id 가 오는지) 실측에 전부 걸림
+  - CONSUMED 는 새 상태가 아니다: 요청은 APPROVED 유지, 부속 행(`v030` transition_request)의 `consumed_at` + 결정적 id `CONSUMED` 감사 이벤트. `approval_request` 무변경
+  - validator 는 통과 시 "무장"만, 실제 상태 변경(트리거/changelog)을 보고 소비 확정 — 다른 validator 가 전환을 취소해도 승인이 소모되지 않게
+  - asApp 신규 사유 2곳(validator 이슈 조회 `transition-validate`, changelog 재확인) → AGENTS.md 허용 목록 4번
+  - 자동 전환은 범위 밖(Q54). 주기 스윕 없음
+- workforce-link 검증 요지
+  - F1: `inboxUrl.js` TEAM_KEY 정규식이 `wf:` 를 버리던 것 수정. F2: 엔진 경로 스캔에 `updated_at < now − 3분` 상한(게시 지연 최대 ~8분, Q51)
+  - 권고 R1(`yearsAround` 순수 헬퍼로)·R2(게시 안전망, Q50)·R3(publishStats 인덱스)·R4(연동 켬 판정 통일)·R5(값 같아도 재게시)·R6(InboxPage URL→payload 통합 테스트) 미처리
+- workforce-link 프론트 요지
+  - i18n 자리표시는 리포 `tFormat` 관례 `{count}`(설계서의 `{{count}}` 아님)
+  - 연동 토글은 `saveApprovalSettings({workforceLinkEnabled})` 단일 키. `wf:` teamKey 는 프론트가 가공하지 않고 그대로 되돌려 보냄
+  - `RejectAndSnapshot.test.jsx` 에 `@atlaskit/lozenge` 목 추가(배지 때문)
+- workforce-link 백엔드 요지
+  - `keyring.js` 는 비어 있다(설계 지시). 키 등록 전에는 수신 검증 전부 `UNKNOWN_KID` → 단독 경로. 절차는 04_spike_todo W21, `scripts/workforce-link/gen-key.mjs`(미실행)
+  - cloudId 는 관리 화면·연동 수신·트리거 컨텍스트 세 곳에서만 학습. 일일 대조는 `runSweep` 끝에 붙음
+  - 결재선 원천 선택·PM 단계는 `TimesheetRouting`, `TimesheetAccess` 무변경
+- workforce-link 설계 요지
+  - 서명: 접두 `"moves-link/1\n"` + 정규화 JSON `{v,typ,cloudId,ent,kid,iat,body}`. `cloudId`·`ent` 는 저장하지 않고 검증자가 읽은 위치로 재구성. 승인/워크포스 키 계열 분리. HMAC 대체 불가
+  - `worklogSetHash` = 기존 ts1 지문 그대로 + 기간 경계 `ps`·`pe` 동봉
+  - 게시: 핫패스는 아웃박스 1행 touch 만(예외 삼킴), 실제 asApp PUT 은 5분 스윕만. 엔진 경로는 `approval_request.updated_at` 스캔으로 잡음(엔진 무변경)
+  - 수신 읽기는 전부 asUser. 워크포스 게시물 sticky(Q41)
+  - 워크포스 리포 변경은 설계서 §12 명세만 — Q38 사람 승인 대기(승인 앱 쪽 구현은 막히지 않음)
+  - 배포 최우선 실측: W1(Forge Ed25519), W2(asApp 타 사용자 프로퍼티 쓰기 — 실패 시 게시 경로 전체 워크로그 단위로), W5(두 앱 프로퍼티 키 격리 — 격리면 연동 전체 단독 경로)
+- 에이전트 프롬프트에 "git mv·git add·stash 금지, 파일 이동은 일반 파일 조작으로"를 반드시 명시한다(스테이징 영역 = 이식 기준선).
+- period-lock 설계 요지
+  - 엔진(`src/domain/approval/**`, `ApprovalService`) 무변경, scopeKey 추가 없음 — 잠금은 승인 요청이 아니라 판정
+  - 워크로그 CRUD 5종은 asUser, 권한 축 `{issue:'view'}`, 쓰기 권한은 Jira 403 → 에러 코드. 쓰기 전 서버가 잠금 재판정
+  - 마감은 사이트 전체(`scope_key='SITE'`), `{admin:true}`. 자동 마감은 시각 계산으로 즉시 효력, 스윕은 기록만(감지보다 먼저)
+  - 미제출 기간 마감 후 변경은 `timesheet_close_drift` 플래그만(알림 없음, Q24). 미제출 기간의 삭제·이동은 감지 불가(구조적 한계)
+  - manifest scope `write:jira-work` 추가 → 배포 시 `--upgrade` 필요
+- 배포 회차 최우선 실측 항목
+  - **period-lock P28(프론트)**: issueActivity·issueAction 이 주는 확장 컨텍스트 — 탭·대화상자 분기 전체가 여기에 걸려 있다. P29~P33 은 04_spike_todo.md
+  - T18: v020·v021 Forge SQL 적용. 스윕 F1 수정(실패 시 cursor 유지, 같은 cursor 24회 연속 실패 시 건너뜀, cursor_value `"<since>|f<n>"`)과 함께 확인한다.
+  - T3: 스윕 `until==since` 반복 조회(R8).
+  - **period-lock P21(최우선)**: 워크로그 단건 조회 응답에 `issueId` 가 없으면 모든 수정·삭제가 `WORKLOG_NOT_FOUND`. 대안은 `self` URL 파싱(04_spike_todo.md)
+  - 이슈 워크로그 API 의 실제 페이지 크기. WorklogCollector 의 이슈당 호출 상한 40회는 설계에 없던 추가다.
+  - period-lock P1~P3: 제공자 선택 후 REST·자동화·모바일 경로 차단 여부, issueAction·issueActivity 의 `timeTrackingProviderEnabled` 표시 조건 지원
+- timesheet-approval 설계 요지
+  - 팀장 원천은 `timesheet_team_member`(role LEAD)다. 범위 판정은 `TeamScope`·`TimesheetAccess` 두 곳에서만 한다.
+  - CHANGED_AFTER_APPROVAL 은 부속 행의 기간 상태다(APPROVED 유지). 대기 중 변경은 `ExpiryReason.CONTENT_CHANGED` 로 처리한다.
+  - 스냅샷은 `timesheet_submission`(`ts1z`)에 둔다.
+## 완료된 기능
+- field-change-approval — 2026-10-04 — PASS
+  - 필수 수정 1건(F1: `displayFor` LIVE 조건 누락) 검증자가 처리 후 재검증 통과
+  - 응답 shape(신규 8·변경 9, `decideApproval.apply`·`bulkApprove` applyStatus·증명서 최상위 `fieldChange`)·3단계 등록·불변식 1~10·asApp 추가 없음·FIELD_CHANGE/ISSUE/TRANSITION 비혼합·v033~v035·엔트리 3곳 무변경·i18n(에러 코드 12 kr/en) 정합
+  - 테스트: 백엔드 89/1278, UI 42/340. merge·build:ui 통과, forge lint 미실행
+  - 권고 R1·R4·R5·R6·보관 내보내기 표시값, 질문 Q90~Q100, 미검증 C1~C24 는 04_spike_todo.md (최우선 C1~C3·C5·C16·C17)
+- issue-approval — 2026-10-04 — PASS
+  - 필수 수정 0건. 응답 shape ↔ 프론트 소비·ISSUE/TRANSITION 비혼합(§3.4 5층)·요청자/열람 가드·canResubmit 서버 판정·신규 resolver·asApp·마이그레이션 없음·엔트리 3곳 무변경·i18n(issueApproval.json 26키·D1 4건 kr/en 대칭)
+  - 테스트: 백엔드 79/1050, UI 35/284. merge(바이트 동일)·build:ui(issue 7.67KB gz, modal 25.03KB gz) 통과, forge lint 미실행
+  - 권고 R1~R5, 열린 질문 Q81~Q89, 미검증 I1~I18 은 04_spike_todo.md
+- worklog-history — 2026-10-04 — PASS
+  - 필수 수정 0건. resolver 7 응답 shape ↔ 프론트 소비(탭 이력·수정 횟수·타임시트 상세 이력·감사 검색·보관 내보내기/확정/삭제)·3단계 등록·asApp 1번 확장 한정·불변식 1~10·v031·v032·정책 키 3 계약·i18n(kr/en 차이 0) 정합
+  - 테스트: 백엔드 72/966, UI 31/240. merge·build:ui(html 6) 통과, forge lint 미실행
+  - 권고 R1~R6, 열린 질문 Q80, 미검증 H1~H22 는 04_spike_todo.md (최우선 H4·H15·H7)
+- transition-approval — 2026-10-03 — PASS
+  - 필수 수정 0건. 응답 shape(`content` 벗기기·증명서 최상위 `transition`·규칙별 `openCount`·비전환 행 null)·3단계 등록(신규 5)·엔트리 issue 3곳·asApp 4번 한정(`IssueStateReader`←`TransitionValidatorService`)·불변식 1~10·v029·v030·i18n 정합
+  - 테스트: 백엔드 64/866, UI 27/203. merge(kr/en 차이 0)·build:ui 통과(`issue.*.js` 6.28kB gz), forge lint 미실행
+  - 권고 R1(validator `findByStatus` LIMIT 500 조용한 절단 — 우선)·R2(=Q66)·R3(`canRequest` 승인 보유 시에도 true)·R4(반려 중 STATE_CHANGED 상세 재조회 누락)·R5(`statusNamesFor` LIVE JOIN)·R6(증명서 이력 reason 원시값)
+  - 새 질문 Q66·Q67, 미검증 X1~X31 은 04_spike_todo.md (최우선 X21·X18·X30)
+- workforce-link — 2026-10-03 — PASS
+  - 필수 수정 2건(F1 프론트 `wf:` teamKey URL 탈락, F2 스윕 스캔이 커밋 지연 행을 앞질러 게시 누락) 검증자가 처리 후 재검증 통과. 보강: `myTeam.source` 오판, 쓰기 대칭 테스트
+  - 테스트: 백엔드 55/713, UI 20/161. merge·build:ui 통과, forge lint 미실행
+  - 응답 shape·3단계 등록·asApp 사유(`workforce-publish`·`-publish-verify`, WorkforcePublisher 한정)·불변식 1~10·watermark·v024~v028·i18n 정합
+  - 권고 R1~R6, 열린 질문 Q50·Q51, 미검증 W1~W28 은 04_spike_todo.md (최우선 W1·W2·W5)
+- core-port — 2026-10-03 — PASS
+  - 필수 수정 0, 권고 6
+  - 테스트: 백엔드 26/215, UI 8/58. merge·build:ui 통과, forge lint 미실행
+  - 엔트리 4개 3곳 정합, Confluence 잔존 0, 불변식 1~10 위반 없음
+  - 미검증 U1~U16·F1~F6 은 04_spike_todo.md
+- timesheet-approval — 2026-10-03 — PASS(재검증 1회)
+  - 1차 FAIL 필수 수정 2건(backend)을 고친 뒤 재검증에서 통과했다.
+    - F1: 스윕이 실패를 무시하고 watermark 를 전진시키던 문제
+    - F2: 이슈 상한이 다른 사람 워크로그까지 세던 문제
+  - 테스트: 백엔드 39/414, UI 12/86. merge·build:ui 통과, forge lint 미실행
+  - 응답 shape·3단계 등록(신규 11)·i18n·엔트리·v016~v021 정합
+  - 남은 권고: R1·R3(front), R8(back) — R7 은 period-lock 백엔드 회차에서 처리, R2·R5·R6(문서)
+  - 미검증 T1~T22·F7~F10 은 04_spike_todo.md
+- period-lock — 2026-10-03 — PASS
+  - 필수 수정 1건(F1: `ResponseWrapper` 예상 에러 목록 `'PermissionError'` → `'PermissionDeniedError'`, 로그만 영향) 검증자가 처리 후 재검증 통과
+  - 테스트: 백엔드 46/529, UI 17/140. merge(kr/en 차이 0)·build:ui(html 5) 통과, forge lint 미실행
+  - 응답 shape(신규 8·확장 4)·3단계 등록·엔트리 worklog 3곳·에러 코드 9 i18n·v022·v023·잠금 서버 재판정·Q22 게이트 면제 범위 정합
+  - 권고: R1(삭제 대상 `started` null 이면 잠금 판정 건너뜀 → 거부 가드), R2(P15 권한 키·Q30), R3(더 보기마다 1000건 재조회), R4(Q27), R5(에러 코드 i18n 계약 테스트화)
+  - 미검증 P1~P33·V1 은 04_spike_todo.md (최우선 P21·P28·P15)
+## 최근 회차 기록 (최신 5개만 유지)
+- 2026-10-13 claude: linked-mode-ux 설계→BE→FE→WF→코덱스 검토→검증→수정 회차 1(세 담당)→재검증 1 PASS→WF 회차 2(워크로그 소속·작성자 대조). 승인 앱 BE 179/2723·UI 88/808·build·check:bundle, 워크포스 BE 171/2373·FE 171/2712·build 통과. master 를 linked-issue-schedule 로 ff 병합(사용자 승인). 범위 축소 Q149(기록 규칙 7키는 사이트 관리자 전용). 커밋 전
+- 2026-10-04 19:18 claude: field-change-approval Phase 5 검증(integration-verifier) → PASS, 필수 수정 1(displayFor LIVE 조건)·권고 R1·R4·R5·R6. jest 89/89·1278/1278, UI 42/42·340/340, merge·build:ui 통과. 새 질문 없음. QUESTIONS 새 답 없음. 스테이징 무변경. 로드맵 8행 전부 완료 → DONE
+- 2026-10-04 19:11 claude: field-change-approval Phase 4 프론트(frontend-engineer) — features/fieldChange 신설·모달/이슈/업무함/증명서/규칙 관리 연결·i18n kr/en → UI 42/42·340/340, jest 89/89·1277/1277, merge·build:ui 통과. 미검증 C20~C24, QUESTIONS Q100 추가. QUESTIONS 새 답 없음. src·엔트리·스테이징 무변경
+- 2026-10-04 18:50 claude: field-change-approval Phase 3 백엔드(backend-engineer) — 도메인·resolver 신규 8·어댑터·v033~v035·엔진 상수/scopeKey/afterDecide, 완료 기준 테스트 3종, 순환 import 수정 → jest 89/89·1277/1277, UI 35/35·284/284 통과. 계약 차이 D1~D10, 미검증 C16~C19, QUESTIONS Q98·Q99 추가. QUESTIONS 새 답 없음. 스테이징 무변경
+- 2026-10-04 18:14 claude: field-change-approval Phase 2 설계(feature-architect) — resolver 신규 8·변경 9, v033~v035, 엔트리·manifest·asApp 무변경, 미검증 C1~C15 → QUESTIONS Q90~Q97 추가. 코드 무변경·테스트 미실행(설계 회차). QUESTIONS 새 답 없음. 스테이징 무변경
+- 2026-10-04 17:58 claude: issue-approval Phase 5 검증(integration-verifier) → PASS, 필수 수정 0·권고 R1~R5. 백엔드 79/1050·UI 35/284·merge·build:ui 통과. 새 질문·미검증 없음. QUESTIONS 새 답 없음. 소스·스테이징 무변경. 다음 field-change-approval 설계

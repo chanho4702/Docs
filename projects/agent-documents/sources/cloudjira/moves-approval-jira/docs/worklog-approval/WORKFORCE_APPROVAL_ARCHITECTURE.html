@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workforce–Approval 워크로그 승인 아키텍처</title>
+<style>
+:root{--ink:#162b3a;--muted:#607482;--paper:#f4f7f8;--card:#fff;--line:#d8e2e7;--teal:#087d72;--blue:#155ac7;--amber:#9a6100;--red:#9b2c2c}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.68 "Segoe UI","Malgun Gothic",sans-serif}header{padding:28px 4vw 22px;background:#fff;border-bottom:1px solid var(--line)}header b{font-size:12px;letter-spacing:.12em;color:var(--teal)}h1{font-size:30px;margin:5px 0 8px}header p{margin:0;color:var(--muted)}nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;padding:13px 4vw;background:#fff;border-bottom:1px solid var(--line)}button{border:1px solid var(--line);border-radius:7px;background:#fff;padding:8px 14px;color:var(--ink);font:inherit;cursor:pointer}button.active{background:var(--ink);border-color:var(--ink);color:#fff}main{max-width:1480px;margin:auto;padding:26px 3vw 60px}.panel[hidden]{display:none}.lead{max-width:1050px;font-size:18px}.notice{margin:18px 0;padding:16px 20px;border-left:4px solid var(--teal);background:#e7f3f1}.diagram{display:block;width:100%;height:860px;border:1px solid var(--line);border-radius:12px;background:#fff}.flow{height:720px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:18px 0}.two{grid-template-columns:repeat(2,minmax(0,1fr))}.card,.risk,details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}.card h3,.risk h3{margin:0 0 8px;font-size:17px}.card p,.risk p{margin:6px 0}.tag{display:inline-block;padding:3px 8px;border-radius:4px;background:#e8eff4;color:#345166;font-size:12px}details{padding:0;margin:12px 0}summary{padding:17px 20px;cursor:pointer;font-weight:700;font-size:17px}summary span{float:right;color:var(--teal);font-size:13px;font-weight:600}.detail{padding:0 20px 20px}.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}pre{margin:0;padding:18px;border-radius:8px;background:#142c3a;color:#d9edf2;white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.65 Consolas,monospace}.endpoint{padding:11px;background:#edf3f7;color:#235982;font:12px/1.55 Consolas,monospace;overflow-wrap:anywhere}code{font-family:Consolas,monospace;color:#15537a}table{width:100%;border-collapse:collapse;background:#fff;margin:18px 0}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eaf0f3}.rail{display:flex;gap:8px;align-items:stretch;margin:20px 0;flex-wrap:wrap}.step{flex:1;min-width:155px;padding:16px;background:#fff;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:7px}.step b{display:block;margin-bottom:7px}.arrow{align-self:center;color:var(--teal);font-size:22px}.risk{border-top:4px solid var(--amber)}.risk.high{border-top-color:var(--red)}.risk em{font-style:normal;color:var(--amber);font-size:12px;font-weight:700}.risk.high em{color:var(--red)}.verify{padding-top:9px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}.small{font-size:13px;color:var(--muted)}h2{margin:8px 0 16px;font-size:24px}h3{font-size:17px}a{color:var(--blue)}@media(max-width:860px){.grid,.split{grid-template-columns:1fr}.diagram{height:900px}.flow{height:720px}.arrow{display:none}main{padding:20px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><b>WORKFORCE × APPROVAL · 2026-10-15</b><h1>워크로그 승인·잠금 연동 아키텍처</h1><p>무엇을 어디에 저장하고, 어떻게 인증하며, 승인 후 어떤 로직으로 잠그는지 설명합니다.</p></header>
+<nav>
+  <button class="active" data-tab="0">01 전체 구조</button><button data-tab="1">02 프로퍼티와 값</button><button data-tab="2">03 처리 흐름</button><button data-tab="3">04 인증과 API</button><button data-tab="4">05 우려 사항</button>
+</nav>
+<main>
+<section class="panel" data-panel="0">
+  <p class="lead"><b>Jira 프로퍼티는 두 앱 사이의 서명된 교환 문서입니다.</b> 실제 작업시간은 Jira worklog에, 승인·잠금 판단과 감사의 원본은 Approval SQL에 저장합니다.</p>
+  <iframe class="diagram" src="diagrams/customer-property-architecture.html" title="Workforce Approval 연동 아키텍처"></iframe>
+  <div class="grid">
+    <article class="card"><h3>Workforce → Approval</h3><p><code>movesRms.org</code>: 팀·팀장</p><p><code>movesRms.policy</code>: 연동 범위 신호</p><p><code>movesRms.issue</code>: 이슈별 작성 기간·자동 요청·결재선</p></article>
+    <article class="card"><h3>Approval → Workforce</h3><p><code>movesApproval.ctl</code>: 병합된 쓰기 규칙</p><p><code>movesApproval.cert.YYYY-MM</code>: 건별 승인·확정 시간</p><p><code>movesApproval.YYYY</code>: 기간 승인·마감 상태</p></article>
+    <article class="card"><h3>원본과 사본</h3><p>프로퍼티는 서명 검증 후 사용하는 projection입니다.</p><p>승인 요청·결정·인증·변경 이력은 Approval SQL의 append-only 원장에 남습니다.</p></article>
+  </div>
+  <div class="notice"><b>범위 원칙:</b> Jira project(스페이스)와 Workforce project는 같은 식별자가 아닙니다. 한 스페이스의 이슈가 여러 Workforce project에 나뉘어 연결되면 최종 정책과 연결 정보는 <b>issue 단위</b>로 게시합니다. project property는 전체 스페이스가 하나의 Workforce project에 무필터로 연결되어 모든 이슈에 같은 규칙을 적용할 때만 공통 문서로 사용합니다.</div>
+</section>
+
+<section class="panel" data-panel="1" hidden>
+  <h2>프로퍼티별 위치와 실제 값</h2>
+  <p>아래 JSON은 이해를 위한 축약 예시입니다. Jira GET 응답에서는 <code>value</code> 아래를 확인합니다. ID·시각·서명은 실제 값으로 대조합니다.</p>
+  <details open><summary><span>사용자 · Workforce → Approval</span>movesRms.org</summary><div class="detail split"><pre>{
+  "teamKey": "team-dev",
+  "teamName": "개발팀",
+  "leaderKeys": ["leader-B"],
+  "leads": [],
+  "rev": 12,
+  "kid": "wf-prd-1",
+  "iat": 1791939600000,
+  "sig": "&lt;Ed25519 signature&gt;"
+}</pre><div><p><b>leaderKeys</b>는 작성자의 기본 승인자 후보입니다. 팀장 문서의 <b>leads[].memberKeys</b>는 팀장이 볼 수 있는 팀원 범위입니다.</p><p>값이 있어도 서명·사이트·계정·revision 검증 전에는 팀장 권한 근거로 쓰지 않습니다.</p><p class="endpoint">GET /rest/api/3/user/properties/movesRms.org?accountId={작성자A}</p></div></div></details>
+  <details><summary><span>이슈 · Workforce 연결 귀속</span>movesRmsLink / moves_RMS_projectId</summary><div class="detail split"><pre>{
+  "movesRmsLink": {
+    "linked": true,
+    "projectId": "&lt;Workforce project UUID&gt;"
+  },
+  "moves_RMS_projectId": "&lt;같은 Workforce project UUID&gt;"
+}</pre><div><p>동일 Jira 스페이스 안에서도 이 값은 이슈마다 다를 수 있습니다. <code>movesRmsLink</code>는 화면 표시와 조회 힌트이며 단독 권한 근거가 아닙니다.</p><p>Workforce는 자기 SQL의 활성 프로젝트와 앱 전용 필드 <code>moves_RMS_projectId</code>가 일치하는지 확인한 뒤에만 서명된 연동 신호를 발행합니다.</p><p class="endpoint">GET /rest/api/3/issue/{issueKey}?fields=moves_RMS_projectId&amp;properties=movesRmsLink</p></div></div></details>
+  <details><summary><span>프로젝트·이슈 · Workforce → Approval</span>movesRms.policy</summary><div class="detail split"><pre>{
+  "typ": "rms.policy",
+  "ent": {"projectId":"10000","issueId":"10001"},
+  "body": {"rev":12,"values":{},"locks":{}},
+  "kid": "wf-prd-1",
+  "iat": 1791939600000,
+  "exp": 1794358800000,
+  "sig": "&lt;signature&gt;"
+}</pre><div><p>현재 <code>values/locks</code>는 비어 있으며 이 문서는 상세 정책값보다 <b>연동 범위</b>를 증명합니다.</p><p>이슈별 연결은 <code>ent.issueId</code>가 있는 issue property로 발행합니다. project property의 <code>ctl:ALL_ISSUES</code>는 전체 스페이스 무필터 구독일 때만 허용하며, <code>ctl:NONE</code>은 명시 해제입니다.</p><p class="endpoint">GET /rest/api/3/issue/{issueKey}/properties/movesRms.policy</p></div></div></details>
+  <details><summary><span>이슈 · Workforce → Approval</span>movesRms.issue</summary><div class="detail split"><pre>{
+  "s": "2026-10-01",
+  "e": "2026-10-31",
+  "pa": "NOT_REQUIRED",
+  "fl": null,
+  "wa": {
+    "autoRequest": true,
+    "lockApproved": true,
+    "closeDays": 5
+  },
+  "by": "leader-B",
+  "tk": "team-dev",
+  "rev": 9,
+  "kid": "wf-prd-1",
+  "iat": 1791939600000,
+  "sig": "&lt;signature&gt;"
+  }</pre><div><p><b>s/e</b>: 작성 가능 기간. <b>autoRequest</b>: 기록 후 자동 승인 요청이며 자동 승인이 아닙니다.</p><p><b>lockApproved</b>: 승인 기록 잠금. <b>closeDays</b>: 자동 마감 유예일이며 0은 자동 마감 없음입니다.</p><p><b>pa/fl</b>: 사전 승인 설정과 결재선 ID입니다. 서로 다른 Workforce project의 설정은 연결된 각 Jira issue에 이 문서로 투영됩니다.</p><p class="endpoint">GET /rest/api/3/issue/{issueKey}/properties/movesRms.issue</p></div></div></details>
+  <details><summary><span>프로젝트·이슈 · Approval → Workforce</span>movesApproval.ctl</summary><div class="detail split"><pre>{
+  "ch": "APP",
+  "tz": "Asia/Seoul",
+  "vt": {"type":"role","value":"atlassian-addons-project-access"},
+  "wr": {
+    "v": 1,
+    "exp": 1792540800000,
+    "u": "MONTH",
+    "acd": 5,
+    "ls": true,
+    "va": "BLOCK",
+    "r": {"pd":30,"fa":false,"cw":30,"ew":7,"xw":7,"dm":28800,"wm":144000},
+    "pq": false,
+    "hz": 1730386800000,
+    "cr": []
+  },
+  "kid": "ap-prd-1",
+  "iat": 1791939600000,
+  "sig": "&lt;signature&gt;"
+  }</pre><div><p><b>wr.r</b>: 과거일·미래일·작성/수정/삭제 기간·일/주 시간 상한입니다. <b>acd/ls</b>: 자동 마감 일수와 제출 기간 잠금입니다.</p><p><b>cr</b>: <code>[시작, 종료, C|R]</code> 마감·재개방 행. <b>exp/hz</b>: 규칙 만료와 판정 하한입니다.</p><p>조회 순서는 issue ctl → project ctl입니다. 혼합 연결 스페이스에서는 issue ctl을 최종값으로 쓰며, project ctl은 공통 기본값일 뿐입니다. project ctl의 <code>wr.ix</code>에 든 예외 이슈는 추정하지 않고 <code>DEFER</code>합니다.</p><p><code>ch:APP</code>만으로 Workforce 입력을 닫지 않습니다. 최신 Workforce 저장 판정은 <code>wr</code>입니다.</p><p class="endpoint">GET /rest/api/3/issue/{issueKey}/properties/movesApproval.ctl<br>GET /rest/api/3/project/{projectId}/properties/movesApproval.ctl</p></div></div></details>
+  <details open><summary><span>작성자 사용자 · Approval → Workforce</span>movesApproval.cert.2026-10</summary><div class="detail split"><pre>{
+  "v": 2,
+  "kind": "movesApproval.certification",
+  "accountId": "member-A",
+  "periodKey": "2026-10",
+  "entry": {
+    "cs": 7200,
+    "cn": 1,
+    "w": [["24586", 7200]],
+    "approval": {
+      "entries": [[
+        "24586", "APPROVED", "request-uuid",
+        "leader-B", 1791939600000,
+        "WORKFORCE", "&lt;fingerprint&gt;",
+        7200, 1791853200000, null
+      ]],
+      "truncated": false
+    },
+    "kid": "ap-prd-1",
+    "iat": 1791939600000,
+    "sig": "&lt;signature&gt;"
+  }
+}</pre><div><p><b>승인 결과는 승인자 B가 아니라 작성자 A의 사용자 프로퍼티에 저장됩니다.</b></p><p><code>approval.entries[]</code> 순서: worklogId, 상태, 요청 ID, 승인자, 승인 시각, 작성 출처, 지문, 확정 초, 시작 시각, 마감 시각.</p><p><b>7200초 = 2시간.</b> 상태가 APPROVED인지 같이 확인합니다. <code>wt</code> 또는 <code>truncated</code>가 true면 누락 기록을 승인된 것으로 추정하지 않습니다.</p><p class="endpoint">GET /rest/api/3/user/properties/movesApproval.cert.2026-10?accountId={작성자A}</p></div></div></details>
+  <details><summary><span>워크로그 · 작성 앱 → Approval</span>movesRms.origin / movesApproval.origin / movesApproval.op</summary><div class="detail split"><pre>{
+  "movesRms.origin": {
+    "v": 1,
+    "typ": "rms.wlorigin",
+    "iss": "moves-workforce",
+    "kid": "wf-prd-1",
+    "sig": "&lt;signature&gt;",
+    "body": {
+      "cloudId": "&lt;site&gt;",
+      "issueId": "10001",
+      "authorId": "member-A",
+      "op": "&lt;UUID&gt;",
+      "started": 1791853200000,
+      "seconds": 7200,
+      "iat": 1791939600000,
+      "exp": 1791940500000
+    }
+  },
+  "movesApproval.origin": {"op":"&lt;UUID&gt;"},
+  "movesApproval.op": {"op":"&lt;UUID&gt;"}
+}</pre><div><p>Workforce origin은 서명·사이트·이슈·작성자·시각을 확인합니다. Approval origin/op는 UUID로 자기 SQL의 작성 의도·통제 작업 행을 찾아 대조합니다.</p><p>이 값은 <b>작성 출처와 행위자 귀속</b>을 위한 것이며 승인 상태가 아닙니다. UUID만 복사해도 DB 행과 맞지 않으면 인정하지 않습니다.</p><p class="endpoint">GET /rest/api/3/issue/{issueKey}/worklog/{worklogId}/properties/{propertyKey}</p></div></div></details>
+  <details><summary><span>워크로그 본문 · property 아님</span>visibility</summary><div class="detail split"><pre>{
+  "visibility": {
+    "type": "role",
+    "value": "atlassian-addons-project-access"
+  }
+}</pre><div><p>승인·마감 기록을 앱 역할로 제한하는 Jira worklog 본문 필드입니다. Approval DB 잠금과 Jira visibility 적용은 별도 단계입니다.</p><p>작성자의 직접 PUT·DELETE·visibility 해제가 거부되는지 실제 계정으로 확인해야 합니다. 이 방식만으로 외부 신규 POST를 생성 전에 차단하는 것은 아닙니다.</p><p class="endpoint">GET /rest/api/3/issue/{issueKey}/worklog/{worklogId}</p></div></div></details>
+</section>
+
+<section class="panel" data-panel="2" hidden>
+  <h2>작성 → 승인</h2><iframe class="diagram flow" src="diagrams/customer-approval-flow.html" title="작성 승인 흐름"></iframe>
+  <h2>승인 결과 게시 → 수정 제한</h2><iframe class="diagram flow" src="diagrams/customer-result-flow.html" title="승인 결과와 잠금 흐름"></iframe>
+  <div class="grid"><article class="card"><h3>ALLOW</h3><p>Workforce가 <code>wr</code>와 승인 상태로 허용한 입력을 Jira에 저장합니다.</p></article><article class="card"><h3>DENY</h3><p>금지 조건이면 저장하지 않습니다. Approval 수정·삭제도 현재 SQL 승인·기간 상태를 다시 검사합니다.</p></article><article class="card"><h3>DEFER</h3><p>사전 승인·이슈 예외·불량/만료 문서 등 Workforce가 확정할 수 없으면 저장하지 않고 Approval로 연결합니다.</p></article></div>
+  <div class="notice"><b>건별 승인</b>은 해당 기록의 수정·삭제를 잠급니다. <b>기간 승인·마감</b>은 해당 기간의 추가·수정·삭제를 잠그는 별도 조건입니다. 외부 신규 POST의 사전 차단은 따로 검증합니다.</div>
+  <p><a href="cloudjira--LOCK_AND_HISTORY_IMPLEMENTATION.md">승인 Worklog 잠금·변경 이력 구현과 한계 상세 보기</a></p>
+</section>
+
+<section class="panel" data-panel="3" hidden>
+  <h2>인증은 두 층입니다</h2>
+  <div class="grid two"><article class="card"><span class="tag">Jira 호출 인증</span><h3>Forge asUser() / 제한된 asApp()</h3><p>사용자 화면과 조회는 기본 <code>asUser()</code>입니다. 로그인 사용자가 없는 이벤트·큐 게시 등 문서화된 경로만 <code>asApp()</code>을 씁니다.</p><p>Forge가 Jira REST 호출 자격증명을 관리합니다. 고객 API token을 두 앱 사이에 전달하지 않습니다. Jira scope·권한·이슈 열람 검사는 별도입니다.</p></article><article class="card"><span class="tag">문서 발행자 인증</span><h3>Ed25519 서명 검증</h3><p>보내는 앱은 환경변수의 개인키로 서명하고 받는 앱은 <code>keyring.js</code>의 상대 앱 공개키와 신뢰 kid 목록으로 검증합니다.</p><p>Jira에서 읽을 수 있다는 사실만으로 값을 신뢰하지 않습니다.</p></article></div>
+  <table><thead><tr><th>키/값</th><th>위치</th><th>용도</th></tr></thead><tbody><tr><td><code>MOVES_LINK_SIGNING_KEY</code></td><td>각 앱의 Forge 암호화 환경변수</td><td>송신 문서에 서명하는 Ed25519 개인키 seed</td></tr><tr><td><code>MOVES_LINK_SIGNING_KID</code></td><td>각 앱 환경변수</td><td>현재 서명 키 ID</td></tr><tr><td><code>keyring.js</code></td><td>두 앱 코드</td><td>Approval/Workforce 공개키 목록</td></tr><tr><td><code>MOVES_LINK_TRUSTED_KIDS</code></td><td>수신 앱 환경변수</td><td>허용할 상대 앱 kid 목록</td></tr></tbody></table>
+  <div class="rail"><div class="step"><b>1. 본문 정규화</b><code>v, typ, cloudId, ent, kid, iat, body</code></div><span class="arrow">→</span><div class="step"><b>2. 서명</b>송신 앱 개인키로 Ed25519 <code>sig</code> 생성</div><span class="arrow">→</span><div class="step"><b>3. Jira 교환</b>본문 + <code>kid/iat/sig</code>를 property로 PUT/GET</div><span class="arrow">→</span><div class="step"><b>4. 문맥 재구성</b>현재 사이트와 실제 property 위치에서 <code>cloudId/ent</code> 결정</div><span class="arrow">→</span><div class="step"><b>5. 검증 후 반영</b>서명·형식·revision·만료·업무 권한 확인</div></div>
+  <pre>message = UTF-8(
+  "moves-link/1\n" + canonicalize({
+    v, typ, cloudId, ent, kid, iat, body
+  })
+)
+
+예: typ = "approval.cert"
+    ent = { accountId: "member-A", periodKey: "2026-10" }</pre>
+  <p>서명 대상에 <code>cloudId</code>, 문서 종류 <code>typ</code>, 실제 대상 <code>ent</code>가 들어갑니다. 같은 property를 다른 사이트·사용자·이슈·기간으로 복사하면 검증용 바이트가 바뀌어 <code>BAD_SIGNATURE</code>가 됩니다. <code>UNKNOWN_KID</code>, <code>UNTRUSTED_KID</code>, 미래 발행시각, 잘못된 schema도 거부합니다.</p>
+  <div class="notice">서명은 <b>위변조·발행자 확인</b>입니다. 암호화가 아니므로 property에 비밀키·토큰·민감한 설명 원문을 넣지 않습니다. 서명 통과 후에도 팀장 범위, 이슈 열람, 현재 Approval DB 상태를 다시 검사합니다.</div>
+  <h2>API를 열었는데도 내부 연동에 쓰지 못했던 이유</h2>
+  <p class="lead"><b>apiRoute를 정의한 것과 상대 Forge 앱이 자동으로 인증되어 호출하는 것은 다른 문제였습니다.</b> 당시 공식 접근 경로는 사용자 동의 기반 3LO였습니다.</p>
+  <div class="rail"><div class="step"><b>apiRoute 개설</b>URL·custom scope 정의</div><span class="arrow">→</span><div class="step"><b>관리자 활성화</b>사이트에서 App REST APIs 허용</div><span class="arrow">→</span><div class="step"><b>OAuth 3LO</b>사용자 동의·token 교환</div><span class="arrow">→</span><div class="step"><b>Bearer 호출</b>token 소유자 권한으로 조회</div><span class="arrow">→</span><div class="step"><b>지속 운영</b>refresh·철회·퇴사·재동의 대응</div></div>
+  <table><thead><tr><th>구현돼 있던 것</th><th>자동 내부 연동에 부족했던 것</th></tr></thead><tbody><tr><td>Approval 승인/변경 이력 GET, Workforce 조직 GET apiRoute</td><td>상대 앱의 기본 <code>asApp()</code> 자격으로 무설정 호출되는 구조가 아님</td></tr><tr><td>관리자가 base URL과 access token을 넣는 조회 UI</td><td>OAuth callback, refresh token, 자동 갱신, 철회·재동의 운영 미구현</td></tr><tr><td>조직 목록 표시</td><td>그 결과를 승인자 원장에 ingest해 권한 판정에 쓰는 경로가 아님</td></tr><tr><td>단위 테스트</td><td>실사이트 principal/installContext와 3LO 호출 검증이 별도 필요</td></tr></tbody></table>
+  <div class="notice">정확한 결론은 “API 통신이 기술적으로 불가능했다”가 아니라, <b>그 구현만으로 무인·지속적인 앱 간 동기화를 충족하지 못했다</b>입니다. 그래서 별도 App REST API용 3LO 연결 없이 Jira entity property를 읽고 쓰며 Ed25519로 발행자를 검증하는 방식으로 단일화했습니다. Approval의 apiRoute는 현재 manifest에서 제거됐습니다.</div>
+  <p><a href="https://developer.atlassian.com/platform/forge/access-rest-apis-exposed-by-a-forge-app/">Atlassian 공식 App REST API 접근 절차</a></p>
+</section>
+
+<section class="panel" data-panel="4" hidden>
+  <h2>고객 적용 전에 우려되는 점</h2>
+  <div class="grid two">
+    <article class="risk high"><em>높음</em><h3>Jira 직접 입력 우회</h3><p>REST·자동화로 마감 기간에 신규 worklog를 만들 수 있다면 “추가 사전 차단” 요구가 남습니다.</p><p class="verify"><b>확인:</b> 일반 사용자로 POST·PUT·DELETE·visibility 해제 시험. 사후 감지·숨김·삭제와 생성 전 차단을 구분합니다.</p></article>
+    <article class="risk high"><em>높음</em><h3>승인·통제·게시 사이의 시간차</h3><p>SQL 승인 완료, Jira visibility 제한, Workforce 결과 반영은 동시에 끝나지 않습니다.</p><p class="verify"><b>확인:</b> 각 완료 시각과 실패 상태를 기록하고 게시 장애 중 앱 잠금·재시도 수렴을 확인합니다.</p></article>
+    <article class="risk high"><em>높음</em><h3>혼합 연결 스페이스의 범위 오판</h3><p>한 Jira 스페이스의 이슈가 서로 다른 Workforce project에 연결된 상태에서 project ctl을 최종 정책으로 쓰면 다른 프로젝트 규칙이 적용될 수 있습니다.</p><p class="verify"><b>확인:</b> 두 이슈를 서로 다른 Workforce project에 연결하고 issue ctl의 <code>ent.issueId</code>·규칙이 각각 다른지, 한쪽 문서가 없거나 만료됐을 때 project ctl로 허용하지 않고 <code>DEFER</code>하는지 시험합니다.</p></article>
+    <article class="risk high"><em>보완 필요</em><h3>팀장 전용 일괄 승인</h3><p>일반 <code>bulkApprove</code>는 현재 지정 결재자 기준입니다. 고객의 “팀장에 한해”와 같지 않습니다.</p><p class="verify"><b>확인:</b> 팀장 역할과 자기 팀원 범위를 서버에서 강제하도록 보완하고 비팀장·다른 팀 혼합 요청을 거부해야 합니다.</p></article>
+    <article class="risk"><em>조건부</em><h3>이력의 완전성</h3><p>수집 전 변경, 이벤트 누락 사이의 중간 변경, 삭제된 설명 원문과 알 수 없는 actor를 모두 복원할 수는 없습니다.</p><p class="verify"><b>확인:</b> 생성→2회 수정→삭제의 실제 이력과 UPDATED 건수, changedAt/observedAt을 대조합니다.</p></article>
+    <article class="risk high"><em>높음</em><h3>서명 키 운영</h3><p>키는 고객별이 아닌 앱 환경별이므로 유출 영향이 여러 설치에 걸칠 수 있습니다.</p><p class="verify"><b>대응:</b> 개인키 암호화 저장, 환경 분리, 접근 최소화, 공개키/kid 교체·재게시 절차를 운영합니다.</p></article>
+    <article class="risk"><em>조건부</em><h3>서명된 옛 문서와 revision</h3><p>서명이 맞아도 최신 문서라는 뜻은 아닙니다. 문서별 만료와 revision 후퇴 검사가 필요합니다.</p><p class="verify"><b>확인:</b> 만료된 wr, 옛 조직 문서, 다른 계정·기간으로 복사한 문서가 허용으로 처리되지 않아야 합니다.</p></article>
+    <article class="risk"><em>운영 설계</em><h3>월별 문서 잘림과 SQL 용량</h3><p>월 인증 목록은 1,000건 및 30,000바이트 예산으로 잘릴 수 있고 보호 원장은 계속 누적됩니다.</p><p class="verify"><b>확인:</b> <code>wt/truncated</code> 처리와 사용자×이벤트×보존 기간 용량을 실측하고 장기 아카이브를 결정합니다.</p></article>
+    <article class="risk"><em>조건부</em><h3>삭제된 이슈의 감사 열람</h3><p>SQL에 근거가 남아도 이슈 삭제·권한 회수 뒤 화면과 내보내기에서 원문 열람을 보장할 수 없습니다.</p><p class="verify"><b>대응:</b> 삭제 전 내보내기 정책과 삭제 이슈용 감사 보관함 요구를 별도로 확정합니다.</p></article>
+  </div>
+  <div class="notice"><b>팀장 보고 문안:</b> 서명된 Jira 프로퍼티로 두 앱을 연동하고 승인·감사 원장을 Approval에 보관하도록 구현했습니다. Jira 스페이스와 Workforce project의 범위가 다르므로 혼합 연결은 issue 단위 정책으로 처리하고, project property는 전체 스페이스 공통 규칙에만 사용합니다. 고객 적용 전에는 범위 누락 시 fail-closed, Jira 직접 경로, 팀장 전용 일괄 승인, 비동기 반영 구간, 키 교체와 장기 보존 용량을 수용 시험으로 확인해야 합니다.</div>
+</section>
+</main>
+<script>
+const tabs=[...document.querySelectorAll('[data-tab]')],panels=[...document.querySelectorAll('[data-panel]')];
+tabs.forEach((tab,i)=>tab.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));panels.forEach(x=>x.hidden=true);tab.classList.add('active');panels[i].hidden=false;window.scrollTo({top:0,behavior:'smooth'});}));
+</script>
+</body>
+</html>

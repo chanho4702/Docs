@@ -1,0 +1,3 @@
+- [마이그레이션 진행 중](claude-memory--migration-in-progress.md) — NestJS→Spring 포팅 미완료, 대규모 구조 변경 보류
+- [Co-Authored-By 금지](claude-memory--no-coauthored-by-trailer.md) — 커밋 메시지에 Co-Authored-By 줄 넣지 말 것
+- [인증=쿠키/refresh 세션](claude-memory--auth-cookie-session.md) — 인증은 HttpOnly 쿠키+refresh 회전(2026-07-16 재설계), 로그인 응답 body에 token 없음

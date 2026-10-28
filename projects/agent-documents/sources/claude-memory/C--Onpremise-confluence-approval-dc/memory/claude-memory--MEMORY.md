@@ -1,0 +1,4 @@
+- [구현은 Codex에 위임](claude-memory--delegate-implementation-to-codex.md) — Claude는 스펙·검증·리뷰. Codex 보고를 그대로 믿지 말 것.
+- [approval-dev 하네스](claude-memory--harness-approval-dev.md) — 프로젝트 하네스로 공식화됨. QA는 의미 기반 판정(grep 우회 적발 사례), jar 잠금·좀비 인스턴스 대처법.
+- [커밋에 Co-Authored-By 금지](claude-memory--no-coauthor-trailer.md) — 고객 배포 저장소라 도구 흔적을 남기지 않는다.
+- [Cloud Forge 쌍둥이 프로젝트](claude-memory--cloud-forge-twin-project.md) — 승인 앱은 DC판(이 저장소)과 Cloud Forge판(C:\CloudJira\moves-approval)이 별개. 대상 먼저 확정할 것.

@@ -1,0 +1,1 @@
+- [npm 전역 prefix는 C:\Claude](claude-memory--npm-global-prefix-c-claude.md) — 전역 설치했는데 옛 버전이 실행되면 PATH 우선순위를 의심할 것

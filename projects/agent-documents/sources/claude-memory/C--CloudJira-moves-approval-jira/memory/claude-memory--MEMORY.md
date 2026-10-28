@@ -1,0 +1,15 @@
+- [워크로그 인증 모델 결정](claude-memory--worklog-certification-model.md) — 2026-10-08 인증된 시간 원본은 우리 DB, 워크포스는 인증분만 처리, 계약 변경 필요
+- [코덱스 모델 비용](claude-memory--codex-model-cost.md) — 구현 위임은 gpt-6.1-sol + medium, 작업 중 검토는 gpt-6-astra + xhigh(2026-10-21 사용자 요청)
+- [워크포스 미추적 파일](claude-memory--workforce-untracked-files.md) — 워크포스 커밋 때 폴더째 git add 금지, LeaderTeamBackfill.test.js 등 제외
+- [스트라드비전 고객 대응](claude-memory--stradvision-customer-response.md) — 대응 문서 위치(_workspace/stradvision-2026-10-13)와 약속 금지 수용 기준 8항
+- [Chrome 은 Windows 브라우저만](claude-memory--chrome-use-windows-browser.md) — macOS Browser 2 에 연결 금지, Browser 1 로 select_browser
+- [연동 모드 결정 2026-10-14](claude-memory--linked-mode-decisions-2026-10-14.md) — 워크포스 이슈 패널 제거, 팀장 본인 결재 허용, W-8a 는 본인 org 문서 asUser 경로
+- [승인 앱 배포 상태 Not sharing](claude-memory--approval-app-distribution-not-sharing.md) — 다른 사용자 접근 불가 원인은 콘솔 배포 상태·기여자, 워크포스는 Sharing·Public
+- [codex exec stdin 대기](claude-memory--codex-exec-stdin.md) — Bash 에서 codex exec 는 < /dev/null 필수, 안 하면 stdin 대기로 멈춤
+- [앱 간 채널 스파이크 2026-10-19](claude-memory--app-channel-spike-2026-10-19.md) — webtrigger·apiRoute(3LO) 실측, sns 파라미터 함정, 결정·정리 대기
+- [채널 결정 2026-10-19](claude-memory--channel-decision-2026-10-19.md) — 앱 간은 웹트리거+Ed25519, 외부 노출은 apiRoute+3LO, 앱 간 호출 앱은 RoA 실격 감수
+- [docs 커밋 금지](claude-memory--docs-not-committed.md) — docs/ 아래 문서는 커밋하지 않음, 코드 커밋 때도 제외
+- [Confluence 에 로컬 경로 금지](claude-memory--confluence-no-local-paths.md) — 고객 문서에 examples/·docs/·C:\ 경로 대신 첨부 파일·절 번호로
+- [워크포스 개발 사이트 환경](claude-memory--workforce-dev-env-moves-rms.md) — tom-chkim-dev 워크포스는 forge 환경 moves-rms, 배포는 -e moves-rms
+- [워크포스 워크로그 가시성 결정 2026-10-28](claude-memory--workforce-worklog-visibility-decision-2026-10-28.md) — 워크포스는 asApp 읽기+자기 권한 모델, 승인 앱은 상태 사실만, 프로퍼티 표식 거부
+- [중단 인수인계 2026-10-28](claude-memory--handoff-2026-10-28-uncommitted-audit-fixes.md) — 승인 앱·워크포스 작업 트리 미커밋, Codex 3차·워크포스 UI 테스트 중지(메모리), 재개 절차는 옵시디언 노트

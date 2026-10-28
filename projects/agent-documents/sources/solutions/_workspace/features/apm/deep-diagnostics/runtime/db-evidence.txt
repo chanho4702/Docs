@@ -1,0 +1,42 @@
+select current_database(),version()
+ current_database |                                                      version                                                       
+------------------+--------------------------------------------------------------------------------------------------------------------
+ apm_diag_dev     | PostgreSQL 18.4 (Debian 18.4-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+(1 row)
+
+
+
+select service_name,count(*) from apm_service group by service_name order by service_name
+          service_name           | count 
+---------------------------------+-------
+ apm-diagnostics-runtime-fixture |     1
+ diagnostics-r0                  |     1
+(2 rows)
+
+
+
+select diagnostic_kind,count(*) from apm_span group by diagnostic_kind order by diagnostic_kind nulls first
+ diagnostic_kind | count 
+-----------------+-------
+                 |    35
+ POOL_ACQUIRE    |    23
+ REQUEST_SUMMARY |    23
+(3 rows)
+
+
+
+select s.service_name,m.instance_id,m.metric,m.count,m.sum,m.bucket_start from apm_metric_1m m join apm_service s on s.id=m.service_id where s.service_name='apm-diagnostics-runtime-fixture' order by m.bucket_start,m.instance_id,m.metric
+          service_name           |  instance_id  |           metric           | count | sum  |    bucket_start     
+---------------------------------+---------------+----------------------------+-------+------+---------------------
+ apm-diagnostics-runtime-fixture | qa-instance-A | db.client.connection.count |     1 |    9 | 2026-10-28 06:58:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | db.client.connection.max   |     1 |   10 | 2026-10-28 06:58:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | jvm.cpu.recent_utilization |     1 | 0.42 | 2026-10-28 06:58:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | jvm.gc.duration            |     0 |    0 | 2026-10-28 06:58:00
+ apm-diagnostics-runtime-fixture | qa-instance-B | jvm.cpu.recent_utilization |     1 | 0.99 | 2026-10-28 06:58:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | db.client.connection.count |     1 |    9 | 2026-10-28 07:08:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | db.client.connection.max   |     1 |   10 | 2026-10-28 07:08:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | jvm.cpu.recent_utilization |     1 | 0.42 | 2026-10-28 07:08:00
+ apm-diagnostics-runtime-fixture | qa-instance-A | jvm.gc.duration            |     0 |    0 | 2026-10-28 07:08:00
+ apm-diagnostics-runtime-fixture | qa-instance-B | jvm.cpu.recent_utilization |     1 | 0.99 | 2026-10-28 07:08:00
+(10 rows)
+

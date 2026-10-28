@@ -1,0 +1,168 @@
+# 트레이스 외부→내부 재분류 정합성 보완 계획 — 2026-10-06
+
+상태: 읽기 전용 설계. 기준 BE `22eeff8` 이후 현재 소스. 제품 코드·테스트·DB·서버·커밋은 변경하거나 실행하지 않았다. 아래 DB 반례는 실제 PostgreSQL 회귀로 옮길 입력·기대값을 구체화한 것이며, 이번 턴에서 실행한 결과가 아니다. 선행 [데이터 평가](../04-%EB%B6%84%EC%84%9D-%EA%B0%90%EC%82%AC/solutions--APM-%EC%A0%84%EB%B0%98-%ED%8F%89%EA%B0%80-%EC%88%98%EC%A7%91-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%95%ED%99%95%EC%84%B1-%ED%8A%B8%EB%A0%88%EC%9D%B4%EC%8A%A4.md)의6번을 실제 현재 경로로 다시 확인했다.
+
+## 1. 결론
+
+`apm_service_edge_5m`와 `apm_dependency_5m`의 **재계산할 닫힌 버킷 전체를 같은 트랜잭션에서 삭제한 뒤 다시 생성**하는 방식이 가장 작은 수정이다. 새 결과에 없는 옛 key도 없어지며, 결과가0행이어도 교정이 완료된다. 단순 DELETE 두 개 추가만으로 완료라고 판단하면 안 된다.
+
+필수로 함께 처리할 조건은 다음 세 가지다.
+
+1. forward 창이 비어도 lookback 교정은 커밋하고 watermark만 유지한다. 현재 코드는 교정까지 롤백한다.
+2. edge와 dependency는 동일한 원본 스냅샷으로 계산한다. 트랜잭션의 쓰기 원자성만으로 두 SQL의 읽기 일관성이 자동 보장되지는 않는다.
+3. 원본 보존 범위 밖·원본 파티션이 없어 복원할 수 없는 구간은 집계 삭제를 하지 않는다. 최근 lookback 보완을30일 전체 집계 재생성으로 확대하지 않는다.
+
+REST/FE 응답 shape와 집계 PK, 기존 분류 우선순위는 유지한다. 초기 변경은 trace rollup 서비스·그 테스트에 집중하며, 시간창 공통 정책은7번 담당과 연결한다.
+
+## 2. 현재 코드와 발동 조건
+
+아래 소스 경로는 `C:/solutions/moveseye-be-spring/` 기준이다.
+
+| 근거 | 현재 동작 | 의미 |
+|---|---|---|
+| `src/main/java/com/dmove/moveseye/premium/apm/trace/rollup/ApmTraceRollupService.java:214`~`:245` | closedBefore=floor(now−3분), watermark 다음 from, maxBuckets 상한, sourceFrom=from−10분 | forward와 replay 범위를 구별해야 함 |
+| 같은 파일`:315`~`:324`, `:333`~`:351` | 같은 trace_id, parent_span_id, 다른 service_id인 자식이 있으면 SERVICE로 우선 분류 | 나중에 도착한 자식이 기존 HTTP/DB/QUEUE key를 바꿀 수 있음 |
+| 같은 파일`:366`~`:385` | 현재 존재하는 edge key에 대입 UPSERT | 사라진 HTTP key는 건드리지 않음 |
+| 같은 파일`:748`~`:772`, `:784`~`:800` | 내부로 해소된 CLIENT를 dependency 모집단에서 제외하고 남은 key만 UPSERT | 외부 의존 결과가0행이면 옛 행은 그대로 남음 |
+| 같은 파일`:243`~`:263` | 여섯 집계와 watermark를 하나의 TransactionTemplate로 실행 | 삭제도 반드시 이 트랜잭션에 포함 |
+| 같은 파일`:241`, `:255`~`:259`, `:871`~`:876` | 새 forward 창 hasSpans=false이며 최신 경계에 닿으면 전체 rollback | lookback에 늦은 자식만 도착한 조용한 서비스는 재분류를 계산해도 교정이 취소됨 |
+| 같은 파일`:167`~`:177` | TransactionTemplate isolation 별도 지정 없음 | PostgreSQL 기본 READ COMMITTED라면 SQL마다 다른 snapshot 가능; 실제 DB isolation은 이번에 조회하지 않음 |
+
+현재 자식 판정은 SERVER kind로 제한하지 않는다. 다른 서비스의 자식 span이 있으면 분류한다. 이번 수정은 이 판정을 재정의하지 않으며 CLIENT→SERVER 예제를 대표 반례로 사용한다.
+
+### 기존 시험이 놓친 차이
+
+`ApmTraceRollupIT.java:253`의 lateEdgeSpanIsPickedUpByLookback은 기존 **같은 key의 수량 증가**를 검사한다. `:414`의 callsResolvedToInstrumentedServiceAreNotDependencies는 **첫 집계부터 부모·자식 모두 존재**하는 경우다. 새 시험은 HTTP가 실제 저장된 뒤 SERVER가 도착하여 key가 바뀌는2회 집계를 검사해야 한다.
+
+`ApmRollupTransactionRollbackIT.java:101` 이후는 빈 집계에서 후속 단계 실패 시 새 삽입이 롤백되는지 본다. 이번에는 이미 있던 HTTP/dependency 행을 삭제한 뒤 실패해도 **옛 행과 옛 값이 복원되는지**를 추가해야 한다.
+
+## 3. 삭제 범위·멀티서비스·PK
+
+기존 PK는 아래와 같고 scope/token 축은 없다(`V44__apm_trace.sql:160`, `:267`).
+
+- edge: `(from_service_id, to_kind, to_ref, bucket_start)`
+- dependency: `(service_id, target, bucket_start)`
+- 원본 span: `(trace_id, span_id, start_ts)`; logical dedupe는 trace writer에서 trace/span 기준으로 추가 방어한다. instrumentation scope는 집계 PK 축이 아니며 이번에 추가하지 않는다.
+
+rollup SQL은 시간창 내 **전체 서비스**를 계산한다. 따라서 삭제도 같은 시간창의 전체 서비스 행을 대상으로 한다. 늦은 자식의 serviceId=B만 삭제하면 부모 호출의 from_serviceId=A인 옛 HTTP가 남는다. 새 결과에 나온 key나 serviceId만 골라 지우는 방식도 완전히 사라진 모집단을 놓친다.
+
+삭제 범위는 부모 관측 기준 `[rebuildFrom, toExclusive)`다. 자식 join은 `[rebuildFrom, toExclusive+5분)`을 읽지만, **자식 look-ahead5분까지 집계를 삭제하면 안 된다**. 그 구간의 부모는 이번 INSERT 모집단에 없기 때문이다. from/to는5분 경계로 정렬한다. DELETE와 INSERT의 lower/upper bound 파라미터를 같은 객체에서 전달한다.
+
+```sql
+-- 기존 TransactionTemplate callback 안에서, 고정 테이블명과 bind parameter로 수행한다.
+DELETE FROM apm_service_edge_5m
+ WHERE bucket_start >= :rebuildFrom AND bucket_start < :toExclusive;
+
+DELETE FROM apm_dependency_5m
+ WHERE bucket_start >= :rebuildFrom AND bucket_start < :toExclusive;
+
+-- 기존 rollupEdges(rebuildFrom, toExclusive, boundsId)
+-- 기존 rollupDependencies(rebuildFrom, toExclusive, boundsId)
+-- 나머지 집계 및 watermark 쓰기도 기존 트랜잭션 안에 둔다.
+```
+
+테이블 전체 TRUNCATE나 각 서비스 루프는 필요 없다. INSERT ON CONFLICT의 대입을 당장 없앨 필요도 없다. DELETE 후 INSERT가 정상 결과를 만들며 기존 UPSERT는 재사용한다.
+
+## 4. 실행 순서와 원자성 보정
+
+### 4.1 권장 순서
+
+1. 현재 수신/롤업 시간대 규약을 유지하며 창을 계산한다. trace의 timestamp 변환은 `ApmSpanStore.tsOf:145`가 시스템 TZ를 사용하므로 이번 변경에서 UTC/local 변환을 섞지 않는다.
+2. 원본 재생성 가능 범위를 확인하고 rebuildFrom을 결정한다. 범위가 없으면 해당 edge/dependency 교체를 하지 않는다.
+3. 기존처럼 target partition DDL과 histogram bounds 준비는 **집계 트랜잭션 밖**에서 끝낸다(`ApmTraceRollupService:231`~`:236`). DDL 잠금을 commit까지 붙잡는 방향으로 되돌리지 않는다.
+4. 집계 전용 TransactionTemplate에 `ISOLATION_REPEATABLE_READ`를 적용한다. 가능하면 이 callback에서 forward hasSpans도 읽어 판정과 집계가 같은 snapshot을 보게 한다. 원래 밖에서 계산하는 hasSpans는 수신 경합에서 한 회차 지연·불필요한 hold를 만들 수 있다.
+5. 두 대상의 DELETE와 기존 여섯 단계 재계산을 수행한다. 어느 단계든 예외가 나면 삭제·새 삽입·watermark가 모두 rollback되어야 한다.
+6. 기존 hold 조건이면 watermark 저장만 생략한다. `status.setRollbackOnly()`로 lookback 교정을 취소하지 않는다. hold 상태와 재계산 수량은 로그/내부 실행 요약에 명시한다. RollupResult.from/to가 watermark전진을 뜻한다는 기존 설명은 함께 정정한다.
+7. hold가 아니면 기존 lastBucket으로 watermark를 저장한다.
+
+새 결과가0행이라는 이유로 삭제를 되돌리거나 무시하면 원래 버그가 다시 생긴다. 반면 DB 오류는 빈 정상 결과와 구분하여 반드시 예외로 rollback한다.
+
+### 4.2 snapshot 일관성
+
+예: edge SQL이 자식 도착 전 HTTP를 생성하고, 두 SQL 사이 자식이 commit되면 dependency SQL만 외부 모집단에서 제외할 수 있다. 읽기 snapshot을 고정하면 둘 다 이전 상태이거나 둘 다 새 상태가 된다. 다음 회차가 늦은 자식을 반영한다. Repeatable Read에서 동시 수정 충돌은 serialization failure가 될 수 있으므로 성공으로 삼키지 않고 다음 잡 실행으로 재시도한다. API 수신에 직렬화 격리를 전역 적용하지 않는다. 이 차이는 [PostgreSQL 트랜잭션 격리 문서](https://www.postgresql.org/docs/current/transaction-iso.html)의 Read Committed/Repeatable Read 설명을 확인했다.
+
+### 4.3 중복 잡 실행
+
+`ApmTraceRollupJob:76`은 SchedulerManager 경유로 호출된다. `SchedulerLeaseService:40`의 lease는30분이고 heartbeat가 없다(`:23`~`:27`). 정상 주기 중복은 방어되지만30분 초과 실행·직접 서비스 호출까지 영구 single-writer라고 설명하면 안 된다.
+
+삭제 교체를 강화할 때는 trace rollup 전용 `pg_try_advisory_xact_lock(namespace, key)`를 callback 첫 부분에서 추가하는 것을 권고한다. 잠금 획득 실패 시 DML/워터마크 없이 종료한다. trace writer의1인자 trace hash advisory lock과 분리된2인자 namespace를 사용하면 수신을 직렬화하지 않는다. 외부에서 계산한 창이 잠금 획득 전 오래된 watermark를 사용했을 수 있으므로, 잠금 뒤 현재 watermark를 다시 확인하여 바뀌었으면 이번 stale plan을 skip하거나 재계획한다. watermark를 뒤로 쓰지 않는다. 장기 lease 리뉴얼 자체는 별도 운영 과제다.
+
+## 5. lateness와 원본 보존 안전성
+
+`LOOKBACK_BUCKETS=2`는 watermark 다음 from에서10분을 뺀 소스창이다. LAG3분과5분 버킷·5분 실행 간격이 함께 작동하므로 “모든 span을 정확히13분 지연까지 보장”이라고 제품 계약을 단정하지 않는다. 실제 보장 조건은 부모 bucket이 이번 replay범위에 들어 있고, 자식 start가 join look-ahead에 들어 있으며, 그 snapshot 전에 양쪽 원본이 commit됐다는 것이다.
+
+이번 수정은 replay에 다시 포함되는 버킷만 바로잡는다. 이미 replay밖으로 밀린 옛 HTTP는 자동 복구하지 못한다. 오래된 오염을 고치려면 **원본이 완전히 남은 구간**을 대상으로 별도 제한된 backfill을 실행해야 한다.30일 집계 전체를 지우고7일 span에서 채우는 방식은 금지한다.
+
+### 삭제 전에 필요한 하한
+
+실제 span 보존은 scheduler의 `ApmRetentionDays.spanDays`이며 기본7일이다(`ApmRetentionDays.java:49`, `:119`). trace rollup의 `SPAN_RETENTION_DAYS=7` 상수만 재사용하면 운영에서 바꾼 보존과 어긋난다. 기존 `ApmRetentionDays.from(retention job setting)`을 읽는 경로를 재사용한다. 5/7번 담당은 이를 읽는 `ApmRetentionPolicy.authoritativeDays()`를 추가 중이라고 공유했으므로, 구현 시 정본의 `spanDays()`를 재사용하고 별도 설정 조회를 복제하지 않는다.
+
+기본 DROP은 날짜가 `LocalDate.now().minusDays(spanDays)`보다 작은 partition을 지운다(`ApmPartitionService:243`~`:254`). 따라서 보수적인 재구축 하한은 동일 TZ의 **보존 cutoff날짜00:00**이다. `[sourceFrom, cutoff)`는 기존 집계를 보존하고 삭제하지 않는다. archive gate가 더 오래 보유한 원본은 별도 명시적 backfill이 검증한 경우만 확장한다. 날짜 경계는 항상5분 정렬되어야 한다.
+
+보존기간 중간에 누락된 raw partition이 있다면 “관측0건”으로 추측해 집계를 지우면 안 된다. 최근 창의 대상 raw partition 존재 여부를 확인하고, 원본 가용성이 불확실한 bucket은 교체를 보류해 진단한다. `min(start_ts)`만으로 원본 완전성을 보증할 수 없다. 반대로 원본 partition이 존재하며 해당창0행이면 정상적으로 기존 stale 집계0행을 만들어야 한다.
+
+동시 retention DROP과 원본 읽기는 PostgreSQL relation lock으로 충돌하지만, 삭제 전에 raw source를 같은 transaction에서 확인하여 DROP이 사이에 원본을 없애지 못하도록 해야 한다. root의5번 보존 보호와 중복 구현하지 말고 공통 정책과 lock 순서를 합의한다. 이번 설계 단계에서는5번 메트릭 알고리즘을 다시 정의하지 않았다.
+
+## 6. PostgreSQL 반례와 완료 기준 — 실행 전 계획
+
+기존 `ApmTraceRollupIT`의 서비스 생성·span helper와 임시 테스트 DB를 재사용한다. 해당 IT는 테이블을 정리하는 fixture가 있으므로 공유 운영 DB에서 실행하지 않는다. 이번 턴에서는 DB에 연결하거나 시험하지 않았다.
+
+### A. 키가 완전히 사라지는 최소 반례
+
+1. 고정5분 bucket B를 충분히 닫힌 시각으로 선택한다. 서비스A와B를 준비한다.
+2. trace T, CLIENT span C, service=A, parent=null, start=B+1분, duration100ms, `server.address=internal.example`을 저장한다. 아직 자식 없음.
+3. `rollup(1)` 실행: edge `(A,HTTP,internal.example,B)` count1, dependency `(A,internal.example,B)` count1이어야 한다.
+4. 같은 trace T의 SERVER span S, parent=C, service=B, start=B+1분+1ms를 뒤늦게 저장한다.
+5. 다음 `rollup(1)`이 부모 bucket을 lookback으로 다시 보게 실행한다.
+6. 기대: `(A,SERVICE,<B의serviceId>,B)` count1만 남는다. 옛HTTP와dependency는0행. 현재 코드에서는 새 SERVICE가 더해지고 옛HTTP/dependency가 남는다고 SQL상 추론된다.
+7. 세 번째 동일 재집계도 row/count/error/hist/min/max가 그대로여야 한다.
+
+### B. 혼합 서비스·진짜 외부 호출 보존
+
+A→B 예정 CLIENT 외에 같은bucket의 A→real-external CLIENT와 서비스C→다른external CLIENT를 넣는다. A→B 재분류 후 진짜 외부 두 호출의 값·histogram이 유지되고 전체 edge count가 실제 CLIENT/PRODUCER 수와 일치해야 한다. 동일 target 주소로 내부예정 호출과 진짜 외부 호출을 섞은 경우 dependency가2→1로 줄어야 한다. 삭제 scope가 B서비스나 새key에만 묶인 잘못된 구현을 검출한다.
+
+### C. 경계와 look-ahead
+
+부모를 B+4분59초, 자식을 B+5분00초에 두어 자식은 다음bucket에 있어도 부모B가 SERVICE로 바뀌는지 확인한다. 이전bucket의 sentinel 행과 `bucket_start=toExclusive`인 sentinel 행은 그대로 남아야 한다. look-ahead구간까지 삭제하는 오류를 검출한다.
+
+### D. forward 빈 창·watermark hold
+
+실제 닫힘 경계 직전 bucket을 처음 집계한 뒤 forward 창에는 span을 넣지 않고 replay 안에 자식만 추가한다. 두 번째 회차는 **watermark 그대로, HTTP/dependency는 사라짐, SERVICE 1행**이어야 한다. 현재 setRollbackOnly 경로가 새 DELETE도 취소하는 문제를 검출한다. 시간 경계를 안정적으로 주입할 Clock 또는 package-private 시각 인자가 필요하면 이번 서비스에 한정하여 추가한다.
+
+### E. 기존 값이 있는 상태에서 rollback
+
+A의 외부 집계가 이미 저장된 상태에서 자식을 추가하고 jobStep/messagingStep 또는 dependency INSERT에 실패를 주입한다. DELETE까지 실행됐어도 commit 실패 후 옛 HTTP/dependency의 count·hist·min/max와 watermark가 완전히 같아야 한다. 실패 제거 후 동일 회차 재시도로 SERVICE 1행·옛 외부 0행이 되어야 한다. SQL 오류뿐 아니라 deferred trigger로 commit 실패도 검사한다.
+
+### F. 원본 0행·원본 만료·동시 도착
+
+- raw partition은 있고 원본 0행인 재구축 가능 bucket의 stale 집계는 삭제된다.
+- raw retention 밖 또는 raw partition 누락 bucket의 기존 집계는 보존/보류되며 이를 정상 0으로 보고하지 않는다.
+- edge SQL 뒤에서 latch로 중단하고 다른 connection이 자식을 commit한다. dependency와 edge는 한 회차에서 같은 snapshot을 보며 다음 회차에서 함께 전환돼야 한다.
+- 두 rollup 실행을 동시에 요청할 때 하나만 교체하거나 안전한 serialization 실패가 나고 watermark 역행·중복 row·삭제된 채 남음이 없어야 한다.
+
+## 7. 성능·운영 영향
+
+DELETE+INSERT는 같은 key의 UPSERT보다 WAL·dead tuple·index 갱신량이 늘어난다. 기존 lookback 2버킷과 하루 catch-up 상한을 그대로 보존한다. 정상 회차에서 이미 읽던 창만 교체하므로 span 전체 재조회 범위를 추가로 넓히지 않는다. bulk DELETE 2회이며 서비스별 반복 SQL은 피한다.
+
+두 대상은 일자 partition이고 현재 edge index는 `(from_service_id,bucket_start)`, dependency PK도 service_id 선두다. 전역 bucket 범위 DELETE가 1일 partition 전체를 scan할 가능성이 있다. 새 bucket_start 선두 index 또는 BRIN은 실제 테스트 DB의 `EXPLAIN (ANALYZE, BUFFERS)`·행수·WAL·rollback 시간을 본 뒤 결정한다. 이번 읽기 분석에서는 성능 시험을 하지 않았다. 필요하다면 새 Flyway만 추가하고 기존 V44/V46은 수정하지 않는다.
+
+장기 Repeatable Read는 VACUUM 정리에도 영향을 줄 수 있으므로 실행 시간·처리 bucket 수·기록 행 수·삭제 행 수·hold 여부를 남기고 실제 최대 batch 시간을 확인한다. 최근 버킷 교체 중 일반 SELECT는 MVCC로 commit 전/후 결과를 보며 중간 DELETE 상태가 공개되어서는 안 된다.
+
+## 8. 순위 7 접점 — trace/RUM 짧은 메모
+
+### 서버 trace
+
+- `OtlpTracesReader.java:150`~`:168`은 start 없음→receivedAt, end 없음→start로 폴백하며 수신 시각 허용 창은 검사하지 않는다.
+- `TraceIngestPipeline.java:116`→`:145`→`:169`~`:192`는 시간 범위 검사 전에 등록/귀속 후 writer로 보낸다.
+- `ApmTraceWriter.java:135`~`:137`이 span/summary 날짜 partition을 준비한다.
+- 따라서 공통 time-window 정책은 **reader 이후, resolver 이전**에 span.start/end를 검사해야 한다. 실제 receivedAt을 배치 기준으로 사용하고 범위 밖은 TRACE 신호의 명시적 사유로 집계한다. 종류별 응답·토큰·503 계약은 유지한다.
+- 5/7번 담당의 현재 메트릭 구현은 `core/batch/partition/ApmMetricPartitionGuard`, `core/batch/rollup/ApmMetricRollupProperties`(`app.apm.metric-rollup`), `ApmRetentionPolicy.authoritativeDays()`다. 미래 기본 300초, 과거는 raw1mDays의 날짜 cutoff, 이미 정리한 retired_before도 제외한다. reason은 METRIC_TIME_EXPIRED/FUTURE/RETIRED이며 trace/RUM에는 아직 연결하지 않았다(담당자 공유, 구현 진행 중). trace는 `authoritativeDays().spanDays()`를 재사용하고 날짜 비교의 순수 helper가 분리되면 함께 쓰되, metric guard를 그대로 호출하여 raw1mDays·metric retired marker·METRIC reason을 trace에 적용하면 안 된다. CumulativeDeltaTracker의 maxFutureSeconds만 재사용해도 trace/DDL은 보호되지 않는다.
+
+### RUM
+
+- 이미 `RumParser.java:314`~`:316`이 time/start에 과거 30일·미래 300초 창을 적용하며 controller가 parse 뒤 prepare한다(`ApmRumIngestController:131`~`:151`). 따라서 “RUM도 guard 없음”으로 표현하지 않는다.
+- `RumParser:159`는 end<start를 막지만 end의 미래 상한은 없고 `Duration.toDays()>1`이므로 start=now, end=now+47시간은 코드상 수용된다. 의도가 24시간 상한이면 Duration.compareTo(Duration.ofDays(1))로 판정하고 end<=receivedAt+skew를 검사해야 한다. 실제 DB 재현은 하지 않았다.
+- `RumStore:33`~`:40` TABLES에 apm_rum_span이 있고 `:60`~`:63`은 30일까지 허용한 모든 관측 날짜에 전체 table partition을 준비한다. 그러나 `:237`~`:244`의 실제 브라우저 span 저장은 7일 이내만 수용한다. 따라서 7~30일 관측이 불필요한 과거 apm_rum_span partition을 재생성할 수 있다. 최소안은 30일 페이지/영수증/세션 정책을 유지하면서 span partition 준비만 실제 7일 저장 대상 날짜로 제한하는 것이다.
+- RUM 일괄 과거 창을 7일로 줄이면 30일 집계 계약을 바꾼다. 공통 helper와 신호별 policy를 분리하고 현재 partialSuccess의 rejectedSpans/rejectedDataPoints·errorMessage 계약을 보존한다.
+
+위 7번 메모는 접점 분석이다. 메트릭 5/7 담당의 설계·코드를 재작성하지 않았고, 이 문서의 우선 구현 대상은 6번이다.

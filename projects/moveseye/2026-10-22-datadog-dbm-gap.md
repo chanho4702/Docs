@@ -79,21 +79,21 @@ tags: [moveseye, premium, db-monitoring, datadog, codex, design-review, jdbc]
 
 ## 추가(10-27 오후) — WS-2 잔여: J1 폴러가 돈다(스케줄러·ConfigSource·SecretResolver·상태 EP)
 
-- 5차 커밋(`3f1f1d5`) 승인 뒤 "ㅇㅇ ㄱㄱ"로 WS-2 잔여 착수. `DbmPollerManager`(fast/slow 레인 스레드, `SmartLifecycle` 종료 시 lease 반납) · `PgConfigSource`(BE 대상 30s 캐시 + **라이선스는 매 호출 → 거부 스냅샷**) · `CodecSecretResolver`(캐시 없음) · `GET /dbm/poller/status`. 실 PG IT 12건 — 라이선스 `active=false`로 바꾸면 다음 tick에 lease 전부 반납, 되돌리면 새 epoch로 재개까지 단언. DBM 42건 통과, 6차 커밋 `32c72f5`(미푸시).
+- 5차 커밋(`75ace5e`) 승인 뒤 "ㅇㅇ ㄱㄱ"로 WS-2 잔여 착수. `DbmPollerManager`(fast/slow 레인 스레드, `SmartLifecycle` 종료 시 lease 반납) · `PgConfigSource`(BE 대상 30s 캐시 + **라이선스는 매 호출 → 거부 스냅샷**) · `CodecSecretResolver`(캐시 없음) · `GET /dbm/poller/status`. 실 PG IT 12건 — 라이선스 `active=false`로 바꾸면 다음 tick에 lease 전부 반납, 되돌리면 새 epoch로 재개까지 단언. DBM 42건 통과, 6차 커밋 `5e33e0e`(미푸시).
 - 결정: 라이선스 차단은 **스케줄러가 아니라 설정 출처**에서(J2와 같은 거부 envelope, 전이 로직이 코어 한 곳). `scheduler_setting(dbm_poller)` 스위치 행은 심지 않음 — `SchedulerManager`가 bean 없는 행마다 기동 WARN을 내서 "상주 잡" 표현과 함께 WS-4로. 디스크 큐는 J1에 불필요(우리 PG가 죽으면 lease도 30s 안에 끊긴다) → J2(P3b)의 것으로 확정.
 - 교훈 17: **"스레드 두 개 + tick()"처럼 로직이 코어에 다 있을 때는 자동 실행을 IT 프로필에서 끄고(`auto-run=false`) tick을 직접 부른다** — 스레드가 끼면 lease를 누가 잡았는지 비결정이 되고 다른 IT의 표에 FAILED 배치가 끼어든다. APM `zbx-command.auto-run`과 같은 패턴.
 - 교훈 18: 테스트 JVM이 `insufficient memory for the Java Runtime Environment`(native malloc)로 죽고 Java 프로세스는 작다면 **다른 프로세스가 커밋을 다 썼다** — 이번엔 다른 Claude 세션의 폭주 `grep -o … {0,2500}`이 42GB. `Get-Process | Sort WS` 한 번이 Gradle 설정을 뒤지는 것보다 빠르다.
 
 ## 추가(10-27 저녁) — WS-3 1단계: PostgreSQL 어댑터, J1이 실 PG를 처음 끝까지 긁었다
 
-- 코어 `adapter/pg/`에 S·L·C·Q 수집기 + `PgSqlText`(텍스트 보호 한 지점) + `DeltaWindow`(순수 차분). 실 PG16(5436) LiveIT 4건 — 다른 접속이 실행 중인 SQL이 세션 행으로(리터럴 `?`), advisory lock 대기가 waiter→blocker 간선과 idle blocker 행으로, 카운터·Top SQL은 baseline→델타. 앱 IT `realTargetCollects`: 한 tick에 4 kind가 우리 PG `dbm_sample_batch`까지 — 7차 커밋 `10cbb08`.
+- 코어 `adapter/pg/`에 S·L·C·Q 수집기 + `PgSqlText`(텍스트 보호 한 지점) + `DeltaWindow`(순수 차분). 실 PG16(5436) LiveIT 4건 — 다른 접속이 실행 중인 SQL이 세션 행으로(리터럴 `?`), advisory lock 대기가 waiter→blocker 간선과 idle blocker 행으로, 카운터·Top SQL은 baseline→델타. 앱 IT `realTargetCollects`: 한 tick에 4 kind가 우리 PG `dbm_sample_batch`까지 — 7차 커밋 `b576f18`.
 - 교훈 19: **`pg_stat_statements`의 텍스트는 `$n` 정규화**다. 마스커는 바인드 마커를 자리표시자로 보존하므로 같은 SQL의 세션(`?`)·Top SQL(`$n`) fingerprint가 다르다 — S↔Q 연결 키는 `query_id`(14+)이고 fingerprint로 조인하려 들면 영원히 안 맞는다. LiveIT 첫 실행에서 기대값 `?`가 틀려 드러났다.
 - 교훈 20: PG 누적 통계(`pg_stat_database`)는 비동기 flush(~1s). "직전 커밋이 다음 관측 델타에 보인다"는 단언은 flaky — 델타 메커니즘은 순수 테스트(`DeltaWindowTest`)로, 실 PG는 baseline→행 전이와 모양만.
 - 교훈 21: Q 리셋 판정은 두 겹이어야 한다 — dealloc 뒤 재등록된 native 하나의 감소에 전체를 baseline으로 떨구면 `pg_stat_statements.max`가 작은 서버(기본 5000)에서 Top SQL이 60초마다 비어 버린다. native 단위 제외 + 전역 리셋(stats_reset·절반 이상 감소)으로 가른다.
 
 ## 추가(10-27 밤) — WS-3 2단계: typed 파티션 표, 임시 jsonb 표 제거
 
-- V92 — 차원 3표(fingerprint·사용자/DB/client/app·native) + 사실 4표 일 파티션(세션 2일·락 2일·카운터 1m 7일·Top SQL 1m 7일). `DbmPartitionService`는 공통 `DailyPartitionService` 껍데기(표 목록만), 행 매핑은 `PgTypedRowStore` 한 곳. `dbm_retention` 단계 6개로 §6.1 계단의 원본·1m·차원이 실제로 지워진다. 8차 커밋 `6e255e3`. DBM 46 + ArchUnit 17 통과.
+- V92 — 차원 3표(fingerprint·사용자/DB/client/app·native) + 사실 4표 일 파티션(세션 2일·락 2일·카운터 1m 7일·Top SQL 1m 7일). `DbmPartitionService`는 공통 `DailyPartitionService` 껍데기(표 목록만), 행 매핑은 `PgTypedRowStore` 한 곳. `dbm_retention` 단계 6개로 §6.1 계단의 원본·1m·차원이 실제로 지워진다. 8차 커밋 `a0d28d6`. DBM 46 + ArchUnit 17 통과.
 - 교훈 22: **사실 표에 FK를 두지 않으면 테스트 격리도 달라진다** — `delete from dbm_target`이 더는 사실 행을 지우지 않아 전역 `count(*)` 단언이 다른 IT의 행에 깨졌다. 사실 표는 대상 스코프 count 또는 BeforeEach 비우기. 설계 선택(대상 삭제 CASCADE 폭주 방지)의 대가를 테스트가 먼저 알려준다.
 - 교훈 23: `Map.of()`(불변 맵)에 `get(null)`은 NPE — 행에서 없는 키를 lookup 키로 쓰기 전 null 가드. 어댑터 행은 "없는 값은 키 생략"이라 어디서든 null 키가 올 수 있다.
 - 교훈 24: 1m 집계는 **쓰기 시점 UPSERT**(count+1·sum+·min·max)로 끝내고 롤업 잡은 5m/1h만 — 15초 관측 4개를 분 버킷 한 행에 접는 데 잡이 필요 없고, 잡이 죽어도 1m은 항상 최신이다.
@@ -106,6 +106,7 @@ tags: [moveseye, premium, db-monitoring, datadog, codex, design-review, jdbc]
 - 교훈 26: **JWT 토큰에는 username이 없다**(`id`·`userid`·`userRole`·`roleid`만) — `@CurrentUser`의 `getUsername()`은 MockMvc IT에서 null. 감사 행위자는 `userid`(Zabbix 연결 계정) 또는 `user#<id>`.
 - 교훈 27: record 생성자에 필드를 더할 때 `grep "new LicenseStatus("`는 멀티라인 호출(`new com.…LicenseStatus(\n`)을 놓친다 — 6곳으로 보였지만 10곳. 컴파일 오류로 찾는 게 빠르다.
 - 교훈 28: 전역 UPSERT(대상 스코프 밖 표)는 lease가 보호하지 않는다 — fingerprint 차원처럼 두 노드가 같은 행을 만질 수 있는 표는 배열 입력을 **키 정렬** 뒤 보내야 교착이 없다(APM 1m 데드락과 같은 교훈을 다른 자리에서 다시 맞을 뻔함).
-- 사용자 결정 A(안정화 먼저) → 9차 `03e2d97`(N2·N3·N4·N5·N8·N9 + 재현 테스트 6) → 10차 `5490711`(WS-1). N1은 계약 §1.10 전제로, N6·N7은 WS-10 V93으로. 코어 142·앱 113 통과.
+- 사용자 결정 A(안정화 먼저) → 9차 `b6f622f`(N2·N3·N4·N5·N8·N9 + 재현 테스트 6) → 10차 `b8c528c`(WS-1). N1은 계약 §1.10 전제로, N6·N7은 WS-10 V93으로. 코어 142·앱 113 통과.
 - 교훈 29: 연속 보류 때 "전부/일부/안 함"을 비용 묶음으로 나눠 제시하면 결정이 빠르다 — 지적 9건을 "소 5·중 1·스키마 2·이월 1"로 묶자 한 글자("A")로 끝났다.
 - 10-28 시간순 작업 이력(커밋 10·검수 9·결정 6)은 [[2026-10-28-db-monitoring-worklog]]로 분리.
+- 10-28 ZM-172 10커밋을 master `df1b39f` 위로 rebase 뒤 ff 병합(HEAD `b8c528c`, 미푸시). 충돌은 `application-it.yml` 한 곳(양쪽 추가 블록, 둘 다 유지). 해시는 재부여됨 — 이력은 [[2026-10-28-db-monitoring-worklog]].

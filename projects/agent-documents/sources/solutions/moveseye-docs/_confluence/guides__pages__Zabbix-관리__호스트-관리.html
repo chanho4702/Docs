@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>호스트 관리</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>호스트 관리</h1>
+<div class="meta"><div><strong>대상 독자:</strong> Zabbix 관리자, 시스템 관리자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/zabbix-management/host-management/HostManagementPage.tsx, HostDetailPage.tsx</div></div>
+<h1>호스트 관리</h1>
+<blockquote><p><strong>사이드바</strong> Zabbix 관리 &gt; 호스트 관리 <strong>경로</strong> <code>/zabbix-management/host-management</code> → 상세 <code>/:hostid</code></p></blockquote>
+<blockquote><p>⚠️ <strong>여기서 한 변경은 실제 Zabbix에 반영된다.</strong> 연습용 화면이 아니다.</p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>감시 대상 호스트를 등록·수정하고, 그룹·인터페이스·템플릿 연결을 관리하는 화면이다.</p>
+<h2>화면 구성</h2>
+<h3>탭 2개</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>탭</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>호스트</strong></td><td>호스트 목록과 CRUD</td></tr>
+<tr><td><strong>호스트 그룹</strong></td><td>그룹 목록과 CRUD</td></tr>
+</tbody></table>
+<h3>호스트 상세 (드릴다운)</h3>
+<p>호스트를 선택하면 네 개 탭으로 들어간다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>탭</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>정보/인터페이스</strong></td><td>기본 정보, 접점(IP/DNS·포트·타입), 수집 경로</td></tr>
+<tr><td><strong>아이템</strong></td><td>이 호스트의 수집 항목</td></tr>
+<tr><td><strong>트리거</strong></td><td>이 호스트의 판정 규칙</td></tr>
+<tr><td><strong>디스커버리</strong></td><td>자동 발견 규칙</td></tr>
+</tbody></table>
+<h2>사용 흐름 — 새 호스트 등록</h2>
+<ol>
+<li><strong>호스트</strong> 탭에서 생성.</li>
+<li>이름과 <strong>호스트 그룹</strong>을 지정한다 — 그룹은 권한 경계이므로 신중히 고른다.</li>
+<li><strong>인터페이스</strong>를 등록한다(IP/DNS, 포트, agent/SNMP 등).</li>
+<li><strong>템플릿을 연결</strong>한다. 아이템과 트리거는 대개 템플릿에서 상속받는 것이 관리하기 쉽다.</li>
+<li>필요하면 분류·태그를 지정한다.</li>
+</ol>
+<h2>주의할 점</h2>
+<h3>배열 필드 전체 교체</h3>
+<p>🔴 <strong>가장 위험한 함정이다.</strong> Zabbix의 update는 부분 수정이 아니라 <strong>보낸 배열로 통째 교체</strong>한다. 태그 하나를 추가하려고 그것만 보내면 <strong>나머지 태그가 전부 사라진다.</strong></p>
+<p>제품 화면은 현재 값을 읽어 폼에 채우고 전체를 다시 보내는 방식으로 이를 막고 있다. 그러므로:</p>
+<ul>
+<li><strong>폼에 이미 채워진 값을 임의로 지우지 않는다</strong></li>
+<li>다건 일괄 변경 전에 대상 호스트의 현재 태그·템플릿 연결을 먼저 확인한다</li>
+</ul>
+<p>템플릿 링크도 같은 방식이다.</p>
+<h3>그룹 변경의 파급</h3>
+<p>호스트 그룹을 바꾸면 <strong>그 그룹을 볼 수 있는 사용자가 바뀐다.</strong> 권한 경계이기 때문이다. 담당자가 갑자기 장비를 못 보게 되는 일이 여기서 생긴다.</p>
+<h3>수집 경로</h3>
+<p>장비가 Proxy를 통해 수집되는 경우 정보/인터페이스 탭에서 확인할 수 있다. 값이 안 들어올 때 장비가 아니라 Proxy 문제일 수 있다.</p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>템플릿 관리</strong></li>
+<li><strong>아이템 관리</strong></li>
+<li><strong>자산 목록</strong></li>
+</ul>
+</body></html>

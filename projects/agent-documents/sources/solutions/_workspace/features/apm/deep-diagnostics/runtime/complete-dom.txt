@@ -1,0 +1,66 @@
+Home
+OPERATIONS
+AI Assistant
+Cannot reach the AI server. Check the server status.
+Monitoring
+Watch infrastructure and service health in real time
+Network Maps
+Cloud Infra Monitoring
+Application Monitoring
+APM Overview
+Live monitoring
+Services
+Service Map
+Trace Explorer
+Incidents & Errors
+Synthetic Monitoring
+SLO
+Database Monitoring
+GPU Monitoring
+Event/Alert
+Review active problems and coordinate a response
+ASSETS & CONFIGURATION
+Asset Management
+Manage equipment, costs and topology maps
+DATA SOURCE MANAGEMENT
+Zabbix Management
+Configure monitored targets, templates and alert rules
+A
+admin
+ADMIN
+Home
+/
+Application Monitoring
+/
+Trace Explorer
+/
+GET /complete
+Search screens & hosts
+Ctrl K
+kr
+en
+Your license expires in 0 days. Without renewal the system becomes read-only.
+Manage license
+GET /complete
+Find traces across every service and drill into where a single request spent its time, as a waterfall or a flame graph.
+GET /complete
+Slow (inferred)
+Start
+2026-10-28 15:58:48
+	
+Latency
+3.00 s
+	
+Spans
+3 / 5 stored
+
+
+Trace ID
+294216a15ce548e083810bacfbb17732
+Still ingesting
+Time by service
+?
+Sum of self time (time not covered by children). The share denominator is the sum drawn in this bar.
+Waterfall
+Flame
+Diagnostics

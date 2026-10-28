@@ -1,0 +1,69 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>프로젝트 캘린더</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>프로젝트 캘린더</h1>
+<p><a href="index.html">가이드 홈</a> · <a href="../en/calendar.html">English</a></p>
+<blockquote>
+<p>검토 초안: 지정된 staging 환경의 실제 화면·배포 버전 확인 전입니다.</p>
+</blockquote>
+<p>프로젝트 캘린더에서는 참여자의 워크로그와 연결된 이슈의 일정을 날짜별로 확인합니다. 개인 업무만 볼 때는 My Work를 사용합니다.</p>
+<h2>확인 절차</h2>
+<ol>
+<li>프로젝트 상세에서 <strong>캘린더</strong>를 엽니다. 프로젝트 관리 읽기와 해당 프로젝트 조회 범위가 필요합니다.</li>
+<li>확인할 월 또는 주로 이동합니다.</li>
+<li>작업자·작업 필터로 대상을 좁힙니다.</li>
+<li><strong>워크로그</strong> 또는 <strong>이슈</strong> 표시 모드를 선택합니다.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>모드</th>
+<th>확인하는 것</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>워크로그</td>
+<td>실제 기록된 시간과 일별 합계</td>
+</tr>
+<tr>
+<td>이슈</td>
+<td>시작일~기한으로 표시한 일정</td>
+</tr>
+</tbody></table>
+<p>공휴일과 프로젝트 이벤트도 함께 확인할 수 있습니다. 시작일·기한이 없는 작업은 <strong>기간 미설정</strong>에서 확인하고 <a href="project-work.html">작업 관리</a>에서 일정을 지정합니다.</p>
+<h2>결과가 예상과 다를 때</h2>
+<ul>
+<li>워크로그가 없으면 기간·작성자·이슈 연결을 확인합니다.</li>
+<li>이슈 막대가 없으면 이슈 표시 모드와 일정 유무를 확인합니다.</li>
+<li>워크로그를 고칠 때는 작성자 본인의 수정 권한이 필요합니다.</li>
+<li>여러 날의 일정은 시작일과 마지막 표시 날짜를 확인합니다.</li>
+</ul>
+<p>이 화면의 워크로그는 Jira 및 My Work와 같은 기록입니다. 개인별 투입 추세는 <a href="analytics.html">인력 분석</a>에서 보는 편이 좋습니다. 모드 전환은 본문 표로 설명하고 별도 캡처는 필수로 요구하지 않습니다.</p>
+<!-- control-reference:start -->
+
+<h2>버튼·입력 항목과 처리 결과 상세</h2>
+<p>프로젝트 캘린더는 프로젝트 범위의 일정과 기록을 확인합니다. 개인 My Work 캘린더와 표시 대상이 다릅니다.</p>
+<table>
+<thead>
+<tr>
+<th>버튼·입력 항목</th>
+<th>기능·사용 조건·변경 대상</th>
+<th>결과 확인과 문제 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>오늘·이전/다음·월/주</td>
+<td>표시하는 날짜와 시간 축을 바꿉니다. 프로젝트 기간이나 이슈 날짜를 수정하지 않습니다.</td>
+<td>화면 제목의 기간과 해당 프로젝트를 확인합니다.</td>
+</tr>
+<tr>
+<td>워크로그·이슈 표시</td>
+<td>워크로그는 실제 투입 날짜·시간, 이슈 일정은 시작·기한 기준입니다. 같은 이슈도 모드에 따라 보이는 날짜가 다릅니다.</td>
+<td>기간 밖 기록과 날짜 없는 이슈가 보이지 않는 이유를 구분합니다.</td>
+</tr>
+<tr>
+<td>이슈·기록 상세·일정 미지정 목록</td>
+<td>대상을 선택해 키·이름·기간·시간을 확인합니다. 시작일 또는 기한이 없는 작업은 일정 미지정 목록에서 확인합니다.</td>
+<td>계획 날짜 변경은 권한 있는 사용자가 작업 관리의 간트에서 수행합니다. 캘린더 조회와 워크로그 등록을 혼동하지 않습니다.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

@@ -1,0 +1,60 @@
+{
+  "status": "draft-source-verified-not-submitted",
+  "verifiedDate": "2026-10-20",
+  "en": {
+    "name": "Moves Approval for Jira",
+    "tagline": "Review worklogs, track approval decisions, and manage period closing in Jira Cloud.",
+    "summary": "Approve individual Jira worklogs with a shared inbox, decision history and period controls. Use standalone teams or optionally connect Moves Workforce.",
+    "details": "Bring worklog review into Jira Cloud. Authors save work and track approval requests, while assigned approvers review individual records in a shared inbox. Keep approval decisions and observed worklog changes visible, configure automatic requests and period closing, and manage eligible record exports. Approved worklogs are locked against edits through the app. Administrators can configure additional worklog controls and must verify their scope before rollout. Use Approval on its own or pair it with Moves Workforce for linked issues and team information. English and Korean translations are included. Current onboarding focuses on individual worklog approval; period timesheet submission and status change approval are not presented as available release features.",
+    "highlights": [
+      {
+        "title": "Review worklog approvals in one inbox",
+        "summary": "Track your requests and completed decisions. Review the issue, recorded time and approval status, with bulk actions for eligible requests.",
+        "caption": "The history view separates approved and withdrawn request rounds and shows recorded work time. This captured development screen uses Korean UI.",
+        "image": "images/ko-history-live.jpg"
+      },
+      {
+        "title": "Set clear worklog approval rules",
+        "summary": "Choose automatic or manual requests and configure monthly closing. Approved records stay locked through the app, including during reconsideration.",
+        "caption": "Basic approval settings show request timing, closing days and protection guidance. Zero days means automatic closing is off. Korean development UI.",
+        "image": "images/ko-policy-live.jpg"
+      },
+      {
+        "title": "Connect Moves Workforce when needed",
+        "summary": "Pair compatible apps with a connection code. Use Workforce team and linked-issue information while Approval owns decisions and worklog controls.",
+        "caption": "The connected Workforce settings show connection state and communication diagnostics. Pairing secrets are not displayed. Korean development UI.",
+        "image": "images/ko-workforce-live.jpg"
+      }
+    ],
+    "releaseSummary": "Individual worklog approvals, history, period controls and Workforce pairing.",
+    "releaseNotes": "Release-scope draft: individual worklog requests and decisions; request and change history; automatic request and monthly closing settings; optional code-based Workforce pairing. Confirm the production version and live test results before publishing."
+  },
+  "ko": {
+    "name": "Moves Approval for Jira",
+    "tagline": "Jira Cloud의 워크로그 승인·결정 이력·기간 마감을 한곳에서 관리하세요.",
+    "summary": "업무함에서 Jira 워크로그를 건별로 승인하고 결정 이력과 기간 마감을 관리하세요. 단독 팀 설정 또는 선택적인 Moves Workforce 연결을 지원합니다.",
+    "details": "Jira Cloud에서 작업 기록의 검토와 승인을 관리하세요. 작성자는 기록을 저장하고 승인 요청 결과를 확인하며, 지정 승인자는 업무함에서 건별로 검토합니다. 승인 결정과 관찰된 워크로그 변경 이력을 구분하고 자동 요청·기간 마감·허용된 기록 내보내기를 운영할 수 있습니다. 승인된 기록은 앱에서 수정·삭제가 제한됩니다. 관리자는 추가 워크로그 통제를 구성하고 실제 보호 범위를 검증한 뒤 적용합니다. 단독 사용하거나 Moves Workforce와 연결해 조직·연결 이슈 정보를 사용할 수 있습니다. 영어·한국어 번역을 포함합니다. 현재 신규 사용 안내는 워크로그 건별 승인 중심이며 기간 타임시트 제출과 상태 변경 승인은 출시 제공 기능으로 안내하지 않습니다.",
+    "highlights": [
+      {
+        "title": "업무함에서 워크로그 승인과 이력 확인",
+        "summary": "본인 요청과 처리 이력을 추적하세요. 이슈·기록 시간·승인 상태를 확인하고 가능한 요청은 일괄 처리합니다.",
+        "caption": "승인 완료와 회수된 요청 회차, 작업 일시·소요 시간을 구분하는 실제 개발 환경의 내 이력 화면입니다.",
+        "image": "images/ko-history-live.jpg"
+      },
+      {
+        "title": "자동 요청과 월 마감 규칙 설정",
+        "summary": "자동·수동 요청과 월 마감 유예일을 정하세요. 승인된 기록은 앱 수정이 제한되며 소명 중에도 잠금이 유지됩니다.",
+        "caption": "실제 개발 환경의 기본 승인 규칙 화면입니다. 자동 마감 0일의 의미와 보호 범위를 함께 안내합니다.",
+        "image": "images/ko-policy-live.jpg"
+      },
+      {
+        "title": "필요할 때 Moves Workforce 연결",
+        "summary": "호환되는 두 앱을 연결 코드로 연결하세요. Workforce의 팀·연결 이슈와 Approval의 승인·통제를 함께 사용합니다.",
+        "caption": "실제 개발 환경의 연결 상태와 통신 진단 화면입니다. 연결 코드와 개인키는 표시하지 않았습니다.",
+        "image": "images/ko-workforce-live.jpg"
+      }
+    ],
+    "releaseSummary": "워크로그 건별 승인·이력·기간 마감과 Workforce 코드 연결",
+    "releaseNotes": "출시 범위 초안: 건별 워크로그 요청·결정, 승인·변경 이력, 자동 요청과 월 마감 설정, 선택적인 Workforce 코드 연결. 공개 전 production 버전과 실계정 검증 결과를 확정해야 합니다."
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Approval inbox · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/inbox.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a class="active" aria-current="page" href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a  href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; User guides</div><h1>Approval inbox</h1><p class="lede">Find requests you must decide on, requests you submitted, and requests where you are copied. The inbox also leads to notifications, your signature, and delegation.</p>
+<p><strong>Location:</strong> Confluence <strong>Apps → Moves Approval</strong>.</p>
+<h2 id="section-0">Read the screen</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tab</th>
+<th>Requests shown</th>
+<th>Next action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>My turn</td>
+<td>Requests that you, or someone who delegated to you, can decide now</td>
+<td>Open details, review, and decide.</td>
+</tr>
+<tr>
+<td>In progress</td>
+<td>Requests where you are waiting for an earlier step</td>
+<td>Check the active step and deadline.</td>
+</tr>
+<tr>
+<td>My requests</td>
+<td>Requests you created</td>
+<td>Follow progress and rejection reasons.</td>
+</tr>
+<tr>
+<td>Handled</td>
+<td>Requests you already decided on</td>
+<td>Distinguish your decision from the overall result.</td>
+</tr>
+<tr>
+<td>Cc</td>
+<td>Requests where you are copied</td>
+<td>Read progress; Cc alone does not allow decisions.</td>
+</tr>
+</tbody>
+</table></div>
+<p><img src="../assets/ma-05-inbox-2026-10-26.jpg" alt="Approval inbox with status tabs, filters, page list, deadline badge, and Excel export"></p>
+<p><em>MA-05 · Approval inbox from the staging build deployed on October 26, 2026. The list is restricted to requests whose pages the user can view.</em></p>
+<h2 id="section-1">Find a request</h2>
+<ol>
+<li>Choose the appropriate tab: <strong>My turn</strong> for action, or <strong>My requests</strong> for pages you submitted.</li>
+<li>Narrow the list by page title, space, requester, and date. Use the due-soon condition for urgent deadlines.</li>
+<li>Select the <strong>page name</strong> to open the Confluence page. Select elsewhere on the row to open approval details.</li>
+<li>Use <strong>Show more</strong> for additional rows. If a request is missing, clear filters and check access to the source page.</li>
+</ol>
+<h2 id="section-2">Controls and indicators</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Action</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status, dates, and deadline filters</td>
+<td>Change the list query</td>
+<td>Active filters can hide requests.</td>
+</tr>
+<tr>
+<td>Deadline badge</td>
+<td>Shows remaining days within three days, due today, or overdue</td>
+<td>Overdue requests cannot be decided.</td>
+</tr>
+<tr>
+<td>Column border</td>
+<td>Drag to resize a column</td>
+<td>Double-click to restore the default width.</td>
+</tr>
+<tr>
+<td>Export to Excel</td>
+<td>Export up to 5,000 accessible requests matching the tab and filters</td>
+<td>Can include requests not yet loaded on screen.</td>
+</tr>
+<tr>
+<td>Notifications, My signature, My delegation</td>
+<td>Open personal features</td>
+<td>Settings requires app administration permission.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-3">Check the list and export</h2>
+<p>The Excel file is a request list, not a full backup of individual decisions and audit history. Use <a href="certificate.html">certificates</a> for finished-request evidence and <a href="admin-data.html">data management</a> for retention exports.</p>
+<p>Only pages you can view appear. If tab counts and visible rows differ, check filters and page permission. Being named on a line does not allow a <a href="decisions.html">decision</a> before your step opens.</p>
+<div class="pager"><a href="area-approval.html"><small>← PREVIOUS</small>Area approval</a><a href="decisions.html"><small>NEXT →</small>Approve, reject, and bulk approve</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">Read the screen</a><a href="#section-1">Find a request</a><a href="#section-2">Controls and indicators</a><a href="#section-3">Check the list and export</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

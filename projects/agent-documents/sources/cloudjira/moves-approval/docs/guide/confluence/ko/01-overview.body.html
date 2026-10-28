@@ -1,0 +1,244 @@
+<h1 id="소개와-핵심-개념">소개와 핵심 개념</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">한국어 가이드</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472404">English</a></p>
+<p>Moves Approval은 Confluence Cloud 문서에 <strong>순차 승인(결재)</strong> 을 붙이는 앱입니다. 누가, 어느 버전을, 어떤 순서로 승인했는지가 문서 옆에 남고, 승인자는 한 곳(승인 업무함)에서 자기 차례인 일을 처리합니다.</p>
+<h2 id="주요-기능">주요 기능</h2>
+<table>
+<thead>
+<tr>
+<th>기능</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>페이지 승인</td>
+<td>페이지 전체를 특정 버전 기준으로 승인받습니다.</td>
+</tr>
+<tr>
+<td>영역 승인</td>
+<td><strong>Moves Approval Region</strong> 매크로로 감싼 부분만 따로 승인받습니다. 한 페이지에 여러 영역을 둘 수 있습니다.</td>
+</tr>
+<tr>
+<td>결재란</td>
+<td><strong>Moves 결재란</strong> 매크로가 문서 안에 종이 결재판처럼 단계·결재자·도장을 보여 줍니다. 승인 요청 때 문서 맨 위에 자동으로 넣을 수 있습니다(기본 켬).</td>
+</tr>
+<tr>
+<td>다단계 결재선</td>
+<td>단계를 순서대로 진행합니다. 단계마다 이름(예: 법무 검토)과 통과에 필요한 승인 수를 정합니다.</td>
+</tr>
+<tr>
+<td>승인 그룹</td>
+<td>Confluence 그룹이나 앱 전용 그룹을 한 단계로 넣고 &quot;전원 승인&quot; 또는 &quot;1인 승인&quot;을 고릅니다.</td>
+</tr>
+<tr>
+<td>저장된 결재선</td>
+<td>관리자가 자주 쓰는 결재 순서를 미리 만들어 두면 요청자는 하나를 고르기만 합니다.</td>
+</tr>
+<tr>
+<td>참조(CC)</td>
+<td>결정 권한 없이 진행 상황과 알림만 받는 사람을 지정합니다.</td>
+</tr>
+<tr>
+<td>마감일</td>
+<td>마감 3일 전부터 <code>D-n</code>·<code>오늘 마감</code>, 지나면 <code>기한 초과</code> 배지가 붙고, 더 이상 승인·반려할 수 없습니다. 마감이 지난 요청은 하루 한 번 점검에서 만료됩니다.</td>
+</tr>
+<tr>
+<td>승인 업무함</td>
+<td>내 차례·진행 중·내 요청·처리한 건·참조를 한 화면에서 보고, 필터·엑셀 내보내기·일괄 승인을 지원합니다.</td>
+</tr>
+<tr>
+<td>서명과 PIN</td>
+<td>결정 옆에 서명 도장을 찍고, 정책에 따라 승인·반려 확정에 서명 PIN을 요구합니다.</td>
+</tr>
+<tr>
+<td>결재 위임</td>
+<td>자리를 비울 때 기간을 정해 대리인에게 결재를 맡깁니다.</td>
+</tr>
+<tr>
+<td>독촉·마감 임박 알림</td>
+<td>오래 처리되지 않은 요청을 지금 차례인 승인자에게 다시 알립니다.</td>
+</tr>
+<tr>
+<td>감사 기록</td>
+<td>요청별 감사 타임라인, 버전별 승인 이력, 설정 변경 이력을 남깁니다. 사용자가 수정할 수 없고, 보관 기간·정리 정책에 따라서만 지워집니다.</td>
+</tr>
+<tr>
+<td>결재 증명서 PDF</td>
+<td>끝난 결재의 결재선·도장·이력과 <strong>문서 지문</strong>(결재 대상 버전 본문의 SHA-256)을 PDF 한 장으로 받습니다. 페이지를 볼 수 있는 사람이면 누구나 받을 수 있습니다.</td>
+</tr>
+<tr>
+<td>데이터 관리</td>
+<td>관리자가 앱 저장 공간 사용량을 보고, 끝난 결재 기록의 보관 기간(기본 3년)을 정해 기간이 지난 기록을 엑셀로 내보낸 뒤 삭제합니다.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="화면은-어디에-있나요">화면은 어디에 있나요</h2>
+<table>
+<thead>
+<tr>
+<th>위치</th>
+<th>무엇을 하나요</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>페이지 제목 아래 항목(byline)</td>
+<td>현재 승인 상태를 보여 줍니다(예: <code>⏳ 법무 검토 중 · 2/3단계</code>). 누르면 승인 창이 열려 상세 확인·요청·결정을 합니다. 요청이 없으면 <strong>승인 요청</strong> 으로 보입니다.</td>
+</tr>
+<tr>
+<td>페이지 <code>•••</code> 메뉴 → <strong>승인 요청</strong></td>
+<td>편집 권한이 있는 사용자에게만 보이는 요청 진입점입니다.</td>
+</tr>
+<tr>
+<td>본문의 <strong>결재란</strong></td>
+<td>페이지 결재의 단계·결재자·도장을 문서 안에 보여 줍니다. <strong>결재 상세 열기</strong>로 승인 창을 엽니다. 영역 승인 상자 아래에도 같은 결재란이 붙습니다.</td>
+</tr>
+<tr>
+<td>승인 창 제목 옆 <strong>결재 증명서 PDF</strong></td>
+<td>끝난 결재(승인 완료·반려됨·만료됨·회수됨)의 증명서를 내려받습니다.</td>
+</tr>
+<tr>
+<td>상단 <strong>앱</strong> 메뉴 → <strong>Moves Approval</strong></td>
+<td>승인 업무함입니다. 알림·내 서명·내 위임도 여기서 엽니다. 문서 이름을 누르면 그 문서로, 행의 다른 곳을 누르면 승인 창이 열립니다.</td>
+</tr>
+<tr>
+<td>스페이스 사이드바 → <strong>Moves Approval</strong></td>
+<td>해당 스페이스의 승인 업무함입니다.</td>
+</tr>
+<tr>
+<td>Confluence 홈 오른쪽 패널</td>
+<td>내 차례인 승인을 요약해 보여 줍니다.</td>
+</tr>
+<tr>
+<td><strong>Confluence 설정</strong> → <strong>Moves Approval</strong></td>
+<td>관리자 전용 설정 화면입니다(승인 업무함의 <strong>설정</strong> 링크로도 열 수 있습니다). 저장 공간과 결재 기록 보관은 <strong>데이터 관리</strong> 탭에서 다룹니다.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>화면 이미지 삽입 위치 · 01-page-status</strong></p>
+<p>페이지 제목 아래 승인 상태와 본문 결재란</p>
+<p>파일: <code>ma-01-page-status-ko.png</code> · 대체 텍스트: 페이지 제목 아래 승인 상태와 본문 결재란</p>
+<p>실제 제품 화면 캡처를 이 위치에 삽입합니다.</p>
+</blockquote>
+<h2 id="요청은-이렇게-흘러갑니다">요청은 이렇게 흘러갑니다</h2>
+<pre><code>승인 요청 ─▶ 1단계 ─▶ 2단계 ─▶ … ─▶ 승인 완료
+               │        │
+               └─ 반려 ─┴─▶ 반려됨           (한 명이라도 반려하면 즉시 종료)
+   진행 중 언제든 ─ 요청자 회수 ─▶ 회수됨
+   마감 경과 ─────────────────▶ 만료됨      (하루 한 번 점검, 그 사이에는 &quot;기한 초과&quot;)
+   새 버전으로 다시 상신 ───────▶ 이전 요청 종료, 새 요청 시작
+</code></pre>
+<ul>
+<li>앞 단계가 통과해야 다음 단계가 열립니다. 아직 차례가 아닌 승인자는 결정할 수 없습니다.</li>
+<li>한 대상(페이지 또는 영역)에는 <strong>진행 중인 요청이 하나만</strong> 있을 수 있습니다.</li>
+<li>끝난 요청(승인 완료·반려·만료·회수)은 다시 열 수 없습니다. 필요하면 새 요청을 만듭니다.</li>
+<li>마감이 지나면 승인·반려 버튼이 사라지고, 서버도 마감 이후의 결정을 거절하고 그 자리에서 만료시킵니다. 마감이 지난 문서에 다시 요청하면 이전 요청은 자동으로 만료되고 새 요청이 시작됩니다.</li>
+</ul>
+<blockquote>
+<p><strong>화면 이미지 삽입 위치 · 02-workflow</strong></p>
+<p>단계별 승인 진행과 결정 이력</p>
+<p>파일: <code>ma-02-workflow-ko.png</code> · 대체 텍스트: 단계별 승인 진행과 결정 이력</p>
+<p>실제 제품 화면 캡처를 이 위치에 삽입합니다.</p>
+</blockquote>
+<h2 id="상태">상태</h2>
+<table>
+<thead>
+<tr>
+<th>상태</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>승인 대기</td>
+<td>결정을 기다리는 중입니다. 단계 이름이 있으면 &quot;법무 검토 중 · 2/3단계&quot;처럼 보입니다.</td>
+</tr>
+<tr>
+<td>승인 완료</td>
+<td>모든 단계가 승인했습니다. 승인한 <strong>버전</strong>이 함께 기록됩니다.</td>
+</tr>
+<tr>
+<td>반려됨</td>
+<td>승인자가 반려했습니다. 사유가 기록됩니다.</td>
+</tr>
+<tr>
+<td>만료됨</td>
+<td>마감 기한이 지나 종료되었습니다. 마감 후 만료로 바뀌기까지 최대 하루 동안은 &quot;기한 초과&quot;로 표시됩니다.</td>
+</tr>
+<tr>
+<td>회수됨</td>
+<td>요청자(또는 Confluence 관리자)가 회수했습니다.</td>
+</tr>
+</tbody>
+</table>
+<p>관리자는 이 상태들의 <strong>표시 이름</strong>을 조직 용어로 바꿀 수 있습니다. 흐름 자체는 바뀌지 않습니다.</p>
+<h2 id="용어">용어</h2>
+<table>
+<thead>
+<tr>
+<th>용어</th>
+<th>뜻</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>요청자</td>
+<td>승인을 요청한 사람. 대상 페이지 편집 권한이 필요합니다.</td>
+</tr>
+<tr>
+<td>승인자</td>
+<td>결재선에 올라 결정(승인·반려)하는 사람</td>
+</tr>
+<tr>
+<td>결재선</td>
+<td>단계와 승인자로 이루어진 승인 순서. 요청할 때 직접 만들거나, 관리자가 등록한 것을 고릅니다.</td>
+</tr>
+<tr>
+<td>단계</td>
+<td>결재선의 한 줄. 같은 단계의 승인자는 동시에 결정하고, 정해진 승인 수가 모이면 다음 단계로 넘어갑니다.</td>
+</tr>
+<tr>
+<td>승인 그룹</td>
+<td>한 단계로 들어가는 그룹. 통과 조건은 &quot;전원 승인&quot; 또는 &quot;1인 승인&quot;입니다.</td>
+</tr>
+<tr>
+<td>참조(CC)</td>
+<td>결정 없이 열람과 알림만 받는 사람</td>
+</tr>
+<tr>
+<td>대리인</td>
+<td>위임을 받아 다른 승인자 대신 결정하는 사람</td>
+</tr>
+<tr>
+<td>승인 업무함</td>
+<td>내 승인 업무를 모아 보는 화면</td>
+</tr>
+<tr>
+<td>결재란</td>
+<td>문서 안에 단계·결재자·도장을 보여 주는 매크로(<strong>Moves 결재란</strong>)</td>
+</tr>
+<tr>
+<td>문서 지문</td>
+<td>결재 대상 버전 본문의 SHA-256 값. 같은 버전을 다시 계산해 내용이 그대로인지 확인합니다.</td>
+</tr>
+<tr>
+<td>설정 관리자</td>
+<td>Confluence 관리자가 아니어도 앱 설정을 관리하도록 등록된 사람</td>
+</tr>
+</tbody>
+</table>
+<h2 id="이메일-대신-무엇으로-알리나요">이메일 대신 무엇으로 알리나요</h2>
+<p>Moves Approval은 이메일을 직접 보내지 않습니다. 대신 두 가지 경로를 씁니다.</p>
+<ol>
+<li><strong>앱 내 알림</strong> — 승인 업무함의 <strong>알림</strong> 화면에 쌓입니다.</li>
+<li><strong>Confluence 알림</strong>(관리자가 켠 경우, 기본 켬) — 대상 페이지에 관련자를 @멘션하는 댓글을 남깁니다. Confluence가 이 멘션을 각자의 Confluence 알림·이메일 설정에 따라 전달합니다.</li>
+</ol>
+<p>자세한 내용은 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570700">관리자 가이드 — 알림</a>을 보세요.</p>
+<h2 id="지원-언어">지원 언어</h2>
+<p>화면은 한국어와 영어를 지원하며, 각 사용자의 Confluence 언어 설정을 따릅니다. 그 밖의 언어는 영어로 표시됩니다.</p>
+<h2 id="관련-문서">관련 문서</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378">FAQ와 문제 해결</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394">Marketplace 심사 안내</a></li>
+</ul>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>템플릿 관리</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>템플릿 관리</h1>
+<div class="meta"><div><strong>대상 독자:</strong> Zabbix 관리자, 시스템 관리자</div><div><strong>문서 상태:</strong> current</div><div><strong>기준일:</strong> 2026-08-11</div><div><strong>정본 위치:</strong> pages/zabbix-management/item-template-management/TemplateManagementPage.tsx, TemplateDetailPage.tsx</div></div>
+<h1>템플릿 관리</h1>
+<blockquote><p><strong>사이드바</strong> Zabbix 관리 &gt; 템플릿 관리 <strong>경로</strong> <code>/zabbix-management/item-template-management</code></p></blockquote>
+<blockquote><p>⚠️ <strong>여기서 한 변경은 실제 Zabbix에 반영되며, 연결된 모든 호스트에 파급된다.</strong></p></blockquote>
+<h2>무엇을 하는 화면인가</h2>
+<p>여러 호스트에 재사용하는 수집 구성(아이템·트리거 묶음)을 관리하는 화면이다.</p>
+<p><strong>템플릿은 파급력이 가장 큰 대상이다.</strong> 호스트 하나를 고치면 그 호스트만 바뀌지만, 템플릿을 고치면 연결된 호스트 전부가 바뀐다.</p>
+<h2>화면 구성</h2>
+<h3>탭 2개</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>탭</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>템플릿</strong></td><td>템플릿 목록과 CRUD</td></tr>
+<tr><td><strong>템플릿 그룹</strong></td><td>템플릿 묶음 관리</td></tr>
+</tbody></table>
+<h3>템플릿 상세</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>탭</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><strong>정보</strong></td><td>기본 속성, 연결 관계</td></tr>
+<tr><td><strong>아이템</strong></td><td>이 템플릿이 정의한 수집 항목</td></tr>
+<tr><td><strong>트리거</strong></td><td>판정 규칙</td></tr>
+<tr><td><strong>디스커버리</strong></td><td>자동 발견 규칙</td></tr>
+</tbody></table>
+<h2>사용 흐름</h2>
+<ol>
+<li>템플릿 목록에서 대상을 찾는다.</li>
+<li>상세에서 아이템·트리거 구성을 확인한다.</li>
+<li><strong>연결된 호스트 수를 먼저 파악한다</strong> — 이것이 변경 영향 범위다.</li>
+<li>수정 후 실제 호스트 몇 대에서 값이 정상 수집되는지 확인한다.</li>
+</ol>
+<h2>주의할 점</h2>
+<h3>수정 전 영향 범위 확인</h3>
+<p>🔴 템플릿의 아이템·트리거를 고치면 <strong>연결된 호스트 전부</strong>에 즉시 적용된다. 트리거 임계값을 잘못 바꾸면 수백 대에서 동시에 알람이 터질 수 있다.</p>
+<p>운영 시간대를 피하고, 가능하면 소수 호스트로 먼저 검증한다.</p>
+<h3>연결 해제(unlink)</h3>
+<p>템플릿 연결을 끊으면 그 템플릿에서 상속받던 아이템·트리거가 사라진다. <strong>수집이 중단된다.</strong> 해제 전에 해당 호스트가 다른 경로로 같은 항목을 수집하는지 확인한다.</p>
+<h3>연결 작업의 방향</h3>
+<p>템플릿과 호스트의 연결·해제는 <strong>호스트 쪽 API</strong>로 처리된다. 화면에서는 자연스럽게 보이지만, 문제가 생겼을 때 로그를 볼 때 알아 두면 도움이 된다.</p>
+<h3>상속 관계</h3>
+<p>호스트에서 직접 만든 아이템과 템플릿에서 상속된 아이템은 다르다. 상속된 것은 <strong>원본 템플릿에서 고쳐야</strong> 하며, 호스트 쪽에서는 이름·키 수정과 삭제가 막혀 있다(상태 변경은 가능).</p>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>호스트 관리</strong></li>
+<li><strong>아이템 관리</strong></li>
+<li><strong>트리거 관리</strong></li>
+</ul>
+</body></html>

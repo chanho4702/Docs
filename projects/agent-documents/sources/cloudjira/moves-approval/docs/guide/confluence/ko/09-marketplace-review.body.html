@@ -1,0 +1,198 @@
+<h1 id="marketplace-심사-안내">Marketplace 심사 안내</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">한국어 가이드</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">English</a></p>
+<blockquote>
+<p>대상: Atlassian Marketplace 심사자와 제출 담당자
+작성 기준: 2026-10-05 저장소의 Confluence Cloud 구현. 아래 절차는 심사 시 실행할 검증 시나리오이며, 실행 결과 보고서가 아닙니다.</p>
+</blockquote>
+<h2 id="앱-소개와-리스팅-문구">앱 소개와 리스팅 문구</h2>
+<p><strong>앱 이름:</strong> Moves Approval for Confluence</p>
+<p><strong>짧은 설명:</strong> Confluence 문서의 단계별 승인, 결재란, 버전별 이력을 한곳에서 관리하세요.</p>
+<p><strong>상세 설명:</strong> Moves Approval은 Confluence Cloud 페이지 전체 또는 특정 영역에 순차 승인을 요청하는 앱입니다. 요청자는 승인자와 결재선을 정하고, 승인자는 승인 업무함에서 자기 차례인 요청을 처리합니다. 문서 안의 결재란에 단계·결재자·도장이 표시되며, 끝난 요청은 결재 증명서 PDF로 내려받을 수 있습니다. 저장된 결재선, 승인 그룹, 참조자, 기간별 위임, 서명과 PIN, 일괄 승인, 엑셀 내보내기 및 기록 보관 설정을 지원합니다. 화면과 사용자 가이드는 한국어와 영어를 제공합니다.</p>
+<table>
+<thead>
+<tr>
+<th>주요 소개 항목</th>
+<th>설명</th>
+<th>권장 화면 자료</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문서에서 바로 확인하는 승인</td>
+<td>페이지와 영역별 승인 상태, 결재란, 승인 대상 버전 표시</td>
+<td>테스트 문서의 결재란과 승인 상세</td>
+</tr>
+<tr>
+<td>한곳에서 처리하는 승인 업무</td>
+<td>내 차례·내 요청·참조 목록, 필터, 일괄 승인</td>
+<td>승인 업무함</td>
+</tr>
+<tr>
+<td>결정 근거와 이력 보관</td>
+<td>단계별 결정, 감사 타임라인, 엑셀 내보내기, 증명서 PDF</td>
+<td>종료된 요청의 상세와 증명서</td>
+</tr>
+</tbody>
+</table>
+<p>지원 제품은 <strong>Confluence Cloud</strong>입니다. 이 저장소의 앱에 Jira 또는 Confluence Data Center 지원을 표시하지 마세요. 별도 외부 계정이나 고객이 운영하는 서버는 필요하지 않습니다. 공개 리스팅의 가격·평가판 조건은 실제 Marketplace 설정과 일치시켜야 합니다.</p>
+<h2 id="설치사용-문서">설치·사용 문서</h2>
+<p>심사 및 고객 안내의 시작 페이지는 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/203720241">문서 안내</a>입니다. <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">영어 문서</a>도 같은 구성을 제공합니다.</p>
+<table>
+<thead>
+<tr>
+<th>확인 항목</th>
+<th>문서</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기능과 화면 위치</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570662">소개와 핵심 개념</a></td>
+</tr>
+<tr>
+<td>설치·첫 설정·업데이트·제거</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122">설치와 첫 설정</a></td>
+</tr>
+<tr>
+<td>요청·회수·새 버전으로 다시 상신</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570674">요청자 가이드</a></td>
+</tr>
+<tr>
+<td>승인·반려·서명·PIN·대리 결재</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505136">승인자 가이드</a></td>
+</tr>
+<tr>
+<td>참조·열람·증명서</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570692">참조자·열람자 가이드</a></td>
+</tr>
+<tr>
+<td>정책·결재선·그룹·데이터 관리</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570700">관리자 가이드</a></td>
+</tr>
+<tr>
+<td>오류와 지원 요청 정보</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378">FAQ와 문제 해결</a></td>
+</tr>
+<tr>
+<td>데이터 항목·보관·권한</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386">데이터·보안·개인정보</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="권한과-데이터-처리-설명">권한과 데이터 처리 설명</h2>
+<p>앱은 Atlassian Forge에서 실행하고 승인 데이터는 Forge SQL과 Key-Value Store에 저장합니다. 현재 manifest에는 외부 서비스로의 데이터 전송 권한이나 remote 설정이 없습니다. 사용자가 내려받는 엑셀과 PDF는 고객이 보관하는 사본입니다.</p>
+<p>사용자 계정 ID, 페이지 식별자·제목·버전, 승인 결정·시각·사유, 요청 메모, 서명 이미지, 위임, 알림 및 설정을 저장합니다. 이름·이메일·프로필 사진과 페이지 본문은 앱 저장소에 보관하지 않습니다. PIN은 솔트 처리된 PBKDF2 해시로 저장합니다. 보관 기간과 모든 요청 scope의 용도는 <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386">데이터·보안·개인정보</a>에 명시했습니다.</p>
+<p>사용자 작업의 Confluence 접근은 <code>asUser()</code>로 수행합니다. 결재란 자동 삽입은 요청자 권한으로 페이지 버전을 올리고, 선택적 @멘션 댓글은 해당 작업을 수행한 사용자 권한으로 작성합니다. 사용자 컨텍스트가 없는 페이지 수정 트리거와 정기 점검의 앱 권한 읽기는 버전·해시 판정에만 사용하며 읽은 본문을 사용자에게 반환하지 않습니다.</p>
+<p>끝난 결재 기록은 기본 보관 기간이 3년이며, 기간이 지나도 자동 삭제하지 않습니다. 관리자가 엑셀 내보내기를 확정한 범위만 삭제할 수 있습니다. 알림은 180일, 설정 변경 이력은 1년 후 정기 점검에서 정리합니다. 제거 후 앱 데이터의 보관·삭제는 Forge 플랫폼 정책을 따르며 앱 자체의 즉시 영구 삭제를 약속하지 않습니다.</p>
+<h2 id="심사-검증-절차">심사 검증 절차</h2>
+<h3 id="준비">준비</h3>
+<ol>
+<li>제출한 버전을 설치할 수 있는 Confluence Cloud 테스트 사이트를 준비합니다. Marketplace 공개 전에는 제출 담당자가 심사 티켓에 설치·접근 방법을 제공합니다.</li>
+<li>사이트 관리자, 요청자 A, 승인자 B·C, 열람 제한 확인용 사용자 D를 준비합니다. A는 테스트 페이지 편집 권한, B·C는 보기 권한을 갖고 D는 해당 페이지를 볼 수 없게 합니다.</li>
+<li>초기 설정에서는 접근 제한을 끄고 승인자 명부를 비워 둡니다. 요청에 사용할 스페이스가 활성화되었는지 확인합니다.</li>
+<li>테스트 데이터만 사용하고, 서명·PIN·위임을 검증할 때는 해당 정책을 켭니다. 계정 비밀번호·API 토큰은 문서나 화면 자료에 넣지 않습니다.</li>
+<li>댓글 생성 성공을 확인할 때는 A·B·C가 테스트 페이지에 댓글을 작성할 수 있는지 먼저 확인합니다. 댓글 작성 권한이 없는 경우에는 댓글이 생성되지 않아도 결재 결과가 정상적으로 기록되는지 확인합니다.</li>
+<li>제출 담당자는 마감 경과·보관 기간 경과 검증용 테스트 기록을 미리 준비하고, 심사 티켓에 페이지 링크·요청 식별자·마감일·종료일·적용 보관 기간을 제공합니다. 심사자가 별도 데이터 조작 없이 해당 기록을 찾을 수 있어야 합니다.</li>
+</ol>
+<h3 id="시나리오와-기대-결과">시나리오와 기대 결과</h3>
+<p>각 종료 결과는 별도 요청으로 검증합니다. 정책을 바꾼 경우 다음 시나리오 전에 초기 조건으로 복원합니다.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>실행 절차</th>
+<th>기대 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>앱 메뉴·설정·테스트 페이지 제목 아래의 승인 항목을 엽니다.</td>
+<td>업무함, 관리자 설정, 승인 창이 로드되고 Confluence의 기본 편집·공유 기능도 동작합니다.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>A가 1단계 B, 2단계 C로 페이지 승인을 요청합니다. 결재란 자동 추가를 선택합니다.</td>
+<td>진행 중 요청 하나가 생성됩니다. 결재란 삽입으로 페이지 버전이 올라간 경우 그 버전이 승인 대상으로 기록됩니다.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>C가 먼저 결정 가능한지 확인한 뒤 B가 승인하고 C가 승인합니다.</td>
+<td>C는 자기 차례 전 결정할 수 없습니다. B 승인 뒤 C의 차례가 열리고 마지막 승인 뒤 승인 완료가 됩니다.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>새 요청에서 B가 사유와 함께 반려합니다. 다른 새 요청은 A가 회수합니다.</td>
+<td>각각 반려·회수로 종료되고 결정과 사유가 이력에 남습니다.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>진행 중 페이지를 편집한 뒤 A가 새 버전으로 다시 상신합니다.</td>
+<td>편집만으로 기존 요청이 종료되지 않습니다. 재상신하면 이전 요청이 대체되고 새 버전 기준 요청이 시작됩니다.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>페이지에 승인 영역 매크로를 추가해 게시하고 영역 승인을 요청합니다.</td>
+<td>영역 승인과 페이지 승인이 별도 대상으로 표시됩니다. 영역 매크로를 삭제한 뒤 해당 요청이 자동 회수되는지 확인합니다.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>D가 승인 업무함과 해당 페이지·요청 상세에 접근합니다.</td>
+<td>볼 수 없는 페이지의 정보가 업무함에 나타나지 않고 상세 접근도 거절됩니다.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>마감이 지난 테스트 요청에서 승인·반려와 새 요청을 시도합니다.</td>
+<td>기한 초과 표시가 보이고 지난 요청의 결정이 거절됩니다. 새 요청 시 지난 열린 요청은 만료됩니다. 정기 상태 정리는 하루 한 번 수행됩니다.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>B가 서명과 PIN을 등록하고 PIN 필수 정책에서 결정합니다. 기간 내 C에게 위임한 별도 요청도 처리합니다.</td>
+<td>PIN 검증을 통과해야 결정됩니다. 대리 결재에서는 원 결재자와 실제 처리자가 기록됩니다.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>CC를 지정한 요청의 앱 내 알림과 선택적 Confluence 댓글을 확인합니다.</td>
+<td>CC는 결정할 수 없습니다. 댓글은 사용자 권한과 댓글 작성 가능 여부에 따라 생성됩니다. 독촉·마감 임박은 앱 내 알림이며 앱은 이메일을 직접 발송하지 않습니다.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>끝난 요청의 증명서 PDF와 업무함 엑셀을 내려받습니다.</td>
+<td>결정·이력을 확인할 수 있습니다. 대상 버전을 읽을 수 있으면 PDF에 SHA-256 지문이 포함되고, 읽을 수 없으면 생략됩니다.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>관리자가 데이터 관리에서 기간 지난 종료 기록을 내보내고 삭제합니다.</td>
+<td>내보내기를 확정한 범위만 삭제되며 진행 중 요청은 대상에서 제외됩니다. 해당 기간의 기록이 없으면 삭제 대상이 없는 것으로 표시됩니다.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>A·B의 Confluence 언어를 한국어와 영어로 바꾸어 같은 화면을 확인합니다.</td>
+<td>각 사용자의 언어 설정에 맞는 화면이 표시됩니다.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>유료 출시 구성의 비활성 라이선스로 접근합니다.</td>
+<td>새 요청·결정이 차단되고 관리자 설정은 열립니다. development의 라이선스 예외로 이 검증을 대신하지 않습니다.</td>
+</tr>
+</tbody>
+</table>
+<p>마감·보관 기간 검증용 기록은 제출 담당자가 테스트 데이터로 준비하며 운영 기록의 날짜를 바꾸지 않습니다. UI 자동화가 iframe 버튼 클릭을 성공으로 보고한 것만으로 판정하지 말고 화면 상태·결정 이력·내려받은 파일을 함께 확인합니다.</p>
+<h2 id="제출-전-확정할-항목">제출 전 확정할 항목</h2>
+<p>문서 원본 작성과 실제 공개·심사 통과는 별도입니다. 다음 항목은 실제 값과 증빙을 확보한 뒤 완료 표시합니다. 개인정보처리방침은 운영 주체·문의처·처리 목적·보관·권리 요청 절차를 포함한 공개 문서로 확정해야 하며, 기능 설명만으로 대신하지 않습니다. <a href="https://developer.atlassian.com/platform/marketplace/data-privacy-guidelines/">Atlassian 데이터 개인정보 가이드</a>를 기준으로 확인합니다.</p>
+<ul>
+<li>[ ] 한국어·영어 사용자 가이드를 게시하고 로그인 없이 열리는 공개 Documentation URL을 리스팅에 등록합니다. 상대 링크는 게시 위치에 맞게 바꿉니다.</li>
+<li>[ ] 운영 법인명, 지원 URL·이메일, 지원 시간·시간대, 개인정보 문의처를 확정합니다.</li>
+<li>[ ] 공개 Privacy policy URL과 고객 이용약관 또는 EULA를 확정합니다.</li>
+<li>[ ] 실제 출시 버전의 로고·화면 자료와 가격·평가판 조건을 등록합니다.</li>
+<li>[ ] Forge 앱과 partner 보안 설문, Cloud 앱 Privacy &amp; Security 탭, 필요한 partner 신원 검증 및 취약점 티켓을 처리합니다. <a href="https://developer.atlassian.com/platform/marketplace/app-approval-security-workflow/">심사 보안 절차</a>를 확인합니다.</li>
+<li>[ ] 유료 출시 시 라이선스 구성과 비활성 라이선스 동작을 검증합니다. 현재 manifest의 출시용 라이선스 표시 조건 안내도 확인합니다.</li>
+<li>[ ] 제출한 배포 버전에서 위 검증 절차를 실행하고 날짜·버전·실행자·결과·화면 자료를 심사 티켓에 첨부합니다.</li>
+</ul>
+<p>설치·사용 문서와 광고한 동작의 일치는 <a href="https://developer.atlassian.com/platform/marketplace/app-approval-guidelines/">Atlassian 앱 심사 가이드</a>를 기준으로 확인합니다. <code>Runs on Atlassian</code> 배지·보안 인증·법적 전자서명 효력은 확인된 승인이나 근거 없이 리스팅에 주장하지 않습니다.</p>
+<h2 id="관련-문서">관련 문서</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122">설치와 첫 설정</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472386">데이터·보안·개인정보</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472378">FAQ와 문제 해결</a></li>
+</ul>

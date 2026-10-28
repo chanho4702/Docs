@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Retention, export, and change log · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">LOCAL DRAFT · NOT PUBLISHED</span><div class="search"><input id="search" type="search" placeholder="Search guides" aria-label="Search guides" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../ko/admin-data.html">한국어 ↗</a><button id="menu" class="menu" aria-expanded="false">Menu</button></div></header><div class="layout"><nav class="sidenav" aria-label="Guide navigation"><a class="navhome " href="index.html">English Guide</a><h2>Start here</h2><ul><li><a  href="quick-start.html">Quick start — approve your first page</a></li><li><a  href="installation.html">Installation and readiness</a></li><li><a  href="glossary.html">Concepts and status reference</a></li></ul><h2>User guides</h2><ul><li><a  href="page-approval.html">Request page approval</a></li><li><a  href="area-approval.html">Area approval</a></li><li><a  href="inbox.html">Approval inbox</a></li><li><a  href="decisions.html">Approve, reject, and bulk approve</a></li><li><a  href="history-resubmit.html">Changes, withdrawal, resubmission, and version history</a></li><li><a  href="signature-pin.html">My signature and PIN</a></li><li><a  href="delegation.html">Delegation and delegated decisions</a></li><li><a  href="stamp-box.html">Approval stamp box</a></li><li><a  href="certificate.html">Approval certificate PDF</a></li><li><a  href="notifications.html">Cc and notifications</a></li></ul><h2>Administrator guides</h2><ul><li><a  href="admin-setup.html">Administrator setup</a></li><li><a  href="admin-policy.html">Global policy and status labels</a></li><li><a  href="admin-spaces.html">Enabled spaces and space policies</a></li><li><a  href="admin-lines.html">Manage approval lines</a></li><li><a  href="admin-groups.html">Manage approval groups</a></li><li><a  href="admin-access.html">Users, administrators, and access</a></li><li><a class="active" aria-current="page" href="admin-data.html">Retention, export, and change log</a></li></ul><h2>Support and review</h2><ul><li><a  href="faq.html">Troubleshooting and support</a></li><li><a  href="data-security.html">Data, security, and privacy</a></li><li><a  href="reviewer-guide.html">Marketplace reviewer walkthrough</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; Administrator guides</div><h1>Retention, export, and change log</h1><p class="lede">Monitor storage, export finished records past retention, and then clean them up. Available to app administrators. Deletion cannot be undone.</p>
+<p><strong>Location:</strong> Settings → <strong>Data management</strong>. Review administration events in <strong>Change log</strong>.</p>
+<h2 id="section-0">Check storage</h2>
+<p>Compare usage with the limit shown. The current app displays a 1 GiB reference, with warning at 80% and critical at 90%. Sizes and row counts are statistical estimates. Refresh and check the measurement time.</p>
+<h2 id="section-1">Export and clean up records</h2>
+<ol>
+<li>Choose retention according to organizational rules: forever, or 1, 3, 5, or 10 years. The default is three years.</li>
+<li>Check the count and oldest date of records past retention. Open requests are excluded.</li>
+<li>Select <strong>Export to Excel</strong> and wait for download completion.</li>
+<li>Open the file and check the <strong>Requests, Approvers, and History</strong> sheets. Store it in the approved records location.</li>
+<li>Compare the last-export date and count with the file, then select the control to delete the exported records. Recheck the target and confirm deletion.</li>
+<li>Check the result, remaining count, and <strong>Change log</strong>.</li>
+</ol>
+<p><img src="../assets/ma-20-data-management.jpg" alt="Storage usage and estimated row counts in Data management"></p>
+<p><em>MA-20 · The storage section shows estimated usage and row counts. Scroll down for retention, export, and deletion controls.</em></p>
+<h2 id="section-2">Retention and deletion scope</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Finished approval records</td>
+<td>Never automatically deleted for age alone. Manual deletion is limited to the confirmed export scope.</td>
+</tr>
+<tr>
+<td>Open requests</td>
+<td>Excluded from retention cleanup.</td>
+</tr>
+<tr>
+<td>Related decisions, history, inbox entries, notifications</td>
+<td>Removed with the request.</td>
+</tr>
+<tr>
+<td>In-app notifications</td>
+<td>Automatically cleaned up after 180 days.</td>
+</tr>
+<tr>
+<td>Settings change log</td>
+<td>Automatically cleaned up after one year.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Records that pass retention after export are outside the old deletion scope. Export again to include them. The inbox list export has different scope and sheets from this retention export.</p>
+<p>Once an export is confirmed, any app administrator can delete that scope, not only the one who exported it. Records of pages you cannot view are left out of export and deletion, but records of pages permanently deleted from Confluence (emptied trash or deleted space) are included, with the page title, request note, and rejection or withdrawal reasons left blank.</p>
+<h2 id="section-3">Read the change log</h2>
+<p>Review time, user, area, action, and detail. It records policy, space, line, group, registration, administrator, and retention actions. Request-specific decisions belong in the request's audit timeline instead.</p>
+<p>If deletion is unavailable, first check whether export of that range completed. Do not delete before preserving the records you need.</p>
+<div class="pager"><a href="admin-access.html"><small>← PREVIOUS</small>Users, administrators, and access</a><a href="faq.html"><small>NEXT →</small>Troubleshooting and support</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>ON THIS PAGE</strong><a href="#section-0">Check storage</a><a href="#section-1">Export and clean up records</a><a href="#section-2">Retention and deletion scope</a><a href="#section-3">Read the change log</a></aside></div><script>const items=[{"title":"Quick start — approve your first page","text":"Complete a two-step approval from start to finish.","url":"quick-start.html"},{"title":"Installation and readiness","text":"Install the app and verify its three entry points.","url":"installation.html"},{"title":"Concepts and status reference","text":"Understand requests, steps, versions, and status.","url":"glossary.html"},{"title":"Request page approval","text":"Choose people, order, and deadline for a whole page.","url":"page-approval.html"},{"title":"Area approval","text":"Request approval for a specific area of a page.","url":"area-approval.html"},{"title":"Approval inbox","text":"Find your turns and requests, and export the list.","url":"inbox.html"},{"title":"Approve, reject, and bulk approve","text":"Review content and make individual or bulk decisions.","url":"decisions.html"},{"title":"Changes, withdrawal, resubmission, and version history","text":"Handle changed versions and inspect earlier requests.","url":"history-resubmit.html"},{"title":"My signature and PIN","text":"Set a signature image and decision-confirmation PIN.","url":"signature-pin.html"},{"title":"Delegation and delegated decisions","text":"Delegate your decisions for a defined period.","url":"delegation.html"},{"title":"Approval stamp box","text":"Place approval stamps in pages and templates.","url":"stamp-box.html"},{"title":"Approval certificate PDF","text":"Keep version and decision evidence for a finished request.","url":"certificate.html"},{"title":"Cc and notifications","text":"Understand Cc and in-app or Confluence notifications.","url":"notifications.html"},{"title":"Administrator setup","text":"Prepare users to complete their first approval.","url":"admin-setup.html"},{"title":"Global policy and status labels","text":"Set deadlines, notifications, signatures, and access defaults.","url":"admin-policy.html"},{"title":"Enabled spaces and space policies","text":"Choose enabled spaces and policy overrides.","url":"admin-spaces.html"},{"title":"Manage approval lines","text":"Save reusable approval sequences.","url":"admin-lines.html"},{"title":"Manage approval groups","text":"Manage groups and all-member or any-one approval.","url":"admin-groups.html"},{"title":"Users, administrators, and access","text":"Manage registration and settings administrators.","url":"admin-access.html"},{"title":"Retention, export, and change log","text":"Export retained records, clean up, and review changes.","url":"admin-data.html"},{"title":"Troubleshooting and support","text":"Diagnose symptoms and prepare a support request.","url":"faq.html"},{"title":"Data, security, and privacy","text":"Review data, permissions, retention, and downloads.","url":"data-security.html"},{"title":"Marketplace reviewer walkthrough","text":"Reproduce review checks from installation to licensing.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="No matching guides.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

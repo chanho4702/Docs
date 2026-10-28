@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="page-6" name="06 승인 결과 반영과 장애 복구">
+    <mxGraphModel dx="2185" dy="1173" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1400" pageHeight="1245" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="e0" edge="1" parent="1" source="s" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="send" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="send" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D6A13A;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="receive" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="receive" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="read" value="예">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="read" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D6A13A;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="complete" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="complete" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="publish" value="예">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="publish" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C9C73;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="done" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="receive" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#C89750;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="retry" value="아니요">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="read" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#C89750;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="duplicate" value="중복 / 순서 역전">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="complete" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#C89750;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" target="hold" value="아니요">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5EC;strokeColor=#4C9C73;strokeWidth=1.6;fontColor=#266344;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="Approval에 결정 보존" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="send" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="Workforce에 변경 알림 전달" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="receive" parent="1" style="rhombus;whiteSpace=wrap;html=0;fillColor=#FFF4D9;strokeColor=#D6A13A;strokeWidth=1.6;fontColor=#79551D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="변경 알림 접수가&#xa;확인되었는가?" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="read" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="해당 월 · 프로젝트의&#xa;최신 승인 결과 조회" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="575" as="geometry" />
+        </mxCell>
+        <mxCell id="complete" parent="1" style="rhombus;whiteSpace=wrap;html=0;fillColor=#FFF4D9;strokeColor=#D6A13A;strokeWidth=1.6;fontColor=#79551D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="모든 결과를 수신하고&#xa;건수 · 시간 합계가 일치하는가?" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="publish" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="승인 기준 집계로 반영&#xa;진행 중 시간과 구분 표시" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="885" as="geometry" />
+        </mxCell>
+        <mxCell id="done" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5EC;strokeColor=#4C9C73;strokeWidth=1.6;fontColor=#266344;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="보고서 · SAP 전달 자료 생성&#xa;동일 기준으로 대사" vertex="1">
+          <mxGeometry height="105" width="430" x="360" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="retry" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFF5E8;strokeColor=#C89750;strokeWidth=1.6;fontColor=#77582C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="전달 대기 표시 · 재처리&#xa;기존 승인 결정은 보존" vertex="1">
+          <mxGeometry height="105" width="360" x="930" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="duplicate" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFF5E8;strokeColor=#C89750;strokeWidth=1.6;fontColor=#77582C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="중복 알림은 중복 반영 방지&#xa;오래된 결과로 되돌리지 않음" vertex="1">
+          <mxGeometry height="105" width="360" x="930" y="575" as="geometry" />
+        </mxCell>
+        <mxCell id="hold" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFF5E8;strokeColor=#C89750;strokeWidth=1.6;fontColor=#77582C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" value="확정 집계 전환 보류&#xa;누락 보완 후 다시 대조" vertex="1">
+          <mxGeometry height="105" width="360" x="930" y="730" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

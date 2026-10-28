@@ -1,0 +1,75 @@
+<h1 id="installation-and-first-time-setup">Installation and first-time setup</h1>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">English Guide</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505122">한국어</a></p>
+<blockquote>
+<p>For: Confluence Cloud site administrators</p>
+</blockquote>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><strong>Site administrator</strong> permission on your Confluence Cloud site</li>
+<li>Your organization's Marketplace purchasing or approval process, if any</li>
+<li>Nothing else: the app runs on Atlassian's infrastructure (Forge), so no servers, firewall changes, or external accounts are needed.</li>
+</ul>
+<h2 id="install">Install</h2>
+<ol>
+<li>In Confluence, open <strong>Apps</strong> → <strong>Explore more apps</strong> (or go to the Atlassian Marketplace).</li>
+<li>Search for <strong>Moves Approval</strong> and open the listing.</li>
+<li>Select <strong>Get app</strong> (free trial or purchase).</li>
+<li>Choose your Confluence site, review the permissions the app requests, and approve them. See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427">Data, security, and privacy</a> for what each permission is used for.</li>
+<li>The app prepares its data storage automatically after installation. If you see &quot;The app storage is still being prepared&quot; on first use, refresh after a moment.</li>
+</ol>
+<blockquote>
+<p><strong>Screenshot placement · 03-install</strong></p>
+<p>Installing Moves Approval on Confluence Cloud</p>
+<p>File: <code>ma-03-install-en.png</code> · Alt text: Installing Moves Approval on Confluence Cloud</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="verify-the-installation">Verify the installation</h2>
+<p>Right after installation you should see:</p>
+<ul>
+<li><strong>Moves Approval</strong> in the top <strong>Apps</strong> menu</li>
+<li><strong>Moves Approval</strong> in the <strong>Confluence settings</strong> sidebar</li>
+<li>A <strong>Request approval</strong> item below the title of any page</li>
+</ul>
+<blockquote>
+<p><strong>Screenshot placement · 04-entry</strong></p>
+<p>Opening the approval inbox from the Apps menu</p>
+<p>File: <code>ma-04-entry-en.png</code> · Alt text: Opening the approval inbox from the Apps menu</p>
+<p>Insert an actual product screenshot here.</p>
+</blockquote>
+<h2 id="first-time-setup-checklist-recommended-order">First-time setup checklist (recommended order)</h2>
+<p>Go to <strong>Confluence settings → Moves Approval</strong>. Each tab is described in the <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537962">Administrator guide</a>.</p>
+<ol>
+<li><strong>Global policy</strong> — Set the default deadline (7 days by default), whether a rejection reason is required, notification channels, signatures and PIN, delegation, and reminders to match your rules. <strong>Add an approval stamp box to the top of the page when a request is made</strong> (on by default) is set here too. While it is on, the stamp box option is pre-checked on the request form, and requesting approval raises the page version by one. Turn it off if you don't want the app to touch page content (requesters can still turn it on per request).</li>
+<li><strong>Enabled spaces</strong> — Approvals work in every space at first. To limit them, turn on the spaces you want. <strong>Turning on any space turns all other spaces off.</strong></li>
+<li><strong>Settings administrators</strong> — Give settings access to operators who are not Confluence administrators.</li>
+<li><strong>Approvers</strong> — Register an approver list if you want to restrict who can be placed on an approval line. Leave it empty to allow anyone.</li>
+<li><strong>Approval groups</strong> and <strong>Approval lines</strong> — Register common approval orders to save requesters time.</li>
+<li><strong>Data management</strong> — Check that the <strong>retention period</strong> for finished approval records (3 years by default) matches your records policy. Records past the period are not deleted automatically; an administrator can delete them only after exporting them to Excel.</li>
+<li><strong>Pilot</strong> — On a test page, run request → approve, request → reject, and request → withdraw once each, and check that notifications arrive and that the stamp box appears at the top of the page and gets stamped. Download an <strong>Approval certificate (PDF)</strong> from a finished request once as well.</li>
+</ol>
+<blockquote>
+<p><strong>If you plan to restrict access</strong>, register approvers and settings administrators first, then test with a regular user account before switching it on. Unregistered users will no longer be able to open the approval inbox or request screens.</p>
+</blockquote>
+<h2 id="tell-your-users">Tell your users</h2>
+<p>Sharing these guides is usually enough for people to get started without training:</p>
+<ul>
+<li>People who request approval → <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472413">Requester guide</a></li>
+<li>People who approve → <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204537945">Approver guide</a></li>
+</ul>
+<h2 id="updates">Updates</h2>
+<p>Moves Approval updates automatically through Atlassian. A site administrator only needs to approve an update in Confluence's <strong>Manage apps</strong> screen when the new version asks for <strong>additional permissions</strong>. Existing requests, decisions, and history are kept across updates.</p>
+<h2 id="licensing">Licensing</h2>
+<p>If the license expires or becomes inactive, approval screens show &quot;The app license is not active&quot; and no new requests or decisions can be made. <strong>The settings screen stays available</strong> so administrators can check the license status. Reactivate the license to continue with all existing data.</p>
+<h2 id="uninstall">Uninstall</h2>
+<p>Remove Moves Approval from <strong>Confluence settings → Manage apps</strong>.</p>
+<ul>
+<li>Approval status on pages, the approval inbox, the approval features of the <strong>Moves Approval Region</strong> macro, and the <strong>Moves Approval Stamps</strong> macro display disappear. Content inside the macro stays on the page.</li>
+<li>@mention comments the app left on pages are Confluence content and remain after uninstalling.</li>
+<li>Retention and deletion of app data (requests, decisions, history, settings) follow the Atlassian Forge platform's data retention policy. If you must keep approval records, export the lists you need with <strong>Export to Excel</strong> in the approval inbox before uninstalling. You can also keep important approvals as <strong>Approval certificate (PDF)</strong> files. The inbox export includes up to 5,000 requests matching the current tab and filters; it is not a complete backup of individual decisions and audit history.</li>
+</ul>
+<h2 id="related-guides">Related guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472404">Overview and key concepts</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570741">FAQ and troubleshooting</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570751">Marketplace review guide</a></li>
+</ul>

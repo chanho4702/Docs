@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1" type="device"><diagram id="page-5" name="05 수정·삭제 및 마감 통제">
+    <mxGraphModel dx="1400" dy="1245" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1400" pageHeight="1245" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="05 수정·삭제 및 마감 통제" style="text;html=0;fontSize=30;fontStyle=1;align=left;fontFamily=Malgun Gothic;fontColor=#142D4E;shadow=0;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="앱 경로는 저장 전 확인 · 외부 직접 경로는 별도 차단 시험과 변경 감지를 수행합니다." style="text;html=0;fontSize=16;align=left;fontColor=#64748B;fontFamily=Malgun Gothic;shadow=0;fillColor=none;strokeColor=none;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="1320" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D6A13A;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="s" target="owner">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="예" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D6A13A;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="owner" target="lock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="아니요" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D6A13A;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="lock" target="ready">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="예" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="ready" target="exec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="exec" target="verify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C9C73;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="verify" target="done">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="아니요" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D66E69;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="owner" target="deny">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="예" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#D66E69;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="lock" target="locked">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="아니요" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#C89750;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="ready" target="wait">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="응답 유실" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#C89750;fontSize=15;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="exec" target="unknown">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s" value="작성자가 수정 · 삭제 요청" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5EC;strokeColor=#4C9C73;strokeWidth=1.6;fontColor=#266344;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="110" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="owner" value="작성자 · 이슈 접근&#10;작업 권한이 유효한가?" style="rhombus;whiteSpace=wrap;html=0;fillColor=#FFF4D9;strokeColor=#D6A13A;strokeWidth=1.6;fontColor=#79551D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="265" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="lock" value="승인 완료 또는&#10;마감 기간에 해당하는가?" style="rhombus;whiteSpace=wrap;html=0;fillColor=#FFF4D9;strokeColor=#D6A13A;strokeWidth=1.6;fontColor=#79551D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="420" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="ready" value="다른 변경이 없고&#10;최신 상태 확인이 가능한가?" style="rhombus;whiteSpace=wrap;html=0;fillColor=#FFF4D9;strokeColor=#D6A13A;strokeWidth=1.6;fontColor=#79551D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="575" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="exec" value="해당 변경 작업 확보&#10;사용자 권한으로 Jira 실행" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="730" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="verify" value="원본과 실행 결과를 대조&#10;변경 이력 기록" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="885" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="done" value="처리 결과 표시&#10;필요한 승인 흐름으로 연결" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5EC;strokeColor=#4C9C73;strokeWidth=1.6;fontColor=#266344;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1040" width="430" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="deny" value="수정 · 삭제 거부" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FDECEB;strokeColor=#D66E69;strokeWidth=1.6;fontColor=#903F3C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="930" y="265" width="360" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="locked" value="수정 · 삭제 차단&#10;날짜 이동은 전후 기간 모두 확인" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FDECEB;strokeColor=#D66E69;strokeWidth=1.6;fontColor=#903F3C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="930" y="420" width="360" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="wait" value="변경 보류&#10;잠금 유지 · 연결 상태 안내" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFF5E8;strokeColor=#C89750;strokeWidth=1.6;fontColor=#77582C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="930" y="575" width="360" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="unknown" value="결과 불명확&#10;중복 실행 없이 원본 확인" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#FFF5E8;strokeColor=#C89750;strokeWidth=1.6;fontColor=#77582C;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="930" y="730" width="360" height="105" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  </mxfile>

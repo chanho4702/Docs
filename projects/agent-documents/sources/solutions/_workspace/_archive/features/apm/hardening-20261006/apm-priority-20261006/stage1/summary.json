@@ -1,0 +1,52 @@
+{
+  "tests": 79,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "classes": [
+    {
+      "name": "com.dmove.moveseye.premium.apm.ApmReadAccessMvcTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.export.ApmExportIT",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.export.ApmExportServiceTest",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.trace.query.ApmRawTextPolicyIT",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.trace.query.ApmRawTextPolicyTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.dmove.moveseye.premium.apm.trace.query.ApmTraceAggQueryIT",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "originalControllerSha256": "b3784210c90b07be3f6187d044170054e5438fafb65560a34fdc85d8679015c9",
+  "docsIndexSha256": "96e9a30471516373a7782a964fd9ba319b92eb09e44110958e89d35dc6790798"
+}

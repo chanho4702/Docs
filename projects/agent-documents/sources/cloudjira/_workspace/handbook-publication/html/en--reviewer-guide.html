@@ -1,0 +1,132 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204570643">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472394">한국어</a></p>
+<p>A reproducible path from installation to approval, permission checks, and record retention. The table contains expected results, not executed test evidence or an approval report.</p>
+<h2>App and documentation</h2>
+<p>Moves Approval for Confluence provides sequential approval for Cloud pages or areas and records decisions against versions. Features include saved lines, groups, Cc, delegation, signature PINs, bulk approval, stamp boxes, and PDF certificates.</p>
+<p>See <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/205389825">quick start</a>, <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204505181">installation</a>, and <a href="https://dmove-addons.atlassian.net/wiki/spaces/MA/pages/204472427">data and security</a>. This is not documentation for a Jira or Confluence Data Center app.</p>
+<h2>Prepare the test</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Preparation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Submitted version</td>
+<td>Owner provides installation link, version, and access instructions.</td>
+</tr>
+<tr>
+<td>Requester A</td>
+<td>Edit permission on the test page.</td>
+</tr>
+<tr>
+<td>Approvers B and C</td>
+<td>View permission; also comment permission when testing comments.</td>
+</tr>
+<tr>
+<td>Restricted user D</td>
+<td>No view permission on that page.</td>
+</tr>
+<tr>
+<td>Test pages</td>
+<td>A page approval target and a page with an area macro.</td>
+</tr>
+<tr>
+<td>Special records</td>
+<td>Links, request IDs, and dates for overdue and past-retention test records.</td>
+</tr>
+</tbody>
+</table>
+<h2>Procedure and expected results</h2>
+<p>Use separate requests for terminal outcomes. Restore policy changes before the next scenario.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Action</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entry and installation</td>
+<td>Open inbox, page dialog, settings</td>
+<td>Views load; normal page editing still works.</td>
+</tr>
+<tr>
+<td>Sequential approval</td>
+<td>A requests B → C; both approve</td>
+<td>C cannot decide early; final step completes approval.</td>
+</tr>
+<tr>
+<td>Rejection and withdrawal</td>
+<td>B rejects one request; A withdraws another</td>
+<td>Terminal states, reasons, and actors are recorded.</td>
+</tr>
+<tr>
+<td>Page changes</td>
+<td>Edit during review, then resubmit</td>
+<td>Editing alone does not end it; resubmission replaces it.</td>
+</tr>
+<tr>
+<td>Area</td>
+<td>Request area approval, then remove the macro</td>
+<td>Separate target status; removal withdraws the area request.</td>
+</tr>
+<tr>
+<td>Permission</td>
+<td>D attempts list and detail access</td>
+<td>Restricted page information is not exposed.</td>
+</tr>
+<tr>
+<td>Deadline</td>
+<td>Try a decision and new request on overdue test data</td>
+<td>Decision refused; new request expires the old one.</td>
+</tr>
+<tr>
+<td>PIN and delegation</td>
+<td>Decide under required PIN and valid delegation</td>
+<td>PIN checked; original and actual actors recorded.</td>
+</tr>
+<tr>
+<td>Cc and notifications</td>
+<td>Check creation, results, and comments</td>
+<td>Cc cannot decide; comment failure does not undo a decision.</td>
+</tr>
+<tr>
+<td>Bulk approval</td>
+<td>Select several current-turn requests</td>
+<td>Per-request success/failure counts shown.</td>
+</tr>
+<tr>
+<td>Files</td>
+<td>Download finished-request PDF and inbox Excel</td>
+<td>Target version/request ID and list-export scope can be checked.</td>
+</tr>
+<tr>
+<td>Cleanup</td>
+<td>Export past-retention records, then delete</td>
+<td>Only confirmed export scope deleted; open requests excluded.</td>
+</tr>
+<tr>
+<td>Languages</td>
+<td>Use Korean and English accounts</td>
+<td>Equivalent functions and corresponding guides available.</td>
+</tr>
+<tr>
+<td>License</td>
+<td>Test inactive license in paid-release configuration</td>
+<td>New requests/decisions blocked; settings available.</td>
+</tr>
+</tbody>
+</table>
+<p>Record the submitted version, date/time zone, roles, actual results, and screenshots. Do not change production record dates to prepare deadline or retention tests.</p>
+<h2>Submission materials</h2>
+<ul>
+<li>Verify public documentation and image access without login.</li>
+<li>Finalize real support, operator, privacy-policy, and terms URLs.</li>
+<li>Match listing copy, pricing, trial terms, and images to the submitted version.</li>
+<li>Complete security/privacy questions and applicable partner checks; attach executed results to the review ticket.</li>
+</ul>
+<p>Check final requirements against <a href="https://developer.atlassian.com/platform/marketplace/app-approval-guidelines/">Atlassian app approval guidelines</a> and <a href="https://developer.atlassian.com/platform/marketplace/data-privacy-guidelines/">data privacy guidelines</a>. Publishing documentation alone does not complete app review or security certification.</p>

@@ -8,7 +8,7 @@ tags: [moveseye, premium, db-monitoring, zm-172, worklog, codex, postgresql]
 
 시간순 이력 노트. 설계·대조 과정은 [[2026-10-19-db-monitoring-design]] · [[2026-10-22-datadog-dbm-gap]](이후 추가 절에 10-23~10-28 세부), 기능 노드는 [[프리미엄-GPU-DB-모니터링]]. `_workspace` 정본은 `features/premium/db-monitoring/history_zm172-worklog.md`(이 노트와 같은 내용, 표가 더 자세하다).
 
-> 코드: BE 워크트리 `C:\worktrees\zm-172-be`(브랜치 `ZM-172`, master `5d677e3` 위 **10커밋, 전부 미푸시**) · 발급기 `16cfa81`(`maxDbTargets` 클레임). FE 코드 없음.
+> 코드: BE 워크트리 `C:\worktrees\zm-172-be`(브랜치 `ZM-172`, **10-28 master에 rebase·ff 병합 완료, master HEAD `b8c528c`, 미푸시**) · 발급기 `16cfa81`(`maxDbTargets` 클레임). FE 코드 없음.
 
 ## 한눈에
 
@@ -19,22 +19,24 @@ tags: [moveseye, premium, db-monitoring, zm-172, worklog, codex, postgresql]
 | 10-23 | 로컬 Docker PG16 P0 실측 + 코어 폴러 프레임 + 코덱스 6·7차(보류) | 계약 시험본·코어 규칙 전건 반영 |
 | 10-26 | 코어 → Gradle 모듈 + 코덱스 8차(보류→반영) + **3차 커밋·rebase** + **4차**(J1 PG lease·writer·checkpoint, V90) | J1이 우리 PG에 저장 |
 | 10-27 | **5차**(보존 v2.5·V91) · **6차**(폴러 구동) · **7차**(PG 어댑터) · **8차**(typed 파티션 표 V92) | 실 PG16을 한 tick에 끝까지 긁어 파티션 표까지 |
-| 10-28 | 코덱스 9차(🔴 9) + **9차**(안정화) + **10차**(WS-1 대상 관리 API) | 관리자가 API로 등록·활성화하면 데이터가 흐른다 |
+| 10-28 | 코덱스 9차(🔴 9) + **9차**(안정화) + **10차**(WS-1 대상 관리 API) + **master rebase·ff 병합** | 관리자가 API로 등록·활성화하면 데이터가 흐른다. master HEAD `b8c528c` |
 
 ## 커밋 10개
 
 | 차수 | 날짜 | 해시 | 한 줄 |
 |---|---|---|---|
-| 1 | 10-22 | `3ea1e66` | 착수 — `maxDbTargets` 클레임, 코어 경계(`spi`·ArchUnit), 마스킹 토크나이저, PG 접속 분류·권한 검사, 도구 EP 2개 |
-| 2 | 10-22 | `ac39a55` | 코어 보강(코덱스 5차 반영) |
-| 3 | 10-26 | `87d8c95` | 코어를 모듈 `dbm-collector-core`로(프로덕션 의존 0), 폴러 프레임 안정화(6·7·8차 반영) |
-| 4 | 10-26 | `b0b3893` | J1 PG lease(UPDATE 한 문장)·writer(FOR SHARE → 배치·행·checkpoint 한 tx)·checkpoint, **V90** |
-| 5 | 10-27 | `3f1f1d5` | 보존 v2.5 — APM 파티션·보존 구현체 `premium.common` 추출, `dbm_retention`·**V91** |
-| 6 | 10-27 | `32c72f5` | 폴러 구동 — 레인 스레드·`PgConfigSource`(30s·라이선스 거부)·`CodecSecretResolver`·상태 EP |
-| 7 | 10-27 | `10cbb08` | PostgreSQL 어댑터 S·L·C·Q(차분·Top N·`__other__`, 텍스트 보호 한 지점, 12/13/14/17 분기) |
-| 8 | 10-27 | `6e255e3` | typed 파티션 표 **V92**(차원 3·사실 4, FK 없음), 1m 쓰기 시점 UPSERT, 보존 6단계 |
-| 9 | 10-28 | `03e2d97` | 안정화(코덱스 9차 N2·N3·N4·N5·N8·N9) — 종료 뒤 tick 차단, 전역 차원 UPSERT 정렬, Top SQL 상위 문장만·퇴출 반영, 파티션 DDL 경계, 참조 중 차원 보존 |
-| 10 | 10-28 | `5490711` | WS-1 대상 관리 API — CRUD·자격증명(`enc:v2:<keyId>:`)·권한 검사 저장·활성화 admission(D17)·라이선스 사용량 |
+| 1 | 10-22 | `f2d3318` | 착수 — `maxDbTargets` 클레임, 코어 경계(`spi`·ArchUnit), 마스킹 토크나이저, PG 접속 분류·권한 검사, 도구 EP 2개 |
+| 2 | 10-22 | `b58edeb` | 코어 보강(코덱스 5차 반영) |
+| 3 | 10-26 | `ad29023` | 코어를 모듈 `dbm-collector-core`로(프로덕션 의존 0), 폴러 프레임 안정화(6·7·8차 반영) |
+| 4 | 10-26 | `c3f3068` | J1 PG lease(UPDATE 한 문장)·writer(FOR SHARE → 배치·행·checkpoint 한 tx)·checkpoint, **V90** |
+| 5 | 10-27 | `75ace5e` | 보존 v2.5 — APM 파티션·보존 구현체 `premium.common` 추출, `dbm_retention`·**V91** |
+| 6 | 10-27 | `5e33e0e` | 폴러 구동 — 레인 스레드·`PgConfigSource`(30s·라이선스 거부)·`CodecSecretResolver`·상태 EP |
+| 7 | 10-27 | `b576f18` | PostgreSQL 어댑터 S·L·C·Q(차분·Top N·`__other__`, 텍스트 보호 한 지점, 12/13/14/17 분기) |
+| 8 | 10-27 | `a0d28d6` | typed 파티션 표 **V92**(차원 3·사실 4, FK 없음), 1m 쓰기 시점 UPSERT, 보존 6단계 |
+| 9 | 10-28 | `b6f622f` | 안정화(코덱스 9차 N2·N3·N4·N5·N8·N9) — 종료 뒤 tick 차단, 전역 차원 UPSERT 정렬, Top SQL 상위 문장만·퇴출 반영, 파티션 DDL 경계, 참조 중 차원 보존 |
+| 10 | 10-28 | `b8c528c` | WS-1 대상 관리 API — CRUD·자격증명(`enc:v2:<keyId>:`)·권한 검사 저장·활성화 admission(D17)·라이선스 사용량 |
+
+10-28 master `df1b39f` 위로 rebase(충돌 1건 `application-it.yml` 양쪽 블록 유지) → **ff 병합, master HEAD `b8c528c`**(미푸시). 병합 트리 테스트: 코어 142 · 앱 118(실 PG16 end-to-end 2건은 env 게이트 채워 재실행 15/15 통과) 통과. 위 해시는 rebase 뒤 값(옛 해시 `3ea1e66`…`5490711`은 폐기).
 
 ## 검수 9차례
 
@@ -54,7 +56,7 @@ tags: [moveseye, premium, db-monitoring, zm-172, worklog, codex, postgresql]
 - 10-23 P0 실측은 로컬 Docker PG16(시험 서버 10.220.0.13 금지)
 - 10-26 모듈 분리를 P0로 앞당김, 8차는 astra
 - 10-27 보존은 APM/Zabbix 계단(디스크 예산 정책 삭제), 디스크 큐는 J2로 · "일단 계속 진행해 커밋할거 커밋하고"(rebase는 뒤로)
-- 10-28 WS-10보다 WS-1 먼저 · 9차 결과는 **A(안정화 먼저 → WS-1 커밋)**
+- 10-28 WS-10보다 WS-1 먼저 · 9차 결과는 **A(안정화 먼저 → WS-1 커밋)** · "메인 브런치로 병합하자" → rebase + ff 병합(푸시 별도)
 
 ## 측정 사실·함정
 
@@ -67,8 +69,9 @@ tags: [moveseye, premium, db-monitoring, zm-172, worklog, codex, postgresql]
 - **WS-4 FE**: 등록 마법사·대상 목록(계약 §2.1~2.3) · `DBM_ADMIN` 좌표(역할 JSON 백필+FE 키) · `dbm_poller` 스위치 행
 - **WS-1 잔재**: 폴러 전용 풀·대상별 워커 · `DECRYPT_FAILED` · 키 교체 배치 · `dbm_audit` · 🟡 N10·N11·N14
 - **HA 검증**: N1 lease `now()` 잠금 대기 뒤 판정 · 2노드 RTO · 레인 스레드 실기동
-- **결정 대기**: master rebase 시점 · 푸시·병합 · Q35 · 접속점 수정 = 연속성 단절인가
+- **결정 대기**: 푸시(병합은 10-28 완료) · Q35 · 접속점 수정 = 연속성 단절인가
 
 ## 교훈(이력 관점)
+- rebase 뒤에는 **문서의 커밋 해시가 전부 낡는다** — 이력 문서에 해시를 쓸 때는 "rebase 뒤 값"인지 적고, 병합 때 한 번에 재매핑한다(이번 10개).
 - 이력은 **커밋·검수·결정 세 축**을 따로 표로 두면 "왜 이 코드가 이 모양인가"를 역추적할 수 있다 — 검수 차수와 커밋 차수는 번호가 다르다(검수 9차 ≠ 9차 커밋).
 - 연속 보류가 쌓일 때 비용 묶음으로 제시하는 것이 결정을 빠르게 한다(교훈 29, [[2026-10-22-datadog-dbm-gap]]).

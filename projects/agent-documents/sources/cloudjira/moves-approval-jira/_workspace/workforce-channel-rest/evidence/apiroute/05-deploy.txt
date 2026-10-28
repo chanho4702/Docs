@@ -1,0 +1,17 @@
+Deploying your app to the DEV moves-rms environment.
+Press Ctrl+C to cancel.
+Running forge lint...
+Warning: Could not perform some linting actions for PermissionLinter due to unhandled error "Unknown product".
+No issues found.
+Deploying Moves Workforce for Jira to DEV moves-rms...
+ℹ Packaging app files
+ℹ Uploading app
+ℹ Validating manifest
+ℹ Deploying to environment
+✔ Deployed
+Deployed Moves Workforce for Jira to the DEV moves-rms environment with 1 approval acknowledged.
+We've detected new scopes or egress URLs in your app.
+Run forge install --upgrade and restart your tunnel to put them into effect.
+ℹ The version of your app [10.0.0] that was just deployed to [DEV moves-rms] is not eligible for the Runs on Atlassian program. Run forge eligibility to know more.
+To know more about Runs on Atlassian, go to ]8;;https://go.atlassian.com/runs-on-atlassianhttps://go.atlassian.com/runs-on-atlassian]8;;.
+Run forge storage entities indexes list -e moves-rms to check the status of the indexes.

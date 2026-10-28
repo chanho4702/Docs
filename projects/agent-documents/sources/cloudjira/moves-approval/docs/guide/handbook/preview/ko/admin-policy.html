@@ -1,0 +1,100 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>전역 정책과 상태 표시명 · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">본문으로 이동</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">로컬 검토본 · 게시 전</span><div class="search"><input id="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../en/admin-policy.html">English ↗</a><button id="menu" class="menu" aria-expanded="false">목차</button></div></header><div class="layout"><nav class="sidenav" aria-label="문서 목차"><a class="navhome " href="index.html">한국어 가이드</a><h2>시작하기</h2><ul><li><a  href="quick-start.html">빠른 시작 — 첫 문서 승인</a></li><li><a  href="installation.html">설치와 사용 준비</a></li><li><a  href="glossary.html">개념과 상태 이해하기</a></li></ul><h2>사용자 가이드</h2><ul><li><a  href="page-approval.html">페이지 승인 요청</a></li><li><a  href="area-approval.html">영역 승인</a></li><li><a  href="inbox.html">승인 업무함</a></li><li><a  href="decisions.html">승인·반려와 일괄 승인</a></li><li><a  href="history-resubmit.html">수정·회수·재상신과 버전 이력</a></li><li><a  href="signature-pin.html">내 서명과 PIN</a></li><li><a  href="delegation.html">결재 위임과 대리 결재</a></li><li><a  href="stamp-box.html">문서의 결재란</a></li><li><a  href="certificate.html">결재 증명서 PDF</a></li><li><a  href="notifications.html">참조와 알림</a></li></ul><h2>관리자 가이드</h2><ul><li><a  href="admin-setup.html">관리자 초기 설정</a></li><li><a class="active" aria-current="page" href="admin-policy.html">전역 정책과 상태 표시명</a></li><li><a  href="admin-spaces.html">적용 스페이스와 개별 정책</a></li><li><a  href="admin-lines.html">결재선 관리</a></li><li><a  href="admin-groups.html">승인 그룹 관리</a></li><li><a  href="admin-access.html">사용자·관리자와 접근 권한</a></li><li><a  href="admin-data.html">데이터 보관·내보내기와 변경 이력</a></li></ul><h2>지원과 심사</h2><ul><li><a  href="faq.html">문제 해결과 지원</a></li><li><a  href="data-security.html">데이터·보안·개인정보</a></li><li><a  href="reviewer-guide.html">Marketplace 심사 안내</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; 관리자 가이드</div><h1>전역 정책과 상태 표시명</h1><p class="lede">사이트의 요청 기본값, 알림과 결정 확인 규칙을 정합니다. 마감 같은 요청 기본값을 스페이스별로 정하려면 <a href="admin-spaces.html">스페이스 정책</a>을 사용합니다. 현재 PIN·위임·서명 동작은 전역 정책을 기준으로 합니다.</p>
+<p><strong>경로:</strong> 설정 → <strong>전역 정책</strong>.</p>
+<h2 id="section-0">정책 바꾸기</h2>
+<ol>
+<li><strong>승인 상태 흐름</strong>에서 상태를 선택합니다. 오른쪽에는 선택한 상태의 의미와 표시명, 관련 정책이 나타납니다.</li>
+<li>**진행 중(PENDING)**에서 기본 마감·마감 임박 기준과 앱 내 알림·Confluence 알림·독촉 주기를 설정합니다. **반려(REJECTED)**에서 반려 사유 필수 여부를 설정합니다.</li>
+<li>화면 아래의 <strong>결재 진행</strong>에서 PIN·서명 표시·위임·결재란 자동 추가를, <strong>접근과 권한</strong>에서 등록 사용자 제한·승인자 페이지 접근 확인을 설정합니다. 예를 들어 PIN을 필수로 바꾸기 전에 사용자가 PIN을 등록할 수 있도록 안내합니다.</li>
+<li>모든 변경을 확인하고 화면 아래의 <strong>정책 저장</strong>을 누릅니다. 저장 안내를 확인한 뒤 다시 열어 값이 유지되는지 확인합니다.</li>
+<li>새 요청을 열어 기본 마감과 결재란 옵션을 확인합니다. 기존 요청의 마감이나 결재선까지 바뀌었다고 가정하지 않습니다.</li>
+</ol>
+<p>상태 노드를 선택하거나 위치를 움직이는 것만으로 정책이 저장되지는 않습니다. 변경한 입력값과 토글은 <strong>정책 저장</strong>으로 함께 저장합니다.</p>
+<h2 id="section-1">요청과 결정</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>기본값</th>
+<th>사용과 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본 마감일수</td>
+<td>7일</td>
+<td>새 요청 폼의 기본값. 0이면 마감 없이 시작하며 요청자가 건별로 바꿀 수 있습니다.</td>
+</tr>
+<tr>
+<td>반려 사유 필수</td>
+<td>켬</td>
+<td>반려 확정에 사유 입력이 필요합니다.</td>
+</tr>
+<tr>
+<td>요청 시 승인자의 페이지 접근 권한 확인</td>
+<td>켬</td>
+<td>요청 생성 시 접근 불가능한 승인자가 있으면 거절합니다.</td>
+</tr>
+<tr>
+<td>결재란 자동 추가</td>
+<td>켬</td>
+<td>페이지 요청의 자동 삽입 옵션 기본값입니다.</td>
+</tr>
+<tr>
+<td>서명·도장 표시</td>
+<td>켬</td>
+<td>결정과 결재란의 표시 방식을 정합니다.</td>
+</tr>
+<tr>
+<td>서명 PIN 요구</td>
+<td>끔</td>
+<td>켜면 결정 전에 사용자가 PIN을 등록해야 합니다.</td>
+</tr>
+<tr>
+<td>결재 위임 허용</td>
+<td>끔</td>
+<td>꺼져 있으면 등록된 위임도 동작하지 않습니다.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-2">알림과 접근</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>기본값</th>
+<th>사용과 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>앱 내 알림</td>
+<td>켬</td>
+<td>업무함 알림 생성 여부입니다.</td>
+</tr>
+<tr>
+<td>Confluence 알림</td>
+<td>켬</td>
+<td>대상 페이지에 @멘션 댓글을 남깁니다.</td>
+</tr>
+<tr>
+<td>마감 임박 기준</td>
+<td>24시간</td>
+<td>하루 한 번 점검하므로 더 짧게 정해도 최대 하루 전에 알릴 수 있습니다.</td>
+</tr>
+<tr>
+<td>독촉</td>
+<td>끔, 첫 3일·반복 3일</td>
+<td>지금 차례인 승인자에게 앱 내 알림으로 알립니다.</td>
+</tr>
+<tr>
+<td>등록된 사용자만 앱 사용</td>
+<td>끔</td>
+<td>명부·관리자 등록을 완료한 뒤 켭니다. 사이트 전체에 적용됩니다.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="section-3">상태 표시명</h2>
+<p>흐름도에서 상태를 선택한 뒤 오른쪽 <strong>상태 코드 표시명</strong> 입력칸에 조직 용어를 입력합니다. 저장 전에는 흐름도와 오른쪽 제목에 새 이름이 미리 보입니다. 비워 두면 사용자 언어별 기본 이름을 사용하고, 입력한 조직 이름은 자동 번역되지 않습니다. 표시명은 상태당 80자까지 입력할 수 있습니다.</p>
+<p><strong>승인 완료(APPROVED)</strong>·<strong>만료(EXPIRED)</strong>·**회수(CANCELLED)**는 종료 상태이므로 이 화면에서는 표시명만 편집할 수 있습니다. 이름을 바꿔도 승인·반려·회수의 처리 규칙은 바뀌지 않습니다. 검토 단계 이름은 <a href="admin-lines.html">결재선</a>에서 정합니다.</p>
+<p>저장 결과는 <strong>변경 이력</strong>에서 확인할 수 있습니다. 특정 스페이스만 값이 다르면 전역 저장을 반복하기 전에 해당 스페이스의 재정의 값을 확인하세요.</p>
+<div class="pager"><a href="admin-setup.html"><small>← 이전 문서</small>관리자 초기 설정</a><a href="admin-spaces.html"><small>다음 문서 →</small>적용 스페이스와 개별 정책</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>이 문서에서</strong><a href="#section-0">정책 바꾸기</a><a href="#section-1">요청과 결정</a><a href="#section-2">알림과 접근</a><a href="#section-3">상태 표시명</a></aside></div><script>const items=[{"title":"빠른 시작 — 첫 문서 승인","text":"두 단계 승인 예제로 처음부터 끝까지 따라 합니다.","url":"quick-start.html"},{"title":"설치와 사용 준비","text":"앱 설치와 세 가지 진입점을 확인합니다.","url":"installation.html"},{"title":"개념과 상태 이해하기","text":"요청·단계·버전과 상태의 의미를 구분합니다.","url":"glossary.html"},{"title":"페이지 승인 요청","text":"페이지 전체의 승인자·순서·마감을 정합니다.","url":"page-approval.html"},{"title":"영역 승인","text":"문서 일부를 별도 대상으로 승인받습니다.","url":"area-approval.html"},{"title":"승인 업무함","text":"내 차례와 내 요청을 찾고 목록을 내보냅니다.","url":"inbox.html"},{"title":"승인·반려와 일괄 승인","text":"문서를 검토하고 개별·일괄 결정을 처리합니다.","url":"decisions.html"},{"title":"수정·회수·재상신과 버전 이력","text":"수정된 버전의 재승인과 이전 이력을 관리합니다.","url":"history-resubmit.html"},{"title":"내 서명과 PIN","text":"도장 이미지와 결정 확인용 PIN을 설정합니다.","url":"signature-pin.html"},{"title":"결재 위임과 대리 결재","text":"기간을 정해 대리인에게 결재를 맡깁니다.","url":"delegation.html"},{"title":"문서의 결재란","text":"문서와 템플릿에 결재란을 배치합니다.","url":"stamp-box.html"},{"title":"결재 증명서 PDF","text":"종료된 결재의 버전과 결정 증빙을 보관합니다.","url":"certificate.html"},{"title":"참조와 알림","text":"참조 역할과 앱·Confluence 알림을 구분합니다.","url":"notifications.html"},{"title":"관리자 초기 설정","text":"사용자가 첫 승인을 처리할 수 있게 준비합니다.","url":"admin-setup.html"},{"title":"전역 정책과 상태 표시명","text":"마감·알림·서명·접근 기본값을 정합니다.","url":"admin-policy.html"},{"title":"적용 스페이스와 개별 정책","text":"허용 스페이스와 개별 정책을 설정합니다.","url":"admin-spaces.html"},{"title":"결재선 관리","text":"반복되는 승인 순서를 저장합니다.","url":"admin-lines.html"},{"title":"승인 그룹 관리","text":"그룹 구성과 전원·1인 승인 조건을 정합니다.","url":"admin-groups.html"},{"title":"사용자·관리자와 접근 권한","text":"사용자 명부와 설정 관리 권한을 정합니다.","url":"admin-access.html"},{"title":"데이터 보관·내보내기와 변경 이력","text":"보관 기록을 내보내고 정리하며 변경을 추적합니다.","url":"admin-data.html"},{"title":"문제 해결과 지원","text":"증상별로 원인을 좁히고 지원을 요청합니다.","url":"faq.html"},{"title":"데이터·보안·개인정보","text":"데이터·권한·보관과 다운로드 범위를 확인합니다.","url":"data-security.html"},{"title":"Marketplace 심사 안내","text":"설치부터 권한·라이선스까지 심사 절차를 재현합니다.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="검색 결과가 없습니다.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

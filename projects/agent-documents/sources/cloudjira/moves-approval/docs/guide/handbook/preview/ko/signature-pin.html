@@ -1,0 +1,42 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>내 서명과 PIN · Moves Approval</title><link rel="stylesheet" href="../guide.css"></head><body><a class="skip" href="#main">본문으로 이동</a><header class="top"><a class="brand" href="../index.html"><svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2358d5"/><path d="m8 17 5 5L24 10" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg> Moves Approval <small>DOCUMENTATION</small></a><div class="actions"><span class="draft">로컬 검토본 · 게시 전</span><div class="search"><input id="search" type="search" placeholder="문서 검색" aria-label="문서 검색" autocomplete="off"><div id="results" class="search-results" hidden aria-live="polite"></div></div><a class="lang" href="../en/signature-pin.html">English ↗</a><button id="menu" class="menu" aria-expanded="false">목차</button></div></header><div class="layout"><nav class="sidenav" aria-label="문서 목차"><a class="navhome " href="index.html">한국어 가이드</a><h2>시작하기</h2><ul><li><a  href="quick-start.html">빠른 시작 — 첫 문서 승인</a></li><li><a  href="installation.html">설치와 사용 준비</a></li><li><a  href="glossary.html">개념과 상태 이해하기</a></li></ul><h2>사용자 가이드</h2><ul><li><a  href="page-approval.html">페이지 승인 요청</a></li><li><a  href="area-approval.html">영역 승인</a></li><li><a  href="inbox.html">승인 업무함</a></li><li><a  href="decisions.html">승인·반려와 일괄 승인</a></li><li><a  href="history-resubmit.html">수정·회수·재상신과 버전 이력</a></li><li><a class="active" aria-current="page" href="signature-pin.html">내 서명과 PIN</a></li><li><a  href="delegation.html">결재 위임과 대리 결재</a></li><li><a  href="stamp-box.html">문서의 결재란</a></li><li><a  href="certificate.html">결재 증명서 PDF</a></li><li><a  href="notifications.html">참조와 알림</a></li></ul><h2>관리자 가이드</h2><ul><li><a  href="admin-setup.html">관리자 초기 설정</a></li><li><a  href="admin-policy.html">전역 정책과 상태 표시명</a></li><li><a  href="admin-spaces.html">적용 스페이스와 개별 정책</a></li><li><a  href="admin-lines.html">결재선 관리</a></li><li><a  href="admin-groups.html">승인 그룹 관리</a></li><li><a  href="admin-access.html">사용자·관리자와 접근 권한</a></li><li><a  href="admin-data.html">데이터 보관·내보내기와 변경 이력</a></li></ul><h2>지원과 심사</h2><ul><li><a  href="faq.html">문제 해결과 지원</a></li><li><a  href="data-security.html">데이터·보안·개인정보</a></li><li><a  href="reviewer-guide.html">Marketplace 심사 안내</a></li></ul></nav><main id="main" class="doc "><div class="crumb">MOVES APPROVAL &nbsp; / &nbsp; 사용자 가이드</div><h1>내 서명과 PIN</h1><p class="lede">서명은 결정 옆에 표시할 도장을 정하고, PIN은 정책에 따라 승인·반려를 확정할 때 사용합니다. 서명 이미지 등록과 PIN 등록은 별도입니다.</p>
+<p><strong>경로:</strong> 승인 업무함 → <strong>내 서명</strong>.</p>
+<h2 id="section-0">서명 등록하기</h2>
+<ol>
+<li><strong>지금 쓰이는 도장</strong>을 확인합니다. 등록된 이미지가 없으면 이름 자동 도장을 사용합니다.</li>
+<li><strong>서명 그리기</strong>로 그리거나 <strong>이미지 업로드</strong>로 PNG·JPEG 파일을 고릅니다. 원본은 2MB 이하이며 자동으로 480×160 이하로 줄어듭니다.</li>
+<li>미리보기에서 서명이 잘리지 않고 읽히는지 확인한 뒤 저장합니다. 실제 표에서는 높이 32px로 보이므로 가로로 긴 서명이 적합합니다.</li>
+<li>저장 후 현재 도장에 반영됐는지 확인합니다. 관리자가 서명 표시를 꺼 놓으면 등록해도 결정 화면에 표시되지 않습니다.</li>
+</ol>
+<p><img src="../assets/ma-08-signature-pin.jpg" alt="서명 그리기·업로드 기능, 자동 이름 미리보기와 미등록 PIN 입력 영역"></p>
+<p><em>MA-08 · 서명과 PIN은 별도로 관리합니다. 화면에는 실제 PIN 값이 표시되지 않습니다.</em></p>
+<h2 id="section-1">PIN 등록·변경하기</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>입력·동작</th>
+<th>사용 방법</th>
+<th>확인할 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>새 PIN·PIN 확인</td>
+<td>같은 4~12자리 숫자 입력</td>
+<td>등록됨 상태를 확인합니다.</td>
+</tr>
+<tr>
+<td>현재 PIN</td>
+<td>기존 PIN 변경·삭제 시 입력</td>
+<td>새 PIN 입력만으로 기존 PIN을 바꿀 수 없습니다.</td>
+</tr>
+<tr>
+<td>PIN 삭제</td>
+<td>현재 PIN 확인 후 삭제</td>
+<td>필수 정책에서는 다시 등록해야 결정할 수 있습니다.</td>
+</tr>
+</tbody>
+</table></div>
+<p>5회 틀리면 15분 동안 잠깁니다. 계속 다른 값을 시도하지 말고 잠금 시간이 지난 뒤 확인하세요. 앱에는 관리자 PIN 초기화 기능이 없습니다. PIN을 잊었다면 사이트 관리자와 지원 채널에 처리 방법을 문의합니다.</p>
+<h2 id="section-2">완료 확인</h2>
+<p>현재 도장과 PIN 상태를 각각 확인합니다. 서명을 올렸다고 PIN까지 등록된 것은 아닙니다. 실제 결정 방법은 <a href="decisions.html">승인·반려</a>, 문서에 보이는 도장은 <a href="stamp-box.html">결재란</a>을 참고하세요.</p>
+<div class="pager"><a href="history-resubmit.html"><small>← 이전 문서</small>수정·회수·재상신과 버전 이력</a><a href="delegation.html"><small>다음 문서 →</small>결재 위임과 대리 결재</a></div><footer>Moves Approval for Confluence Cloud</footer></main><aside class="toc"><strong>이 문서에서</strong><a href="#section-0">서명 등록하기</a><a href="#section-1">PIN 등록·변경하기</a><a href="#section-2">완료 확인</a></aside></div><script>const items=[{"title":"빠른 시작 — 첫 문서 승인","text":"두 단계 승인 예제로 처음부터 끝까지 따라 합니다.","url":"quick-start.html"},{"title":"설치와 사용 준비","text":"앱 설치와 세 가지 진입점을 확인합니다.","url":"installation.html"},{"title":"개념과 상태 이해하기","text":"요청·단계·버전과 상태의 의미를 구분합니다.","url":"glossary.html"},{"title":"페이지 승인 요청","text":"페이지 전체의 승인자·순서·마감을 정합니다.","url":"page-approval.html"},{"title":"영역 승인","text":"문서 일부를 별도 대상으로 승인받습니다.","url":"area-approval.html"},{"title":"승인 업무함","text":"내 차례와 내 요청을 찾고 목록을 내보냅니다.","url":"inbox.html"},{"title":"승인·반려와 일괄 승인","text":"문서를 검토하고 개별·일괄 결정을 처리합니다.","url":"decisions.html"},{"title":"수정·회수·재상신과 버전 이력","text":"수정된 버전의 재승인과 이전 이력을 관리합니다.","url":"history-resubmit.html"},{"title":"내 서명과 PIN","text":"도장 이미지와 결정 확인용 PIN을 설정합니다.","url":"signature-pin.html"},{"title":"결재 위임과 대리 결재","text":"기간을 정해 대리인에게 결재를 맡깁니다.","url":"delegation.html"},{"title":"문서의 결재란","text":"문서와 템플릿에 결재란을 배치합니다.","url":"stamp-box.html"},{"title":"결재 증명서 PDF","text":"종료된 결재의 버전과 결정 증빙을 보관합니다.","url":"certificate.html"},{"title":"참조와 알림","text":"참조 역할과 앱·Confluence 알림을 구분합니다.","url":"notifications.html"},{"title":"관리자 초기 설정","text":"사용자가 첫 승인을 처리할 수 있게 준비합니다.","url":"admin-setup.html"},{"title":"전역 정책과 상태 표시명","text":"마감·알림·서명·접근 기본값을 정합니다.","url":"admin-policy.html"},{"title":"적용 스페이스와 개별 정책","text":"허용 스페이스와 개별 정책을 설정합니다.","url":"admin-spaces.html"},{"title":"결재선 관리","text":"반복되는 승인 순서를 저장합니다.","url":"admin-lines.html"},{"title":"승인 그룹 관리","text":"그룹 구성과 전원·1인 승인 조건을 정합니다.","url":"admin-groups.html"},{"title":"사용자·관리자와 접근 권한","text":"사용자 명부와 설정 관리 권한을 정합니다.","url":"admin-access.html"},{"title":"데이터 보관·내보내기와 변경 이력","text":"보관 기록을 내보내고 정리하며 변경을 추적합니다.","url":"admin-data.html"},{"title":"문제 해결과 지원","text":"증상별로 원인을 좁히고 지원을 요청합니다.","url":"faq.html"},{"title":"데이터·보안·개인정보","text":"데이터·권한·보관과 다운로드 범위를 확인합니다.","url":"data-security.html"},{"title":"Marketplace 심사 안내","text":"설치부터 권한·라이선스까지 심사 절차를 재현합니다.","url":"reviewer-guide.html"}];const input=document.querySelector('#search');const results=document.querySelector('#results');input.addEventListener('input',()=>{const q=input.value.trim().toLocaleLowerCase();results.replaceChildren();results.hidden=!q;if(!q)return;const hits=items.filter(p=>(p.title+' '+p.text).toLocaleLowerCase().includes(q));if(!hits.length){const p=document.createElement('p');p.textContent="검색 결과가 없습니다.";results.append(p)}for(const item of hits){const a=document.createElement('a');a.href=item.url;a.textContent=item.title;results.append(a)}});document.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});document.querySelector('#menu').addEventListener('click',e=>{const open=document.body.classList.toggle('nav-open');e.currentTarget.setAttribute('aria-expanded',String(open))});</script></body></html>

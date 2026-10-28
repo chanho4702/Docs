@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>MovesEye Credential 보호 정책</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>MovesEye Credential 보호 정책</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 보안 책임자, 운영자, 개발자</div><div><strong>문서 상태:</strong> draft</div><div><strong>기준일:</strong> 2026-08-05 safety baseline</div><div><strong>정본 위치:</strong> secret store·application binding 결정 필요</div></div>
+<h1>MovesEye Credential 보호 정책</h1>
+<blockquote><p>Production 차단 조건: 실제 secret store, application 주입 방식, DB 저장 여부, masking, 조회 권한, 회전 owner가 확정되지 않았다. 이 문서가 <code>current</code>가 되기 전 production credential을 MovesEye에 등록하지 않는다.</p></blockquote>
+<h2>1. 적용 대상</h2>
+<ul>
+<li>Zabbix service account</li>
+<li>JWT signing secret</li>
+<li>PostgreSQL·Redis credential</li>
+<li>AWS credential</li>
+<li>SMTP, notification provider credential</li>
+<li>refresh/session 보호에 사용하는 key</li>
+<li>TLS private key와 외부 연동 token</li>
+</ul>
+<p>실제 값, 운영 URL, account ID는 이 문서에 기록하지 않는다.</p>
+<h2>2. 필수 원칙</h2>
+<ol>
+<li>개인 계정 대신 목적별 전용 service account를 사용한다.</li>
+<li>조회 기능과 Zabbix write 관리 기능의 권한을 분리한다.</li>
+<li>secret은 source, Markdown, screenshot, log, CI artifact에 평문으로 남기지 않는다.</li>
+<li>runtime에 필요한 process에만 최소 기간 주입한다.</li>
+<li>UI/API 응답은 secret을 반환하지 않고 설정 여부와 마지막 회전 시각만 제공한다.</li>
+<li>입력·오류·audit log에서 secret과 인증 header를 masking한다.</li>
+<li>사용 종료·사고·담당자 변경 시 폐기·회전한다.</li>
+<li>secret 조회·변경은 감사 가능하고 Role/Data Scope와 별도 고권한으로 제한한다.</li>
+</ol>
+<h2>3. 확정해야 할 저장 모델</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>결정</th><th>선택</th><th>owner/evidence</th></tr></thead>
+<tbody>
+<tr><td>Secret store 제품·namespace</td><td>TBD</td><td>TBD</td></tr>
+<tr><td>Spring 주입 방식</td><td>TBD</td><td>TBD</td></tr>
+<tr><td>FE가 설정 상태를 확인하는 비밀 없는 응답</td><td>TBD</td><td>TBD</td></tr>
+<tr><td><code>setting</code> JSON의 credential 제거·암호화·reference 방식</td><td>TBD</td><td>TBD</td></tr>
+<tr><td>암호화 key 보관·회전</td><td>TBD</td><td>TBD</td></tr>
+<tr><td>log masking library·filter</td><td>TBD</td><td>TBD</td></tr>
+<tr><td>CI/CD secret binding</td><td>TBD</td><td>TBD</td></tr>
+<tr><td>break-glass 접근·승인</td><td>TBD</td><td>TBD</td></tr>
+</tbody></table>
+<h2>4. Zabbix account 기준</h2>
+<ul>
+<li>read-only monitoring account와 configuration write account를 분리한다.</li>
+<li>Host·Template·Item·Trigger 관리가 필요할 때만 write account를 사용한다.</li>
+<li>account scope는 대상 Host Group과 API method 최소 범위로 제한한다.</li>
+<li>연결 실패를 이유로 권한을 무조건 확대하지 않는다.</li>
+<li>저장·변경 후 실제 secret을 다시 표시하지 않는다.</li>
+</ul>
+<p>정확한 최소권한 matrix는 Zabbix version과 site policy를 검증해 별도 표로 추가한다.</p>
+<h2>5. Rotation·사고 대응</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>사건</th><th>즉시 조치</th><th>후속 검증</th></tr></thead>
+<tbody>
+<tr><td>log·문서 노출</td><td>접근 차단, secret 폐기·회전</td><td>history/artifact 제거, audit</td></tr>
+<tr><td>담당자 변경</td><td>개인 접근 회수, shared key 회전 판단</td><td>접근 목록 review</td></tr>
+<tr><td>인증 실패 급증</td><td>account lock·expiry·endpoint 확인</td><td>무분별한 권한 확대 금지</td></tr>
+<tr><td>secret store 장애</td><td>fail-closed 또는 승인된 break-glass</td><td>복구 후 임시 secret 폐기</td></tr>
+</tbody></table>
+<p>Rotation에는 새 값 발급, 병행 전환 가능 여부, application restart/reload, old 값 폐기, smoke test, audit evidence를 포함한다.</p>
+<h2>6. Current 승격 조건</h2>
+<ul>
+<li>☐ 저장 모델의 모든 TBD 확정</li>
+<li>☐ DB/API/log에서 plaintext secret 미노출 test</li>
+<li>☐ 최소권한 Zabbix read/write account 검증</li>
+<li>☐ rotation rehearsal 성공</li>
+<li>☐ owner·on-call·break-glass 승인</li>
+<li>☐ production Runbook에서 이 정책을 참조</li>
+</ul>
+<h2>변경 이력</h2>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>날짜</th><th>변경</th></tr></thead>
+<tbody>
+<tr><td>2026-08-05</td><td>안전 baseline과 미결정 gate를 draft로 작성</td></tr>
+</tbody></table>
+</body></html>

@@ -1,0 +1,122 @@
+﻿[
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.ApmLiveSpansStreamControllerTest",
+        "Tests":  10,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  9.132
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.ApmLiveStreamPropertiesTest",
+        "Tests":  6,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  1.047
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.ArenaLiveDedupIndexTest",
+        "Tests":  10,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  0.893
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveServletWriterTest",
+        "Tests":  2,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  7.678
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSnapshotRemainingTest",
+        "Tests":  8,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  3.098
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanArenaTest",
+        "Tests":  1,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  0.3
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanContractGoldenTest",
+        "Tests":  18,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  4.864
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanDictionaryTest",
+        "Tests":  8,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  0.627
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanFramesTest",
+        "Tests":  5,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  0.04
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanRingTest",
+        "Tests":  24,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  2.187
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanRuntimeStreamTest",
+        "Tests":  7,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  3.774
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanStreamBudgetTest",
+        "Tests":  8,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  7.005
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanStreamScaleTest",
+        "Tests":  6,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  2.556
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveSpanStreamServiceTest",
+        "Tests":  26,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  13.215
+    },
+    {
+        "Name":  "com.dmove.moveseye.premium.apm.overview.live.spans.LiveStreamBytesTest",
+        "Tests":  8,
+        "Failures":  0,
+        "Errors":  0,
+        "Skipped":  0,
+        "Seconds":  0.046
+    }
+]

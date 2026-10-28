@@ -1,0 +1,46 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administrator guide</title><style>body{margin:0;background:#f5f7fa;color:#172b4d;font:16px/1.75 system-ui,-apple-system,"Malgun Gothic",sans-serif}main{max-width:1000px;margin:32px auto;padding:40px 48px;background:white;border:1px solid #dfe4eb;border-radius:12px}h1{font-size:30px;line-height:1.3;border-bottom:3px solid #1868db;padding-bottom:22px}h2{margin-top:36px;font-size:22px}a{color:#0c66e4}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dfe4eb;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eef3fa}img{max-width:100%;height:auto;border:1px solid #dfe4eb}code{background:#eef1f6;padding:2px 4px;border-radius:3px}li{margin:7px 0}blockquote{border-left:4px solid #1868db;padding-left:16px;color:#44546f}@media(max-width:700px){main{margin:0;padding:20px}table{display:block;overflow:auto}h1{font-size:25px}}@media print{body{background:white}main{border:0;margin:0;padding:0}h2{break-after:avoid}table,img{break-inside:avoid}}</style><main><h1>Administrator guide</h1>
+<h2>Rollout order</h2>
+<p>Configure enabled projects, basic approval rules, standalone teams or Workforce pairing, approval policies and the time tracking provider, then test with regular users. Prepare the required directory entries and permissions before enabling app access restrictions.</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Operational meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Status change approval</td>
+<td>Server defaults to off; settings UI is not wired, so excluded from the release scope</td>
+</tr>
+<tr>
+<td>Workforce integration</td>
+<td>Off by default; enabling and completed pairing are both required</td>
+</tr>
+<tr>
+<td>Automatic worklog requests</td>
+<td>Requests after saving; save and request outcomes are separate</td>
+</tr>
+<tr>
+<td>Automatic closing days</td>
+<td>0 disables it; configure the organization's grace period</td>
+</tr>
+<tr>
+<td>Full description retention</td>
+<td>Off by default; fingerprints and short previews may still be retained</td>
+</tr>
+<tr>
+<td>Worklog controls</td>
+<td>Review the protection configuration, diagnostics and release procedure</td>
+</tr>
+</tbody>
+</table>
+<p>In connected mode, change teams, leads and Workforce-owned linked-issue settings in Workforce. Check the effective policy and its owner in Approval rather than editing the same responsibility in both apps.</p>
+<h2>Records and capacity</h2>
+<p>Distinguish approval, certification, worklog-change and settings history in the administrator records views. Storage usage is an estimate, not a guaranteed real-time or billing measurement.</p>
+<p>For retention cleanup: <strong>choose a range → export → open and check the file, counts and dates → store it securely → confirm and clean up eligible records</strong>. Protected approval ledgers, active certifications and source evidence are not necessarily deletable after export. Review growth and available capacity regularly for high-volume use.</p>
+<h2>Incidents and changes</h2>
+<p>If a save or decision result is unclear, check the existing record ID and current state first. Understand the impact on existing approvals and locks before disabling features or reopening periods. <a href="06-worklog-period-lock.html">Release controls</a> before uninstalling.</p>
+<p><a href="00-index.html">Documentation home</a> · <a href="../ko/09-admin-guide.html">한국어</a></p>
+<p><img src="../images/ko-policy-live.jpg" alt="Actual development capture ? Korean UI"></p>
+</main></html>

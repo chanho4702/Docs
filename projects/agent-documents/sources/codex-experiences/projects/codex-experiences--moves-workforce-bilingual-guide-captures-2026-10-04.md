@@ -1,0 +1,12 @@
+# Moves Workforce 한영 가이드 실화면 캡처
+
+- 후속: 상세 설명에는 초기 12장만으로 부족하다는 질문에 기간 입력·구독 조건·문서 연결·작업 선택·자원 배정 화면 8장을 추가했다. 고객 가이드용 20장과 이슈 패널 미표시 진단 1장으로 총 21장. 42페이지·168링크·36첨부 참조 검증 통과. 추가 후보 전체·역할별 검증·Confluence 게시는 미완료다.
+
+- 2026-10-04 Chrome 연결을 확인하고 지정된 staging 앱의 영어 캡처 12장을 확보했다.
+- Chrome 이름의 개별 도구가 없어도 공식 `browser-client.mjs`의 `setupBrowserRuntime()`를 `node_repl`에서 실행해 연결할 수 있었다. `browsers.list()`는 실제 연결된 Chrome 두 프로필을 반환했다. 도구 이름만으로 브라우저 접근 불가를 단정하지 않는다.
+- 사용자 허가에 따라 한·영 가이드에서 같은 영어 이미지를 사용한다. 계정 전체 언어 설정은 변경하지 않았다.
+- 우선 IMG-01~08과 IMG-11을 로컬 가이드에 연결하고 언어별 캡션·대체 텍스트를 넣었다. 42페이지·168개 링크·22개 첨부 참조의 로컬 검증을 통과했다.
+- Confluence 폴더와 일부 기존 페이지 ID를 실제 UI로 확인했다. 기존 한국어 사용자 폴더는 171573307, 영어 User Guide 폴더는 204046344이다. 페이지 내용·버전 대조와 게시·첨부 업로드는 미완료다.
+- AX 요소 번호는 최신 상태에서 다시 구한다. React 입력에 setValue 직후 같은 번호로 Return을 보내면 재렌더링 때문에 연결 해제될 수 있다. 시간 선택의 실제 옵션을 확인해 클릭하는 편이 안정적이었다.
+- 영어 워크로그에 한국어 시간·기간 입력 버튼과 `{3}h {30}m` 표기가 남아 있었다. 실제 화면을 보존하고 앱 코드 변경은 하지 않았다.
+- [[projects/agent-documents/sources/codex-experiences/projects/codex-experiences--moves-workforce-documentation-sync-2026-08-20|moves-workforce-documentation-sync-2026-08-20]]

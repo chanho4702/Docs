@@ -1,0 +1,74 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/172884057">한국어</a></p>
+<h2>Purpose and period</h2>
+<p>Use people analysis to compare project members&#39; recorded effort and utilization. Report read and project access are required. Select Today, This week, This month, Last week, Last month, or a custom date range.</p>
+<p>The screen shows its conversion basis: 1MD = N hours; 1MM = M working days; MM = MD ÷ M.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> People analysis with period controls, MD/MM basis, utilization and team charts, member table, and daily/weekly/monthly details.</p>
+</blockquote>
+<h2>Charts and member table</h2>
+<p>The utilization overview shows up to 20 people and a 100% reference line. Team investment summarizes recorded effort in the selected period.</p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Total MM</td>
+<td>Total MD divided by the applicable working-day basis for 1MM</td>
+</tr>
+<tr>
+<td>Effective available MD</td>
+<td>Available working days after public holidays and personal leave; the denominator of utilization</td>
+</tr>
+<tr>
+<td>MD, hours, issue count</td>
+<td>Actual effort and the number of issues involved</td>
+</tr>
+<tr>
+<td>Utilization</td>
+<td>Recorded MD divided by effective available MD</td>
+</tr>
+</tbody></table>
+<p>The standard table colors distinguish low utilization below 50%, 50–80%, 80–100%, and overload above 100%. Read labels and settings on the installed version before comparing colors with another screen.</p>
+<h2>Individual and team views</h2>
+<p>Switch between individual and team views. Team utilization is total team MD divided by total team available MD, not an average of individual percentages. Filters can include child teams or unassigned members.</p>
+<p>Select a person to view daily, weekly, or monthly MD and hours. Monthly details include the 1MM reference. Original worklogs explain the underlying effort.</p>
+<h2>Interpret results</h2>
+<p>Compare overloaded and underused people when redistributing work. Leave reduces capacity, so a person on leave should not be compared using an unchanged denominator. MM describes effort volume; utilization describes capacity consumption. Project utilization and organization-wide utilization can use different populations and capacity periods.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>People analysis compares project members&#39; effort and effective capacity over the selected period.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Period / quick selection</td>
+<td>Query period hours/MD/MM/capacity; default is this month through today.</td>
+<td>Check date order and included dates.</td>
+</tr>
+<tr>
+<td>By Member / By Team / team / descendants</td>
+<td>View member or team totals for the same period. Team utilization is total effort divided by total capacity, not the average of personal percentages.</td>
+<td>Grouping follows current membership. Team views/filters can be unavailable above 500 project members.</td>
+</tr>
+<tr>
+<td>Select member / analysis / daily-weekly-monthly</td>
+<td>Inspect selected-member entries at daily/weekly/monthly scales, with the applicable 1MM basis in monthly details.</td>
+<td>Check selected name, issue, and date to avoid attributing another person&#39;s entries to yourself.</td>
+</tr>
+<tr>
+<td>Available MD / holidays / leave / utilization</td>
+<td>Capacity reflects holidays/personal schedules. Members without recorded work can still contribute to its denominator.</td>
+<td>Do not interpret zero/unavailable capacity as poor performance.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

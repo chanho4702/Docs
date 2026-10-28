@@ -10,7 +10,7 @@ status: done
 
 - 프로젝트: [[moveseye]] · 기능 지도 [[Zabbix-구성-관리]] · 래핑 범위 [[2026-08-19-zabbix-wrapping-and-event-alert]]
 - 상태: **푸시 완료** BE `21358d8` · FE `edf667c` · 발급기 `44bb3e0` · AI 화면 카탈로그 `f9aa53d`(64화면). 런타임 실측 통과(10-27).
-- 정본: 계약 [contract_web-scenario](file:///C:/solutions/_workspace/features/zabbix-config/web-scenario/contract_web-scenario.md)
+- 정본: 계약 [contract_web-scenario](../agent-documents/sources/solutions/_workspace/features/zabbix-config/web-scenario/solutions--contract_web-scenario.md)
 - 같은 날 별건: 요청 걸림 장부 IT 간헐 실패 수정 `c1ebf58`(#ZM-122) — 테스트 컨텍스트 여럿이 같은 IT DB를 보며 다른 컨텍스트의 1초 감시기가 테스트가 연 STUCK 이벤트를 닫아 버림 → IT 프로필에서 감시기 주기 실행만 끔.
 
 ## 결정 (사용자)

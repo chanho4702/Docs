@@ -1,0 +1,109 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173703169">한국어</a></p>
+<h2>Access and visible people</h2>
+<p>Resource management read opens the people list and detail drawer. Editing skills requires Resource management write, or an applicable self or team-lead path. Organization-wide viewers can see the permitted organization; team leads see the teams they lead under the applicable scope.</p>
+<h2>Summary and filters</h2>
+<p>Review total people, available capacity, appropriate load, overload, and the last aggregation time. Utilization is aggregated in batches. Newly registered people or new worklogs may not appear until the next aggregation. Treat stale-data notices as part of the result.</p>
+<p>Filter by skills, job role, level, team, job category, or available people only. Utilization bands are configured in general settings.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> People list with utilization signals, filters, skills, and a selected person&#39;s detail drawer. Use an English screen for both languages.</p>
+</blockquote>
+<h2>Table columns</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Person, team, role, level</td>
+<td>Identity and job information</td>
+</tr>
+<tr>
+<td>Utilization</td>
+<td>Batch result, displayed with the applicable capacity band</td>
+</tr>
+<tr>
+<td>Completion ratio</td>
+<td>Consumed time divided by consumed plus remaining effort; done issues are included only when updated within the last 26 weeks; this is not a completion-date filter</td>
+</tr>
+<tr>
+<td>Workload</td>
+<td>Processed, remaining, and assigned effort; progress is processed divided by assigned</td>
+</tr>
+<tr>
+<td>Assigned issues</td>
+<td>Issues connected through assignment or collaboration</td>
+</tr>
+<tr>
+<td>Participating projects</td>
+<td>Active, unfinished projects</td>
+</tr>
+<tr>
+<td>Skills</td>
+<td>Registered skill tags</td>
+</tr>
+</tbody></table>
+<h2>Detail drawer and skills</h2>
+<p>Select a row to open current load, in-progress issues, and project experience. Issue details include status, project, due date, participation type, and the person&#39;s estimated share. For shared issues, remaining effort is split equally among participants; this may differ from the actual division of work.</p>
+<p>Use Edit skills where permitted. The choices come from the skill dictionary. These values support project-candidate fit. People can edit their own skills in My Page; team leads have an applicable My Team path.</p>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No utilization data</td>
+<td>Aggregation may not have run, or no worklogs exist in the relevant period</td>
+</tr>
+<tr>
+<td>Only some people appear</td>
+<td>Review the team-lead or organization visibility scope</td>
+</tr>
+<tr>
+<td>A skill is missing from the filter</td>
+<td>Register it in the skill dictionary first</td>
+</tr>
+<tr>
+<td>Completion ratio is lower than expected</td>
+<td>Done issues not updated within the last 26 weeks are excluded; the filter uses update time, not completion time</td>
+</tr>
+</tbody></table>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>People overview inspects permitted people&#39;s current workload, skills, and project history.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Role / level / skills / team / descendants / available only</td>
+<td>Combine filters to narrow candidates. Available only uses workload/utilization, without expanding account scope.</td>
+<td>Check company-wide/led-team scope and clear filters to compare results.</td>
+</tr>
+<tr>
+<td>Name / resource details / work / experience</td>
+<td>Open a person&#39;s workload, in-progress issues, and project participation history.</td>
+<td>Distinguish estimated remaining-work shares from actual worklogs. Project counts depend on active/ended status.</td>
+</tr>
+<tr>
+<td>Edit skills / Save</td>
+<td>Change a permitted person&#39;s selected skills, not role, salary, or permissions.</td>
+<td>Check target name/skills after saving. Add dictionary entries separately in Settings.</td>
+</tr>
+<tr>
+<td>Utilization / workload / completion</td>
+<td>Read workload signals. Resource completion uses spent/(spent+remaining), unlike My Page&#39;s issue-count completion.</td>
+<td>Done issues are included when updated within the last 26 weeks; this is not a completion-date filter. Check shared-work estimates and do not equate workload with productivity.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

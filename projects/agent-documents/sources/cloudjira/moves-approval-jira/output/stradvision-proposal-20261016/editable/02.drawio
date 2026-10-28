@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1" type="device"><diagram id="page-2" name="02 기능별 제공 구조">
+    <mxGraphModel dx="1400" dy="910" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1400" pageHeight="910" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="02 기능별 제공 구조" style="text;html=0;fontSize=30;fontStyle=1;align=left;fontFamily=Malgun Gothic;fontColor=#142D4E;shadow=0;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="15" width="1300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="논리적 기능 구분 · 내부 배포 단위나 세부 API 명세를 의미하지 않습니다." style="text;html=0;fontSize=16;align=left;fontColor=#64748B;fontFamily=Malgun Gothic;shadow=0;fillColor=none;strokeColor=none;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="1320" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" value="조직 정보 제공" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#369A86;fontSize=13;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="w1" target="a1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="0" y="-16" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e1" value="현재 변경 허용 여부 확인" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#369A86;fontSize=13;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="w2" target="a2">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="0" y="-16" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" value="승인 결과 제공" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=13;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="a3" target="w3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="0" y="-16" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="반영 완료 여부 확인" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=0;endArrow=block;endFill=1;strokeColor=#4C7FD1;fontSize=13;fontFamily=Malgun Gothic;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeWidth=1.6;fontColor=#50647F;labelBorderColor=none;arcSize=12;endSize=7;" edge="1" parent="1" source="a4" target="w4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" x="0" y="-16" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Moves Workforce" value="Moves Workforce" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#285BA5;strokeColor=#285BA5;strokeWidth=1.6;fontColor=#FFFFFF;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="500" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Moves Approval" value="Moves Approval" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#167F70;strokeColor=#167F70;strokeWidth=1.6;fontColor=#FFFFFF;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="100" width="500" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="w1" value="조직 · 프로젝트 관리&#10;팀 / 팀장 / 참여자 / 연결 프로젝트" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="230" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="w2" value="작업 입력 · 현황&#10;입력 조건 확인 / 변경 가능 여부 안내" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="390" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="w3" value="승인 반영 보고&#10;진행 시간과 승인 인정 시간 구분" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="w4" value="전달 자료 생성&#10;월별 파일 / SAP 항목 매핑" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#EAF2FF;strokeColor=#4C7FD1;strokeWidth=1.6;fontColor=#173F79;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="710" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="승인 접수 · 결정&#10;건별 요청 / 팀장 일괄 승인 / 반려" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="230" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="마감 · 변경 통제&#10;승인 후 수정·삭제 제한 / 기간 마감" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="390" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="이력 · 증거 조회&#10;승인 당시 값 / 변경 전후 / 처리 상태" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="550" width="500" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="연동 상태 관리&#10;전달 대기 / 오류 / 재처리 확인" style="rounded=1;arcSize=12;whiteSpace=wrap;html=0;fillColor=#E5F5F0;strokeColor=#369A86;strokeWidth=1.6;fontColor=#14574D;fontFamily=Malgun Gothic;fontSize=18;spacing=8;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="710" width="500" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  </mxfile>

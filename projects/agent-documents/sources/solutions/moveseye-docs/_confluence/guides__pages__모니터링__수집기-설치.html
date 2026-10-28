@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>수집기 설치 (APM 온보딩)</title>
+<style>
+ body{font-family:-apple-system,"Segoe UI","Malgun Gothic",sans-serif;line-height:1.7;max-width:900px;margin:2rem auto;padding:0 1rem;color:#172b4d}
+ table{border-collapse:collapse;width:100%;margin:1rem 0}
+ th,td{border:1px solid #dfe1e6;padding:8px;text-align:left;vertical-align:top}
+ th{background:#f4f5f7;font-weight:600}
+ pre{background:#f4f5f7;padding:12px;overflow-x:auto;border-radius:3px}
+ code{background:#f4f5f7;padding:1px 4px;border-radius:3px}
+ pre code{background:none;padding:0}
+ blockquote{border-left:3px solid #dfe1e6;margin:1rem 0;padding:.2rem 0 .2rem 1rem;color:#44546f}
+ h1,h2,h3{margin-top:1.8rem}
+ hr{border:none;border-top:1px solid #dfe1e6}
+ .meta{background:#f4f5f7;padding:.5rem 1rem;border-radius:3px;font-size:.9em;margin-bottom:1.5rem}
+</style></head><body>
+<h1>수집기 설치 (APM 온보딩)</h1>
+<div class="meta"><div><strong>대상 독자:</strong> 관리자, 설치 담당자, 앱 운영자, 지원 담당자</div><div><strong>문서 상태:</strong> review</div><div><strong>기준일:</strong> 2026-09-01</div><div><strong>정본 위치:</strong> moveseye-be-spring premium/apm/collector/install/ApmInstallGuideService.java, ApmInstallVersions.java, ApmCollectorProperties.java, src/main/resources/apm/collector-template.yaml, _workspace/verification/r1_apm-collector-roundtrip.md</div></div>
+<h1>수집기 설치 (APM 온보딩)</h1>
+<blockquote><p><strong>화면</strong> 모니터링 &gt; 어플리케이션 모니터링 &gt; 수집기 (관리자 전용) <strong>이 문서와 화면의 관계</strong> 화면의 '설치 가이드' 탭은 서버(<code>GET /apm/install-guide</code>)가 만든 문구를 그대로 그린다. 이 문서는 그 문구의 문서판이다. 둘이 다르면 <strong>화면이 정본</strong>이다 — 화면은 설치본 설정(사내 미러 주소·큐 디렉터리)을 반영하지만 이 문서는 기본값만 적는다. <strong>검증 조합</strong> otelcol-contrib <strong>0.159.0</strong> · opentelemetry-javaagent <strong>2.31.1</strong> (2026-08-31 round-trip 실측). 다른 버전은 검증되지 않았다.</p></blockquote>
+<h2>시작 전에</h2>
+<h3>준비물</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>항목</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td>MovesEye 권한</td><td>관리자 계정. 라이선스에 <code>APM</code> 기능(PREMIUM) 포함</td></tr>
+<tr><td>Collector를 둘 서버 1대</td><td>Windows 10 1803 이상 / Windows Server, 또는 Linux amd64. 도커 불필요(단일 바이너리)</td></tr>
+<tr><td>네트워크</td><td>앱 서버 → Collector <strong>4317</strong>(gRPC) · <strong>4318</strong>(HTTP) 내부 통신. Collector → MovesEye 서버 주소로 <strong>아웃바운드 HTTPS</strong>. Collector 서버에서 내려받기 위한 GitHub 접근(폐쇄망은 사내 미러)</td></tr>
+<tr><td>앱</td><td>계측을 붙이고 <strong>재기동</strong>할 수 있어야 한다. Java는 코드 수정 없이 JVM 옵션 한 줄</td></tr>
+</tbody></table>
+<h3>두 가지 원칙</h3>
+<ul>
+<li>🔴 <strong>게이트웨이 Collector는 사이트당 1대만 둔다.</strong> 두 대 이상이면 한 트레이스의 스팬이 갈라져, trace_id 일관 해싱(loadbalancing exporter 2계층) 없이는 tail 샘플링이 무의미해진다. 이중화가 필요하면 active-standby로 두고 전환 중 유실을 허용한다 — active-active는 지원 범위 밖이다. 여러 대가 같은 토큰으로 보내면 수집기별 지표가 서로 덮어쓴다.</li>
+<li>ℹ️ <strong>앱은 MovesEye가 아니라 Collector로 보낸다</strong>(LAN 내 4317/4318). MovesEye로 직접 보내는 구성은 지원하지 않는다 — 마스킹·샘플링·재시도 큐가 전부 Collector에 있다.</li>
+</ul>
+<h3>데이터가 오는 길</h3>
+<pre> [앱 서버들]                     [Collector 서버 1대]                     [MovesEye 서버]
+ Java -javaagent ──gRPC 4317──▶ otelcol-contrib 0.159.0 ──HTTPS/json──▶ &lt;MovesEye 주소&gt;/apm/otlp/v1/metrics
+ .NET/Node/Python  (또는 4318)    · 마스킹·허용목록·배치                    · Bearer 수신 토큰 검사
+                                  · 디스크 큐(못 보낸 것 보관)             · 라이선스(APM) 검사
+                                  · 자기 상태 지표도 함께 보냄             · 1분 표에 적재</pre>
+<h2>1단계 — 토큰 발급과 설정 파일 받기 (MovesEye 화면)</h2>
+<p>수집기 &gt; <strong>토큰·설정</strong> 탭.</p>
+<ol>
+<li><strong>토큰 발급</strong>을 누르고 라벨(어느 수집기인지 구분할 이름, 예: 본사 수집기)을 적는다.</li>
+<li><strong>'설정 파일(yaml)도 함께 받기'를 켠 채</strong> 발급한다. 켜 두면 토큰이 이미 채워진 완성본 yaml을 같은 응답으로 받는다.</li>
+<li>발급 결과 창에서 <strong>토큰 원문을 복사하고 yaml을 내려받는다.</strong> 🔴 이 창을 닫으면 토큰 원문을 다시 볼 수 없다 — 서버는 해시만 저장하므로 복구 경로가 없다. 잃어버리면 새로 발급하고 옛 토큰을 회수하는 수밖에 없다.</li>
+<li>창에 보이는 <strong>수신 주소(endpoint)</strong> 는 <code>&amp;lt;MovesEye 주소&amp;gt;/apm/otlp</code> 꼴이다. 뒤에 <code>/v1/metrics</code>를 붙이지 않는다 — exporter가 스스로 붙인다.</li>
+</ol>
+<h3>설정 파일 옵션 ('설정 파일 다시 만들기')</h3>
+<p>토큰을 발급한 뒤에도 설정 파일만 다시 만들 수 있다. 이때는 토큰 자리가 <code>${RECEIVE_TOKEN}</code> <strong>자리표시로 남으므로</strong> 발급 때 복사한 값을 손으로 넣어야 한다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>항목</th><th>뜻</th><th>기본</th></tr></thead>
+<tbody>
+<tr><td>MovesEye 주소</td><td>스킴 포함(예: <code>https://moveseye.example.com</code>). <code>/apm/otlp</code>는 서버가 붙이고, <code>/v1/metrics</code>를 붙여 오면 거절한다</td><td>설치본 힌트</td></tr>
+<tr><td>수집기 OS</td><td>큐 디렉터리 기본값과 설치 명령이 갈린다</td><td>Linux</td></tr>
+<tr><td>느린 요청 임계(ms)</td><td>이 시간을 넘는 트레이스는 샘플링에서 항상 남긴다(2단계)</td><td>서버 기본값</td></tr>
+<tr><td>정상 트레이스 표본(%)</td><td>느리지도 실패하지도 않은 요청 중 남길 비율(2단계)</td><td>서버 기본값</td></tr>
+<tr><td>메모리 상한(MiB)</td><td>Collector 프로세스가 쓸 최대 메모리</td><td>서버 기본값</td></tr>
+<tr><td>디스크 큐 경로</td><td>아직 보내지 못한 데이터가 쌓이는 곳. 비우면 OS별 기본값 — Linux <code>/var/lib/moveseye/otelcol-queue</code>, Windows <code>C:\ProgramData\moveseye\otelcol-queue</code></td><td>설치본 설정</td></tr>
+<tr><td>원문 SQL 보존</td><td>🔴 켜면 리터럴 마스킹 프로세서가 빠져 <strong>쿼리 원문이 그대로 저장된다.</strong> 쿼리 값에 이름·연락처 같은 개인정보가 실려 올 수 있고, <strong>누가 켰는지 감사 로그에 남는다.</strong> 문제를 재현하는 동안에만 켜고 끝나면 되돌린다</td><td>마스킹(전역 기본값 따름)</td></tr>
+</tbody></table>
+<p>설정 파일에는 토큰이 들어 있다. <strong>파일 권한을 제한하고 형상관리(git)에 올리지 않는다.</strong></p>
+<h2>2단계 — Collector 설치</h2>
+<p>아래는 화면 설치 가이드 탭의 Windows·Linux 6단계와 같은 명령이다. 다운로드 주소의 베이스(<code>https://github.com/open-telemetry</code>)는 설치본 설정으로 사내 미러로 바꿀 수 있으며, 그때는 <strong>화면에 보이는 주소</strong>를 쓴다. 미러는 베이스 뒤에 <code>/&amp;lt;저장소&amp;gt;/releases/download/v&amp;lt;버전&amp;gt;/&amp;lt;파일&amp;gt;</code> 경로 모양을 그대로 흉내 내면 된다.</p>
+<h3>Windows (관리자 권한 명령 프롬프트)</h3>
+<p>Windows 10 1803 이상이면 <code>curl.exe</code>·<code>tar</code>가 기본 포함되어 있다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>명령</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Collector 내려받기</td><td><code>curl.exe -L -o %TEMP%\otelcol-contrib.tar.gz https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.159.0/otelcol-contrib_0.159.0_windows_amd64.tar.gz</code></td></tr>
+<tr><td>2</td><td>압축 해제</td><td><code>mkdir "C:\Program Files\moveseye-collector" &amp;amp; tar -xzf %TEMP%\otelcol-contrib.tar.gz -C "C:\Program Files\moveseye-collector"</code></td></tr>
+<tr><td>3</td><td>설정 파일 배치</td><td><code>mkdir "C:\ProgramData\moveseye" &amp;amp; copy config.yaml "C:\ProgramData\moveseye\config.yaml"</code></td></tr>
+<tr><td>4</td><td>큐 디렉터리 권한 제한</td><td><code>mkdir "C:\ProgramData\moveseye\otelcol-queue" &amp;amp; icacls "C:\ProgramData\moveseye\otelcol-queue" /inheritance:r /grant:r "SYSTEM:(OI)(CI)F" "Administrators:(OI)(CI)F"</code></td></tr>
+<tr><td>5</td><td>Windows 서비스 등록</td><td><code>sc.exe create otelcol binPath= "\"C:\Program Files\moveseye-collector\otelcol-contrib.exe\" --config \"C:\ProgramData\moveseye\config.yaml\"" start= auto DisplayName= "MovesEye OTel Collector"</code></td></tr>
+<tr><td>6</td><td>서비스 시작</td><td><code>sc.exe start otelcol</code></td></tr>
+</tbody></table>
+<ul>
+<li>3단계: 🔴 설정 화면에서 내려받은 config.yaml을 두고, 안의 <code>${RECEIVE_TOKEN}</code> 자리에 발급 시 1회 표시된 토큰 원문을 넣는다(발급과 함께 받은 완성본이면 이미 채워져 있다).</li>
+<li>4단계: 디스크 큐에는 마스킹 후 텔레메트리가 남는다. 상속을 끊고 SYSTEM·관리자만 접근하게 둔다. <strong>설정 파일(config.yaml)에도 같은 제한을 건다.</strong></li>
+<li>5단계: 🔴 <code>sc.exe</code>는 <code>binPath=</code> 와 <code>start=</code> 의 <strong>등호 뒤에 공백</strong>이 있어야 한다(등호 앞에는 없다). 경로에 공백이 있어 안쪽 큰따옴표를 이스케이프한다. nssm 같은 별도 도구는 필요하지 않다.</li>
+<li>6단계: 실패하면 이벤트 뷰어 &gt; Windows 로그 &gt; 애플리케이션에서 <code>otelcol</code> 항목을 확인한다.</li>
+</ul>
+<h3>Linux (systemd)</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>명령</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Collector 내려받기</td><td><code>curl -L -o /tmp/otelcol-contrib.tar.gz https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.159.0/otelcol-contrib_0.159.0_linux_amd64.tar.gz</code></td></tr>
+<tr><td>2</td><td>압축 해제</td><td><code>sudo tar -xzf /tmp/otelcol-contrib.tar.gz -C /usr/local/bin otelcol-contrib &amp;amp;&amp;amp; sudo chmod 755 /usr/local/bin/otelcol-contrib</code></td></tr>
+<tr><td>3</td><td>설정 파일 배치</td><td><code>sudo useradd --system --no-create-home --shell /usr/sbin/nologin otelcol 2&amp;gt;/dev/null; sudo install -d -m 750 -o root -g otelcol /etc/moveseye &amp;amp;&amp;amp; sudo install -m 640 -o root -g otelcol config.yaml /etc/moveseye/collector.yaml</code></td></tr>
+<tr><td>4</td><td>큐 디렉터리 권한 제한</td><td><code>sudo install -d -m 700 -o otelcol -g otelcol /var/lib/moveseye/otelcol-queue</code></td></tr>
+<tr><td>5</td><td>systemd 서비스 등록</td><td>아래 유닛 파일</td></tr>
+<tr><td>6</td><td>서비스 시작</td><td><code>sudo systemctl daemon-reload &amp;amp;&amp;amp; sudo systemctl enable --now otelcol &amp;amp;&amp;amp; systemctl status otelcol --no-pager</code></td></tr>
+</tbody></table>
+<pre>sudo tee /etc/systemd/system/otelcol.service &gt; /dev/null &lt;&lt;'UNIT'
+[Unit]
+Description=MovesEye OTel Collector
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/otelcol-contrib --config /etc/moveseye/collector.yaml
+Restart=always
+RestartSec=5
+User=otelcol
+Group=otelcol
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+UNIT</pre>
+<ul>
+<li>3단계: 🔴 설정 화면에서 내려받은 config.yaml을 두고, 안의 <code>${RECEIVE_TOKEN}</code> 자리에 발급 시 1회 표시된 토큰 원문을 넣는다. 토큰이 들어 있으므로 다른 사용자에게 읽기를 주지 않는다(640, root:otelcol).</li>
+<li>4단계: 디스크 큐에는 마스킹 후 텔레메트리가 남는다 — 700으로 둔다.</li>
+<li>5단계: Collector를 root로 돌리지 않기 위해 전용 계정 <code>otelcol</code>로 실행한다.</li>
+</ul>
+<h3>방화벽</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>방향</th><th>포트</th><th>용도</th></tr></thead>
+<tbody>
+<tr><td>앱 서버 → Collector</td><td>4317/TCP</td><td>OTLP gRPC (기본)</td></tr>
+<tr><td>앱 서버 → Collector</td><td>4318/TCP</td><td>OTLP HTTP (<code>http/protobuf</code>를 쓸 때)</td></tr>
+<tr><td>Collector → MovesEye</td><td>MovesEye 주소(HTTPS)</td><td>수신 엔드포인트 <code>/apm/otlp/v1/*</code></td></tr>
+<tr><td>Collector 로컬</td><td>13133/TCP (127.0.0.1)</td><td>health check — 외부 개방 불필요</td></tr>
+<tr><td>Collector 로컬</td><td>8888/TCP (127.0.0.1)</td><td>자기 지표 — 외부 개방 불필요</td></tr>
+</tbody></table>
+<p>Collector에서 MovesEye로는 <strong>아웃바운드만</strong> 필요하다. MovesEye에서 Collector로 들어오는 연결은 없다.</p>
+<h2>3단계 — 앱 계측</h2>
+<p>스택이 달라도 <strong>앞의 세 환경변수는 같다</strong>(서비스 식별의 정본). 앱 프로세스에 넣고, 꺾쇠 자리표시(<code>&amp;lt;...&amp;gt;</code>)는 실제 값으로 바꾼다 — 그럴듯한 예시값을 그대로 붙이면 아무 데이터도 안 온다.</p>
+<h3>공통 환경변수 3개</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>이름</th><th>값</th><th>왜 필요한가</th></tr></thead>
+<tbody>
+<tr><td><code>OTEL_SERVICE_NAME</code></td><td><code>&amp;lt;서비스명&amp;gt;</code></td><td>🔴 이 값이 MovesEye의 서비스 이름이 된다. 인스턴스마다 같아야 하고, 환경이 다르면 이름이 아니라 아래 환경 속성으로 가른다</td></tr>
+<tr><td><code>OTEL_EXPORTER_OTLP_ENDPOINT</code></td><td><code>http://&amp;lt;collector-host&amp;gt;:4317</code></td><td>🔴 앱은 MovesEye가 아니라 <strong>Collector</strong>로 보낸다(gRPC 4317). MovesEye 주소를 여기 넣으면 인증이 없어 전부 버려진다</td></tr>
+<tr><td><code>OTEL_RESOURCE_ATTRIBUTES</code></td><td>`deployment.environment.name=&lt;prod\</td><td>stage\</td><td>dev&gt;,service.version=&lt;버전&gt;`</td><td>환경과 버전. 버전이 있어야 배포 직후 수신 끊김 유예(10분)와 배포 전후 비교가 된다. 🔴 <code>deployment.environment.name</code>으로 적는다 — 구 이름 <code>deployment.environment</code>만 보내면 환경을 못 갈라 prod와 stage가 한 서비스로 합쳐진다</td></tr>
+</tbody></table>
+<h3>Java (Spring · Tomcat · WAS · Jira 등) — ✅ 실측</h3>
+<p>앱을 고칠 필요는 없다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>명령·설명</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>자동계측 에이전트 내려받기</td><td><code>curl -L -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.31.1/opentelemetry-javaagent.jar</code> (Windows는 <code>curl.exe</code>). 검증 버전은 <strong>2.31.1</strong></td></tr>
+<tr><td>2</td><td>JVM 옵션에 에이전트 추가</td><td><code>java -javaagent:/opt/otel/opentelemetry-javaagent.jar -jar your-app.jar</code> — jar를 둔 실제 경로로 바꾼다. Tomcat·WAS는 <code>JAVA_OPTS</code>(또는 <code>setenv.sh</code>/<code>CATALINA_OPTS</code>)에 같은 <code>-javaagent</code> 옵션을 추가하고 재기동한다</td></tr>
+<tr><td>3</td><td>앱 재기동</td><td>재기동 후 1~2분이면 MovesEye 서비스 목록에 나타난다. JVM 메모리·GC·스레드·커넥션 풀은 별도 설정 없이 함께 온다</td></tr>
+</tbody></table>
+<p>Java 추가 환경변수:</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>이름</th><th>값</th><th>왜 필요한가</th></tr></thead>
+<tbody>
+<tr><td><code>OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE</code></td><td><code>delta</code></td><td>🔴 권장. 히스토그램·카운터가 증분으로 와서 1분 적재가 차분 없이 끝나고 앱 재기동 리셋 문제가 사라진다. 빠뜨려도 데이터는 받는다(CUMULATIVE도 처리)</td></tr>
+<tr><td><code>OTEL_SEMCONV_STABILITY_OPT_IN</code></td><td><code>database</code></td><td>DB 지표를 표준 이름(<code>db.client.operation.duration</code>)으로 보낸다. 없으면 구 이름으로 와서 DB 화면이 빈다</td></tr>
+<tr><td><code>OTEL_METRIC_EXPORT_INTERVAL</code></td><td><code>15000</code></td><td>선택. 기본 60초보다 촘촘하게 보고 싶을 때만</td></tr>
+</tbody></table>
+<h3>.NET — ⚠️ 실측 전</h3>
+<p><code>OTEL_DOTNET_AUTO_*</code> 환경변수로 동작하는 자동계측이다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>Windows (PowerShell)</th><th>Linux</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>자동계측 설치</td><td>`$module = (New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/open-telemetry/opentelemetry-dotnet-instrumentation/main/OpenTelemetry.DotNet.Auto.psm1'); New-Module -ScriptBlock ([scriptblock]::Create($module)) \</td><td>Import-Module; Install-OpenTelemetryCore`</td><td><code>curl -sSfL https://raw.githubusercontent.com/open-telemetry/opentelemetry-dotnet-instrumentation/main/otel-dotnet-auto-install.sh -O &amp;amp;&amp;amp; sh ./otel-dotnet-auto-install.sh</code></td></tr>
+<tr><td>2</td><td>앱을 계측과 함께 실행</td><td><code>Register-OpenTelemetryForCurrentSession -OTelServiceName "&amp;lt;서비스명&amp;gt;"; dotnet YourApp.dll</code> — IIS로 호스팅한다면 <code>Register-OpenTelemetryForIIS</code>를 쓰고 IIS를 재시작</td><td><code>. $HOME/.otel-dotnet-auto/instrument.sh &amp;amp;&amp;amp; dotnet YourApp.dll</code></td></tr>
+<tr><td>3</td><td>앱 재기동</td><td>⚠️ .NET 런타임 지표(GC·스레드풀)는 아직 MovesEye 수신 허용목록에 없어 화면의 런타임 탭이 비어 있을 수 있다. HTTP·DB 지표는 정상</td><td></td></tr>
+</tbody></table>
+<p>추가 환경변수: <code>OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta</code>(🔴 권장 — 이유는 Java와 같다), <code>OTEL_DOTNET_AUTO_TRACES_ENABLED_INSTRUMENTATIONS=AspNetCore,HttpClient,SqlClient</code>(필요한 계측만 켜면 부하가 줄어든다. 생략하면 전부 켜진다).</p>
+<h3>Node.js — ⚠️ 실측 전</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>명령·설명</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>패키지 설치</td><td><code>npm install --save @opentelemetry/api @opentelemetry/auto-instrumentations-node</code></td></tr>
+<tr><td>2</td><td>계측을 먼저 로드해 실행</td><td><code>node --require @opentelemetry/auto-instrumentations-node/register app.js</code> — 🔴 <code>--require</code>는 앱 코드보다 먼저 실행돼야 한다. 뒤에 두면 이미 로드된 모듈이 계측되지 않아 아무 데이터도 안 온다</td></tr>
+<tr><td>3</td><td>앱 재기동</td><td>⚠️ Node 런타임 지표(event loop 지연 등)는 아직 수신 허용목록에 없다. HTTP·DB 지표는 정상</td></tr>
+</tbody></table>
+<p>추가 환경변수: <code>OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE=delta</code>(🔴 권장), <code>OTEL_EXPORTER_OTLP_PROTOCOL=grpc</code>(Collector의 4317로 보낼 때. <code>http/protobuf</code>를 쓰려면 4318로 바꾼다).</p>
+<h3>Python — ⚠️ 실측 전</h3>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>명령·설명</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>패키지 설치</td><td><code>pip install opentelemetry-distro opentelemetry-exporter-otlp &amp;amp;&amp;amp; opentelemetry-bootstrap -a install</code> — <code>opentelemetry-bootstrap</code>이 설치된 라이브러리에 맞는 계측 패키지를 골라 넣는다</td></tr>
+<tr><td>2</td><td>래퍼로 실행</td><td><code>opentelemetry-instrument python app.py</code> — gunicorn·uvicorn도 같은 방식으로 앞에 붙인다(예: <code>opentelemetry-instrument gunicorn app:api</code>)</td></tr>
+<tr><td>3</td><td>앱 재기동</td><td>⚠️ Python 런타임 지표는 아직 수신 허용목록에 없다. HTTP·DB 지표는 정상</td></tr>
+</tbody></table>
+<p>추가 환경변수: Node와 같다(<code>…TEMPORALITY_PREFERENCE=delta</code>, <code>OTEL_EXPORTER_OTLP_PROTOCOL=grpc</code>).</p>
+<h3>Go — ⚠️ 실측 전 · 수동 계측</h3>
+<p>🔴 Go는 자동계측(에이전트)이 없다. 코드에서 SDK를 초기화하고 핸들러를 <code>otelhttp</code>로 감싸야 한다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>단계</th><th>명령·설명</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>SDK 추가</td><td><code>go get go.opentelemetry.io/otel go.opentelemetry.io/otel/sdk go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp</code></td></tr>
+<tr><td>2</td><td>초기화 코드 추가</td><td><code>handler := otelhttp.NewHandler(mux, "http.server")</code> — MeterProvider를 <code>otlpmetricgrpc</code> exporter로 만들고 <code>http.server.request.duration</code> 히스토그램을 내보내면 MovesEye 화면이 그대로 채워진다</td></tr>
+<tr><td>3</td><td>앱 재빌드·재기동</td><td>⚠️ 수동 계측이라 어떤 지표가 오는지는 작성한 코드에 달려 있다</td></tr>
+</tbody></table>
+<p>추가 환경변수: Node와 같다.</p>
+<h2>4단계 — 60초 검증</h2>
+<p>🔴 <strong>순서가 곧 진단이다.</strong> Collector가 떠 있나 → MovesEye가 받고 있나 → 화면에 보이나. 실패한 첫 단계가 곧 원인이다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>#</th><th>확인</th><th>방법</th><th>판정</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Collector가 떠 있는지</td><td>Collector 서버에서 <code>curl -i http://127.0.0.1:13133/</code> (Windows <code>curl.exe</code>)</td><td><strong>200</strong>이면 살아 있다. 연결이 거부되면 서비스가 안 떴거나 설정 파일 문법 오류 — Windows는 이벤트 뷰어 &gt; 애플리케이션, Linux는 <code>journalctl -u otelcol -n 100</code></td></tr>
+<tr><td>2</td><td>MovesEye가 받고 있는지 (최근 60초)</td><td>수집기 &gt; 상태 탭 &gt; <strong>최근 60초 수신 확인</strong>의 '지금 확인'(<code>GET /apm/ingest/recent?tokenId=…</code>)</td><td><code>수신 있음</code>이면 받고 있다. ⚠️ 이 값은 서버 프로세스 메모리 기반이라 MovesEye를 방금 재기동했으면 비어 있다 — '판정 불가(서버 재기동 직후)'가 보이면 1분 뒤 다시</td></tr>
+<tr><td>3</td><td>화면에 보이는지</td><td>1~2분 뒤 어플리케이션 모니터링 &gt; 서비스 목록</td><td>안 보이면 등록·설정 탭의 등록 방식이 '승인'인지 확인 — 그 모드에서는 '승인 대기'에 쌓인다</td></tr>
+<tr><td>4</td><td>Collector 로그 읽는 법 (위 셋이 애매할 때)</td><td>Windows: 이벤트 뷰어 &gt; Windows 로그 &gt; 애플리케이션 &gt; otelcol / Linux: <code>journalctl -u otelcol -n 200 --no-pager</code></td><td>아래 응답 코드 표</td></tr>
+</tbody></table>
+<h2>문제 해결</h2>
+<h3>Collector 로그의 응답 코드</h3>
+<p><code>Permanent error</code>와 함께 찍힌 코드가 원인이다. <strong>401·403·413은 재시도 없이 즉시 버려진다.</strong> 반면 429·503은 백오프 재시도라 잠깐이면 저절로 복구된다.</p>
+<table border="1" cellspacing="0" cellpadding="6">
+<thead><tr><th>코드</th><th>뜻</th><th>조치</th></tr></thead>
+<tbody>
+<tr><td><strong>401</strong></td><td>토큰이 틀렸거나 회수됐다</td><td>설정 파일의 <code>Authorization: Bearer …</code> 값 확인. <code>${RECEIVE_TOKEN}</code> 자리표시가 그대로 남아 있지 않은지 본다(그대로 배포하면 Collector는 기동에 성공한 채 인증에 실패하고 화면에는 '데이터가 안 온다'로만 보인다). 필요하면 재발급</td></tr>
+<tr><td><strong>403</strong></td><td>APM 기능 미보유 또는 <strong>라이선스 만료</strong></td><td>설정 &gt; 라이선스에서 프리미엄 모듈 <code>APM</code> 포함 여부·만료일 확인. 아래 '라이선스 만료' 참조</td></tr>
+<tr><td><strong>413</strong></td><td>배치가 8MB를 넘었다</td><td>실측 배치는 수십 KB라 보통 안 걸린다. 걸리면 설정의 <code>send_batch_max_size</code>를 줄인다</td></tr>
+<tr><td>429 · 503</td><td>일시 과부하·서버 장애</td><td>Collector가 알아서 재시도한다(디스크 큐 보존, 최대 30분). MovesEye 서버 상태를 본다</td></tr>
+<tr><td>415 · 400</td><td>Content-Type 또는 JSON 형식 오류</td><td>우리 템플릿(<code>encoding: json</code>)이 아닌 설정을 쓴 경우. 화면에서 만든 yaml로 되돌린다</td></tr>
+</tbody></table>
+<h3>라이선스 만료 — 데이터는 즉시 사라진다</h3>
+<p>🔴 라이선스가 만료되면 수신이 403이 되고, OTLP exporter는 403을 영구 실패로 보아 재시도 없이 <strong>즉시 폐기</strong>한다(실측). 만료된 순간부터 데이터가 사라지며 <strong>디스크 큐에도 남지 않는다.</strong> 나중에 갱신해도 그 사이 데이터는 돌아오지 않는다.</p>
+<ul>
+<li>만료 전에 갱신한다. 수집기 화면 상단에 "라이선스 만료까지 N일" 배너가 뜬다.</li>
+<li>만료가 예정돼 있고 갱신하지 않을 것이면 <strong>수집기를 중지하고 큐를 비운다</strong>: (1) 앱의 계측을 끄거나 그대로 두고 (2) Collector 서비스 중지 — Windows <code>sc.exe stop otelcol</code>, Linux <code>sudo systemctl stop otelcol</code> (3) 큐 디렉터리(<code>C:\ProgramData\moveseye\otelcol-queue</code> / <code>/var/lib/moveseye/otelcol-queue</code>) 안 파일 삭제 (4) 수집기 화면에서 토큰 회수. 배너의 '토큰 전체 회수' 버튼은 (4)를 한 번에 한다.</li>
+<li>Collector를 계속 돌리면 앱은 계속 보내고 Collector는 계속 거부당하며 로그가 403으로 채워진다.</li>
+</ul>
+<h3>서비스가 목록에 안 보인다</h3>
+<ol>
+<li>4단계 검증을 1번부터 다시 한다.</li>
+<li>서비스 이름이 <strong><code>unknown_service</code></strong> 로 왔다 — 앱에 <code>OTEL_SERVICE_NAME</code>이 없다. 이 이름은 등록이 거부되고 폐기 통계에 <code>UNKNOWN_SERVICE</code>로 잡힌다. 환경변수를 넣고 앱을 재기동한다.</li>
+<li>등록 방식이 <strong>승인</strong>이면 등록·설정 탭의 승인 대기 목록에서 승인한다. <strong>사전 등록만</strong>이면 먼저 서비스를 등록해야 받아 준다.</li>
+<li>prod와 stage가 <strong>한 서비스로 합쳐졌다</strong> — <code>deployment.environment.name</code>이 아니라 구 이름 <code>deployment.environment</code>를 썼다. 속성 이름을 고치고 재기동한다.</li>
+<li>Collector 자기 지표(<code>service.name=otelcol-contrib</code>)는 서비스로 등록되지 않고 수집기 탭에 나타난다 — 정상이다.</li>
+<li>상세 절차와 상태 뜻은 <strong>어플리케이션 모니터링 — 자주 묻는 것</strong>.</li>
+</ol>
+<h3>큐 디렉터리가 커진다</h3>
+<p>MovesEye로 보내지 못한 데이터가 쌓이는 곳이다(마스킹 <strong>후</strong> 데이터만 남는다). 커지고 있으면 Collector → MovesEye 구간이 막힌 것이다 — 4단계 2번(수신 확인)과 로그의 응답 코드를 본다. 원인을 고치면 저절로 비워진다(재시도 최대 30분). 정리가 필요하면 Collector를 <strong>중지한 뒤</strong> 디렉터리 안 파일을 지운다 — 켜진 채 지우지 않는다.</p>
+<h3>Windows 서비스가 등록되지 않는다</h3>
+<p><code>sc.exe create</code>의 <code>binPath=</code>·<code>start=</code> <strong>등호 뒤 공백</strong>을 확인한다. 경로에 공백(<code>Program Files</code>)이 있어 안쪽 큰따옴표를 <code>\"</code>로 이스케이프해야 한다. 표의 명령을 그대로 복사한다.</p>
+<h3>설정 파일을 손봤더니 Collector가 안 뜬다</h3>
+<p><code>otelcol-contrib validate --config &amp;lt;파일&amp;gt;</code>로 문법을 먼저 검사한다. 화면에서 만든 yaml은 검증된 템플릿이므로 <strong>직접 편집하지 말고</strong> 옵션을 바꿔 다시 만드는 것이 안전하다. <code>encoding: json</code>은 서버 파서가 json 전용이라 바꾸면 415가 난다.</p>
+<h2>운영 중 알아 둘 것</h2>
+<ul>
+<li><strong>토큰 회수</strong>는 즉시다. 회수하는 순간 그 토큰으로 오는 수신이 전부 거부되고 그 사이 데이터는 재시도 없이 버려진다. 수집기 설정 파일을 새 토큰으로 교체한 뒤 회수한다.</li>
+<li><strong>버전은 올리지 않는다.</strong> 0.159.0 / 2.31.1은 round-trip을 실측한 조합이다. 다른 버전은 검증되지 않았고, 특히 Collector는 릴리스에 별칭이 없어 풀버전 URL만 있다.</li>
+<li><strong>원문 SQL 보존</strong>을 켜 둔 상태로 잊지 않는다. 등록·설정 탭에 마지막으로 바꾼 사람이 표시된다.</li>
+<li>Collector 자체의 운영(업그레이드·모니터링 대행)은 MovesEye가 하지 않는다. 상태 탭의 큐 적체·전송 실패와 알람 규칙 '수집기 전송 실패'로 이상을 잡는 데까지다.</li>
+</ul>
+<h2>관련 문서</h2>
+<ul>
+<li><strong>어플리케이션 모니터링 (APM)</strong> — 화면 설명·상태 5종·알람 규칙·Zabbix 액션 연결</li>
+<li><strong>라이선스</strong> — 프리미엄 모듈·만료</li>
+<li><strong>관리자 가이드</strong></li>
+<li><strong>문제 해결 가이드</strong></li>
+</ul>
+</body></html>

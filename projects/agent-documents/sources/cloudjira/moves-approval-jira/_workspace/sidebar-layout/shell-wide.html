@@ -1,0 +1,89 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>AppShell visual check</title><style>:root{--ds-surface:#fff;--ds-text:#172b4d;--ds-border:#dfe1e6}body{font-family:Segoe UI,Malgun Gothic,sans-serif;background:var(--ds-surface,#fff);color:var(--ds-text,#172b4d)}html, body, #root { margin: 0; padding: 0; min-height: 100%; }
+.app-page { display: flex; align-items: flex-start; gap: 24px; padding: 12px 0 24px; }
+.app-sidebar {
+  position: sticky; top: 12px; width: 240px; flex: 0 0 240px;
+  border-right: 1px solid var(--ds-border, #dfe1e6); padding-right: 12px;
+  box-sizing: border-box; color: var(--ds-text, #172b4d); max-height: 720px; overflow-y: auto;
+}
+.app-sidebar-head { display: flex; align-items: center; gap: 8px; padding: 4px 0 12px; }
+.app-sidebar-title { font-weight: 600; flex: 1; min-width: 0; }
+.app-nav-toggle { border: 0; border-radius: 4px; background: transparent; color: var(--ds-text-subtle, #44546f); cursor: pointer; font: inherit; font-size: 22px; width: 32px; height: 32px; flex-shrink: 0; }
+.app-nav-group + .app-nav-group { border-top: 1px solid var(--ds-border, #dfe1e6); margin-top: 12px; padding-top: 12px; }
+.app-nav-group-label { font-size: 11px; color: var(--ds-text-subtlest, #626f86); padding: 4px 10px 8px; }
+.app-nav-item { position: relative; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--ds-text, #172b4d); cursor: pointer; text-align: left; font: inherit; font-size: 14px; }
+.app-nav-item:hover, .app-nav-toggle:hover { background: var(--ds-background-neutral-subtle-hovered, #f1f2f4); }
+.app-nav-item--selected, .app-nav-item--selected:hover { background: var(--ds-background-selected, #e9f2ff); color: var(--ds-text-selected, #0c66e4); }
+.app-nav-item:focus-visible, .app-nav-toggle:focus-visible { outline: 2px solid var(--ds-border-focused, #388bff); outline-offset: -2px; }
+.app-nav-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; flex: 0 0 20px; }
+.app-nav-initial { font-size: 12px; font-weight: 600; }
+.app-nav-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.app-nav-badge { display: inline-flex; font-size: 12px; }
+.app-nav-children { margin-left: 12px; border-left: 1px solid var(--ds-border, #dfe1e6); padding-left: 4px; }
+.app-nav-child { min-height: 34px; font-size: 13px; }
+.app-nav-child .app-nav-icon { display: none; }
+.app-nav-tooltip { display: none; }
+.app-main { flex: 1; min-width: 0; }
+.app-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 4px 0 16px; flex-wrap: wrap; }
+.app-title { margin: 0; font-size: 20px; font-weight: 600; color: var(--ds-text, #172b4d); }
+.app-heading-group { min-width: 0; }
+.app-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.app-card { padding: 0; }
+.app-page--collapsed .app-sidebar { width: 56px; flex-basis: 56px; padding-right: 4px; }
+.app-page--collapsed .app-sidebar-title, .app-page--collapsed .app-nav-label, .app-page--collapsed .app-nav-group-label { display: none; }
+.app-page--collapsed .app-nav-item { justify-content: center; padding: 10px 6px; }
+.app-page--collapsed .app-nav-badge { position: absolute; right: 0; top: 0; }
+.app-page--collapsed .app-nav-children { margin: 0; padding: 0; border: 0; }
+.app-page--collapsed .app-nav-child .app-nav-icon { display: inline-flex; }
+.app-page--collapsed .app-nav-item:hover .app-nav-tooltip, .app-page--collapsed .app-nav-item:focus-visible .app-nav-tooltip { display: block; position: absolute; top: 100%; left: 0; width: 48px; padding: 3px 0; font-size: 10px; overflow-wrap: anywhere; z-index: 2; background: var(--ds-surface-overlay, #fff); color: var(--ds-text, #172b4d); }
+@media (max-width: 760px) {
+  .app-page { gap: 12px; }
+}
+
+/* layout:blank가 viewport를 고정한 globalPage만 높이를 채운다. 자동 높이 iframe에는 적용하지 않는다. */
+.app-page--full {
+  height: 100vh;
+  min-height: 0;
+  width: 100%;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.app-page--full .app-sidebar {
+  position: relative;
+  top: 0;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  padding-right: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--ds-surface, #fff);
+}
+.app-page--full .app-sidebar-head {
+  flex: 0 0 auto;
+  min-height: 64px;
+  padding: 12px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--ds-border, #dfe1e6);
+}
+.app-page--full .app-sidebar nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 4px;
+}
+.app-page--full .app-main {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 24px;
+}
+.app-page--full.app-page--collapsed .app-sidebar-head { justify-content: center; padding: 12px 4px; }
+html[data-color-mode="dark"] .app-page--full .app-sidebar {
+  background: var(--ds-surface-raised, #242528);
+  border-right-color: var(--ds-border-bold, #7e8188);
+}
+</style><div id="root"><div class="app-page app-page--full"><aside class="app-sidebar"><div class="app-sidebar-head"><span class="app-sidebar-title">승인 업무함</span><button type="button" class="app-nav-toggle" aria-label="메뉴 접기" title="메뉴 접기" aria-expanded="true"><span aria-hidden="true">«</span></button></div><nav aria-label="앱 메뉴"><div class="app-nav-group"><div class="app-nav-group-label">승인 업무</div><button type="button" class="app-nav-item" aria-label="내 차례" title="내 차례"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">내 차례</span><span class="app-nav-badge">3</span><span class="app-nav-tooltip" aria-hidden="true">내 차례</span></button><button type="button" class="app-nav-item" aria-label="진행 중" title="진행 중"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">진행 중</span><span class="app-nav-tooltip" aria-hidden="true">진행 중</span></button><button type="button" class="app-nav-item" aria-label="내 요청" title="내 요청"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">내 요청</span><span class="app-nav-tooltip" aria-hidden="true">내 요청</span></button><button type="button" class="app-nav-item" aria-label="처리한 건" title="처리한 건"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">처리한 건</span><span class="app-nav-tooltip" aria-hidden="true">처리한 건</span></button><button type="button" class="app-nav-item" aria-label="참조" title="참조"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">참조</span><span class="app-nav-tooltip" aria-hidden="true">참조</span></button><button type="button" class="app-nav-item" aria-label="내 타임시트" title="내 타임시트"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">내 타임시트</span><span class="app-nav-tooltip" aria-hidden="true">내 타임시트</span></button><button type="button" class="app-nav-item" aria-label="팀 타임시트" title="팀 타임시트"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">팀 타임시트</span><span class="app-nav-tooltip" aria-hidden="true">팀 타임시트</span></button><button type="button" class="app-nav-item" aria-label="알림" title="알림"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">알림</span><span class="app-nav-tooltip" aria-hidden="true">알림</span></button></div><div class="app-nav-group"><div class="app-nav-group-label">내 설정</div><button type="button" class="app-nav-item" aria-label="내 서명" title="내 서명"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">내 서명</span><span class="app-nav-tooltip" aria-hidden="true">내 서명</span></button><button type="button" class="app-nav-item" aria-label="내 위임" title="내 위임"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">내 위임</span><span class="app-nav-tooltip" aria-hidden="true">내 위임</span></button></div><div class="app-nav-group"><div class="app-nav-group-label">관리</div><button type="button" class="app-nav-item app-nav-item--selected" aria-label="설정" title="설정" aria-expanded="true"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">설정</span><span class="app-nav-tooltip" aria-hidden="true">설정</span></button><div class="app-nav-children"><button type="button" class="app-nav-item app-nav-child" aria-label="정책" title="정책"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">정책</span><span class="app-nav-tooltip" aria-hidden="true">정책</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="적용 프로젝트" title="적용 프로젝트"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">적용 프로젝트</span><span class="app-nav-tooltip" aria-hidden="true">적용 프로젝트</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="타임시트" title="타임시트"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">타임시트</span><span class="app-nav-tooltip" aria-hidden="true">타임시트</span></button><button type="button" class="app-nav-item app-nav-child app-nav-item--selected" aria-label="워크포스 연동" title="워크포스 연동" aria-current="page"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">워크포스 연동</span><span class="app-nav-tooltip" aria-hidden="true">워크포스 연동</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="결재선" title="결재선"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">결재선</span><span class="app-nav-tooltip" aria-hidden="true">결재선</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="승인 그룹" title="승인 그룹"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">승인 그룹</span><span class="app-nav-tooltip" aria-hidden="true">승인 그룹</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="승인자" title="승인자"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">승인자</span><span class="app-nav-tooltip" aria-hidden="true">승인자</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="설정 관리자" title="설정 관리자"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">설정 관리자</span><span class="app-nav-tooltip" aria-hidden="true">설정 관리자</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="설정 이력" title="설정 이력"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">설정 이력</span><span class="app-nav-tooltip" aria-hidden="true">설정 이력</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="워크로그 변경 이력" title="워크로그 변경 이력"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">워크로그 변경 이력</span><span class="app-nav-tooltip" aria-hidden="true">워크로그 변경 이력</span></button><button type="button" class="app-nav-item app-nav-child" aria-label="데이터 관리" title="데이터 관리"><span class="app-nav-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect></svg></span><span class="app-nav-label">데이터 관리</span><span class="app-nav-tooltip" aria-hidden="true">데이터 관리</span></button></div></div></nav></aside><main class="app-main" aria-label="워크포스 연동"><div class="app-head"><div class="app-heading-group"><h1 class="app-title">워크포스 연동</h1></div></div><div class="app-card"><div style="padding:24px;border:1px solid var(--ds-border);border-radius:8px"><h2 style="font-size:18px;margin-top:0">워크포스 연동 사용</h2><p>양쪽 앱의 호환 버전과 서명 키가 준비되어야 연동할 수 있습니다.</p><div style="display:flex;flex-wrap:wrap;gap:16px"><div style="flex:1 1 150px;padding:16px;border:1px solid var(--ds-border);border-radius:6px">서명 기능</div><div style="flex:1 1 150px;padding:16px;border:1px solid var(--ds-border);border-radius:6px">게시 상태</div><div style="flex:1 1 150px;padding:16px;border:1px solid var(--ds-border);border-radius:6px">워크포스 정보 검증</div></div></div></div></main></div></div></html>

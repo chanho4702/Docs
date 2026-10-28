@@ -1,0 +1,40 @@
+<h2>Register or change project required skills</h2>
+<p><strong>Path:</strong> Project Management → Add project or edit an existing project → <strong>Required skills</strong>. Changes require Project write access.</p>
+<p>Required skills describe the capabilities the project needs and provide a basis for comparing candidate skill fit. They are optional and can be added or changed later. Choose entries already in the organizational skill catalog; this dialog does not create catalog entries. Ask an authorized skill administrator to register a missing skill.</p>
+<h3>Select and save skills</h3>
+<ol>
+<li>Choose a <strong>Job category</strong>, or <strong>All categories</strong>. <strong>Search skills</strong> searches skill names and category text. If results are empty, check both the search term and category.</li>
+<li>Click an <strong>Available skills</strong> entry. A checkmark appears, and <strong>Selected skills</strong> and its count update. You can select several entries.</li>
+<li>Click the candidate again or <strong>×</strong> in the selected list to remove it from this project&#39;s selection. This does not delete the organizational catalog entry or anyone&#39;s owned skill.</li>
+<li>Check required skills and basic project details, then click <strong>Save project</strong>. Selection alone is not a saved change. For example, selecting React and SQL and saving makes both skills project requirements.</li>
+<li>After success, reopen the same project&#39;s edit dialog and verify the selected skills. In candidate views, inspect the project&#39;s requirements and each person&#39;s matched/missing skills together. Fit is a review aid, not an automatic assignment or hiring decision.</li>
+</ol>
+<h3>When loading or saving skills fails</h3>
+<ul>
+<li><strong>No skills registered:</strong> ask an administrator to populate the catalog. A successfully loaded empty catalog differs from a failed query.</li>
+<li><strong>Unable to load skills:</strong> use <strong>Try again</strong> to reload the catalog. If existing project details or skill links cannot load, use <strong>Reload</strong>. Selection/saving can remain unavailable until loading completes to protect existing values.</li>
+<li><strong>Not in the current catalog:</strong> a previously linked ID is absent from the catalog. Check the requirement and catalog before removing it; do not clear all selections because loading failed.</li>
+<li><strong>Project details saved, but skills not saved:</strong> your selection is retained. Use <strong>Save project</strong> again in the open dialog. Basic project data can already be saved; do not create a duplicate project.</li>
+<li><strong>Save result unconfirmed:</strong> saving again in the same dialog checks the same creation request. New-project basic fields can remain locked until confirmation. For a conflict notice, inspect the saved project in the list. If retrying skill storage is denied, ask a project administrator to apply the selection.</li>
+</ul>
+<h2>Collaboration mode: setup and scope</h2>
+<p><strong>Path:</strong> Project Management → edit an existing project → <strong>Collaboration mode</strong>. It does not appear during initial creation: save the project first, then edit it. Changing the setting requires Project write access and visibility of that project.</p>
+<p>Collaboration mode lets registered project participants view linked Jira work and worklogs within the app&#39;s accessible scope. In the applicable Work Management, Gantt, project Calendar, and Dashboard views, it reduces differences caused by individuals&#39; Jira browse access. Other people&#39;s worklogs can be shown, so check the intended audience before enabling it.</p>
+<h3>Turn it on or off</h3>
+<ol>
+<li>Review the project member roster. Collaboration reads require registered project membership and access within the app&#39;s project scope. Assigning a team does not itself register every member. Administrative access alone does not qualify a nonparticipant for collaboration reads.</li>
+<li>Turn on the toggle in the edit dialog. Read the <strong>Turn on collaboration mode?</strong> confirmation, the work/worklog sharing notice, and the coverage limitations.</li>
+<li>Choose <strong>Turn on</strong> to request the change. <strong>Cancel</strong> in the confirmation cancels enabling. Wait while coverage is loading. If enabling becomes available after a coverage-check failure, that does not establish access to every work item.</li>
+<li>Check the success notice, toggle state, and <strong>Last changed</strong> actor/time. Open the relevant view and check the collaboration badge and visible work.</li>
+<li>Turning the toggle off requests the change immediately without the enabling confirmation. After success, reads return to each person&#39;s own Jira access. Work items and worklogs are not deleted.</li>
+</ol>
+<p><strong>Collaboration mode applies immediately and independently of basic details and skill saving.</strong> After a successful toggle change, there is no additional <strong>Save project</strong> step. Closing the project edit dialog does not undo a successful collaboration change. Unsaved names, dates, and required skills still need Save project. To revert collaboration mode, explicitly restore the toggle and verify success.</p>
+<h3>Limits that still apply</h3>
+<ul>
+<li><strong>Feature access, membership, and project scope:</strong> app read access and project visibility still apply. Distinguish the writer&#39;s permission to configure the mode from participants&#39; eligibility to use collaboration reads.</li>
+<li><strong>Jira editing:</strong> visibility does not add permission to change status, dates, assignees, or worklogs. Editing uses each person&#39;s Jira access. Opening the original issue in Jira also requires that person&#39;s Jira browse permission.</li>
+<li><strong>Work the app cannot browse:</strong> spaces inaccessible to the app and security-level-restricted issues can remain hidden. Ask a Jira administrator to check the app role&#39;s Browse Projects access for a restricted space. Administrative routes and permission models differ between project types, including team-managed and company-managed.</li>
+<li><strong>Unknown, partial, or visible only to you:</strong> failed checking does not mean there are zero restrictions. A partial-check notice is not a complete audit. Work visible only to you may not appear identically for other participants.</li>
+<li><strong>Own-access views:</strong> Progress Trend, Cost Burn-up, and the Relations section in work-item details use personal Jira access. Do not interpret this mode as a blanket expansion of analytics, financial, Confluence document, or other feature permissions.</li>
+</ul>
+<p>After a setting-load or change error, recheck the actual toggle state. An unavailable setting is not confirmed Off, and a requested change without success is not confirmed applied.</p>

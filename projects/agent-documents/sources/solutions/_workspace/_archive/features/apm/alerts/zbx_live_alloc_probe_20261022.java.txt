@@ -1,0 +1,153 @@
+package com.dmove.moveseye.premium.apm.alert.command;
+
+import com.dmove.moveseye.support.IntegrationTestSupport;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * 일회성 실측(커밋하지 않음) — 할당기를 거친 push가 실제 dev Zabbix 7.0에서 거짓 Problem을 막는지.
+ * 기준선(할당기 없이 옛 방식 그대로)과 나란히 비교한다. 임시 그룹·호스트를 만들고 끝나면 지운다.
+ */
+@EnabledIfEnvironmentVariable(named = "ZBX_LIVE_PROBE", matches = "true")
+class ApmZbxLiveClockProbeIT extends IntegrationTestSupport {
+
+    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final Duration WAIT = Duration.ofSeconds(2);
+
+    @Autowired private ApmZbxItemPushClock pushClock;
+
+    private final HttpClient http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
+    private final String url = System.getenv("ZBX_URL");
+    private String token;
+    private int seq;
+
+    private JsonNode call(String method, Object params) throws Exception {
+        ObjectNode body = JSON.createObjectNode().put("jsonrpc", "2.0").put("method", method).put("id", ++seq);
+        body.set("params", JSON.valueToTree(params));
+        HttpRequest.Builder req = HttpRequest.newBuilder(URI.create(url)).timeout(Duration.ofSeconds(30))
+                .header("Content-Type", "application/json-rpc")
+                .POST(HttpRequest.BodyPublishers.ofString(JSON.writeValueAsString(body)));
+        if (token != null) req.header("Authorization", "Bearer " + token);
+        JsonNode res = JSON.readTree(http.send(req.build(), HttpResponse.BodyHandlers.ofString()).body());
+        if (res.has("error")) throw new IllegalStateException(method + ": " + res.get("error"));
+        return res.get("result");
+    }
+
+    private void log(String s) {
+        System.out.println("[LIVE] " + s);
+    }
+
+    private record Probe(String key, String itemid, String triggerid) {}
+
+    private Probe make(String host, String hostid, String key) throws Exception {
+        String itemid = call("item.create", Map.of("hostid", hostid, "name", key, "key_", key, "type", 2,
+                "value_type", 0, "history", "1d", "trends", "0")).get("itemids").get(0).asText();
+        String trig = call("trigger.create", Map.of("description", host + " " + key + " > 0",
+                "expression", "last(/" + host + "/" + key + ")>0", "priority", 2, "manual_close", 1))
+                .get("triggerids").get(0).asText();
+        return new Probe(key, itemid, trig);
+    }
+
+    /** 옛 방식 그대로 — 호출자가 정한 (clock, ns 0)을 그대로 보낸다. */
+    private void rawPush(Probe p, long clock, int ns, double v) throws Exception {
+        JsonNode r = call("history.push", List.of(Map.of("itemid", p.itemid(), "clock", clock, "ns", ns,
+                "value", String.valueOf(v))));
+        log("  raw push " + p.key() + " (" + clock + "," + ns + ")=" + v + " -> " + r);
+    }
+
+    /** 할당기 경유 — 실행기와 같은 호출(표본 시각·재검증·pusher는 할당된 (clock, ns)를 쓴다). */
+    private void allocPush(String host, Probe p, long desired, Long sampleMs, double v) throws Exception {
+        ApmZbxItemPushClock.Result<JsonNode> r = pushClock.push(ApmZbxCommandKeys.itemResource(host, p.key()),
+                desired, sampleMs, WAIT, () -> true, slot -> {
+                    try {
+                        return call("history.push", List.of(Map.of("itemid", p.itemid(), "clock", slot.clock(),
+                                "ns", slot.ns(), "value", String.valueOf(v))));
+                    } catch (Exception e) {
+                        throw new IllegalStateException(e);
+                    }
+                });
+        log("  alloc push " + p.key() + " desired=" + desired + " sample=" + sampleMs + " v=" + v + " -> "
+                + r.outcome() + (r.slot() == null ? "" : " slot=(" + r.slot().clock() + "," + r.slot().ns() + ")"));
+    }
+
+    private Map<String, Object> state(Probe p) throws Exception {
+        JsonNode tr = call("trigger.get", Map.of("triggerids", p.triggerid(), "output", List.of("value"))).get(0);
+        JsonNode pr = call("problem.get", Map.of("objectids", p.triggerid(), "output", List.of("eventid")));
+        JsonNode it = call("item.get", Map.of("itemids", p.itemid(), "output", List.of("lastvalue"))).get(0);
+        JsonNode h = call("history.get", Map.of("itemids", p.itemid(), "history", 0, "output", "extend",
+                "sortfield", "clock", "sortorder", "ASC", "limit", 20));
+        List<String> hist = new ArrayList<>();
+        h.forEach(x -> hist.add("(" + x.get("clock").asText() + "," + x.get("ns").asText() + ")=" + x.get("value").asText()));
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("trigger", tr.get("value").asText().equals("1") ? "PROBLEM" : "OK");
+        m.put("openProblems", pr.size());
+        m.put("lastvalue", it.get("lastvalue").asText());
+        m.put("history", hist);
+        return m;
+    }
+
+    @Test
+    void liveProbe() throws Exception {
+        token = call("user.login", Map.of("username", System.getenv("ZBX_USER"), "password", System.getenv("ZBX_PW")))
+                .asText();
+        String host = "moveseye-qa-7b-live-" + Instant.now().getEpochSecond();
+        String gid = null;
+        String hid = null;
+        try {
+            gid = call("hostgroup.create", Map.of("name", host)).get("groupids").get(0).asText();
+            hid = call("host.create", Map.of("host", host, "groups", List.of(Map.of("groupid", gid)),
+                    "tags", List.of(Map.of("tag", "moveseye.probe", "value", "7b-live")))).get("hostids").get(0).asText();
+            Probe revRaw = make(host, hid, "rev.raw");
+            Probe revAlloc = make(host, hid, "rev.alloc");
+            Probe sameRaw = make(host, hid, "same.raw");
+            Probe sameAlloc = make(host, hid, "same.alloc");
+            log("created host " + hid + " — waiting 70s for server config cache");
+            Thread.sleep(70_000);
+
+            long t = Instant.now().getEpochSecond();
+            long s1 = (t - 120) * 1000;   // 발화 표본(2분 전 측정)
+            long s2 = (t - 60) * 1000;    // 정리 표본(1분 전 측정 — 값 0)
+
+            log("A. 역전 도착: 양수(표본 s1) → 0(표본 s2) → 같은 양수가 늦게 재시도(표본 s1)");
+            rawPush(revRaw, t - 120, 0, 7);
+            rawPush(revRaw, t - 60, 0, 0);
+            Thread.sleep(8_000);
+            rawPush(revRaw, t - 90, 0, 7);           // 옛 clock(0보다 이전, 첫 값과 다른 tuple) — Zabbix가 도착 순서로 판정
+            allocPush(host, revAlloc, t - 120, s1, 7);
+            allocPush(host, revAlloc, t - 60, s2, 0);
+            Thread.sleep(8_000);
+            allocPush(host, revAlloc, t - 120, s1, 7);   // 옛 표본 → 생략돼야 한다
+
+            log("B. 같은 초 두 값: 양수 → 0 (해소 push는 표본 없음, 같은 초)");
+            long u = Instant.now().getEpochSecond() + 2;
+            rawPush(sameRaw, u, 0, 7);
+            rawPush(sameRaw, u, 0, 0);               // 같은 (clock, ns) — Zabbix가 버린다
+            allocPush(host, sameAlloc, u, u * 1000, 7);
+            allocPush(host, sameAlloc, u, null, 0);  // RESOLVE_PUSH와 같은 호출 — 같은 초면 ns가 오른다
+
+            Thread.sleep(12_000);
+            for (Probe p : List.of(revRaw, revAlloc, sameRaw, sameAlloc)) {
+                log("RESULT " + p.key() + " " + state(p));
+            }
+        } finally {
+            if (hid != null) call("host.delete", List.of(hid));
+            if (gid != null) call("hostgroup.delete", List.of(gid));
+            log("cleanup host=" + hid + " group=" + gid);
+            call("user.logout", List.of());
+        }
+    }
+}
