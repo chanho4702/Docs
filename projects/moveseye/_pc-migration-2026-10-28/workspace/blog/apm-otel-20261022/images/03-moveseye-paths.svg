@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1090" viewBox="0 0 1440 1090" role="img" aria-labelledby="title desc">
+<title id="title">MovesEye는 관측 목적에 따라 데이터 경로를 나눈다</title><desc id="desc">MovesEye는 관측 목적에 따라 데이터 경로를 나눈다; 서버 측 주요 경로의 개념도  /  라이브 기능·Java 확장을 활성화한 구성; MOVESEYE  /  ENGINEERING NOTES; 직접 제작한 설명 도식; 애플리케이션에서 생성; Collector에서 처리; MovesEye에서 활용; 일반 메트릭; 요청 수 · 지연 분포; JVM 등 런타임 지표; 메트릭 파이프라인; 허용목록 · 배치; 저장형 큐 · 재시도; 집계 · PostgreSQL; 조회 API → 지표와 추세 화면; 완료된 Span; HTTP · DB · 외부 호출; Trace의 구성 구간; 보존용 Trace; 오류 · 지연 · 확률 정책; Tail sampling → 저장형 큐; Trace 저장 · PostgreSQL; 조회 API → 요청 상세 분석; 완료된 Span; 위와 같은 Trace 입력; 별도 라이브 분기; 라이브 완료 Span; HTTP 서버 Span · 속성 축소; Tail sampling 없음 · 재시도 끔; 최근 기록 · 메모리 링 버퍼; 집계 · 표시 표본 → SSE → 실시간 화면; Java Agent 확장; 진행 중 요청의 건수; 경과 시간 · 오래된 요청 목록; 메트릭 + 특수 로그; 집계와 상세 목록 분리; 각 신호의 수집 경로 이용; 진행 중 요청 · 메모리 상태; 조회·실시간 집계 → 현재 요청 상태; 라이브 표시 ≠ 상세 Trace 보존  ·  진행 중 요청 ≠ 완료 Span  ·  모든 경로에 수집 범위와 상한이 있다.</desc>
+<defs>
+<marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#087F82"/></marker>
+<marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563B5"/></marker>
+<marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7257AC"/></marker>
+<marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#AA6410"/></marker>
+<marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#D8E2EA"/></marker>
+</defs>
+<rect x="0" y="0" width="1440" height="1090" rx="0" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5"/>
+<rect x="56" y="49" width="8" height="52" rx="3" fill="#087F82" stroke="#087F82" stroke-width="1.5"/>
+<text x="84" y="70.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="#142C3D">MovesEye는 관측 목적에 따라 데이터 경로를 나눈다</text>
+<text x="84" y="121.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">서버 측 주요 경로의 개념도  /  라이브 기능·Java 확장을 활성화한 구성</text>
+<polyline points="56,1028 1384,1028" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round"/>
+<text x="56" y="1055.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#526777">MOVESEYE  /  ENGINEERING NOTES</text>
+<text x="1384" y="1055.0" dominant-baseline="central" text-anchor="end" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="400" fill="#526777">직접 제작한 설명 도식</text>
+<text x="56" y="189.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#526777">애플리케이션에서 생성</text>
+<text x="400" y="189.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#526777">Collector에서 처리</text>
+<text x="770" y="189.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="700" fill="#526777">MovesEye에서 활용</text>
+<rect x="56" y="230" width="300" height="148" rx="14" fill="#EFF5FD" stroke="#2563B5" stroke-width="1.5"/>
+<text x="78" y="265.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#2563B5">일반 메트릭</text>
+<text x="78" y="309.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">요청 수 · 지연 분포</text>
+<text x="78" y="339.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">JVM 등 런타임 지표</text>
+<rect x="400" y="230" width="325" height="148" rx="14" fill="#EFF5FD" stroke="#2563B5" stroke-width="1.5"/>
+<text x="422" y="265.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#2563B5">메트릭 파이프라인</text>
+<text x="422" y="309.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">허용목록 · 배치</text>
+<text x="422" y="339.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">저장형 큐 · 재시도</text>
+<rect x="770" y="230" width="614" height="148" rx="14" fill="#EFF5FD" stroke="#2563B5" stroke-width="1.5"/>
+<text x="792" y="265.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#2563B5">집계 · PostgreSQL</text>
+<text x="792" y="309.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">조회 API → 지표와 추세 화면</text>
+<polyline points="356,305 400,305" fill="none" stroke="#2563B5" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a1)"/>
+<polyline points="725,305 770,305" fill="none" stroke="#2563B5" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a1)"/>
+<rect x="56" y="409" width="300" height="148" rx="14" fill="#F5F1FC" stroke="#7257AC" stroke-width="1.5"/>
+<text x="78" y="444.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#7257AC">완료된 Span</text>
+<text x="78" y="488.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">HTTP · DB · 외부 호출</text>
+<text x="78" y="518.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">Trace의 구성 구간</text>
+<rect x="400" y="409" width="325" height="148" rx="14" fill="#F5F1FC" stroke="#7257AC" stroke-width="1.5"/>
+<text x="422" y="444.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#7257AC">보존용 Trace</text>
+<text x="422" y="488.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">오류 · 지연 · 확률 정책</text>
+<text x="422" y="518.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">Tail sampling → 저장형 큐</text>
+<rect x="770" y="409" width="614" height="148" rx="14" fill="#F5F1FC" stroke="#7257AC" stroke-width="1.5"/>
+<text x="792" y="444.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#7257AC">Trace 저장 · PostgreSQL</text>
+<text x="792" y="488.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">조회 API → 요청 상세 분석</text>
+<polyline points="356,484 400,484" fill="none" stroke="#7257AC" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a2)"/>
+<polyline points="725,484 770,484" fill="none" stroke="#7257AC" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a2)"/>
+<rect x="56" y="588" width="300" height="148" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="78" y="623.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#087F82">완료된 Span</text>
+<text x="78" y="667.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">위와 같은 Trace 입력</text>
+<text x="78" y="697.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">별도 라이브 분기</text>
+<rect x="400" y="588" width="325" height="148" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="422" y="623.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#087F82">라이브 완료 Span</text>
+<text x="422" y="667.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">HTTP 서버 Span · 속성 축소</text>
+<text x="422" y="697.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">Tail sampling 없음 · 재시도 끔</text>
+<rect x="770" y="588" width="614" height="148" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="792" y="623.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#087F82">최근 기록 · 메모리 링 버퍼</text>
+<text x="792" y="667.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">집계 · 표시 표본 → SSE → 실시간 화면</text>
+<polyline points="356,663 400,663" fill="none" stroke="#087F82" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a0)"/>
+<polyline points="725,663 770,663" fill="none" stroke="#087F82" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a0)"/>
+<rect x="56" y="767" width="300" height="148" rx="14" fill="#FFF8EB" stroke="#AA6410" stroke-width="1.5"/>
+<text x="78" y="802.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#AA6410">Java Agent 확장</text>
+<text x="78" y="846.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">진행 중 요청의 건수</text>
+<text x="78" y="876.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">경과 시간 · 오래된 요청 목록</text>
+<rect x="400" y="767" width="325" height="148" rx="14" fill="#FFF8EB" stroke="#AA6410" stroke-width="1.5"/>
+<text x="422" y="802.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#AA6410">메트릭 + 특수 로그</text>
+<text x="422" y="846.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">집계와 상세 목록 분리</text>
+<text x="422" y="876.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">각 신호의 수집 경로 이용</text>
+<rect x="770" y="767" width="614" height="148" rx="14" fill="#FFF8EB" stroke="#AA6410" stroke-width="1.5"/>
+<text x="792" y="802.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="24" font-weight="700" fill="#AA6410">진행 중 요청 · 메모리 상태</text>
+<text x="792" y="846.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">조회·실시간 집계 → 현재 요청 상태</text>
+<polyline points="356,842 400,842" fill="none" stroke="#AA6410" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a3)"/>
+<polyline points="725,842 770,842" fill="none" stroke="#AA6410" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a3)"/>
+<text x="56" y="962.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="700" fill="#142C3D">라이브 표시 ≠ 상세 Trace 보존  ·  진행 중 요청 ≠ 완료 Span  ·  모든 경로에 수집 범위와 상한이 있다.</text>
+</svg>

@@ -1,0 +1,7 @@
+BEFORE_SETTING_OFF=select * from orders where marker = ?
+AFTER_SETTING_OFF=select * from orders where marker = 'EXAMPLE_ONLY_VALUE'
+BEFORE_RAW=false
+AFTER_RAW=true
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.

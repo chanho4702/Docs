@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "IDC 서버 · 서비스와 관리 접근 분리",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1350,
+      760
+    ]
+  },
+  "components": [
+    {
+      "id": "public",
+      "type": "external",
+      "label": "인터넷 사용자",
+      "sublabel": "공개 웹서비스 이용",
+      "pos": [
+        40,
+        120
+      ],
+      "size": [
+        230,
+        82
+      ]
+    },
+    {
+      "id": "edge",
+      "type": "security",
+      "label": "Proxmox · 공인 IP 1개",
+      "sublabel": "방화벽 / NAT / 포트 전달",
+      "pos": [
+        420,
+        120
+      ],
+      "size": [
+        230,
+        82
+      ]
+    },
+    {
+      "id": "dmz",
+      "type": "backend",
+      "label": "외부 VM · 10.30.0.10",
+      "sublabel": "HTTPS → 공개 웹·API",
+      "pos": [
+        820,
+        120
+      ],
+      "size": [
+        230,
+        82
+      ]
+    },
+    {
+      "id": "admin",
+      "type": "external",
+      "label": "관리자·내부 사용자",
+      "sublabel": "개인 VPN 계정 + OTP",
+      "pos": [
+        40,
+        400
+      ],
+      "size": [
+        230,
+        82
+      ]
+    },
+    {
+      "id": "vpn",
+      "type": "security",
+      "label": "VPN VM · 10.10.0.2",
+      "sublabel": "OpenVPN AS / 권한 분리",
+      "pos": [
+        420,
+        400
+      ],
+      "size": [
+        230,
+        82
+      ]
+    },
+    {
+      "id": "internal",
+      "type": "backend",
+      "label": "내부 VM · 10.20.0.10",
+      "sublabel": "내부 웹·DB / 자체 로그인",
+      "pos": [
+        820,
+        400
+      ],
+      "size": [
+        230,
+        82
+      ]
+    },
+    {
+      "id": "manage",
+      "type": "security",
+      "label": "Proxmox · VM 관리",
+      "sublabel": "관리자만 / MFA·SSH 키",
+      "pos": [
+        820,
+        640
+      ],
+      "size": [
+        230,
+        82
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "public",
+      "to": "edge",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "from": "edge",
+      "to": "dmz",
+      "label": "443 전달",
+      "variant": "emphasis"
+    },
+    {
+      "from": "admin",
+      "to": "vpn",
+      "label": "공인 IP 경유 VPN",
+      "variant": "security"
+    },
+    {
+      "from": "vpn",
+      "to": "internal",
+      "label": "허용 서비스",
+      "variant": "security"
+    },
+    {
+      "from": "vpn",
+      "to": "manage",
+      "label": "관리자만",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "공개·비공개 경계",
+      "items": [
+        "외부 VM → 내부·관리망 기본 차단",
+        "DB 예외는 IP·포트별로 명시"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "VPN과 관리",
+      "items": [
+        "VPN 포트도 동일 공인 IP에서 전달",
+        "VPN 이후 호스트 라우팅·방화벽 적용"
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "복구 경로",
+      "items": [
+        "외부 백업 저장소 별도 확보",
+        "IDC 원격 콘솔 제공 여부 확인"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="840" viewBox="0 0 1440 840" role="img" aria-labelledby="title desc">
+<title id="title">OpenTelemetry 데이터는 어디에서 만들어지고 어디로 갈까</title><desc id="desc">OpenTelemetry 데이터는 어디에서 만들어지고 어디로 갈까; 계측 → 표준 전송 → 수집·가공 → 저장·분석; MOVESEYE  /  ENGINEERING NOTES; 직접 제작한 설명 도식; 01  애플리케이션; 02  OpenTelemetry Collector; 03  관측 백엔드; Agent · SDK; 지원 라이브러리 자동계측; 업무 구간 수동 계측; Metrics · Traces · Logs; Receiver → Processor → Exporter; 받기          가공하기          보내기; 배치 · 속성 제거 · 필터 · 샘플링; 구성 요소를 pipelines에 연결; 저장 · 분석 시스템; 장기 보관과 검색; Trace · 지표 시각화; 알림과 운영 화면; OTLP; 전송; 역할을 구분하면 구성이 쉬워진다; Agent·SDK는 관측 정보를 만든다. Collector는 수신·가공·전송을 맡는다.; 장기 저장과 분석 화면은 별도 백엔드의 역할이다. Collector를 생략하는 구성도 가능하다.</desc>
+<defs>
+<marker id="a0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#087F82"/></marker>
+<marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563B5"/></marker>
+<marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#D8E2EA"/></marker>
+</defs>
+<rect x="0" y="0" width="1440" height="840" rx="0" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5"/>
+<rect x="56" y="49" width="8" height="52" rx="3" fill="#087F82" stroke="#087F82" stroke-width="1.5"/>
+<text x="84" y="70.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="34" font-weight="700" fill="#142C3D">OpenTelemetry 데이터는 어디에서 만들어지고 어디로 갈까</text>
+<text x="84" y="121.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">계측 → 표준 전송 → 수집·가공 → 저장·분석</text>
+<polyline points="56,778 1384,778" fill="none" stroke="#D8E2EA" stroke-width="1" stroke-linejoin="round"/>
+<text x="56" y="805.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="700" fill="#526777">MOVESEYE  /  ENGINEERING NOTES</text>
+<text x="1384" y="805.0" dominant-baseline="central" text-anchor="end" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="13" font-weight="400" fill="#526777">직접 제작한 설명 도식</text>
+<text x="56" y="194.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="#2563B5">01  애플리케이션</text>
+<text x="475" y="194.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="#087F82">02  OpenTelemetry Collector</text>
+<text x="1080" y="194.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="#7257AC">03  관측 백엔드</text>
+<rect x="56" y="232" width="330" height="245" rx="14" fill="#EFF5FD" stroke="#2563B5" stroke-width="1.5"/>
+<text x="78" y="267.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#2563B5">Agent · SDK</text>
+<text x="78" y="311.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">지원 라이브러리 자동계측</text>
+<text x="78" y="341.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">업무 구간 수동 계측</text>
+<text x="78" y="371.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">Metrics · Traces · Logs</text>
+<rect x="475" y="232" width="515" height="245" rx="14" fill="#EDF8F6" stroke="#087F82" stroke-width="1.5"/>
+<text x="500" y="267.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#087F82">Receiver → Processor → Exporter</text>
+<text x="500" y="320.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="21" font-weight="400" fill="#142C3D">받기          가공하기          보내기</text>
+<text x="500" y="376.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#142C3D">배치 · 속성 제거 · 필터 · 샘플링</text>
+<text x="500" y="424.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#526777">구성 요소를 pipelines에 연결</text>
+<rect x="1080" y="232" width="304" height="245" rx="14" fill="#F5F1FC" stroke="#7257AC" stroke-width="1.5"/>
+<text x="1102" y="267.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#7257AC">저장 · 분석 시스템</text>
+<text x="1102" y="311.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">장기 보관과 검색</text>
+<text x="1102" y="341.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">Trace · 지표 시각화</text>
+<text x="1102" y="371.5" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="400" fill="#142C3D">알림과 운영 화면</text>
+<polyline points="386,348 475,348" fill="none" stroke="#2563B5" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a1)"/>
+<text x="430.5" y="317.0" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="#2563B5">OTLP</text>
+<polyline points="990,348 1080,348" fill="none" stroke="#087F82" stroke-width="2.5" stroke-linejoin="round" marker-end="url(#a0)"/>
+<text x="1034.0" y="319.0" dominant-baseline="central" text-anchor="middle" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="18" font-weight="700" fill="#087F82">전송</text>
+<rect x="56" y="538" width="1328" height="169" rx="14" fill="#F4F7FA" stroke="#D8E2EA" stroke-width="1.5"/>
+<text x="82" y="575.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="23" font-weight="700" fill="#142C3D">역할을 구분하면 구성이 쉬워진다</text>
+<text x="82" y="623.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="20" font-weight="400" fill="#526777">Agent·SDK는 관측 정보를 만든다. Collector는 수신·가공·전송을 맡는다.</text>
+<text x="82" y="664.0" dominant-baseline="central" text-anchor="start" font-family="Malgun Gothic, Noto Sans KR, sans-serif" font-size="19" font-weight="400" fill="#526777">장기 저장과 분석 화면은 별도 백엔드의 역할이다. Collector를 생략하는 구성도 가능하다.</text>
+</svg>

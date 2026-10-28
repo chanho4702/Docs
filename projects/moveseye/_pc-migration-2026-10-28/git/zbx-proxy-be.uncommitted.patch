@@ -1,0 +1,2335 @@
+diff --git a/engine-api/src/main/java/com/dmove/moveseye/common/exception/ErrorCode.java b/engine-api/src/main/java/com/dmove/moveseye/common/exception/ErrorCode.java
+index 3188e20..bee2c98 100644
+--- a/engine-api/src/main/java/com/dmove/moveseye/common/exception/ErrorCode.java
++++ b/engine-api/src/main/java/com/dmove/moveseye/common/exception/ErrorCode.java
+@@ -316,6 +316,28 @@ public enum ErrorCode {
+     WEB_SCENARIO_INHERITED_READONLY("WEB_SCENARIO_INHERITED_READONLY"),
+     WEB_SCENARIO_CREATE_FAILED("WEB_SCENARIO_CREATE_FAILED"),
+     WEB_SCENARIO_IDS_REQUIRED("WEB_SCENARIO_IDS_REQUIRED"),
++    // 프록시 관리(zabbix-manage/proxies)
++    PROXY_NOT_FOUND("PROXY_NOT_FOUND"),
++    PROXY_NAME_REQUIRED("PROXY_NAME_REQUIRED"),
++    /** operating_mode가 없거나 0(액티브)·1(패시브)이 아님. */
++    PROXY_MODE_INVALID("PROXY_MODE_INVALID"),
++    /** PSK를 새로 켜는데(생성·지금 PSK가 꺼져 있음) 식별자나 값이 비었다 — 유지할 PSK가 없다. 지금 PSK를 쓰는 중이면 모드를 바꿔도 결과가 PSK인 한 유지된다. */
++    PROXY_PSK_REQUIRED("PROXY_PSK_REQUIRED"),
++    /** 암호화를 쓰던 프록시의 모드를 바꾸면서 새 모드의 TLS 방식을 정하지 않았다 — 생략하면 암호화가 조용히 꺼진다. */
++    PROXY_TLS_REQUIRED("PROXY_TLS_REQUIRED"),
++    /** 프록시 그룹에 넣는데 local_address(그룹 안 다른 프록시가 찾아올 주소)가 없다. */
++    PROXY_LOCAL_ADDRESS_REQUIRED("PROXY_LOCAL_ADDRESS_REQUIRED"),
++    PROXY_CREATE_FAILED("PROXY_CREATE_FAILED"),
++    PROXY_IDS_REQUIRED("PROXY_IDS_REQUIRED"),
++    /** 직접 감시 중인 호스트·디스커버리 규칙·액션 조건이 있어 삭제 불가 — message에 "프록시 ← 호스트 n개(…), 디스커버리 규칙 …, 액션 …". */
++    PROXY_IN_USE("PROXY_IN_USE"),
++    // 프록시 그룹 관리(zabbix-manage/proxy-groups)
++    PROXY_GROUP_NOT_FOUND("PROXY_GROUP_NOT_FOUND"),
++    PROXY_GROUP_NAME_REQUIRED("PROXY_GROUP_NAME_REQUIRED"),
++    PROXY_GROUP_CREATE_FAILED("PROXY_GROUP_CREATE_FAILED"),
++    PROXY_GROUP_IDS_REQUIRED("PROXY_GROUP_IDS_REQUIRED"),
++    /** 소속 프록시나 배정 호스트가 있어 삭제 불가 — message에 "그룹 ← 프록시 a, b · 호스트 n개". */
++    PROXY_GROUP_IN_USE("PROXY_GROUP_IN_USE"),
+     // 스크립트 관리(zabbix-manage/scripts)
+     SCRIPT_NOT_FOUND("SCRIPT_NOT_FOUND"),
+     SCRIPT_CREATE_FAILED("SCRIPT_CREATE_FAILED"),
+diff --git a/engine-api/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostService.java b/engine-api/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostService.java
+index 2730d69..96d2d7e 100644
+--- a/engine-api/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostService.java
++++ b/engine-api/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostService.java
+@@ -21,6 +21,12 @@ public interface ZabbixHostService {
+      */
+     List<java.util.Map<String, Object>> getRaw(String authToken, java.util.Map<String, Object> params);
+ 
++    /**
++     * host.get 건수 — params에 {@code countOutput=true}를 <b>호출자가 넣는다</b>(다른 {@code countRaw}와 같은 관례).
++     * 파싱할 수 없으면 0. (프록시 그룹 배정 호스트 수)
++     */
++    long countRaw(String authToken, java.util.Map<String, Object> params);
++
+     /** event.get — source=0(trigger), value=1(problem), output[eventid,severity,objectid] + selectHosts[hostid]. */
+     List<ZabbixEvent> getEvents(String authToken, long timeFrom, long timeTill);
+ 
+diff --git a/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyGroupService.java b/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyGroupService.java
+new file mode 100644
+index 0000000..222c4e5
+--- /dev/null
++++ b/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyGroupService.java
+@@ -0,0 +1,25 @@
++package com.dmove.moveseye.zabbix.proxy;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * 프록시 그룹 계약 — {@code proxygroup.*}(Zabbix 7.0 신설). 그룹 안의 프록시 중 하나가 죽으면 호스트를 다른 프록시로 넘긴다.
++ *
++ * <p>실측(7.0.6): {@code proxygroup.create}는 {@code proxies} 인자가 없다(소속은 프록시 쪽 {@code proxy_groupid}).
++ * 프록시나 배정 호스트가 있으면 delete를 거부한다. {@code min_online} 1~1000, {@code failover_delay} 10~900초. 가공 없음.
++ */
++public interface ZabbixProxyGroupService {
++
++    /** proxygroup.get 원시 호출 — selectProxies(count 지원)는 호출자가. */
++    List<Map<String, Object>> getRaw(String authToken, Map<String, Object> params);
++
++    /** proxygroup.create — 생성 proxy_groupid(없으면 null). */
++    String create(String authToken, Map<String, Object> params);
++
++    /** proxygroup.update — params에 proxy_groupid. */
++    void update(String authToken, Map<String, Object> params);
++
++    /** proxygroup.delete — 프록시·배정 호스트가 있으면 Zabbix가 거부. */
++    void delete(String authToken, List<String> proxyGroupIds);
++}
+diff --git a/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyService.java b/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyService.java
+index aeac0ac..1dd721b 100644
+--- a/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyService.java
++++ b/engine-api/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyService.java
+@@ -5,7 +5,7 @@ import java.util.Map;
+ 
+ /**
+  * proxy.get 어댑터 — 호스트 등록 관리(모니터링 프록시 select) 및 목록의 proxyid→name 매핑에 사용.
+- * 신규(기존 코드에 proxy.* 호출 전무). 읽기 전용.
++ * 프록시 관리(2026-10-28)가 쓰기·원시 조회를 더했다.
+  *
+  * <p>⚠️ Zabbix 7.0 확인: host.get의 {@code selectProxy}는 proxy 필드를 반환하지 않아(미지원),
+  * 목록의 프록시 이름은 proxy.get으로 별도 조회해 proxyid→name 맵으로 조인한다.
+@@ -14,4 +14,16 @@ public interface ZabbixProxyService {
+ 
+     /** proxy.get — output[proxyid,name] 전체 목록. 결과는 [{proxyid, name}] 형태의 List&lt;Map&gt;. */
+     List<Map<String, Object>> getProxies(String authToken);
++
++    /** proxy.get 원시 호출 — selectHosts·selectAssignedHosts 등은 호출자가. 🔴 tls_psk_identity·tls_psk는 쓰기 전용(output에 넣으면 거부). */
++    List<Map<String, Object>> getRaw(String authToken, Map<String, Object> params);
++
++    /** proxy.create — 생성 proxyid(없으면 null). */
++    String create(String authToken, Map<String, Object> params);
++
++    /** proxy.update — params에 proxyid. */
++    void update(String authToken, Map<String, Object> params);
++
++    /** proxy.delete — 직접 감시 중인 호스트·디스커버리 규칙이 있으면 Zabbix가 거부. */
++    void delete(String authToken, List<String> proxyids);
+ }
+diff --git a/engine-api/src/main/java/com/dmove/moveseye/zabbix/settings/ZabbixSettingsService.java b/engine-api/src/main/java/com/dmove/moveseye/zabbix/settings/ZabbixSettingsService.java
+new file mode 100644
+index 0000000..18e954f
+--- /dev/null
++++ b/engine-api/src/main/java/com/dmove/moveseye/zabbix/settings/ZabbixSettingsService.java
+@@ -0,0 +1,14 @@
++package com.dmove.moveseye.zabbix.settings;
++
++import java.util.List;
++import java.util.Map;
++
++/**
++ * 전역 설정 계약 — {@code settings.get}(Administration › General). <b>읽기만</b> — 프록시 폼이 "사용자 지정 타임아웃"을 켤 때
++ * 채울 전역 {@code timeout_*} 값을 얻는다. 가공 없음.
++ */
++public interface ZabbixSettingsService {
++
++    /** settings.get — output에 적은 필드만 담은 객체. 비어 있으면 빈 맵. */
++    Map<String, Object> get(String authToken, List<String> output);
++}
+diff --git a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/client/ZabbixMethod.java b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/client/ZabbixMethod.java
+index a6ae01e..260b954 100644
+--- a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/client/ZabbixMethod.java
++++ b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/client/ZabbixMethod.java
+@@ -122,6 +122,16 @@ public enum ZabbixMethod {
+     MEDIATYPE_UPDATE("mediatype.update", Access.WRITE),
+     MEDIATYPE_DELETE("mediatype.delete", Access.WRITE),
+     PROXY_GET("proxy.get", Access.READ),
++    PROXY_CREATE("proxy.create", Access.WRITE),
++    PROXY_UPDATE("proxy.update", Access.WRITE),
++    PROXY_DELETE("proxy.delete", Access.WRITE),
++    PROXYGROUP_GET("proxygroup.get", Access.READ),
++    PROXYGROUP_CREATE("proxygroup.create", Access.WRITE),
++    PROXYGROUP_UPDATE("proxygroup.update", Access.WRITE),
++    PROXYGROUP_DELETE("proxygroup.delete", Access.WRITE),
++
++    // --- 전역 설정(읽기만 — 프록시 폼의 전역 타임아웃 기본값)
++    SETTINGS_GET("settings.get", Access.READ),
+ 
+     // --- 스크립트
+     SCRIPT_GET("script.get", Access.READ),
+diff --git a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostServiceImpl.java b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostServiceImpl.java
+index 4c99744..355f479 100644
+--- a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostServiceImpl.java
++++ b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/host/ZabbixHostServiceImpl.java
+@@ -33,6 +33,11 @@ public class ZabbixHostServiceImpl implements ZabbixHostService {
+         return api.list(ZabbixMethod.HOST_GET, params, authToken);
+     }
+ 
++    @Override
++    public long countRaw(String authToken, Map<String, Object> params) {
++        return api.count(ZabbixMethod.HOST_GET, params, authToken);
++    }
++
+     @Override
+     public List<Map<String, Object>> getEventsRaw(String authToken, Map<String, Object> params) {
+         return api.list(ZabbixMethod.EVENT_GET, params, authToken);
+diff --git a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyGroupServiceImpl.java b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyGroupServiceImpl.java
+new file mode 100644
+index 0000000..228ee7d
+--- /dev/null
++++ b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyGroupServiceImpl.java
+@@ -0,0 +1,39 @@
++package com.dmove.moveseye.zabbix.proxy;
++
++import com.dmove.moveseye.zabbix.client.ZabbixApiTemplate;
++import com.dmove.moveseye.zabbix.client.ZabbixMethod;
++import java.util.List;
++import java.util.Map;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++
++/** 프록시 그룹 계약 구현 — proxygroup.get/create/update/delete JSON-RPC. 가공 없음. */
++@Service
++@RequiredArgsConstructor
++public class ZabbixProxyGroupServiceImpl implements ZabbixProxyGroupService {
++
++    private final ZabbixApiTemplate api;
++
++    @Override
++    public List<Map<String, Object>> getRaw(String authToken, Map<String, Object> params) {
++        return api.list(ZabbixMethod.PROXYGROUP_GET, params, authToken);
++    }
++
++    @Override
++    public String create(String authToken, Map<String, Object> params) {
++        return api.firstId(ZabbixMethod.PROXYGROUP_CREATE, params, authToken, "proxy_groupids");
++    }
++
++    @Override
++    public void update(String authToken, Map<String, Object> params) {
++        api.exec(ZabbixMethod.PROXYGROUP_UPDATE, params, authToken);
++    }
++
++    @Override
++    public void delete(String authToken, List<String> proxyGroupIds) {
++        if (proxyGroupIds == null || proxyGroupIds.isEmpty()) {
++            return;
++        }
++        api.exec(ZabbixMethod.PROXYGROUP_DELETE, proxyGroupIds, authToken);
++    }
++}
+diff --git a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyServiceImpl.java b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyServiceImpl.java
+index d706fd1..9c504c3 100644
+--- a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyServiceImpl.java
++++ b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/proxy/ZabbixProxyServiceImpl.java
+@@ -10,7 +10,7 @@ import java.util.Map;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.stereotype.Service;
+ 
+-/** proxy.get 포팅 — 전체 프록시 목록(proxyid,name). Zabbix 7.0의 proxy.name 필드 사용. */
++/** proxy.* — 전체 프록시 목록(proxyid,name)과 관리용 원시 조회·쓰기. Zabbix 7.0의 proxy.name 필드 사용. 가공 없음. */
+ @Service
+ @RequiredArgsConstructor
+ public class ZabbixProxyServiceImpl implements ZabbixProxyService {
+@@ -24,4 +24,27 @@ public class ZabbixProxyServiceImpl implements ZabbixProxyService {
+         params.put("sortfield", "name");
+         return api.list(ZabbixMethod.PROXY_GET, params, authToken);
+     }
++
++    @Override
++    public List<Map<String, Object>> getRaw(String authToken, Map<String, Object> params) {
++        return api.list(ZabbixMethod.PROXY_GET, params, authToken);
++    }
++
++    @Override
++    public String create(String authToken, Map<String, Object> params) {
++        return api.firstId(ZabbixMethod.PROXY_CREATE, params, authToken, "proxyids");
++    }
++
++    @Override
++    public void update(String authToken, Map<String, Object> params) {
++        api.exec(ZabbixMethod.PROXY_UPDATE, params, authToken);
++    }
++
++    @Override
++    public void delete(String authToken, List<String> proxyids) {
++        if (proxyids == null || proxyids.isEmpty()) {
++            return;
++        }
++        api.exec(ZabbixMethod.PROXY_DELETE, proxyids, authToken);
++    }
+ }
+diff --git a/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/settings/ZabbixSettingsServiceImpl.java b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/settings/ZabbixSettingsServiceImpl.java
+new file mode 100644
+index 0000000..fb72afd
+--- /dev/null
++++ b/engine-zabbix/src/main/java/com/dmove/moveseye/zabbix/settings/ZabbixSettingsServiceImpl.java
+@@ -0,0 +1,21 @@
++package com.dmove.moveseye.zabbix.settings;
++
++import com.dmove.moveseye.zabbix.client.ZabbixApiTemplate;
++import com.dmove.moveseye.zabbix.client.ZabbixMethod;
++import java.util.List;
++import java.util.Map;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++
++/** 전역 설정 계약 구현 — settings.get JSON-RPC. 가공 없음. */
++@Service
++@RequiredArgsConstructor
++public class ZabbixSettingsServiceImpl implements ZabbixSettingsService {
++
++    private final ZabbixApiTemplate api;
++
++    @Override
++    public Map<String, Object> get(String authToken, List<String> output) {
++        return api.object(ZabbixMethod.SETTINGS_GET, Map.of("output", output), authToken);
++    }
++}
+diff --git a/engine-zabbix/src/test/resources/zabbix/api-reference-7.0.json b/engine-zabbix/src/test/resources/zabbix/api-reference-7.0.json
+index e4561cc..a0f7998 100644
+--- a/engine-zabbix/src/test/resources/zabbix/api-reference-7.0.json
++++ b/engine-zabbix/src/test/resources/zabbix/api-reference-7.0.json
+@@ -1971,6 +1971,140 @@
+         "startSearch"
+       ]
+     },
++    {
++      "method": "proxy.create",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxy/create",
++      "verified": true,
++      "access": "WRITE",
++      "paramsShape": "OBJECT_OR_ARRAY",
++      "supportsCommonGetParams": false,
++      "signature": "object proxy.create(object/array proxies)",
++      "params": [
++        "hosts"
++      ],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is only available to Super admin user type. Permissions to call the method can be revoked in user role settings."
++    },
++    {
++      "method": "proxy.update",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxy/update",
++      "verified": true,
++      "access": "WRITE",
++      "paramsShape": "OBJECT_OR_ARRAY",
++      "supportsCommonGetParams": false,
++      "signature": "object proxy.update(object/array proxies)",
++      "params": [
++        "hosts"
++      ],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is only available to Super admin user type. Permissions to call the method can be revoked in user role settings."
++    },
++    {
++      "method": "proxy.delete",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxy/delete",
++      "verified": true,
++      "access": "WRITE",
++      "paramsShape": "ARRAY_OF_IDS",
++      "supportsCommonGetParams": false,
++      "signature": "object proxy.delete(array proxies)",
++      "params": [],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is only available to Super admin user type. Permissions to call the method can be revoked in user role settings."
++    },
++    {
++      "method": "proxygroup.get",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxygroup/get",
++      "verified": true,
++      "access": "READ",
++      "paramsShape": "OBJECT",
++      "supportsCommonGetParams": true,
++      "signature": "integer/array proxygroup.get(object parameters)",
++      "params": [
++        "proxy_groupids",
++        "proxyids",
++        "selectProxies"
++      ],
++      "idFilterParams": [
++        "proxy_groupids",
++        "proxyids"
++      ],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [
++        "proxy_groupid",
++        "name"
++      ],
++      "notes": "This method is available to users of any type. Permissions to call the method can be revoked in user role settings. selectProxies supports count.",
++      "commonGetParamsListed": [
++        "countOutput",
++        "editable",
++        "excludeSearch",
++        "filter",
++        "limit",
++        "output",
++        "preservekeys",
++        "search",
++        "searchByAny",
++        "searchWildcardsEnabled",
++        "sortfield",
++        "sortorder",
++        "startSearch"
++      ]
++    },
++    {
++      "method": "proxygroup.create",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxygroup/create",
++      "verified": true,
++      "access": "WRITE",
++      "paramsShape": "OBJECT_OR_ARRAY",
++      "supportsCommonGetParams": false,
++      "signature": "object proxygroup.create(object/array proxyGroups)",
++      "params": [],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is only available to Super admin user type. Permissions to call the method can be revoked in user role settings."
++    },
++    {
++      "method": "proxygroup.update",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxygroup/update",
++      "verified": true,
++      "access": "WRITE",
++      "paramsShape": "OBJECT_OR_ARRAY",
++      "supportsCommonGetParams": false,
++      "signature": "object proxygroup.update(object/array proxyGroups)",
++      "params": [],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is only available to Super admin user type. Permissions to call the method can be revoked in user role settings."
++    },
++    {
++      "method": "proxygroup.delete",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/proxygroup/delete",
++      "verified": true,
++      "access": "WRITE",
++      "paramsShape": "ARRAY_OF_IDS",
++      "supportsCommonGetParams": false,
++      "signature": "object proxygroup.delete(array proxyGroupIds)",
++      "params": [],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is only available to Super admin user type. Permissions to call the method can be revoked in user role settings."
++    },
+     {
+       "method": "role.get",
+       "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/role/get",
+@@ -2059,6 +2193,23 @@
+       "sortFields": [],
+       "notes": "This method is only available to Super admin user type."
+     },
++    {
++      "method": "settings.get",
++      "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/settings/get",
++      "verified": true,
++      "access": "READ",
++      "paramsShape": "OBJECT",
++      "supportsCommonGetParams": false,
++      "signature": "object settings.get(object parameters)",
++      "params": [
++        "output"
++      ],
++      "idFilterParams": [],
++      "timeParams": [],
++      "idRangeParams": [],
++      "sortFields": [],
++      "notes": "This method is available to users of any type. Permissions to call the method can be revoked in user role settings. Accepts only output."
++    },
+     {
+       "method": "script.get",
+       "url": "https://www.zabbix.com/documentation/7.0/en/manual/api/reference/script/get",
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageController.java b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageController.java
+new file mode 100644
+index 0000000..fc8cdfb
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageController.java
+@@ -0,0 +1,78 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import com.dmove.moveseye.auth.dto.TokenUserInfo;
++import com.dmove.moveseye.auth.security.AdminAccessChecker;
++import com.dmove.moveseye.auth.security.CurrentUser;
++import com.dmove.moveseye.auth.security.VisitorIdCheck;
++import com.dmove.moveseye.common.response.ApiResult;
++import com.dmove.moveseye.zabbixadmin.dto.DiscoveryDeleteResDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDetailDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyDeleteReqDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyGroupUpsertReqDto;
++import io.swagger.v3.oas.annotations.Operation;
++import io.swagger.v3.oas.annotations.security.SecurityRequirement;
++import io.swagger.v3.oas.annotations.tags.Tag;
++import java.util.List;
++import lombok.RequiredArgsConstructor;
++import org.springframework.web.bind.annotation.DeleteMapping;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.PathVariable;
++import org.springframework.web.bind.annotation.PostMapping;
++import org.springframework.web.bind.annotation.PutMapping;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++/**
++ * 프록시 그룹 관리 — Zabbix {@code proxygroup.*}(7.0). <b>기본 기능 + 전 EP 관리자 전용.</b> 계약 `contract_proxy.md` §6.
++ * 소속 프록시는 프록시 폼의 그룹 선택으로만 바꾼다.
++ */
++@RestController
++@RequestMapping("/zabbix-manage/proxy-groups")
++@Tag(name = "ZabbixProxyGroupManage")
++@SecurityRequirement(name = "bearer")
++@VisitorIdCheck
++@RequiredArgsConstructor
++public class ZabbixProxyGroupManageController {
++
++    private final ZabbixProxyGroupManageService service;
++
++    @Operation(summary = "프록시 그룹 목록", description = "관리자 전용. 전체(이름순). 상태 UNKNOWN·OFFLINE·RECOVERING·ONLINE·DEGRADING, "
++            + "소속 프록시(온라인 수)·배정 호스트 수.")
++    @GetMapping
++    public ApiResult<List<ManagedProxyGroupDto>> list(@CurrentUser TokenUserInfo u) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<List<ManagedProxyGroupDto>>().success(service.list());
++    }
++
++    @Operation(summary = "프록시 그룹 상세", description = "관리자 전용. 목록 행 + 배정 호스트(최대 500).")
++    @GetMapping("/{proxyGroupId}")
++    public ApiResult<ManagedProxyGroupDetailDto> get(@CurrentUser TokenUserInfo u, @PathVariable String proxyGroupId) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ManagedProxyGroupDetailDto>().success(service.get(proxyGroupId));
++    }
++
++    @Operation(summary = "프록시 그룹 생성", description = "관리자 전용. name 필수. failover_delay 10초~15분·min_online 1~1000(Zabbix 원문 검사).")
++    @PostMapping
++    public ApiResult<ManagedProxyGroupDetailDto> create(@CurrentUser TokenUserInfo u, @RequestBody ProxyGroupUpsertReqDto req) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ManagedProxyGroupDetailDto>().success(service.create(req, u));
++    }
++
++    @Operation(summary = "프록시 그룹 수정(부분)", description = "관리자 전용. 보낸 것만.")
++    @PutMapping("/{proxyGroupId}")
++    public ApiResult<ManagedProxyGroupDetailDto> update(@CurrentUser TokenUserInfo u, @PathVariable String proxyGroupId,
++            @RequestBody ProxyGroupUpsertReqDto req) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ManagedProxyGroupDetailDto>().success(service.update(proxyGroupId, req, u));
++    }
++
++    @Operation(summary = "프록시 그룹 삭제(단건/다건)", description = "관리자 전용. 하나라도 소속 프록시·배정 호스트가 있으면 "
++            + "아무것도 지우지 않고 PROXY_GROUP_IN_USE.")
++    @DeleteMapping
++    public ApiResult<DiscoveryDeleteResDto> delete(@CurrentUser TokenUserInfo u, @RequestBody ProxyDeleteReqDto req) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<DiscoveryDeleteResDto>().success(service.delete(req.getIds(), u));
++    }
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageService.java b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageService.java
+new file mode 100644
+index 0000000..3b0d578
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageService.java
+@@ -0,0 +1,223 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import com.dmove.moveseye.auth.dto.TokenUserInfo;
++import com.dmove.moveseye.auth.security.ActorResolver;
++import com.dmove.moveseye.common.exception.ApiError;
++import com.dmove.moveseye.common.exception.ErrorCode;
++import com.dmove.moveseye.zabbix.host.ZabbixHostService;
++import com.dmove.moveseye.zabbix.identity.user.ZabbixUserService;
++import com.dmove.moveseye.zabbix.proxy.ZabbixProxyGroupService;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLog;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLogRepository;
++import com.dmove.moveseye.zabbixadmin.dto.DiscoveryDeleteResDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.HostRef;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDetailDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDto.Member;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyGroupUpsertReqDto;
++import java.util.ArrayList;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++import lombok.RequiredArgsConstructor;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.stereotype.Service;
++
++/**
++ * 프록시 그룹 관리 오케스트레이션 — {@code proxygroup.*}(Zabbix 7.0 신설). Zabbix UI: Administration › Proxy groups.
++ * 계약 `contract_proxy.md` §6.
++ *
++ * <p>소속 프록시는 이 폼에서 바꾸지 않는다 — Zabbix도 {@code proxygroup.create}에 {@code proxies} 인자가 없다(실측).
++ * 배정 호스트 수는 그룹마다 {@code host.get countOutput} 한 번(그룹은 수십 개 규모).
++ */
++@Slf4j
++@Service
++@RequiredArgsConstructor
++public class ZabbixProxyGroupManageService {
++
++    private static final String[] GROUP_STATES = { "UNKNOWN", "OFFLINE", "RECOVERING", "ONLINE", "DEGRADING" };
++    private static final String[] PROXY_STATES = { "UNKNOWN", "OFFLINE", "ONLINE" };
++    private static final String PROXY_ONLINE = "2";
++
++    private final ZabbixProxyGroupService proxyGroupService;
++    private final ZabbixHostService hostService;
++    private final ZabbixUserService zabbixUserService;
++    private final ZabbixChangeLogRepository changeLogRepository;
++    private final ActorResolver actorResolver;
++
++    // ====================================================================
++    // GET / · GET /{id}
++    // ====================================================================
++
++    public List<ManagedProxyGroupDto> list() {
++        String token = zabbixUserService.getSuperAdminToken();
++        return proxyGroupService.getRaw(token, select(null)).stream()
++                .map(g -> toDto(g, countHosts(token, str(g.get("proxy_groupid")))))
++                .toList();
++    }
++
++    public ManagedProxyGroupDetailDto get(String proxyGroupId) {
++        String token = zabbixUserService.getSuperAdminToken();
++        Map<String, Object> g = fetchRaw(token, proxyGroupId);
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("output", List.of("hostid", "name"));
++        params.put("proxy_groupids", List.of(proxyGroupId));
++        params.put("sortfield", "name");
++        params.put("limit", ZabbixProxyManageService.HOST_LIST_CAP + 1);
++        List<HostRef> hosts = new ArrayList<>();
++        for (Map<String, Object> h : hostService.getRaw(token, params)) hosts.add(new HostRef(str(h.get("hostid")), str(h.get("name"))));
++        boolean truncated = hosts.size() > ZabbixProxyManageService.HOST_LIST_CAP;
++        if (truncated) hosts = List.copyOf(hosts.subList(0, ZabbixProxyManageService.HOST_LIST_CAP));
++        return new ManagedProxyGroupDetailDto(toDto(g, countHosts(token, proxyGroupId)), hosts, truncated);
++    }
++
++    // ====================================================================
++    // POST · PUT /{id} · DELETE
++    // ====================================================================
++
++    public ManagedProxyGroupDetailDto create(ProxyGroupUpsertReqDto req, TokenUserInfo user) {
++        String token = zabbixUserService.getSuperAdminToken();
++        if (isBlank(req.getName())) throw new ApiError(ErrorCode.PROXY_GROUP_NAME_REQUIRED);
++        Map<String, Object> params = toParams(req, true);
++        String id = proxyGroupService.create(token, params);
++        if (id == null) throw new ApiError(ErrorCode.PROXY_GROUP_CREATE_FAILED);
++        writeLog(ZabbixChangeLog.ACTION_CREATE, id, str(params.get("name")), new LinkedHashMap<>(params), user);
++        return get(id);
++    }
++
++    public ManagedProxyGroupDetailDto update(String proxyGroupId, ProxyGroupUpsertReqDto req, TokenUserInfo user) {
++        String token = zabbixUserService.getSuperAdminToken();
++        Map<String, Object> current = fetchRaw(token, proxyGroupId);
++        Map<String, Object> params = toParams(req, false);
++        Map<String, Object> payload = new LinkedHashMap<>(params);
++        payload.put("fields", new ArrayList<>(params.keySet()));
++        params.put("proxy_groupid", proxyGroupId);
++        proxyGroupService.update(token, params);
++        String name = params.containsKey("name") ? str(params.get("name")) : str(current.get("name"));
++        writeLog(ZabbixChangeLog.ACTION_UPDATE, proxyGroupId, name, payload, user);
++        return get(proxyGroupId);
++    }
++
++    public DiscoveryDeleteResDto delete(List<String> ids, TokenUserInfo user) {
++        List<String> clean = ids == null ? List.of()
++                : ids.stream().filter(x -> x != null && !x.isBlank()).map(String::trim).distinct().toList();
++        if (clean.isEmpty()) throw new ApiError(ErrorCode.PROXY_GROUP_IDS_REQUIRED);
++        String token = zabbixUserService.getSuperAdminToken();
++        List<Map<String, Object>> rows = proxyGroupService.getRaw(token, select(clean));
++        if (rows.size() < clean.size()) throw new ApiError(ErrorCode.PROXY_GROUP_NOT_FOUND);
++
++        // 🔴 하나라도 쓰이면 아무것도 지우지 않는다 — 프록시와 배정 호스트를 함께 알려 준다(Zabbix 원문은 하나만).
++        Map<String, String> names = new HashMap<>();
++        List<String> blocked = new ArrayList<>();
++        for (Map<String, Object> g : rows) {
++            String id = str(g.get("proxy_groupid"));
++            names.put(id, str(g.get("name")));
++            List<String> uses = new ArrayList<>();
++            List<String> proxies = members(g.get("proxies")).stream().map(Member::name).toList();
++            if (!proxies.isEmpty()) uses.add("프록시 " + String.join(", ", proxies));
++            long hosts = countHosts(token, id);
++            if (hosts > 0) uses.add("호스트 " + hosts + "개");
++            if (!uses.isEmpty()) blocked.add(str(g.get("name")) + " ← " + String.join(" · ", uses));
++        }
++        if (!blocked.isEmpty()) throw new ApiError(ErrorCode.PROXY_GROUP_IN_USE.getCode() + ": " + String.join(" / ", blocked));
++        proxyGroupService.delete(token, clean);
++        for (String id : clean) writeLog(ZabbixChangeLog.ACTION_DELETE, id, names.get(id), Map.of(), user);
++        return new DiscoveryDeleteResDto(clean, clean.size());
++    }
++
++    // ====================================================================
++    // 내부
++    // ====================================================================
++
++    /** 생성은 빈 지연·최소 온라인을 생략(Zabbix 기본값), 수정은 보낸 빈 값도 그대로 보내 Zabbix가 거부하게 한다. */
++    static Map<String, Object> toParams(ProxyGroupUpsertReqDto req, boolean creating) {
++        Map<String, Object> p = new LinkedHashMap<>();
++        if (req.getName() != null) {
++            if (req.getName().isBlank()) throw new ApiError(ErrorCode.PROXY_GROUP_NAME_REQUIRED);
++            p.put("name", req.getName().trim());
++        }
++        // 범위·형식(10~900초, 1~1000)은 Zabbix 원문이 정확하다 — 여기서 다시 검사하지 않는다.
++        putGiven(p, "failover_delay", req.getFailoverDelay(), creating);
++        putGiven(p, "min_online", req.getMinOnline(), creating);
++        if (req.getDescription() != null) p.put("description", req.getDescription());
++        return p;
++    }
++
++    static ManagedProxyGroupDto toDto(Map<String, Object> g, long hostCount) {
++        List<Member> proxies = members(g.get("proxies"));
++        int online = (int) asList(g.get("proxies")).stream().filter(p -> PROXY_ONLINE.equals(str(p.get("state")))).count();
++        return new ManagedProxyGroupDto(str(g.get("proxy_groupid")), str(g.get("name")), strOrEmpty(g.get("failover_delay")),
++                strOrEmpty(g.get("min_online")), strOrEmpty(g.get("description")), label(GROUP_STATES, intOr(g.get("state"), 0)),
++                proxies.size(), online, hostCount, proxies);
++    }
++
++    private static Map<String, Object> select(List<String> ids) {
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("output", "extend");
++        params.put("selectProxies", List.of("proxyid", "name", "state"));
++        params.put("sortfield", "name");
++        if (ids != null) params.put("proxy_groupids", ids);
++        return params;
++    }
++
++    private Map<String, Object> fetchRaw(String token, String proxyGroupId) {
++        List<Map<String, Object>> rows = proxyGroupService.getRaw(token, select(List.of(proxyGroupId)));
++        if (rows.isEmpty()) throw new ApiError(ErrorCode.PROXY_GROUP_NOT_FOUND);
++        return rows.get(0);
++    }
++
++    private long countHosts(String token, String proxyGroupId) {
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("countOutput", true);
++        params.put("proxy_groupids", List.of(proxyGroupId));
++        return hostService.countRaw(token, params);
++    }
++
++    private static List<Member> members(Object raw) {
++        List<Member> out = new ArrayList<>();
++        for (Map<String, Object> p : asList(raw)) {
++            out.add(new Member(str(p.get("proxyid")), str(p.get("name")), label(PROXY_STATES, intOr(p.get("state"), 0))));
++        }
++        out.sort(Comparator.comparing((Member m) -> m.name() == null ? "" : m.name().toLowerCase()));
++        return out;
++    }
++
++    private void writeLog(String action, String entityId, String entityName, Map<String, Object> payload, TokenUserInfo user) {
++        try {
++            changeLogRepository.save(ZabbixChangeLog.builder()
++                    .entityType(ZabbixChangeLog.ENTITY_PROXY_GROUP).entityId(entityId).entityName(entityName)
++                    .action(action).payload(payload).actor(actorResolver.resolve(user)).build());
++        } catch (Exception e) {
++            log.warn("zabbix_change_log insert failed (PROXY_GROUP action={}, id={}): {}", action, entityId, e.getMessage());
++        }
++    }
++
++    private static String label(String[] names, int code) {
++        return code >= 0 && code < names.length ? names[code] : names[0];
++    }
++
++    private static void putGiven(Map<String, Object> params, String key, String value, boolean creating) {
++        if (value == null || (creating && value.isBlank())) return;
++        params.put(key, value.trim());
++    }
++
++    private static boolean isBlank(String s) { return s == null || s.isBlank(); }
++
++    @SuppressWarnings("unchecked")
++    private static List<Map<String, Object>> asList(Object v) {
++        if (v instanceof List<?> l) return (List<Map<String, Object>>) l;
++        return List.of();
++    }
++
++    private static String str(Object v) { return v == null ? null : String.valueOf(v); }
++
++    private static String strOrEmpty(Object v) { return v == null ? "" : String.valueOf(v); }
++
++    private static int intOr(Object v, int def) {
++        if (v instanceof Number n) return n.intValue();
++        if (v == null) return def;
++        try { return Integer.parseInt(String.valueOf(v).trim()); } catch (NumberFormatException e) { return def; }
++    }
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageController.java b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageController.java
+new file mode 100644
+index 0000000..cdc71c3
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageController.java
+@@ -0,0 +1,90 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import com.dmove.moveseye.auth.dto.TokenUserInfo;
++import com.dmove.moveseye.auth.security.AdminAccessChecker;
++import com.dmove.moveseye.auth.security.CurrentUser;
++import com.dmove.moveseye.auth.security.VisitorIdCheck;
++import com.dmove.moveseye.common.response.ApiResult;
++import com.dmove.moveseye.zabbixadmin.dto.DiscoveryDeleteResDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDetailDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyDeleteReqDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyOptionsDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyUpsertReqDto;
++import io.swagger.v3.oas.annotations.Operation;
++import io.swagger.v3.oas.annotations.security.SecurityRequirement;
++import io.swagger.v3.oas.annotations.tags.Tag;
++import java.util.List;
++import lombok.RequiredArgsConstructor;
++import org.springframework.web.bind.annotation.DeleteMapping;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.PathVariable;
++import org.springframework.web.bind.annotation.PostMapping;
++import org.springframework.web.bind.annotation.PutMapping;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.RestController;
++
++/**
++ * 프록시 관리 — Zabbix {@code proxy.*}(7.0). <b>기본 기능 + 전 EP 관리자 전용.</b> 계약 `contract_proxy.md`.
++ * 감시 호스트 배정은 바꾸지 않는다(상세에 보기만).
++ */
++@RestController
++@RequestMapping("/zabbix-manage/proxies")
++@Tag(name = "ZabbixProxyManage")
++@SecurityRequirement(name = "bearer")
++@VisitorIdCheck
++@RequiredArgsConstructor
++public class ZabbixProxyManageController {
++
++    private final ZabbixProxyManageService service;
++
++    @Operation(summary = "프록시 목록", description = "관리자 전용. 전체(이름순). 상태 UNKNOWN·OFFLINE·ONLINE, 버전 7.0.13 형식, "
++            + "직접 배정 호스트 수(hostCount)·그룹 경유 호스트 수(assignedHostCount).")
++    @GetMapping
++    public ApiResult<List<ManagedProxyDto>> list(@CurrentUser TokenUserInfo u) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<List<ManagedProxyDto>>().success(service.list());
++    }
++
++    @Operation(summary = "프록시 폼 선택지", description = "관리자 전용. 프록시 그룹 목록 + 전역 타임아웃(사용자 지정을 켤 때 기본값).")
++    @GetMapping("/options")
++    public ApiResult<ProxyOptionsDto> options(@CurrentUser TokenUserInfo u) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ProxyOptionsDto>().success(service.options());
++    }
++
++    @Operation(summary = "프록시 상세", description = "관리자 전용. 편집 프리필 + 사용처(직접·그룹 경유 호스트 각 최대 500, 디스커버리 규칙). "
++            + "🔴 PSK 식별자·값은 내려가지 않는다(Zabbix 쓰기 전용 — pskConfigured로 사용 여부만).")
++    @GetMapping("/{proxyid}")
++    public ApiResult<ManagedProxyDetailDto> get(@CurrentUser TokenUserInfo u, @PathVariable String proxyid) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ManagedProxyDetailDto>().success(service.get(proxyid));
++    }
++
++    @Operation(summary = "프록시 생성", description = "관리자 전용. name·operating_mode 필수. PSK를 쓰면 tls_psk_identity·tls_psk 필수, "
++            + "그룹에 넣으면 local_address 필수.")
++    @PostMapping
++    public ApiResult<ManagedProxyDetailDto> create(@CurrentUser TokenUserInfo u, @RequestBody ProxyUpsertReqDto req) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ManagedProxyDetailDto>().success(service.create(req, u));
++    }
++
++    @Operation(summary = "프록시 수정(부분)", description = "관리자 전용. 보낸 것만. 모드에 맞지 않는 TLS·주소 값은 서버가 정리한다. "
++            + "🔴 PSK는 비우면 유지(모드를 바꿔도 결과가 PSK면 유지), 지금 PSK가 없는데 켜면 식별자·값 필수(PROXY_PSK_REQUIRED). "
++            + "암호화를 쓰던 프록시의 모드를 바꾸면 새 모드의 TLS 방식 필수(PROXY_TLS_REQUIRED).")
++    @PutMapping("/{proxyid}")
++    public ApiResult<ManagedProxyDetailDto> update(@CurrentUser TokenUserInfo u, @PathVariable String proxyid,
++            @RequestBody ProxyUpsertReqDto req) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<ManagedProxyDetailDto>().success(service.update(proxyid, req, u));
++    }
++
++    @Operation(summary = "프록시 삭제(단건/다건)", description = "관리자 전용. 하나라도 직접 감시 호스트·디스커버리 규칙이 있으면 "
++            + "아무것도 지우지 않고 PROXY_IN_USE(사용처를 이름으로).")
++    @DeleteMapping
++    public ApiResult<DiscoveryDeleteResDto> delete(@CurrentUser TokenUserInfo u, @RequestBody ProxyDeleteReqDto req) {
++        AdminAccessChecker.requireAdmin(u);
++        return new ApiResult<DiscoveryDeleteResDto>().success(service.delete(req.getIds(), u));
++    }
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageService.java b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageService.java
+new file mode 100644
+index 0000000..91f1c35
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageService.java
+@@ -0,0 +1,481 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import com.dmove.moveseye.auth.dto.TokenUserInfo;
++import com.dmove.moveseye.auth.security.ActorResolver;
++import com.dmove.moveseye.common.exception.ApiError;
++import com.dmove.moveseye.common.exception.ErrorCode;
++import com.dmove.moveseye.zabbix.alertaction.ZabbixActionService;
++import com.dmove.moveseye.zabbix.discovery.ZabbixDiscoveryService;
++import com.dmove.moveseye.zabbix.identity.user.ZabbixUserService;
++import com.dmove.moveseye.zabbix.proxy.ZabbixProxyGroupService;
++import com.dmove.moveseye.zabbix.proxy.ZabbixProxyService;
++import com.dmove.moveseye.zabbix.settings.ZabbixSettingsService;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLog;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLogRepository;
++import com.dmove.moveseye.zabbixadmin.dto.DiscoveryDeleteResDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDetailDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.HostRef;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.Ref;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyOptionsDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyUpsertReqDto;
++import java.util.ArrayList;
++import java.util.Comparator;
++import java.util.HashMap;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.function.Supplier;
++import lombok.RequiredArgsConstructor;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.stereotype.Service;
++
++/**
++ * 프록시 관리 오케스트레이션 — {@code proxy.*}(Zabbix 7.0). Zabbix UI: Administration › Proxies. 계약 `contract_proxy.md`.
++ *
++ * <p><b>이 계층이 얹는 것</b>:
++ * <ul>
++ *   <li>상태·호환성·버전(70013 → 7.0.13)을 이름으로, 그룹 이름 조인, 직접/그룹 경유 호스트 수</li>
++ *   <li>🔴 모드별 TLS 정규화 — 액티브는 {@code tls_connect=1}, 패시브는 {@code tls_accept=1}만 받는다(실측: 반대편 값은 "value must be 1")</li>
++ *   <li>🔴 PSK "비우면 유지" — 단 Zabbix는 결과 TLS에서 PSK가 빠지면 PSK를 지운다(실측: 모드만 바꿔 결과가 "없음"이 된 경우 포함).
++ *       지금 PSK가 없는데 켜면 식별자·값 필수. 모드를 바꿔도 결과가 계속 PSK면 유지된다(실측)</li>
++ *   <li>🔴 암호화를 쓰던 프록시의 모드를 바꿀 때 새 모드의 TLS 방식을 반드시 받는다 — 생략하면 "없음"으로 저장돼 암호화가 조용히 꺼진다</li>
++ *   <li>인증서를 안 쓰면 발급자·주체를 보내지 않는다(실측: 비어 있지 않으면 "value must be empty", 안 보내면 Zabbix가 비운다)</li>
++ *   <li>🔴 사용자 지정 타임아웃은 10개 전부 보내야 한다(실측) — 빠진 키를 현재 값 → 전역 값으로 채운다</li>
++ *   <li>삭제 전 사용처(직접 감시 호스트·디스커버리 규칙·액션의 프록시 조건)를 이름으로 알려 주고 하나도 지우지 않는다</li>
++ * </ul>
++ * 감시 호스트 배정은 바꾸지 않는다(보기만 — 배정은 호스트 관리의 monitored_by).
++ */
++@Slf4j
++@Service
++@RequiredArgsConstructor
++public class ZabbixProxyManageService {
++
++    /** Zabbix 7.0 프록시 타임아웃 10종 — 필드 이름은 {@code timeout_} + 키. */
++    static final List<String> TIMEOUT_KEYS = List.of("zabbix_agent", "simple_check", "snmp_agent", "external_check",
++            "db_monitor", "http_agent", "ssh_agent", "telnet_agent", "script", "browser");
++    static final int HOST_LIST_CAP = 500;
++    private static final int TLS_NONE = 1;
++    private static final int TLS_PSK = 2;
++    private static final int TLS_CERT = 4;
++    /** 액션 조건 유형 "프록시"(CONDITION_TYPE_PROXY) — 디스커버리·자동 등록 액션. */
++    private static final String CONDITION_PROXY = "20";
++    private static final String NO_GROUP = "0";
++    private static final String MASK = "***";
++    private static final String[] PROXY_STATES = { "UNKNOWN", "OFFLINE", "ONLINE" };
++    private static final String[] COMPATIBILITY = { "UNDEFINED", "CURRENT", "OUTDATED", "UNSUPPORTED" };
++
++    private final ZabbixProxyService proxyService;
++    private final ZabbixProxyGroupService proxyGroupService;
++    private final ZabbixDiscoveryService discoveryService;
++    private final ZabbixActionService actionService;
++    private final ZabbixSettingsService settingsService;
++    private final ZabbixUserService zabbixUserService;
++    private final ZabbixChangeLogRepository changeLogRepository;
++    private final ActorResolver actorResolver;
++
++    // ====================================================================
++    // GET / · GET /{id} · GET /options
++    // ====================================================================
++
++    public List<ManagedProxyDto> list() {
++        String token = zabbixUserService.getSuperAdminToken();
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("output", "extend");
++        params.put("selectHosts", "count");
++        params.put("selectAssignedHosts", "count");
++        params.put("sortfield", "name");
++        Map<String, String> groups = groupNames(token);
++        return proxyService.getRaw(token, params).stream()
++                .map(p -> toSummary(p, groups, intOr(p.get("hosts"), 0), intOr(p.get("assignedHosts"), 0)))
++                .toList();
++    }
++
++    public ManagedProxyDetailDto get(String proxyid) {
++        String token = zabbixUserService.getSuperAdminToken();
++        Map<String, Object> p = fetchRaw(token, proxyid, true);
++        List<HostRef> hosts = hostRefs(p.get("hosts"));
++        List<HostRef> assigned = hostRefs(p.get("assignedHosts"));
++        Map<String, String> timeouts = new LinkedHashMap<>();
++        for (String k : TIMEOUT_KEYS) timeouts.put(k, strOrEmpty(p.get("timeout_" + k)));
++        return new ManagedProxyDetailDto(toSummary(p, groupNames(token), hosts.size(), assigned.size()),
++                strOrEmpty(p.get("tls_issuer")), strOrEmpty(p.get("tls_subject")), timeouts,
++                cap(hosts), cap(assigned), hosts.size() > HOST_LIST_CAP || assigned.size() > HOST_LIST_CAP,
++                discoveryRules(token, List.of(proxyid)).getOrDefault(proxyid, List.of()));
++    }
++
++    public ProxyOptionsDto options() {
++        String token = zabbixUserService.getSuperAdminToken();
++        List<Ref> groups = groupNames(token).entrySet().stream()
++                .map(e -> new Ref(e.getKey(), e.getValue()))
++                .sorted(Comparator.comparing((Ref r) -> lower(r.name())))
++                .toList();
++        return new ProxyOptionsDto(groups, globalTimeouts(token));
++    }
++
++    // ====================================================================
++    // POST · PUT /{id} · DELETE
++    // ====================================================================
++
++    public ManagedProxyDetailDto create(ProxyUpsertReqDto req, TokenUserInfo user) {
++        String token = zabbixUserService.getSuperAdminToken();
++        if (isBlank(req.getName())) throw new ApiError(ErrorCode.PROXY_NAME_REQUIRED);
++        if (req.getOperatingMode() == null) throw new ApiError(ErrorCode.PROXY_MODE_INVALID);
++        Map<String, Object> params = toParams(req, null, () -> globalTimeouts(token));
++        String id = proxyService.create(token, params);
++        if (id == null) throw new ApiError(ErrorCode.PROXY_CREATE_FAILED);
++        writeLog(ZabbixChangeLog.ACTION_CREATE, id, str(params.get("name")), logPayload(params), user);
++        return get(id);
++    }
++
++    public ManagedProxyDetailDto update(String proxyid, ProxyUpsertReqDto req, TokenUserInfo user) {
++        String token = zabbixUserService.getSuperAdminToken();
++        Map<String, Object> current = fetchRaw(token, proxyid, false);
++        Map<String, Object> params = toParams(req, current, () -> globalTimeouts(token));
++        params.put("proxyid", proxyid);
++        proxyService.update(token, params);
++        String name = params.containsKey("name") ? str(params.get("name")) : str(current.get("name"));
++        Map<String, Object> payload = logPayload(params);
++        payload.put("fields", params.keySet().stream().filter(k -> !"proxyid".equals(k)).toList());
++        writeLog(ZabbixChangeLog.ACTION_UPDATE, proxyid, name, payload, user);
++        return get(proxyid);
++    }
++
++    public DiscoveryDeleteResDto delete(List<String> ids, TokenUserInfo user) {
++        List<String> clean = ids == null ? List.of()
++                : ids.stream().filter(x -> x != null && !x.isBlank()).map(String::trim).distinct().toList();
++        if (clean.isEmpty()) throw new ApiError(ErrorCode.PROXY_IDS_REQUIRED);
++        String token = zabbixUserService.getSuperAdminToken();
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("proxyids", clean);
++        params.put("output", List.of("proxyid", "name"));
++        params.put("selectHosts", List.of("hostid", "name"));
++        List<Map<String, Object>> rows = proxyService.getRaw(token, params);
++        if (rows.size() < clean.size()) throw new ApiError(ErrorCode.PROXY_NOT_FOUND);
++
++        // 🔴 하나라도 쓰이면 아무것도 지우지 않는다 — Zabbix 원문("Host "h" is monitored by proxy "p".")은 첫 호스트 하나만 말한다.
++        Map<String, List<Ref>> drules = discoveryRules(token, clean);
++        Map<String, List<String>> actions = actionsUsing(token, clean);
++        Map<String, String> names = new HashMap<>();
++        List<String> blocked = new ArrayList<>();
++        for (Map<String, Object> p : rows) {
++            String id = str(p.get("proxyid"));
++            names.put(id, str(p.get("name")));
++            List<String> uses = new ArrayList<>();
++            List<HostRef> hosts = hostRefs(p.get("hosts"));
++            if (!hosts.isEmpty()) {
++                List<String> first = hosts.stream().limit(3).map(HostRef::name).toList();
++                uses.add("호스트 " + hosts.size() + "개(" + String.join(", ", first) + (hosts.size() > 3 ? " 외" : "") + ")");
++            }
++            List<Ref> rules = drules.getOrDefault(id, List.of());
++            if (!rules.isEmpty()) uses.add("디스커버리 규칙 " + String.join(", ", rules.stream().map(Ref::name).toList()));
++            List<String> usingActions = actions.getOrDefault(id, List.of());
++            if (!usingActions.isEmpty()) uses.add("액션 " + String.join(", ", usingActions));
++            if (!uses.isEmpty()) blocked.add(str(p.get("name")) + " ← " + String.join(", ", uses));
++        }
++        if (!blocked.isEmpty()) throw new ApiError(ErrorCode.PROXY_IN_USE.getCode() + ": " + String.join(" / ", blocked));
++        proxyService.delete(token, clean);
++        for (String id : clean) writeLog(ZabbixChangeLog.ACTION_DELETE, id, names.get(id), Map.of(), user);
++        return new DiscoveryDeleteResDto(clean, clean.size());
++    }
++
++    // ====================================================================
++    // 요청 → Zabbix params
++    // ====================================================================
++
++    /**
++     * 요청을 Zabbix params로. {@code current}가 null이면 생성.
++     *
++     * <p>모드·TLS·그룹·타임아웃은 "결과 상태"(요청 값 ?: 현재 값)로 판정한다 — 수정은 보낸 것만 오기 때문이다.
++     */
++    static Map<String, Object> toParams(ProxyUpsertReqDto req, Map<String, Object> current,
++            Supplier<Map<String, String>> globalTimeouts) {
++        boolean creating = current == null;
++        Map<String, Object> p = new LinkedHashMap<>();
++
++        if (req.getName() != null) {
++            if (req.getName().isBlank()) throw new ApiError(ErrorCode.PROXY_NAME_REQUIRED);
++            p.put("name", req.getName().trim());
++        }
++        int currentMode = creating ? -1 : intOr(current.get("operating_mode"), ManagedProxyDto.MODE_ACTIVE);
++        Integer reqMode = req.getOperatingMode();
++        if (reqMode != null && reqMode != ManagedProxyDto.MODE_ACTIVE && reqMode != ManagedProxyDto.MODE_PASSIVE) {
++            throw new ApiError(ErrorCode.PROXY_MODE_INVALID);
++        }
++        int mode = reqMode != null ? reqMode : currentMode;
++        boolean modeChanged = !creating && reqMode != null && reqMode != currentMode;
++        if (reqMode != null) p.put("operating_mode", reqMode);
++        if (req.getDescription() != null) p.put("description", req.getDescription());
++
++        // --- 그룹
++        String group = creating ? NO_GROUP : strOr(current.get("proxy_groupid"), NO_GROUP);
++        if (req.getProxyGroupid() != null) {
++            group = isBlank(req.getProxyGroupid()) ? NO_GROUP : req.getProxyGroupid().trim();
++            p.put("proxy_groupid", group);
++        }
++        if (!NO_GROUP.equals(group)) {
++            String localAddress = req.getLocalAddress() != null ? req.getLocalAddress()
++                    : creating ? null : str(current.get("local_address"));
++            if (isBlank(localAddress)) throw new ApiError(ErrorCode.PROXY_LOCAL_ADDRESS_REQUIRED);
++            if (req.getLocalAddress() != null) p.put("local_address", req.getLocalAddress().trim());
++            putGiven(p, "local_port", req.getLocalPort(), creating);
++        }
++        // 그룹 밖이면 local_*를 보내지 않는다 — Zabbix가 기본값으로 둔다(그룹 없이 local_port는 10051만 받는다).
++
++        // --- 주소: 모드에 맞는 쪽만
++        if (mode == ManagedProxyDto.MODE_ACTIVE) {
++            if (req.getAllowedAddresses() != null) p.put("allowed_addresses", req.getAllowedAddresses().trim());
++        } else {
++            putGiven(p, "address", req.getAddress(), creating);
++            putGiven(p, "port", req.getPort(), creating);
++        }
++
++        // --- TLS: 모드별 정규화 + PSK
++        int currentConnect = creating ? TLS_NONE : intOr(current.get("tls_connect"), TLS_NONE);
++        int currentAccept = creating ? TLS_NONE : intOr(current.get("tls_accept"), TLS_NONE);
++        boolean touchesTls = req.getTlsConnect() != null || req.getTlsAccept() != null;
++        Integer newSide = mode == ManagedProxyDto.MODE_ACTIVE ? req.getTlsAccept() : req.getTlsConnect();
++        // 🔴 암호화를 쓰던 프록시의 모드를 바꾸면서 새 모드의 방식을 안 정하면 "없음"으로 저장된다 — 묵시적 해제를 막는다.
++        if (modeChanged && newSide == null && usesTls(currentMode, currentConnect, currentAccept)) {
++            throw new ApiError(ErrorCode.PROXY_TLS_REQUIRED);
++        }
++        int connect;
++        int accept;
++        if (mode == ManagedProxyDto.MODE_ACTIVE) {
++            connect = TLS_NONE;
++            accept = req.getTlsAccept() != null ? req.getTlsAccept() : modeChanged ? TLS_NONE : currentAccept;
++            if (req.getTlsAccept() != null) p.put("tls_accept", accept);
++            if (creating || modeChanged || touchesTls) p.put("tls_connect", TLS_NONE);
++        } else {
++            accept = TLS_NONE;
++            connect = req.getTlsConnect() != null ? req.getTlsConnect() : modeChanged ? TLS_NONE : currentConnect;
++            if (req.getTlsConnect() != null) p.put("tls_connect", connect);
++            if (creating || modeChanged || touchesTls) p.put("tls_accept", TLS_NONE);
++        }
++        boolean wantsPsk = usesPsk(mode, connect, accept);
++        // 모드를 바꿔도 결과가 계속 PSK면 Zabbix가 PSK를 유지한다(실측) — 그래서 modeChanged는 보지 않는다.
++        boolean hasPsk = !creating && usesPsk(currentMode, currentConnect, currentAccept);
++        if (wantsPsk && !hasPsk && (isBlank(req.getTlsPskIdentity()) || isBlank(req.getTlsPsk()))) {
++            throw new ApiError(ErrorCode.PROXY_PSK_REQUIRED);
++        }
++        // 비우면 유지 — 비밀값은 다듬지 않는다(식별자 앞뒤 공백도 그대로 Zabbix 판단에 맡김).
++        if (!isBlank(req.getTlsPskIdentity())) p.put("tls_psk_identity", req.getTlsPskIdentity());
++        if (!isBlank(req.getTlsPsk())) p.put("tls_psk", req.getTlsPsk().trim());
++        // 인증서를 안 쓰면 발급자·주체를 보내지 않는다 — 비어 있지 않으면 Zabbix가 거부하고, 안 보내면 스스로 비운다(실측).
++        if (usesCert(mode, connect, accept)) {
++            if (req.getTlsIssuer() != null) p.put("tls_issuer", req.getTlsIssuer());
++            if (req.getTlsSubject() != null) p.put("tls_subject", req.getTlsSubject());
++        }
++
++        // --- 타임아웃
++        // 0·1 밖의 값은 그대로 보내 Zabbix가 거부하게 한다(잘못된 입력을 "끄기"로 바꾸지 않는다).
++        if (req.getCustomTimeouts() != null) p.put("custom_timeouts", req.getCustomTimeouts());
++        boolean custom = req.getCustomTimeouts() != null ? req.getCustomTimeouts() == 1
++                : !creating && "1".equals(str(current.get("custom_timeouts")));
++        if (custom && (req.getCustomTimeouts() != null || req.getTimeouts() != null)) {
++            Map<String, String> given = req.getTimeouts() == null ? Map.of() : req.getTimeouts();
++            Map<String, String> global = null;
++            for (String k : TIMEOUT_KEYS) {
++                String v = given.get(k);
++                if (isBlank(v) && !creating) v = str(current.get("timeout_" + k));
++                if (isBlank(v)) {
++                    if (global == null) global = globalTimeouts.get();
++                    v = global.get(k);
++                }
++                // 그래도 비면 보내지 않는다 — Zabbix가 어느 칸이 비었는지 원문으로 알려 준다.
++                if (!isBlank(v)) p.put("timeout_" + k, v.trim());
++            }
++        }
++        return p;
++    }
++
++    static boolean usesPsk(int mode, int connect, int accept) {
++        return mode == ManagedProxyDto.MODE_ACTIVE ? (accept & TLS_PSK) != 0 : connect == TLS_PSK;
++    }
++
++    static boolean usesCert(int mode, int connect, int accept) {
++        return mode == ManagedProxyDto.MODE_ACTIVE ? (accept & TLS_CERT) != 0 : connect == TLS_CERT;
++    }
++
++    /** 암호화(PSK·인증서)를 하나라도 쓰는가. */
++    static boolean usesTls(int mode, int connect, int accept) {
++        return usesPsk(mode, connect, accept) || usesCert(mode, connect, accept);
++    }
++
++    /** 🔴 이력에는 PSK 값을 남기지 않는다(이력은 프록시 삭제 뒤에도 남는다). */
++    static Map<String, Object> logPayload(Map<String, Object> params) {
++        Map<String, Object> out = new LinkedHashMap<>(params);
++        out.remove("proxyid");
++        out.computeIfPresent("tls_psk_identity", (k, v) -> MASK);
++        out.computeIfPresent("tls_psk", (k, v) -> MASK);
++        return out;
++    }
++
++    // ====================================================================
++    // Zabbix 응답 → DTO
++    // ====================================================================
++
++    static ManagedProxyDto toSummary(Map<String, Object> p, Map<String, String> groups, int hostCount, int assignedCount) {
++        int mode = intOr(p.get("operating_mode"), ManagedProxyDto.MODE_ACTIVE);
++        String groupId = strOr(p.get("proxy_groupid"), NO_GROUP);
++        Ref group = NO_GROUP.equals(groupId) ? null : new Ref(groupId, groups.get(groupId));
++        int connect = intOr(p.get("tls_connect"), TLS_NONE);
++        int accept = intOr(p.get("tls_accept"), TLS_NONE);
++        long lastAccess = longOr(p.get("lastaccess"), 0);
++        return new ManagedProxyDto(str(p.get("proxyid")), str(p.get("name")), mode, group,
++                strOrEmpty(p.get("address")), strOrEmpty(p.get("port")), strOrEmpty(p.get("allowed_addresses")),
++                strOrEmpty(p.get("local_address")), strOrEmpty(p.get("local_port")), strOrEmpty(p.get("description")),
++                label(PROXY_STATES, intOr(p.get("state"), 0)), lastAccess > 0 ? lastAccess : null,
++                version(p.get("version")), label(COMPATIBILITY, intOr(p.get("compatibility"), 0)),
++                hostCount, assignedCount, connect, accept, usesPsk(mode, connect, accept),
++                "1".equals(str(p.get("custom_timeouts"))));
++    }
++
++    /** Zabbix 정수 버전(70013) → "7.0.13". 0·형식 불명이면 null. */
++    static String version(Object raw) {
++        long v = longOr(raw, 0);
++        if (v <= 0) return null;
++        return (v / 10000) + "." + (v / 100 % 100) + "." + (v % 100);
++    }
++
++    static String label(String[] names, int code) {
++        return code >= 0 && code < names.length ? names[code] : names[0];
++    }
++
++    // ====================================================================
++    // 내부
++    // ====================================================================
++
++    private Map<String, Object> fetchRaw(String token, String proxyid, boolean withHosts) {
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("proxyids", List.of(proxyid));
++        params.put("output", "extend");
++        if (withHosts) {
++            params.put("selectHosts", List.of("hostid", "name"));
++            params.put("selectAssignedHosts", List.of("hostid", "name"));
++        }
++        List<Map<String, Object>> rows = proxyService.getRaw(token, params);
++        if (rows.isEmpty()) throw new ApiError(ErrorCode.PROXY_NOT_FOUND);
++        return rows.get(0);
++    }
++
++    private Map<String, String> groupNames(String token) {
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("output", List.of("proxy_groupid", "name"));
++        Map<String, String> out = new LinkedHashMap<>();
++        for (Map<String, Object> g : proxyGroupService.getRaw(token, params)) {
++            out.put(str(g.get("proxy_groupid")), str(g.get("name")));
++        }
++        return out;
++    }
++
++    /** proxyid → 그 프록시로 도는 네트워크 디스커버리 규칙(이름순). */
++    private Map<String, List<Ref>> discoveryRules(String token, List<String> proxyids) {
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("output", List.of("druleid", "name", "proxyid"));
++        params.put("filter", Map.of("proxyid", proxyids));
++        Map<String, List<Ref>> out = new HashMap<>();
++        for (Map<String, Object> r : discoveryService.getRulesRaw(token, params)) {
++            out.computeIfAbsent(str(r.get("proxyid")), k -> new ArrayList<>()).add(new Ref(str(r.get("druleid")), str(r.get("name"))));
++        }
++        out.values().forEach(l -> l.sort(Comparator.comparing((Ref r) -> lower(r.name()))));
++        return out;
++    }
++
++    /** proxyid → 프록시 조건(conditiontype 20)으로 이 프록시를 쓰는 액션 이름. 액션은 수십 개 규모라 전체를 한 번 읽는다. */
++    private Map<String, List<String>> actionsUsing(String token, List<String> proxyids) {
++        Map<String, Object> params = new LinkedHashMap<>();
++        params.put("output", List.of("actionid", "name"));
++        params.put("selectFilter", List.of("conditions"));
++        Map<String, List<String>> out = new HashMap<>();
++        for (Map<String, Object> a : actionService.getRaw(token, params)) {
++            Object filter = a.get("filter");
++            List<Map<String, Object>> conditions = filter instanceof Map<?, ?> f ? asList(f.get("conditions")) : List.of();
++            for (Map<String, Object> c : conditions) {
++                String value = str(c.get("value"));
++                if (CONDITION_PROXY.equals(str(c.get("conditiontype"))) && proxyids.contains(value)) {
++                    List<String> names = out.computeIfAbsent(value, k -> new ArrayList<>());
++                    if (!names.contains(str(a.get("name")))) names.add(str(a.get("name")));
++                }
++            }
++        }
++        return out;
++    }
++
++    /** settings.get의 timeout_* → 키에서 접두사를 뗀 맵. 못 읽으면 빈 맵(폼은 빈 칸, 저장 시 Zabbix가 원문으로 알린다). */
++    private Map<String, String> globalTimeouts(String token) {
++        try {
++            Map<String, Object> s = settingsService.get(token, TIMEOUT_KEYS.stream().map(k -> "timeout_" + k).toList());
++            Map<String, String> out = new LinkedHashMap<>();
++            for (String k : TIMEOUT_KEYS) {
++                String v = str(s.get("timeout_" + k));
++                if (v != null) out.put(k, v);
++            }
++            return out;
++        } catch (RuntimeException e) {
++            log.warn("settings.get failed — global timeouts omitted: {}", e.getMessage());
++            return Map.of();
++        }
++    }
++
++    private static List<HostRef> hostRefs(Object raw) {
++        List<HostRef> out = new ArrayList<>();
++        for (Map<String, Object> h : asList(raw)) out.add(new HostRef(str(h.get("hostid")), str(h.get("name"))));
++        out.sort(Comparator.comparing((HostRef h) -> lower(h.name())));
++        return out;
++    }
++
++    private static <T> List<T> cap(List<T> list) {
++        return list.size() > HOST_LIST_CAP ? List.copyOf(list.subList(0, HOST_LIST_CAP)) : list;
++    }
++
++    private void writeLog(String action, String entityId, String entityName, Map<String, Object> payload, TokenUserInfo user) {
++        try {
++            changeLogRepository.save(ZabbixChangeLog.builder()
++                    .entityType(ZabbixChangeLog.ENTITY_PROXY).entityId(entityId).entityName(entityName)
++                    .action(action).payload(payload).actor(actorResolver.resolve(user)).build());
++        } catch (Exception e) {
++            log.warn("zabbix_change_log insert failed (PROXY action={}, id={}): {}", action, entityId, e.getMessage());
++        }
++    }
++
++    /**
++     * 생성은 비면 생략(Zabbix 기본값), 수정은 보냈으면 빈 값도 그대로 보낸다 — 빈 주소를 조용히 "유지"로 바꾸지 않고
++     * Zabbix가 원문으로 거부하게 한다("cannot be empty").
++     */
++    private static void putGiven(Map<String, Object> params, String key, String value, boolean creating) {
++        if (value == null || (creating && value.isBlank())) return;
++        params.put(key, value.trim());
++    }
++
++    private static boolean isBlank(String s) { return s == null || s.isBlank(); }
++
++    private static String lower(String s) { return s == null ? "" : s.toLowerCase(); }
++
++    @SuppressWarnings("unchecked")
++    private static List<Map<String, Object>> asList(Object v) {
++        if (v instanceof List<?> l) return (List<Map<String, Object>>) l;
++        return List.of();
++    }
++
++    private static String str(Object v) { return v == null ? null : String.valueOf(v); }
++
++    private static String strOrEmpty(Object v) { return v == null ? "" : String.valueOf(v); }
++
++    private static String strOr(Object v, String def) {
++        String s = str(v);
++        return s == null || s.isBlank() ? def : s;
++    }
++
++    private static int intOr(Object v, int def) {
++        if (v instanceof Number n) return n.intValue();
++        if (v == null) return def;
++        try { return Integer.parseInt(String.valueOf(v).trim()); } catch (NumberFormatException e) { return def; }
++    }
++
++    private static long longOr(Object v, long def) {
++        if (v instanceof Number n) return n.longValue();
++        if (v == null) return def;
++        try { return Long.parseLong(String.valueOf(v).trim()); } catch (NumberFormatException e) { return def; }
++    }
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/domain/ZabbixChangeLog.java b/src/main/java/com/dmove/moveseye/zabbixadmin/domain/ZabbixChangeLog.java
+index 28fd372..197c671 100644
+--- a/src/main/java/com/dmove/moveseye/zabbixadmin/domain/ZabbixChangeLog.java
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/domain/ZabbixChangeLog.java
+@@ -64,6 +64,10 @@ public class ZabbixChangeLog {
+     public static final String ENTITY_GRAPH = "GRAPH";
+     /** Web 시나리오(httptest.*) — Web 시나리오 관리(유료). payload에서 비밀값은 지운다. */
+     public static final String ENTITY_WEB_SCENARIO = "WEB_SCENARIO";
++    /** 프록시(proxy). 🔴 payload에 PSK 값을 남기지 않는다(*** ). */
++    public static final String ENTITY_PROXY = "PROXY";
++    /** 프록시 그룹(proxygroup). */
++    public static final String ENTITY_PROXY_GROUP = "PROXY_GROUP";
+     public static final String ACTION_EXECUTE = "EXECUTE";
+ 
+     public static final String ACTION_CREATE = "CREATE";
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyDetailDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyDetailDto.java
+new file mode 100644
+index 0000000..410987a
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyDetailDto.java
+@@ -0,0 +1,20 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.HostRef;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.Ref;
++import io.swagger.v3.oas.annotations.media.Schema;
++import java.util.List;
++import java.util.Map;
++
++/** 프록시 상세 — 편집 프리필 + 사용처(읽기 전용). 🔴 PSK 식별자·값은 없다(Zabbix 쓰기 전용). */
++@Schema(description = "프록시 상세")
++public record ManagedProxyDetailDto(
++        ManagedProxyDto summary,
++        @Schema(description = "인증서 발급자(비면 확인 안 함)") String tlsIssuer,
++        @Schema(description = "인증서 주체(비면 확인 안 함)") String tlsSubject,
++        @Schema(description = "프록시 전용 타임아웃 10종(키는 timeout_ 뺀 이름). 사용자 지정이 꺼져 있으면 빈 값") Map<String, String> timeouts,
++        @Schema(description = "직접 배정된 호스트(이름순, 최대 500)") List<HostRef> hosts,
++        @Schema(description = "그룹을 통해 맡은 호스트(이름순, 최대 500)") List<HostRef> assignedHosts,
++        @Schema(description = "hosts·assignedHosts 중 하나라도 500건에서 잘렸다(개수는 summary가 정본)") boolean hostsTruncated,
++        @Schema(description = "이 프록시로 도는 네트워크 디스커버리 규칙") List<Ref> discoveryRules) {
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyDto.java
+new file mode 100644
+index 0000000..1275711
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyDto.java
+@@ -0,0 +1,44 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import io.swagger.v3.oas.annotations.media.Schema;
++
++/**
++ * 프록시 목록 행(Zabbix 7.0 {@code proxy.get}). 상태·호환성은 이름으로 풀어 준다.
++ *
++ * <p>{@code pskConfigured}는 "지금 PSK 비트가 켜져 있다"이다 — Zabbix는 PSK 식별자·값을 돌려주지 않지만(쓰기 전용)
++ * 켤 때 둘 다 필수라서, 켜져 있으면 저장돼 있다고 본다.
++ */
++@Schema(description = "프록시 목록 행")
++public record ManagedProxyDto(
++        @Schema(description = "Zabbix proxyid", example = "1") String proxyid,
++        @Schema(description = "프록시 이름(프록시 설정의 Hostname과 같아야 한다)") String name,
++        @Schema(description = "0 액티브 · 1 패시브", example = "0") int operatingMode,
++        @Schema(description = "소속 프록시 그룹. 없으면 null", nullable = true) Ref proxyGroup,
++        @Schema(description = "패시브: 서버가 접속할 주소") String address,
++        @Schema(description = "패시브: 서버가 접속할 포트") String port,
++        @Schema(description = "액티브: 접속을 허용할 프록시 주소(쉼표 구분, 비면 제한 없음)") String allowedAddresses,
++        @Schema(description = "그룹 소속일 때 그룹 안 다른 프록시가 찾아올 주소") String localAddress,
++        @Schema(description = "그룹 소속일 때 포트") String localPort,
++        String description,
++        @Schema(description = "UNKNOWN · OFFLINE · ONLINE", example = "ONLINE") String state,
++        @Schema(description = "마지막 접속(epoch 초). 접속한 적 없으면 null", nullable = true) Long lastAccess,
++        @Schema(description = "프록시 버전(예 7.0.13). 모르면 null", nullable = true) String version,
++        @Schema(description = "UNDEFINED · CURRENT · OUTDATED · UNSUPPORTED", example = "CURRENT") String compatibility,
++        @Schema(description = "이 프록시에 직접 배정된 호스트 수(monitored_by=1)") int hostCount,
++        @Schema(description = "그룹을 통해 지금 이 프록시가 맡은 호스트 수") int assignedHostCount,
++        @Schema(description = "패시브 연결 방식 1 없음 · 2 PSK · 4 인증서") int tlsConnect,
++        @Schema(description = "액티브 수락 방식 비트(1 없음 · 2 PSK · 4 인증서)") int tlsAccept,
++        @Schema(description = "지금 PSK를 쓰는 중(값은 내려가지 않는다)") boolean pskConfigured,
++        @Schema(description = "프록시 전용 타임아웃 사용") boolean customTimeouts) {
++
++    public static final int MODE_ACTIVE = 0;
++    public static final int MODE_PASSIVE = 1;
++
++    /** id·이름 쌍(그룹·디스커버리 규칙). */
++    public record Ref(String id, String name) {
++    }
++
++    /** 호스트 참조 — 호스트 상세로 링크할 수 있게 hostid를 싣는다. */
++    public record HostRef(String hostid, String name) {
++    }
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyGroupDetailDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyGroupDetailDto.java
+new file mode 100644
+index 0000000..6be2a30
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyGroupDetailDto.java
+@@ -0,0 +1,13 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.HostRef;
++import io.swagger.v3.oas.annotations.media.Schema;
++import java.util.List;
++
++/** 프록시 그룹 상세 — 목록 행 + 배정 호스트(읽기 전용). */
++@Schema(description = "프록시 그룹 상세")
++public record ManagedProxyGroupDetailDto(
++        ManagedProxyGroupDto summary,
++        @Schema(description = "배정 호스트(이름순, 최대 500)") List<HostRef> hosts,
++        @Schema(description = "500건에서 잘렸다(개수는 summary.hostCount가 정본)") boolean hostsTruncated) {
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyGroupDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyGroupDto.java
+new file mode 100644
+index 0000000..53b7de1
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ManagedProxyGroupDto.java
+@@ -0,0 +1,23 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import io.swagger.v3.oas.annotations.media.Schema;
++import java.util.List;
++
++/** 프록시 그룹 목록 행(Zabbix 7.0 {@code proxygroup.get}). */
++@Schema(description = "프록시 그룹 목록 행")
++public record ManagedProxyGroupDto(
++        @Schema(description = "Zabbix proxy_groupid", example = "1") String proxyGroupId,
++        String name,
++        @Schema(description = "장애 조치 지연(Zabbix 표기)", example = "1m") String failoverDelay,
++        @Schema(description = "그룹이 온라인이려면 필요한 최소 온라인 프록시 수", example = "1") String minOnline,
++        String description,
++        @Schema(description = "UNKNOWN · OFFLINE · RECOVERING · ONLINE · DEGRADING", example = "ONLINE") String state,
++        int proxyCount,
++        int onlineProxyCount,
++        @Schema(description = "이 그룹에 배정된 호스트 수(monitored_by=2)") long hostCount,
++        @Schema(description = "소속 프록시(이름순)") List<Member> proxies) {
++
++    /** 소속 프록시 — state는 프록시 상태 이름(UNKNOWN · OFFLINE · ONLINE). */
++    public record Member(String proxyid, String name, String state) {
++    }
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyDeleteReqDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyDeleteReqDto.java
+new file mode 100644
+index 0000000..f90c1f5
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyDeleteReqDto.java
+@@ -0,0 +1,14 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import jakarta.validation.constraints.NotNull;
++import java.util.List;
++import lombok.Getter;
++import lombok.Setter;
++
++/** 프록시·프록시 그룹 삭제 요청(공용). */
++@Getter
++@Setter
++public class ProxyDeleteReqDto {
++    @NotNull
++    private List<String> ids;
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyGroupUpsertReqDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyGroupUpsertReqDto.java
+new file mode 100644
+index 0000000..c8bd66d
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyGroupUpsertReqDto.java
+@@ -0,0 +1,22 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import com.fasterxml.jackson.annotation.JsonProperty;
++import io.swagger.v3.oas.annotations.media.Schema;
++import lombok.Getter;
++import lombok.Setter;
++
++/** 프록시 그룹 생성/수정 — 키는 Zabbix 원본(snake). 수정은 보낸 것만. 소속 프록시는 프록시 폼의 그룹 선택으로만 바꾼다. */
++@Getter
++@Setter
++@Schema(description = "프록시 그룹 생성/수정 요청")
++public class ProxyGroupUpsertReqDto {
++
++    private String name;
++    @JsonProperty("failover_delay")
++    @Schema(description = "10초~15분(Zabbix 표기)", example = "1m")
++    private String failoverDelay;
++    @JsonProperty("min_online")
++    @Schema(description = "1~1000", example = "1")
++    private String minOnline;
++    private String description;
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyOptionsDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyOptionsDto.java
+new file mode 100644
+index 0000000..3b5a298
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyOptionsDto.java
+@@ -0,0 +1,13 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto.Ref;
++import io.swagger.v3.oas.annotations.media.Schema;
++import java.util.List;
++import java.util.Map;
++
++/** 프록시 폼 선택지 — 그룹 목록과 전역 타임아웃(사용자 지정을 켤 때 기본값). */
++@Schema(description = "프록시 폼 선택지")
++public record ProxyOptionsDto(
++        @Schema(description = "프록시 그룹(이름순)") List<Ref> proxyGroups,
++        @Schema(description = "전역 타임아웃(settings.get). 못 읽으면 빈 객체") Map<String, String> globalTimeouts) {
++}
+diff --git a/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyUpsertReqDto.java b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyUpsertReqDto.java
+new file mode 100644
+index 0000000..3698fea
+--- /dev/null
++++ b/src/main/java/com/dmove/moveseye/zabbixadmin/dto/ProxyUpsertReqDto.java
+@@ -0,0 +1,65 @@
++package com.dmove.moveseye.zabbixadmin.dto;
++
++import com.fasterxml.jackson.annotation.JsonProperty;
++import io.swagger.v3.oas.annotations.media.Schema;
++import java.util.Map;
++import lombok.Getter;
++import lombok.Setter;
++
++/**
++ * 프록시 생성/수정 — 키는 Zabbix 원본(snake). 🔴 필드가 전부 래퍼 타입이다(안 보냄과 0/빈 값 구분, 수정은 보낸 것만).
++ *
++ * <ul>
++ *   <li>모드별 TLS는 서비스가 정규화한다 — 액티브면 {@code tls_connect=1}, 패시브면 {@code tls_accept=1}(Zabbix가 반대편 값을 거부).</li>
++ *   <li>{@code tls_psk_identity}·{@code tls_psk} — 비우면 유지, 채우면 교체. PSK를 새로 켤 때는 둘 다 필수.</li>
++ *   <li>{@code timeouts} — 키는 {@code timeout_}을 뺀 이름. {@code custom_timeouts=1}이면 빠진 키를 현재 값 → 전역 값으로 채운다.</li>
++ * </ul>
++ * 검증은 서비스가 한다(Bean Validation 없음 — 메시지 축을 하나로).
++ */
++@Getter
++@Setter
++@Schema(description = "프록시 생성/수정 요청")
++public class ProxyUpsertReqDto {
++
++    private String name;
++    @JsonProperty("operating_mode")
++    @Schema(description = "0 액티브 · 1 패시브(생성 필수)")
++    private Integer operatingMode;
++    private String description;
++    @JsonProperty("proxy_groupid")
++    @Schema(description = "프록시 그룹 ID. \"0\" 또는 빈 값이면 그룹에서 뺀다")
++    private String proxyGroupid;
++    @JsonProperty("local_address")
++    @Schema(description = "그룹 소속이면 필수")
++    private String localAddress;
++    @JsonProperty("local_port")
++    private String localPort;
++    @JsonProperty("allowed_addresses")
++    @Schema(description = "액티브만")
++    private String allowedAddresses;
++    @Schema(description = "패시브만")
++    private String address;
++    @Schema(description = "패시브만")
++    private String port;
++    @JsonProperty("tls_connect")
++    @Schema(description = "패시브: 1 없음 · 2 PSK · 4 인증서")
++    private Integer tlsConnect;
++    @JsonProperty("tls_accept")
++    @Schema(description = "액티브: 비트 합(1 없음 · 2 PSK · 4 인증서)")
++    private Integer tlsAccept;
++    @JsonProperty("tls_issuer")
++    private String tlsIssuer;
++    @JsonProperty("tls_subject")
++    private String tlsSubject;
++    @JsonProperty("tls_psk_identity")
++    @Schema(description = "비우면 유지")
++    private String tlsPskIdentity;
++    @JsonProperty("tls_psk")
++    @Schema(description = "비우면 유지(16진 32자 이상)")
++    private String tlsPsk;
++    @JsonProperty("custom_timeouts")
++    @Schema(description = "0 전역 값 사용 · 1 프록시 전용")
++    private Integer customTimeouts;
++    @Schema(description = "키: zabbix_agent·simple_check·snmp_agent·external_check·db_monitor·http_agent·ssh_agent·telnet_agent·script·browser")
++    private Map<String, String> timeouts;
++}
+diff --git a/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageServiceTest.java b/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageServiceTest.java
+new file mode 100644
+index 0000000..e7bea15
+--- /dev/null
++++ b/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyGroupManageServiceTest.java
+@@ -0,0 +1,170 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.ArgumentMatchers.anyString;
++import static org.mockito.ArgumentMatchers.argThat;
++import static org.mockito.ArgumentMatchers.eq;
++import static org.mockito.Mockito.lenient;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++import com.dmove.moveseye.auth.security.ActorResolver;
++import com.dmove.moveseye.common.exception.ApiError;
++import com.dmove.moveseye.zabbix.host.ZabbixHostService;
++import com.dmove.moveseye.zabbix.identity.user.ZabbixUserService;
++import com.dmove.moveseye.zabbix.proxy.ZabbixProxyGroupService;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLog;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLogRepository;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDetailDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyGroupDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyGroupUpsertReqDto;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.stream.IntStream;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.extension.ExtendWith;
++import org.mockito.ArgumentCaptor;
++import org.mockito.Captor;
++import org.mockito.InjectMocks;
++import org.mockito.Mock;
++import org.mockito.junit.jupiter.MockitoExtension;
++
++@ExtendWith(MockitoExtension.class)
++@DisplayName("ZabbixProxyGroupManageService")
++class ZabbixProxyGroupManageServiceTest {
++
++    @Mock private ZabbixProxyGroupService proxyGroupService;
++    @Mock private ZabbixHostService hostService;
++    @Mock private ZabbixUserService zabbixUserService;
++    @Mock private ZabbixChangeLogRepository changeLogRepository;
++    @Mock private ActorResolver actorResolver;
++    @InjectMocks private ZabbixProxyGroupManageService service;
++    @Captor private ArgumentCaptor<Map<String, Object>> paramsCaptor;
++
++    @BeforeEach
++    void setUp() {
++        lenient().when(zabbixUserService.getSuperAdminToken()).thenReturn("svc");
++    }
++
++    /** 실측 모양(7.0.6 proxygroup.get output extend + selectProxies). */
++    private static Map<String, Object> raw(String id, String name, String state, List<Map<String, Object>> proxies) {
++        Map<String, Object> g = new HashMap<>();
++        g.put("proxy_groupid", id); g.put("name", name); g.put("failover_delay", "1m"); g.put("min_online", "1");
++        g.put("description", ""); g.put("state", state); g.put("proxies", proxies);
++        return g;
++    }
++
++    @Test
++    @DisplayName("list — 상태 이름, 소속 프록시 이름순·온라인 수, 그룹마다 배정 호스트 countOutput")
++    void listMapsStateAndCounts() {
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(raw("1", "Seoul", "4", List.of(
++                Map.of("proxyid", "2", "name", "p-b", "state", "2"), Map.of("proxyid", "1", "name", "p-a", "state", "1")))));
++        when(hostService.countRaw(anyString(), paramsCaptor.capture())).thenReturn(7L);
++
++        ManagedProxyGroupDto g = service.list().get(0);
++
++        assertThat(g.state()).isEqualTo("DEGRADING");
++        assertThat(g.proxies()).extracting(ManagedProxyGroupDto.Member::name).containsExactly("p-a", "p-b");
++        assertThat(g.proxies().get(0).state()).isEqualTo("OFFLINE");
++        assertThat(g.proxyCount()).isEqualTo(2);
++        assertThat(g.onlineProxyCount()).isEqualTo(1);
++        assertThat(g.hostCount()).isEqualTo(7);
++        assertThat(paramsCaptor.getValue()).containsEntry("countOutput", true).containsEntry("proxy_groupids", List.of("1"));
++    }
++
++    @Test
++    @DisplayName("get — 배정 호스트 501건 요청해 500에서 자르고 표시, 없으면 PROXY_GROUP_NOT_FOUND")
++    void getTruncatesHosts() {
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(raw("1", "Seoul", "3", List.of())));
++        List<Map<String, Object>> hosts = new ArrayList<>();
++        IntStream.range(0, 501).forEach(i -> hosts.add(Map.of("hostid", String.valueOf(i), "name", "h" + i)));
++        when(hostService.getRaw(anyString(), paramsCaptor.capture())).thenReturn(hosts);
++        when(hostService.countRaw(anyString(), any())).thenReturn(900L);
++
++        ManagedProxyGroupDetailDto d = service.get("1");
++
++        assertThat(paramsCaptor.getValue()).containsEntry("limit", 501).containsEntry("proxy_groupids", List.of("1"));
++        assertThat(d.hosts()).hasSize(500);
++        assertThat(d.hostsTruncated()).isTrue();
++        assertThat(d.summary().hostCount()).isEqualTo(900);
++
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of());
++        assertThatThrownBy(() -> service.get("9")).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_GROUP_NOT_FOUND");
++    }
++
++    @Test
++    @DisplayName("생성 — name 필수, 빈 지연·최소 온라인은 보내지 않음(Zabbix 기본값), 이력 PROXY_GROUP")
++    void createParams() {
++        assertThatThrownBy(() -> service.create(new ProxyGroupUpsertReqDto(), null))
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_GROUP_NAME_REQUIRED");
++        ProxyGroupUpsertReqDto r = new ProxyGroupUpsertReqDto();
++        r.setName(" Seoul "); r.setFailoverDelay(""); r.setMinOnline("2");
++        when(proxyGroupService.create(anyString(), paramsCaptor.capture())).thenReturn("3");
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(raw("3", "Seoul", "0", List.of())));
++        when(hostService.getRaw(anyString(), any())).thenReturn(List.of());
++
++        service.create(r, null);
++
++        assertThat(paramsCaptor.getValue()).containsEntry("name", "Seoul").containsEntry("min_online", "2").doesNotContainKey("failover_delay");
++        verify(changeLogRepository).save(argThat(l -> ZabbixChangeLog.ENTITY_PROXY_GROUP.equals(l.getEntityType())
++                && ZabbixChangeLog.ACTION_CREATE.equals(l.getAction()) && "3".equals(l.getEntityId())));
++    }
++
++    @Test
++    @DisplayName("수정 — 보낸 것만 + proxy_groupid, 빈 이름은 거부")
++    void updateParams() {
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(raw("1", "Seoul", "3", List.of())));
++        when(hostService.getRaw(anyString(), any())).thenReturn(List.of());
++        ProxyGroupUpsertReqDto r = new ProxyGroupUpsertReqDto();
++        r.setFailoverDelay("2m");
++        service.update("1", r, null);
++        verify(proxyGroupService).update(eq("svc"), paramsCaptor.capture());
++        assertThat(paramsCaptor.getValue()).containsOnlyKeys("failover_delay", "proxy_groupid");
++
++        ProxyGroupUpsertReqDto emptyDelay = new ProxyGroupUpsertReqDto();
++        emptyDelay.setFailoverDelay("");
++        assertThat(ZabbixProxyGroupManageService.toParams(emptyDelay, false))
++                .as("수정에서 보낸 빈 값은 그대로 — Zabbix가 원문으로 거부").containsEntry("failover_delay", "");
++
++        ProxyGroupUpsertReqDto blank = new ProxyGroupUpsertReqDto();
++        blank.setName(" ");
++        assertThatThrownBy(() -> service.update("1", blank, null))
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_GROUP_NAME_REQUIRED");
++    }
++
++    @Test
++    @DisplayName("🔴 삭제 — 프록시나 배정 호스트가 있으면 아무것도 지우지 않는다")
++    void deleteBlockedWhenInUse() {
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(
++                raw("1", "Seoul", "3", List.of(Map.of("proxyid", "1", "name", "p-a", "state", "2"))),
++                raw("2", "Busan", "0", List.of())));
++        when(hostService.countRaw(anyString(), argThat(p -> p != null && List.of("1").equals(p.get("proxy_groupids"))))).thenReturn(0L);
++        when(hostService.countRaw(anyString(), argThat(p -> p != null && List.of("2").equals(p.get("proxy_groupids"))))).thenReturn(4L);
++
++        assertThatThrownBy(() -> service.delete(List.of("1", "2"), null))
++                .hasMessageContaining("Seoul ← 프록시 p-a")
++                .hasMessageContaining("Busan ← 호스트 4개")
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_GROUP_IN_USE");
++        verify(proxyGroupService, never()).delete(anyString(), any());
++    }
++
++    @Test
++    @DisplayName("삭제 — 빈 목록·없는 id 거부, 정상은 지우고 이력")
++    void deleteHappyPath() {
++        assertThatThrownBy(() -> service.delete(List.of(), null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_GROUP_IDS_REQUIRED");
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(raw("2", "Busan", "0", List.of())));
++        when(hostService.countRaw(anyString(), any())).thenReturn(0L);
++        assertThatThrownBy(() -> service.delete(List.of("2", "5"), null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_GROUP_NOT_FOUND");
++
++        assertThat(service.delete(List.of("2"), null).ids()).containsExactly("2");
++        verify(proxyGroupService).delete("svc", List.of("2"));
++        verify(changeLogRepository).save(argThat(l -> ZabbixChangeLog.ACTION_DELETE.equals(l.getAction()) && "Busan".equals(l.getEntityName())));
++    }
++}
+diff --git a/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageControllerTest.java b/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageControllerTest.java
+new file mode 100644
+index 0000000..e715f7b
+--- /dev/null
++++ b/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageControllerTest.java
+@@ -0,0 +1,67 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++import static org.mockito.Mockito.verifyNoInteractions;
++import static org.mockito.Mockito.when;
++
++import com.dmove.moveseye.auth.dto.TokenUserInfo;
++import com.dmove.moveseye.common.exception.ForbiddenError;
++import com.dmove.moveseye.license.web.annotation.RequiresFeature;
++import com.dmove.moveseye.user.domain.UserRole;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyDeleteReqDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyGroupUpsertReqDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyUpsertReqDto;
++import java.util.List;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.extension.ExtendWith;
++import org.mockito.InjectMocks;
++import org.mockito.Mock;
++import org.mockito.junit.jupiter.MockitoExtension;
++
++/** 프록시·프록시 그룹 컨트롤러 — 기본 기능(라이선스 게이트 없음) + 관리자 가드. 비admin은 ForbiddenError, 서비스는 안 부른다. */
++@ExtendWith(MockitoExtension.class)
++class ZabbixProxyManageControllerTest {
++
++    @Mock ZabbixProxyManageService proxyService;
++    @Mock ZabbixProxyGroupManageService groupService;
++    @InjectMocks ZabbixProxyManageController proxies;
++    @InjectMocks ZabbixProxyGroupManageController groups;
++
++    private static TokenUserInfo user(UserRole role) {
++        return TokenUserInfo.builder().id(1).userRole(role).build();
++    }
++
++    @Test
++    void basicFeatureHasNoLicenseGate() {
++        assertThat(ZabbixProxyManageController.class.getAnnotation(RequiresFeature.class)).isNull();
++        assertThat(ZabbixProxyGroupManageController.class.getAnnotation(RequiresFeature.class)).isNull();
++    }
++
++    @Test
++    void nonAdminIsForbiddenOnEveryEndpoint() {
++        TokenUserInfo u = user(UserRole.USER);
++        ProxyDeleteReqDto del = new ProxyDeleteReqDto();
++        del.setIds(List.of("1"));
++        assertThatThrownBy(() -> proxies.list(u)).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> proxies.options(u)).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> proxies.get(u, "1")).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> proxies.create(u, new ProxyUpsertReqDto())).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> proxies.update(u, "1", new ProxyUpsertReqDto())).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> proxies.delete(u, del)).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> groups.list(u)).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> groups.get(u, "1")).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> groups.create(u, new ProxyGroupUpsertReqDto())).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> groups.update(u, "1", new ProxyGroupUpsertReqDto())).isInstanceOf(ForbiddenError.class);
++        assertThatThrownBy(() -> groups.delete(u, del)).isInstanceOf(ForbiddenError.class);
++        verifyNoInteractions(proxyService, groupService);
++    }
++
++    @Test
++    void adminListDelegates() {
++        List<ManagedProxyDto> rows = List.of();
++        when(proxyService.list()).thenReturn(rows);
++        assertThat(proxies.list(user(UserRole.ADMIN)).getData()).isSameAs(rows);
++    }
++}
+diff --git a/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageServiceTest.java b/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageServiceTest.java
+new file mode 100644
+index 0000000..a50e97e
+--- /dev/null
++++ b/src/test/java/com/dmove/moveseye/zabbixadmin/ZabbixProxyManageServiceTest.java
+@@ -0,0 +1,457 @@
++package com.dmove.moveseye.zabbixadmin;
++
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.assertj.core.api.Assertions.assertThatThrownBy;
++import static org.mockito.ArgumentMatchers.any;
++import static org.mockito.ArgumentMatchers.anyString;
++import static org.mockito.ArgumentMatchers.argThat;
++import static org.mockito.ArgumentMatchers.eq;
++import static org.mockito.Mockito.lenient;
++import static org.mockito.Mockito.never;
++import static org.mockito.Mockito.verify;
++import static org.mockito.Mockito.when;
++
++import com.dmove.moveseye.auth.security.ActorResolver;
++import com.dmove.moveseye.common.exception.ApiError;
++import com.dmove.moveseye.zabbix.alertaction.ZabbixActionService;
++import com.dmove.moveseye.zabbix.discovery.ZabbixDiscoveryService;
++import com.dmove.moveseye.zabbix.identity.user.ZabbixUserService;
++import com.dmove.moveseye.zabbix.proxy.ZabbixProxyGroupService;
++import com.dmove.moveseye.zabbix.proxy.ZabbixProxyService;
++import com.dmove.moveseye.zabbix.settings.ZabbixSettingsService;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLog;
++import com.dmove.moveseye.zabbixadmin.domain.ZabbixChangeLogRepository;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDetailDto;
++import com.dmove.moveseye.zabbixadmin.dto.ManagedProxyDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyOptionsDto;
++import com.dmove.moveseye.zabbixadmin.dto.ProxyUpsertReqDto;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.stream.IntStream;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.DisplayName;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.extension.ExtendWith;
++import org.mockito.ArgumentCaptor;
++import org.mockito.Captor;
++import org.mockito.InjectMocks;
++import org.mockito.Mock;
++import org.mockito.junit.jupiter.MockitoExtension;
++
++@ExtendWith(MockitoExtension.class)
++@DisplayName("ZabbixProxyManageService")
++class ZabbixProxyManageServiceTest {
++
++    @Mock private ZabbixProxyService proxyService;
++    @Mock private ZabbixProxyGroupService proxyGroupService;
++    @Mock private ZabbixDiscoveryService discoveryService;
++    @Mock private ZabbixActionService actionService;
++    @Mock private ZabbixSettingsService settingsService;
++    @Mock private ZabbixUserService zabbixUserService;
++    @Mock private ZabbixChangeLogRepository changeLogRepository;
++    @Mock private ActorResolver actorResolver;
++    @InjectMocks private ZabbixProxyManageService service;
++    @Captor private ArgumentCaptor<Map<String, Object>> paramsCaptor;
++    @Captor private ArgumentCaptor<ZabbixChangeLog> logCaptor;
++
++    private static final Map<String, String> GLOBAL = Map.of("zabbix_agent", "3s", "simple_check", "3s", "snmp_agent", "3s",
++            "external_check", "3s", "db_monitor", "3s", "http_agent", "10s", "ssh_agent", "3s", "telnet_agent", "3s",
++            "script", "3s", "browser", "60s");
++
++    @BeforeEach
++    void setUp() {
++        lenient().when(zabbixUserService.getSuperAdminToken()).thenReturn("svc");
++        lenient().when(proxyGroupService.getRaw(anyString(), any()))
++                .thenReturn(List.of(Map.of("proxy_groupid", "1", "name", "Seoul")));
++        lenient().when(discoveryService.getRulesRaw(anyString(), any())).thenReturn(List.of());
++        lenient().when(actionService.getRaw(anyString(), any())).thenReturn(List.of());
++    }
++
++    /** 실측 모양(7.0.6 proxy.get output extend). PSK 필드는 나오지 않는다. */
++    private static Map<String, Object> raw(String id, String name, String mode) {
++        Map<String, Object> p = new HashMap<>();
++        p.put("proxyid", id); p.put("name", name); p.put("proxy_groupid", "0"); p.put("local_address", ""); p.put("local_port", "10051");
++        p.put("operating_mode", mode); p.put("allowed_addresses", ""); p.put("address", "127.0.0.1"); p.put("port", "10051");
++        p.put("description", ""); p.put("tls_connect", "1"); p.put("tls_accept", "1"); p.put("tls_issuer", ""); p.put("tls_subject", "");
++        p.put("custom_timeouts", "0");
++        for (String k : ZabbixProxyManageService.TIMEOUT_KEYS) p.put("timeout_" + k, "");
++        p.put("lastaccess", "0"); p.put("version", "0"); p.put("compatibility", "0"); p.put("state", "0");
++        return p;
++    }
++
++    private static ProxyUpsertReqDto req() {
++        return new ProxyUpsertReqDto();
++    }
++
++    // ---------------------------------------------------------------- 응답 변환
++
++    @Test
++    @DisplayName("list — 상태·호환성·버전 이름, 그룹 이름 조인, 개수 셀렉터, lastaccess 0은 null")
++    void listMapsStateVersionAndGroup() {
++        Map<String, Object> a = raw("1", "proxy-a", "0");
++        a.put("proxy_groupid", "1"); a.put("state", "2"); a.put("version", "70013"); a.put("compatibility", "2");
++        a.put("lastaccess", "1790846907"); a.put("hosts", "41"); a.put("assignedHosts", "3");
++        a.put("tls_accept", "3");
++        Map<String, Object> b = raw("2", "proxy-b", "1");
++        b.put("hosts", "0"); b.put("assignedHosts", "0"); b.put("tls_connect", "4");
++        when(proxyService.getRaw(anyString(), paramsCaptor.capture())).thenReturn(List.of(a, b));
++
++        List<ManagedProxyDto> list = service.list();
++
++        assertThat(paramsCaptor.getValue()).containsEntry("selectHosts", "count").containsEntry("selectAssignedHosts", "count");
++        ManagedProxyDto pa = list.get(0);
++        assertThat(pa.state()).isEqualTo("ONLINE");
++        assertThat(pa.version()).isEqualTo("7.0.13");
++        assertThat(pa.compatibility()).isEqualTo("OUTDATED");
++        assertThat(pa.proxyGroup()).isEqualTo(new ManagedProxyDto.Ref("1", "Seoul"));
++        assertThat(pa.lastAccess()).isEqualTo(1790846907L);
++        assertThat(pa.hostCount()).isEqualTo(41);
++        assertThat(pa.assignedHostCount()).isEqualTo(3);
++        assertThat(pa.pskConfigured()).as("액티브 tls_accept 3 = 없음+PSK").isTrue();
++        ManagedProxyDto pb = list.get(1);
++        assertThat(pb.state()).isEqualTo("UNKNOWN");
++        assertThat(pb.version()).isNull();
++        assertThat(pb.lastAccess()).isNull();
++        assertThat(pb.proxyGroup()).isNull();
++        assertThat(pb.pskConfigured()).as("패시브 인증서는 PSK 아님").isFalse();
++    }
++
++    @Test
++    @DisplayName("version — 70013 → 7.0.13, 60400 → 6.4.0, 0·형식 불명은 null")
++    void versionFormat() {
++        assertThat(ZabbixProxyManageService.version("70013")).isEqualTo("7.0.13");
++        assertThat(ZabbixProxyManageService.version(60400)).isEqualTo("6.4.0");
++        assertThat(ZabbixProxyManageService.version("0")).isNull();
++        assertThat(ZabbixProxyManageService.version("x")).isNull();
++    }
++
++    @Test
++    @DisplayName("get — 호스트 이름순·500건에서 자름(개수는 전체), 디스커버리 규칙, 타임아웃 10종")
++    void getCapsHostsAndJoinsRules() {
++        Map<String, Object> p = raw("1", "proxy-a", "0");
++        List<Map<String, Object>> hosts = new ArrayList<>();
++        IntStream.range(0, 501).forEach(i -> hosts.add(Map.of("hostid", String.valueOf(10000 + i), "name", String.format("h%04d", 500 - i))));
++        p.put("hosts", hosts);
++        p.put("assignedHosts", List.of());
++        p.put("custom_timeouts", "1"); p.put("timeout_zabbix_agent", "20s");
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of(p));
++        when(discoveryService.getRulesRaw(anyString(), paramsCaptor.capture()))
++                .thenReturn(List.of(Map.of("druleid", "3", "name", "10-220-VMs", "proxyid", "1")));
++
++        ManagedProxyDetailDto d = service.get("1");
++
++        assertThat(d.summary().hostCount()).isEqualTo(501);
++        assertThat(d.hosts()).hasSize(500);
++        assertThat(d.hosts().get(0).name()).isEqualTo("h0000");
++        assertThat(d.hostsTruncated()).isTrue();
++        assertThat(d.discoveryRules()).containsExactly(new ManagedProxyDto.Ref("3", "10-220-VMs"));
++        assertThat(paramsCaptor.getValue()).containsEntry("filter", Map.of("proxyid", List.of("1")));
++        assertThat(d.timeouts()).hasSize(10).containsEntry("zabbix_agent", "20s").containsEntry("browser", "");
++    }
++
++    @Test
++    @DisplayName("get — 없으면 PROXY_NOT_FOUND")
++    void getNotFound() {
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of());
++        assertThatThrownBy(() -> service.get("9")).isInstanceOf(ApiError.class)
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_NOT_FOUND");
++    }
++
++    @Test
++    @DisplayName("options — 그룹 이름순 + 전역 타임아웃(접두사 뗌), settings.get 실패면 빈 객체")
++    void optionsGroupsAndGlobalTimeouts() {
++        when(proxyGroupService.getRaw(anyString(), any())).thenReturn(List.of(
++                Map.of("proxy_groupid", "2", "name", "busan"), Map.of("proxy_groupid", "1", "name", "Andong")));
++        Map<String, Object> s = new LinkedHashMap<>();
++        GLOBAL.forEach((k, v) -> s.put("timeout_" + k, v));
++        when(settingsService.get(anyString(), any())).thenReturn(s);
++        ProxyOptionsDto o = service.options();
++        assertThat(o.proxyGroups()).extracting(ManagedProxyDto.Ref::name).containsExactly("Andong", "busan");
++        assertThat(o.globalTimeouts()).containsEntry("http_agent", "10s").hasSize(10);
++
++        when(settingsService.get(anyString(), any())).thenThrow(new RuntimeException("no permission"));
++        assertThat(service.options().globalTimeouts()).isEmpty();
++    }
++
++    // ---------------------------------------------------------------- 요청 → params
++
++    @Test
++    @DisplayName("생성 — name·operating_mode 필수")
++    void createRequiresNameAndMode() {
++        ProxyUpsertReqDto r = req();
++        r.setOperatingMode(0);
++        assertThatThrownBy(() -> service.create(r, null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_NAME_REQUIRED");
++        ProxyUpsertReqDto r2 = req();
++        r2.setName("p");
++        assertThatThrownBy(() -> service.create(r2, null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_MODE_INVALID");
++        r2.setOperatingMode(2);
++        assertThatThrownBy(() -> service.create(r2, null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_MODE_INVALID");
++        verify(proxyService, never()).create(anyString(), any());
++    }
++
++    @Test
++    @DisplayName("🔴 모드별 정규화 — 액티브는 tls_connect=1·address/port 버림, 패시브는 tls_accept=1·allowed_addresses 버림")
++    void normalizesTlsAndAddressByMode() {
++        ProxyUpsertReqDto a = req();
++        a.setName("a"); a.setOperatingMode(0); a.setAllowedAddresses(" 10.0.0.5 "); a.setAddress("10.0.0.9"); a.setPort("10051");
++        a.setTlsConnect(4); a.setTlsAccept(1);
++        Map<String, Object> pa = ZabbixProxyManageService.toParams(a, null, () -> GLOBAL);
++        assertThat(pa).containsEntry("tls_connect", 1).containsEntry("tls_accept", 1).containsEntry("allowed_addresses", "10.0.0.5")
++                .doesNotContainKeys("address", "port");
++
++        ProxyUpsertReqDto p = req();
++        p.setName("p"); p.setOperatingMode(1); p.setAllowedAddresses("10.0.0.5"); p.setAddress("10.0.0.9"); p.setPort("10051");
++        p.setTlsConnect(4); p.setTlsAccept(6);
++        Map<String, Object> pp = ZabbixProxyManageService.toParams(p, null, () -> GLOBAL);
++        assertThat(pp).containsEntry("tls_connect", 4).containsEntry("tls_accept", 1).containsEntry("address", "10.0.0.9")
++                .doesNotContainKey("allowed_addresses");
++    }
++
++    @Test
++    @DisplayName("🔴 PSK — 새로 켜면 식별자·값 둘 다 필수(생성)")
++    void pskRequiredOnCreate() {
++        ProxyUpsertReqDto r = req();
++        r.setName("a"); r.setOperatingMode(0); r.setTlsAccept(2); r.setTlsPskIdentity("id1");
++        assertThatThrownBy(() -> ZabbixProxyManageService.toParams(r, null, () -> GLOBAL))
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_PSK_REQUIRED");
++        r.setTlsPsk("0123456789abcdef0123456789abcdef");
++        assertThat(ZabbixProxyManageService.toParams(r, null, () -> GLOBAL))
++                .containsEntry("tls_psk_identity", "id1").containsEntry("tls_psk", "0123456789abcdef0123456789abcdef");
++    }
++
++    @Test
++    @DisplayName("🔴 PSK — 이미 켜져 있으면 비워도 유지(모드를 바꿔도 결과가 PSK면 유지), 꺼져 있었으면 다시 필수")
++    void pskKeepVersusReenable() {
++        Map<String, Object> withPsk = raw("1", "a", "0");
++        withPsk.put("tls_accept", "2");
++        ProxyUpsertReqDto keep = req();
++        keep.setTlsAccept(3); keep.setTlsPskIdentity(""); keep.setTlsPsk("");
++        assertThat(ZabbixProxyManageService.toParams(keep, withPsk, () -> GLOBAL))
++                .containsEntry("tls_accept", 3).doesNotContainKeys("tls_psk_identity", "tls_psk");
++
++        Map<String, Object> noPsk = raw("1", "a", "0");
++        ProxyUpsertReqDto turnOn = req();
++        turnOn.setTlsAccept(2);
++        assertThatThrownBy(() -> ZabbixProxyManageService.toParams(turnOn, noPsk, () -> GLOBAL))
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_PSK_REQUIRED");
++
++        Map<String, Object> passivePsk = raw("1", "a", "1");
++        passivePsk.put("tls_connect", "2");
++        ProxyUpsertReqDto switchMode = req();
++        switchMode.setOperatingMode(0); switchMode.setTlsAccept(2);
++        assertThat(ZabbixProxyManageService.toParams(switchMode, passivePsk, () -> GLOBAL))
++                .as("결과가 계속 PSK면 Zabbix가 PSK를 유지한다(실측) — 다시 받지 않는다")
++                .containsEntry("operating_mode", 0).containsEntry("tls_accept", 2).containsEntry("tls_connect", 1)
++                .doesNotContainKeys("tls_psk_identity", "tls_psk");
++    }
++
++    @Test
++    @DisplayName("🔴 암호화를 쓰던 프록시의 모드만 바꾸면 PROXY_TLS_REQUIRED — 암호화가 조용히 꺼지지 않게")
++    void modeSwitchRequiresNewTlsWhenEncrypted() {
++        Map<String, Object> passivePsk = raw("1", "a", "1");
++        passivePsk.put("tls_connect", "2");
++        ProxyUpsertReqDto onlyMode = req();
++        onlyMode.setOperatingMode(0);
++        assertThatThrownBy(() -> ZabbixProxyManageService.toParams(onlyMode, passivePsk, () -> GLOBAL))
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_TLS_REQUIRED");
++
++        Map<String, Object> activeCert = raw("1", "a", "0");
++        activeCert.put("tls_accept", "4");
++        ProxyUpsertReqDto toPassive = req();
++        toPassive.setOperatingMode(1); toPassive.setTlsAccept(4);
++        assertThatThrownBy(() -> ZabbixProxyManageService.toParams(toPassive, activeCert, () -> GLOBAL))
++                .as("반대편(tls_accept)만 보내도 새 모드의 방식(tls_connect)이 없으면 거부")
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_TLS_REQUIRED");
++    }
++
++    @Test
++    @DisplayName("모드 전환 — 반대편 TLS 필드를 1로 함께 보낸다")
++    void modeSwitchResetsOtherTlsField() {
++        Map<String, Object> active = raw("1", "a", "0");
++        ProxyUpsertReqDto r = req();
++        r.setOperatingMode(1); r.setAddress("10.0.0.9");
++        Map<String, Object> p = ZabbixProxyManageService.toParams(r, active, () -> GLOBAL);
++        assertThat(p).containsEntry("operating_mode", 1).containsEntry("tls_accept", 1).containsEntry("address", "10.0.0.9");
++    }
++
++    @Test
++    @DisplayName("그룹 — 넣으면 local_address 필수(현재 값 있으면 통과), 빼면 local_*를 보내지 않음")
++    void groupNeedsLocalAddress() {
++        Map<String, Object> cur = raw("1", "a", "0");
++        ProxyUpsertReqDto join = req();
++        join.setProxyGroupid("1");
++        assertThatThrownBy(() -> ZabbixProxyManageService.toParams(join, cur, () -> GLOBAL))
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_LOCAL_ADDRESS_REQUIRED");
++        join.setLocalAddress(" 10.0.0.5 "); join.setLocalPort("10052");
++        assertThat(ZabbixProxyManageService.toParams(join, cur, () -> GLOBAL))
++                .containsEntry("proxy_groupid", "1").containsEntry("local_address", "10.0.0.5").containsEntry("local_port", "10052");
++
++        Map<String, Object> inGroup = raw("1", "a", "0");
++        inGroup.put("proxy_groupid", "1"); inGroup.put("local_address", "10.0.0.5");
++        ProxyUpsertReqDto descOnly = req();
++        descOnly.setDescription("x");
++        assertThat(ZabbixProxyManageService.toParams(descOnly, inGroup, () -> GLOBAL)).containsOnlyKeys("description");
++
++        ProxyUpsertReqDto leave = req();
++        leave.setProxyGroupid(""); leave.setLocalAddress("10.0.0.5"); leave.setLocalPort("10052");
++        assertThat(ZabbixProxyManageService.toParams(leave, inGroup, () -> GLOBAL))
++                .containsEntry("proxy_groupid", "0").doesNotContainKeys("local_address", "local_port");
++    }
++
++    @Test
++    @DisplayName("🔴 사용자 지정 타임아웃 — 10개 전부 보낸다(빠진 키는 현재 값 → 전역 값)")
++    void customTimeoutsFillAllTen() {
++        Map<String, Object> cur = raw("1", "a", "0");
++        cur.put("custom_timeouts", "1"); cur.put("timeout_simple_check", "7s");
++        for (String k : ZabbixProxyManageService.TIMEOUT_KEYS) if (!"simple_check".equals(k)) cur.put("timeout_" + k, "");
++        ProxyUpsertReqDto r = req();
++        r.setTimeouts(Map.of("zabbix_agent", "5s"));
++        Map<String, Object> p = ZabbixProxyManageService.toParams(r, cur, () -> GLOBAL);
++        assertThat(p).containsEntry("timeout_zabbix_agent", "5s").containsEntry("timeout_simple_check", "7s")
++                .containsEntry("timeout_http_agent", "10s").containsEntry("timeout_browser", "60s");
++        assertThat(p.keySet().stream().filter(k -> k.startsWith("timeout_"))).hasSize(10);
++
++        ProxyUpsertReqDto off = req();
++        off.setCustomTimeouts(0); off.setTimeouts(Map.of("zabbix_agent", "5s"));
++        assertThat(ZabbixProxyManageService.toParams(off, cur, () -> GLOBAL))
++                .containsEntry("custom_timeouts", 0).doesNotContainKey("timeout_zabbix_agent");
++
++        ProxyUpsertReqDto untouched = req();
++        untouched.setDescription("x");
++        assertThat(ZabbixProxyManageService.toParams(untouched, cur, () -> {
++            throw new AssertionError("타임아웃을 안 건드리면 전역 값을 읽지 않는다");
++        })).containsOnlyKeys("description");
++    }
++
++    @Test
++    @DisplayName("인증서를 안 쓰면 발급자·주체를 보내지 않는다(비어 있지 않으면 Zabbix 거부), 쓰면 보낸다")
++    void certFieldsOnlyWithCertificate() {
++        Map<String, Object> cert = raw("1", "a", "0");
++        cert.put("tls_accept", "4"); cert.put("tls_issuer", "CN=CA");
++        ProxyUpsertReqDto off = req();
++        off.setTlsAccept(1); off.setTlsIssuer("CN=CA"); off.setTlsSubject("CN=p");
++        assertThat(ZabbixProxyManageService.toParams(off, cert, () -> GLOBAL))
++                .containsEntry("tls_accept", 1).doesNotContainKeys("tls_issuer", "tls_subject");
++
++        ProxyUpsertReqDto keep = req();
++        keep.setTlsAccept(4); keep.setTlsIssuer("CN=CA2"); keep.setTlsSubject("");
++        assertThat(ZabbixProxyManageService.toParams(keep, cert, () -> GLOBAL))
++                .containsEntry("tls_issuer", "CN=CA2").containsEntry("tls_subject", "");
++    }
++
++    @Test
++    @DisplayName("custom_timeouts 0·1 밖의 값은 그대로 보낸다(끄기로 바꾸지 않음 — Zabbix가 거부)")
++    void invalidCustomTimeoutsPassedThrough() {
++        Map<String, Object> cur = raw("1", "a", "0");
++        ProxyUpsertReqDto r = req();
++        r.setCustomTimeouts(2);
++        assertThat(ZabbixProxyManageService.toParams(r, cur, () -> GLOBAL)).containsEntry("custom_timeouts", 2);
++    }
++
++    @Test
++    @DisplayName("수정에서 보낸 빈 주소는 그대로 보낸다(조용히 유지하지 않음), 생성의 빈 값은 생략")
++    void emptyValuesOnUpdateAreSent() {
++        Map<String, Object> passive = raw("1", "a", "1");
++        ProxyUpsertReqDto r = req();
++        r.setAddress(" "); r.setPort("");
++        assertThat(ZabbixProxyManageService.toParams(r, passive, () -> GLOBAL)).containsEntry("address", "").containsEntry("port", "");
++
++        ProxyUpsertReqDto c = req();
++        c.setName("p"); c.setOperatingMode(1); c.setAddress(""); c.setPort("");
++        assertThat(ZabbixProxyManageService.toParams(c, null, () -> GLOBAL)).doesNotContainKeys("address", "port");
++    }
++
++    // ---------------------------------------------------------------- 쓰기·이력
++
++    @Test
++    @DisplayName("🔴 생성 이력에 PSK 값을 남기지 않는다(***)")
++    void createLogMasksPsk() {
++        ProxyUpsertReqDto r = req();
++        r.setName("a"); r.setOperatingMode(0); r.setTlsAccept(2);
++        r.setTlsPskIdentity("secret-id"); r.setTlsPsk("0123456789abcdef0123456789abcdef");
++        when(proxyService.create(anyString(), any())).thenReturn("5");
++        Map<String, Object> created = raw("5", "a", "0");
++        created.put("tls_accept", "2"); created.put("hosts", List.of()); created.put("assignedHosts", List.of());
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of(created));
++
++        ManagedProxyDetailDto d = service.create(r, null);
++
++        assertThat(d.summary().pskConfigured()).isTrue();
++        verify(changeLogRepository).save(logCaptor.capture());
++        ZabbixChangeLog log = logCaptor.getValue();
++        assertThat(log.getEntityType()).isEqualTo(ZabbixChangeLog.ENTITY_PROXY);
++        assertThat(log.getPayload()).containsEntry("tls_psk_identity", "***").containsEntry("tls_psk", "***");
++        assertThat(log.getPayload().toString()).doesNotContain("secret-id", "0123456789abcdef");
++    }
++
++    @Test
++    @DisplayName("수정 — proxyid를 붙여 보내고 이력엔 바뀐 필드 목록")
++    void updateSendsIdAndLogsFields() {
++        Map<String, Object> cur = raw("1", "a", "0");
++        cur.put("hosts", List.of()); cur.put("assignedHosts", List.of());
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of(cur));
++        ProxyUpsertReqDto r = req();
++        r.setDescription("seoul");
++        service.update("1", r, null);
++        verify(proxyService).update(eq("svc"), paramsCaptor.capture());
++        assertThat(paramsCaptor.getValue()).containsEntry("proxyid", "1").containsEntry("description", "seoul");
++        verify(changeLogRepository).save(logCaptor.capture());
++        assertThat(logCaptor.getValue().getPayload()).containsEntry("fields", List.of("description")).doesNotContainKey("proxyid");
++    }
++
++    @Test
++    @DisplayName("🔴 삭제 — 하나라도 쓰이면 아무것도 지우지 않고 사용처를 이름으로(호스트 3개까지 + 외)")
++    void deleteBlockedWhenInUse() {
++        Map<String, Object> busy = new HashMap<>(Map.of("proxyid", "1", "name", "proxy-a"));
++        busy.put("hosts", List.of(Map.of("hostid", "1", "name", "d"), Map.of("hostid", "2", "name", "a"),
++                Map.of("hostid", "3", "name", "c"), Map.of("hostid", "4", "name", "b")));
++        Map<String, Object> free = new HashMap<>(Map.of("proxyid", "2", "name", "proxy-b"));
++        free.put("hosts", List.of());
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of(busy, free));
++        when(discoveryService.getRulesRaw(anyString(), any()))
++                .thenReturn(List.of(Map.of("druleid", "3", "name", "10-220-VMs", "proxyid", "2")));
++
++        assertThatThrownBy(() -> service.delete(List.of("1", "2"), null))
++                .isInstanceOf(ApiError.class)
++                .hasMessageContaining("proxy-a ← 호스트 4개(a, b, c 외)")
++                .hasMessageContaining("proxy-b ← 디스커버리 규칙 10-220-VMs")
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_IN_USE");
++        verify(proxyService, never()).delete(anyString(), any());
++    }
++
++    @Test
++    @DisplayName("🔴 삭제 — 액션의 프록시 조건(conditiontype 20)도 사용처로 막는다")
++    void deleteBlockedByActionCondition() {
++        Map<String, Object> free = new HashMap<>(Map.of("proxyid", "2", "name", "proxy-b"));
++        free.put("hosts", List.of());
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of(free));
++        when(actionService.getRaw(anyString(), any())).thenReturn(List.of(
++                Map.of("actionid", "7", "name", "Auto registration", "filter", Map.of("conditions", List.of(
++                        Map.of("conditiontype", "20", "value", "2"), Map.of("conditiontype", "22", "value", "2")))),
++                Map.of("actionid", "8", "name", "Other proxy", "filter", Map.of("conditions", List.of(
++                        Map.of("conditiontype", "20", "value", "9"))))));
++
++        assertThatThrownBy(() -> service.delete(List.of("2"), null))
++                .hasMessageContaining("proxy-b ← 액션 Auto registration")
++                .hasMessageNotContaining("Other proxy")
++                .extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_IN_USE");
++        verify(proxyService, never()).delete(anyString(), any());
++    }
++
++    @Test
++    @DisplayName("삭제 — 빈 목록·없는 id 거부, 정상은 지우고 건마다 이력")
++    void deleteValidationAndHappyPath() {
++        assertThatThrownBy(() -> service.delete(List.of(" "), null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_IDS_REQUIRED");
++        Map<String, Object> free = new HashMap<>(Map.of("proxyid", "2", "name", "proxy-b"));
++        free.put("hosts", List.of());
++        when(proxyService.getRaw(anyString(), any())).thenReturn(List.of(free));
++        assertThatThrownBy(() -> service.delete(List.of("2", "3"), null)).extracting(e -> ((ApiError) e).getErrorCode()).isEqualTo("PROXY_NOT_FOUND");
++
++        assertThat(service.delete(List.of("2", "2"), null).count()).isEqualTo(1);
++        verify(proxyService).delete("svc", List.of("2"));
++        verify(changeLogRepository).save(argThat(l -> ZabbixChangeLog.ACTION_DELETE.equals(l.getAction()) && "proxy-b".equals(l.getEntityName())));
++    }
++}

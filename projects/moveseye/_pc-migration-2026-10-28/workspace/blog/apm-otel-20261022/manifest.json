@@ -1,0 +1,36 @@
+{
+  "articles": [
+    {
+      "file": "01-opentelemetry",
+      "title": "OpenTelemetry로 이해하는 애플리케이션 관측의 기본",
+      "characters": 7060
+    },
+    {
+      "file": "02-moveseye-apm",
+      "title": "OpenTelemetry를 활용한 MovesEye APM 구축 이야기",
+      "characters": 6240
+    }
+  ],
+  "diagrams": [
+    {
+      "name": "01-otel-pipeline",
+      "width": 1440,
+      "height": 840
+    },
+    {
+      "name": "02-trace-waterfall",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "03-moveseye-paths",
+      "width": 1440,
+      "height": 1090
+    },
+    {
+      "name": "04-active-requests",
+      "width": 1440,
+      "height": 900
+    }
+  ]
+}

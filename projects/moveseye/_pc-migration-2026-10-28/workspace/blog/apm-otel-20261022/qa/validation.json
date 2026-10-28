@@ -1,0 +1,57 @@
+{
+  "svg_text_overflows": [],
+  "broken_links": [],
+  "html": [
+    {
+      "file": "index.html",
+      "broken_images": [],
+      "js_errors": [],
+      "mobile_overflow": false
+    },
+    {
+      "file": "01-opentelemetry.html",
+      "broken_images": [],
+      "js_errors": [],
+      "markdown_copy_matches": true,
+      "body_copy_has_title": true,
+      "body_copy_excludes_controls": true,
+      "mobile_overflow": false
+    },
+    {
+      "file": "02-moveseye-apm.html",
+      "broken_images": [],
+      "js_errors": [],
+      "markdown_copy_matches": true,
+      "body_copy_has_title": true,
+      "body_copy_excludes_controls": true,
+      "mobile_overflow": false
+    }
+  ],
+  "drawio": [
+    {
+      "file": "01-otel-pipeline.drawio",
+      "pages": 1,
+      "editable_cells": 35
+    },
+    {
+      "file": "02-trace-waterfall.drawio",
+      "pages": 1,
+      "editable_cells": 46
+    },
+    {
+      "file": "03-moveseye-paths.drawio",
+      "pages": 1,
+      "editable_cells": 65
+    },
+    {
+      "file": "04-active-requests.drawio",
+      "pages": 1,
+      "editable_cells": 43
+    },
+    {
+      "file": "opentelemetry-moveseye-diagrams.drawio",
+      "pages": 4,
+      "editable_cells": 189
+    }
+  ]
+}

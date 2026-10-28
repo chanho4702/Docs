@@ -1,0 +1,184 @@
+---
+type: project
+tags: [project, moveseye, dmove, monitoring, zabbix, spring-boot, react]
+created: 2026-06-01
+updated: 2026-10-19
+status: active
+---
+
+# MovesEye (DMOVE)
+
+> Zabbix 기반 **인프라 모니터링 대시보드**. 서버·네트워크 메트릭 수집(Zabbix) → API 프록시·가공 → 웹 시각화.
+> 로컬 경로: **`C:\solutions\moveseye-be-spring` (BE 정본, 2026-06-22 Spring 단일 채택)** · `C:\solutions\moveseyee_fe` (FE) · `C:\solutions\moveseye-be`(구 NestJS, 참조용 존치) · 메인 `master`
+> ⚠️ 아래 "기술 스택"의 NestJS 서술은 인수 시점(2026-06) 기준 — 현재 BE는 Spring Boot 3.3 + JPA/Flyway + Redis 멀티모듈(`app` / `engine-api` / `engine-zabbix`)이다.
+> 원격: Bitbucket `DMOVE_GIT/moveseye-be`, `DMOVE_GIT/moveseye-fe`
+
+## 개요
+- **목적**: Zabbix가 수집한 서버·네트워크 메트릭(CPU/메모리/디스크/네트워크/응답시간)을 현대적 대시보드 UX로 제공. 이벤트·알림, AWS 클라우드 인프라, 사용자·역할(권한) 관리 통합.
+- **기술 스택**: Spring Boot 3.3.5 · Java 17 · JPA/Flyway · PostgreSQL · Redis · engine-api/engine-zabbix (BE) / React 19 · Ant Design v5 · Vite · TanStack Query · Redux Toolkit · ECharts · MapLibre/Mapbox (FE). 구 NestJS는 참조 전용.
+- **외부 연동**: Zabbix(JSON-RPC), AWS(EC2/CloudWatch), Firebase(푸시), Twilio(SMS), Novu(알림), Azure.
+- **아키텍처**: FE → Spring app → PostgreSQL/Redis 또는 engine-api port → engine-zabbix → Zabbix. AWS 기능은 app에서 AWS API를 호출한다.
+- **상세 온보딩**: [[moveseye-overview]] · 문서 체계: [[moveseye-documentation-system]] · 설계 Q&A: [[moveseye-design-qa]]. 이 노트는 경험·결정·타임라인용.
+
+## 문서 체계
+
+- **APM·OpenTelemetry 기술 블로그 원고**: `C:/solutions/_workspace/blog/apm-otel-20261022/` — 개념 편·구축 편과 draw.io 도식 4장. [[2026-10-22-apm-otel-blog-kit]]
+
+- **최근 작업·APM 읽기 입구**: `C:/solutions/moveseye-docs/overview/start-here.md` — [[2026-10-05-documentation-apm-overview]]
+
+- **기능별 문서 링크 노드(MOC)**: [[무브스아이-기능-지도]] — 영역 15개 노드에 정본·설계·계약·보고·검수·Vault 링크 · 읽기용 사본 GitHub [[2026-10-07-docs-reading-repo]]
+- **제품 문서 정본**: `C:\solutions\moveseye-docs\README.md`
+- **문서 MOC·승격 규칙**: [[moveseye-documentation-system]]
+- **현재 구현의 이유를 묻는 Q&A**: [[moveseye-design-qa]]
+- **개발자 입문**: `C:\solutions\moveseye_개발자_온보딩.md`
+- **라이선스 운영·지원 가이드**(영업/CS 포함): [[license-guide]] — 정본 `_workspace/guide_license.md`, 게시처 Confluence
+- `_workspace`의 design·contract·E2E는 기능 완료 후 안정된 지식만 `moveseye-docs/features/`로 승격한다.
+
+## 핵심 결정 (Decisions)
+> 왜 이렇게 했는지. 나중에 "왜 이걸 이렇게 했지?" 할 때 보는 곳.
+
+- **통합형 풀스택 하네스 채택**: `C:\solutions` 루트에 be/fe/qa 팀 + 계약동기화 스킬 구성. FE 응답은 2단계 언래핑 필요. → [[2026-06-02-fullstack-harness]]
+- **호스트 그룹 = 평면 그룹 + `device_type` 태그 분류** (Zabbix nested group 미사용). → [[host-group-feature/README|호스트그룹]]
+- **호스트 그룹 목록 성능(N+1)은 보류**: 일괄조회 개선은 가치 있으나 *서버 캐시(Redis)* 도입은 YAGNI — 동시 사용자/그룹 규모가 작아 N+1 제거만으로 충분. patch 백업 후 롤백. → [[2026-06-04-host-group-audit]]
+- **다중 데이터소스 전환 — 논리 분리 지금·서버 분리 유예**: 수집 레이어를 capability 포트 4개(Metric/Inventory/Alert + ZabbixAdmin=제외)로 추상화, Gradle 멀티모듈 in-process. gRPC 별도 엔진 서버는 승격 조건(고객사 망 배치·부하·폴리글랏·팀 분리) 발생 시. 계약은 proto 호환 규칙으로 선설계. → [[2026-07-22-collector-engine-decision]] · 실행 결과 [[2026-07-28-collector-engine-phase1]]
+- **Zabbix 관리 IA = 완전 컨테이너 드릴다운**: 트리거 단독 메뉴·스코프 토글안을 폐기하고 호스트/템플릿 각각 목록→선택→서브탭[정보·아이템·트리거·디스커버리]로 통일. "무엇을 관리하나"가 아니라 "어디에 속한 것을 보나"가 실제 탐색 순서였다. → [[2026-07-22-zabbix-usability-menus]]
+- **지도 좌표의 원천은 Zabbix 인벤토리 하나**: 지도에서 편집해도 문서가 아니라 원천에 쓴다(문서 오버라이드는 "지도에선 A, 자산 화면에선 B"가 되므로 기각). → [[2026-07-29-geo-maps]]
+- **BE 패키지는 기능별 수직 분할**(레이어 폴더·전역 `domain/` 금지), 계약(`zabbix.*`)과 관리 화면(`zabbixadmin/`)은 FQN으로 구분. 정본 규칙·어휘 대응표는 `moveseye-be-spring/CLAUDE.md §0.5`. → [[2026-07-28-be-package-restructure]]
+- **상용화 방향**: STANDARD/PREMIUM 2티어 + 라이선스 키 **필수**, 단일 배포본 런타임 언락. → [[2026-07-29-scheduler-and-licensing]]
+- **만료는 잠금이 아니라 읽기 전용 — 단, 시간이 지나면 실시간이 닫힌다**: `GRACE`(전 기능 30일) → `EXPIRED`(읽기+실시간 30일) → `ARCHIVED`(읽기, DB만·영구). 모니터링 화면이 사실상 전부 Zabbix 실시간이라 "유지"도 "차단"도 곤란해서 **시간축으로 갈랐다**. → [[2026-08-06-license-kernel-design]]
+- **프리미엄 경계 = 수집층은 중립, 게이팅은 API층**: `MetricDomain.GPU`·카탈로그는 `engine-api`/`engine-zabbix`(Capability), `premium/`엔 컨트롤러·서비스만(Feature). → [[2026-08-06-license-kernel-design]]
+- **🔴 판정 값의 정본은 전부 키 하나 — DB는 표시용 사본**: 만료일까지 서명 안으로 넣고(`startsAt`+`expiresAt`), 등록 시점 계산(구 M-P12)을 폐기했다. 계약~설치 지연은 **발급 시 시작일을 미래로** 잡아 흡수한다 — 유연성을 런타임에서 발급 시점으로 옮겨야 서명 아래로 들어간다. 표준 `exp`는 **쓰지 않는다**(라이브러리가 서명 단계에서 거부해 유예 4단계가 증발). → [[2026-08-12-license-expiry-in-key]]
+- **역할 권한은 BE가 최종 판정, 공유 EP는 예외, 미연동 비관리자는 200+403, 회수는 세대+계열+행 잠금**(2026-09-17, ZM-157). 호스트 공용 차트 쓰기는 edit 필요(사용자 결정). → [[2026-09-17-zm157-permission-enforcement]]
+- **자빅스 호출 예산은 전역 정책 하나, 요청별 확대 금지 · 1콜 행 상한 < 보유 상한 · 분할은 새 API에만**(2026-09-17~21, ZM-159). 대용량 방어의 목적은 1회 호출 크기 통제이지 전량 수집 지원이 아니다("한 번에 다 가져올 일 없음 — 과하게 하지 말 것"). → [[2026-09-21-zm159-scale-call-guard]]
+- **APM 실시간은 "전량·휘발", 분석은 "샘플·보존"** — Collector `tail_sampling` 앞에서 라이브 분기 → BE 링 15분 → SSE 1초. 표시 상한=서버 보관 목표·첫 출시 HTTP SERVER만·첫 배포 BE 1대. 설계는 코덱스와 대화(r1~r3b)로 확정. → [[2026-09-23-apm-p5-realtime]]
+- **BE 재기동 회복력은 분리·Kafka가 아니라 세부 5건**(graceful+SSE `ContextClosedEvent`·429 admission·큐 넘침 가시화·STALE 기동 유예·큐 옵션). `sizer: bytes`·`max_elapsed_time 0` 폐기안 재론 금지. → [[2026-09-28-apm-ingest-resilience]]
+- **Redis 스탬피드 방어는 분산 락 대신 JVM single-flight**(설치형 고객사당 1벌) · Spring Cache 미도입(명시적 헬퍼). → [[2026-09-23-redis-cache-common]]
+- **APM 전체 검토 🔴6 조치는 지금 안 함**(2026-09-28 사용자 결정, 백로그). 착수 시 회복력 병합 뒤·V69+. → [[2026-09-28-apm-full-review]]
+- **APM 알람은 자빅스에서 분리한다 — 독자 알림 창구(발송)는 대기, 그 외 전부(outbox·채널 중립 전송·Zabbix가 첫 sink)·이력 보존 B안·🔴 자동 `item.delete` 금지(비활성화만)**(2026-09-30·10-10·10-12). → [[2026-10-01-apm-domain-review-sweep]] · [[2026-10-12-apm-alert-channel-neutral-delivery]]
+- **콜드 아카이브는 "보관 의무 고객 없음"(A안) 전제 + 못 떨구면 안 지우는 DROP 게이트, 꺼짐 = 옛 코드 그대로, 공통 기반은 premium 밖, 감사는 로그**(2026-10-01, ZM-156). 배포 전제 = 아카이브 볼륨 마운트. → [[2026-10-02-zm156-apm-cold-archive]]
+- **커스텀 지표 허용목록 1차는 이름만(차원 없음)·서비스당 50·같은 1m 테이블·직접 입력 없음; 상한의 정본은 DB 자리 원장이지 JVM 캐시가 아니다**(2026-10-13, ZM-155). → [[2026-10-19-zm155-apm-custom-metric-allowlist]]
+- **PostgreSQL ≥ 15 전제**(우리가 설치, `NULLS NOT DISTINCT`), 알람 중복 loser는 DELETE, outbox는 2차(2026-10-08). → [[2026-10-08-apm-alert-atomicity]]
+- **DB 모니터링(PREMIUM)은 Zabbix 템플릿 래핑이 아니라 BE 내장 JDBC 폴러**(세션·Top SQL·락·플랜, Oracle은 V$만·ASH/AWR 금지, 만료부터 폴러 정지)(2026-10-19 설계, 미결 Q1~Q21). → [[2026-10-19-db-monitoring-design]]
+- **GPU는 Zabbix 저장 3경로(DCGM·nvidia-smi·공식 플러그인) + 태그로 식별하는 MovesEye 프리셋 템플릿, Prometheus 배제**(2026-10-01 결정 → 10-13 2차 병합). → [[2026-09-17-gpu-monitoring-design]]
+
+## 타임라인 (작업 기록)
+
+- **2026-06-01** — 프로젝트 인수·구조 분석·온보딩 문서화. → [[moveseye-overview]]
+- **2026-06-01** — 실행 환경 정리(local/dev/qa, Docker, GitLab CI). → [[2026-06-01-runtime-environment]]
+- **2026-06-02** — BE 코드베이스 진단(빌드·테스트 222 PASS) + 착수 함정/정리 후보. → [[2026-06-02-be-codebase-audit]]
+- **2026-06-02** — 통합형 풀스택 하네스 구축(be/fe/qa 팀·계약동기화). → [[2026-06-02-fullstack-harness]]
+- **2026-06-02** — Zabbix Sync 로직 진단(정합성 7+효율 5+부채 1). → [[2026-06-02-zabbix-sync-audit]]
+- **2026-06-04** — 호스트 그룹 기능: 진단→버그 4건 픽스→상세/안전도 로직→카드·테이블 뷰(풀스택, Playwright PASS). → [[host-group-feature/README|호스트그룹 작업 README]]
+- **2026-06-05** — 넥센타이어 Zabbix 7.0 관리자 매뉴얼(원천 시스템) 정리. → [[zabbix-admin-manual-nexen]]
+- **2026-06-09** — Zabbix JSON-RPC API 개발자 레퍼런스(BE 호출 메서드 관점) 정리. → [[zabbix-api-reference]]
+- **2026-06-16~17** — 서버 모니터링 호스트별 **커스텀 차트**(항목선택·react-grid-layout 배치·DB 영속, Nest+Spring 병행) 구현 + UI 폴리싱. → [[2026-06-17-custom-chart]]
+- **2026-06-25** — 호스트 **라이브체크**(헬스체크 버튼: ping=BE 직접 OS ping·agent=자빅스 interface available) 풀스택 신설 + 디스크 사용률 `dependent.size` 계열 보강(FE/BE) + 커스텀차트 단위 정리·툴팁 카드밖. → [[2026-06-25-livecheck-disk-units]]
+- **2026-07-03** — **자산관리(Assets) 메뉴 통합 설계 정의서** 작성(Confluence ZM 기획 5건 스캔·통합 → `_workspace/design_assets-management.md`). Assets+Costs+Maps 3도메인, 미확정 11건 정리. → [[2026-07-03-assets-design-doc]]
+- **2026-07-06** — **dev 시크릿 .env→Vault 전환**: `dmove-vault` 컨테이너(파일 스토리지)+`secret/moveseye`(KV v2, 키명=.env 그대로)+Spring Cloud Vault 연동. VAULT_TOKEN만으로 bootRun(.env 수동 export 함정 해소), .env는 폴백 존치. → [[2026-07-06-vault-secrets]]
+- **2026-07-16** — **로그인/인증 보안 강화**: 취약점 10건 진단 → Phase A(OTP userId 바인딩·로그인/OTP rate limit·JWT 시크릿 ≥256bit 부팅가드·Swagger 운영 off·CORS 화이트리스트·사용자 열거 방지, curl 검증 완료) + Phase B(access 30분+refresh 8h 회전·HttpOnly/Secure/SameSite 쿠키·`/auth/refresh` 신설·logout 세션/refresh 무효화, BE curl 완전검증·FE 코드완료 tsc통과). 열린: FE 브라우저 E2E·Vault JWT_SECRET 교체·커밋. → [[2026-07-16-auth-hardening]] · [[session-auth-hardening]]
+- **2026-07-18** — **호스트 등록 관리**(첫 Zabbix 호스트 쓰기, 설정>호스트 등록 관리): `/hosts/manage` 7EP+V11 감사로그+syncOne 자산 자동생성+등록 직후 livecheck 결과 스텝. 동시 세션 회피 위해 **worktree(`feature/host-registration`)에서 개발, 본 트리 병합 대기**. E2E 9/10·버그 0. → [[2026-07-18-host-registration]]
+- **2026-07-08** — **자산관리(Assets) 코어** 설계+구현 1패스(자산=Zabbix 등록항목+custom, 스냅샷 모델·편집 소유권 분리·excluded soft delete). BE V5·API 9·FE 전부 신규. → [[2026-07-08-assets-management]]
+- **2026-07-13** — 자산관리 전수감사(MEDIUM 4건) → 내비 개편(대시보드 삭제) → **네트워크 맵**(draw.io식 작도, React Flow + V7 jsonb 문서형) 설계·구현·QA·커밋. → [[2026-07-13-network-maps]]
+- **2026-07-15~29** — **지리 맵(Geo Maps)**: 구현(경계면 QA 불일치 0) → 07-28 **좌표 편집 도입**(원천=Zabbix 인벤토리에 직접 쓰기, EP#10은 HostManageService 위임, V14) + 검토 결함 12건 해소(N+1·viewport 복원·클러스터 잠김·NaN 좌표 등). 커밋·푸시 완료. → [[2026-07-29-geo-maps]]
+- **2026-07-20~22** — **Zabbix 관리 기능 제품화**(ZM-86 7건: 아이템·템플릿/트리거/호스트 분류·태그/기기분류 DB관리형 V13/전파 렌즈/홈) + 메뉴 IA를 완전 컨테이너 드릴다운으로 재편. → [[2026-07-22-zabbix-usability-menus]]
+- **2026-07-22** — **다중 데이터소스 전환 방향 확정**(Zabbix+Prometheus+Datadog+Elastic): 결합도 실측(504파일 중 45% zabbix 참조·88파일 ID 누수) → 포트 4개 in-process 멀티모듈 확정, gRPC 엔진 서버 분리는 조건부 유예. 설계서 `_workspace/devdesign_collector-engine.md`(스트랭글러 7스텝). → [[2026-07-22-collector-engine-decision]]
+- **2026-07-23~28** — **수집 엔진 Phase 1 완주**(스텝 0~5): engine-api/engine-zabbix 멀티모듈, app→구현 **컴파일 의존 차단**, 570 테스트 green·런타임 응답 동등. 스텝 6(Prometheus 실검증)은 사용자 결정으로 보류. → [[2026-07-28-collector-engine-phase1]] · [[strangler-port-migration]]
+- **2026-07-28** — **BE 패키지 구조 정리 P1~P6** + Dockerfile 멀티모듈 복구. 패키지 규칙·어휘 대응표 문서화(BE `CLAUDE.md §0.5`). → [[2026-07-28-be-package-restructure]]
+- **2026-07-29** — **배치 스케줄 옵션화**(코드 cron→DB 설정 V15/V16, 실행 이력 + 건수 상한 정책) BE 구현·FE 진행 중 + **라이선스/에디션 설계서 v2**(2티어·단일 배포본·2레이어 게이팅, 구현 0). → [[2026-07-29-scheduler-and-licensing]]
+- **2026-08-03** — **구현·설계 교차감사 후속 메모**: P0 권한 fail-open/설정 비밀값 노출, 로컬 계정 인증, FE 오류 envelope, 스케줄러 false-green, 비용 비동기 업로드 계약 미완결, DB·Jest 테스트 공백을 우선순위화. → [[2026-08-03-implementation-risk-audit]]
+- **2026-08-06** — **라이선스 설계 재점검(v3→v4) + 커널 착수**: 미결 M1~M9 전건 확정, 실시간 조회 **단계적 차단** 신설, 프리미엄 경계·인터셉터 순서 명문화. 착수 직전 재실측이 전제 4건(V16→V20·`SchedulerJob` 시그니처 등)의 drift를 잡음. → [[2026-08-06-license-kernel-design]]
+- **2026-08-07** — **사내 VM 배포 복구**: JWT 시크릿 부팅 가드·Docker `80:3000`·PG18 dump→PG16 Flyway 호환을 해결하고, SPA fallback/CORS·HttpOnly cookie/Apache `/api` reverse proxy와 SELinux 503 원인을 진단했다. Zabbix 비연동 custom 자산 12건을 운영 DB에 seed. → [[2026-08-07-onprem-deployment-recovery]] · [[2026-08-07-flyway-pg-compat]]
+- **2026-08-10** — **라이선스 0단계 BE 커널 완주**(T3 검증→T4 판정→T5 게이트 2레이어→T6 포트 데코레이터→T7 배치·ArchUnit→T8 런타임). 커밋 6건·775 green. 성과의 대부분은 기능이 아니라 **"green인데 안 지켜지던 자리 6곳"**을 일부러 망가뜨려 찾아낸 것. → [[2026-08-10-license-kernel-implementation]] · [[test-false-safety-nets]]
+- **2026-08-10** — **운영 demo map seed**: 네트워크 맵 2개(41 nodes·27 links)와 지리 맵 3개(10 host placements·10 links)를 생성. 기존 좌표 snapshot만 재사용해 asset/Zabbix 원천을 수정하지 않았고, 격리 DB 구조검증→실제 홈/상세 브라우저 QA까지 완료. → [[2026-08-10-demo-map-seed]]
+- **2026-08-12** — **만료 시각을 키로 이관**(DB `UPDATE` 한 줄로 무한 연장되던 구멍 차단) + 발급기 **시작일 지정** + 자격증명 암호화(ZM-105, AES-256-GCM). BE `2839aed`·`698bd7f` / 발급기 `dee9c16` 푸시 완료. 구멍은 리뷰가 아니라 **"쉽게 설명해 봐"** 요구에서 드러났다. 운영·지원 가이드 [[license-guide]] 작성. → [[2026-08-12-license-expiry-in-key]]
+- **2026-08-26** — **클라우드 플릿 지표 확장**(5지표·CloudWatch 알람·EC2 목록/VPC/상세 뷰·홈위젯 `cloud_fleet`·스파크라인·낭비 카드, Codex 1라운드 🔴4 반영) → 실서버에서 디스크 null 발견(`DiskRead/WriteBytes`는 인스턴스 스토어 전용 → **`EBSRead/WriteBytes`** 교체) → "껐는데 CloudWatch 배지" 지적으로 **스위치를 CloudWatch 전역 스위치로 통일**(배지 `cloudwatch-off`·상세 시계열도 차단). 후속: 설정 저장 시 클라우드 쿼리 전부 무효화(`71bf2b0`)·목록 가로 스크롤 제거(`7bc64d2`). BE `3a33131`·`0000d45`·`e6e3199` / FE `72c531b`·`a8cae71`·`71bf2b0`·`7bc64d2`(미푸시). → [[2026-08-26-cloud-fleet-extras]]
+- **2026-08-19** — AI 어시스턴트 신설(별도 서버 moveseye-ai·툴 10개→41개·확인 게이트·LLM 설정 화면 연동) + MCP 계정 연동(OAuth 2.1·계정별 read/write 권한) + ko/en. → [[2026-08-19-ai-assistant-mcp]] · 안정성 Phase 1 [[2026-08-21-ai-assistant-resilience-phase1]] · 사용량 계량 [[2026-08-20-ai-usage-metering]] · 알람 인텔리전스 [[2026-08-21-ai-alert-intelligence]]
+- **2026-08-21** — 아키텍처 전면 평가(설치형·스케일아웃·게이트웨이): "코드는 설치형인데 배포는 SaaS"(설치 번들 부재가 최대 공백), **전용 API Gateway 미채택·nginx로 확정**. → [[2026-08-21-architecture-audit]]
+- **2026-08-24** — 모니터링 커버리지 화면·AI 분석과 데이터 소스 관리 IA 정리. → [[2026-08-21-monitoring-coverage-api]] · [[2026-08-21-monitoring-coverage-runtime-qa]] · 클라우드 조회 `awsResources.view` 권한 보호 [[2026-08-24-cloud-infra-permission]] · ZM-114 공통 오류 UX [[2026-08-25-zm114-error-ux]]
+- **2026-08-24~26** — 클라우드 모니터링 재구축(과금 0 기본선+유료 옵트인+EC2 소스 매트릭스) → [[2026-08-26-ec2-monitoring-sources-and-cloud-cost]] · 자산×클라우드 통합 [[2026-08-26-asset-cloud-integration]] · 자산 대시보드 [[2026-08-26-asset-dashboard]] · 차트 드릴다운 [[2026-08-27-chart-drilldown]]
+- **2026-08-26** — **APM 설계 v1→v3**(OTel Collector 확정·메뉴 13·차트 18종). → [[2026-08-26-apm-design]]
+- **2026-08-31~09-14** — **APM P1~P4 구현·검수·QA 완주**(#ZM-122): P1 수신·롤업·알람·수집기 화면 → P1.5 Live → P2 트레이스·서비스 맵 → 권한 옵션화 → P3 SLO·합성·메시징·리포트·AI 툴 → P4 RUM·K8s(코덱스 구현·Claude 검수). → [[2026-08-31-apm-p1-implementation]] · [[2026-09-02-apm-p2-traces]]
+- **2026-09-03~07** — **자빅스 부하 절감 에픽 ZM-123**(사본 서빙+15초 증분+SSE) 완주 + 후속 검토·LLD/로직 검수. → [[2026-09-07-zm123-load-relief-epic]] · [[2026-09-07-zabbix-load-next-steps]] · [[2026-09-07-logic-review]] · [[2026-09-07-lld-review]]
+- **2026-09-14** — **ZM-136 차트 증분 조회 에픽 인수 완주**(139~148, ZM-144만 이월). → [[2026-09-14-zm136-chart-incremental-handover]]
+- **2026-09-14~16** — APM 설치 가이드 확장(macOS·경로 입력·프로세서 옵션·포트) + FE 정비(ResizableDrawer 공통화·스케줄러 표·🔴 SLO 진입점 오판) + APM 위젯 대시보드. → [[2026-09-15-apm-install-guide-and-fe-polish]] · [[2026-09-15-apm-dashboards]] · Confluence 가이드 [[2026-09-15-apm-confluence-guide]]
+- **2026-09-14~21** — 셀프 APM으로 우리를 관측하다 나온 **백로그 5건**(이해도·리전 팬아웃·아카이빙·자체 점검·규모 관측 공백) 기록. → [[2026-09-16-apm-observability-backlogs]]
+- **2026-09-15~28** — **APM P5 「실시간 관제」**: 코덱스와 설계 대화 r1~r3b → R-P5 실측(R2 CPU FAIL → 출시 게이트) → P5.1 BE 7단계·P5.2 X-View·P5.3 대시보드·P5.3b 요청 흐름 무대·요청 걸림 장부(STUCK_REQUEST V67)·P5.6 비동기 링크 → SSE 동시 시청 상한 승격 → 09-23 런타임 실측·09-28 코덱스 반영. → [[2026-09-23-apm-p5-realtime]]
+- **2026-09-16~21** — **대용량 전수 감사(호스트 5천·아이템 1천만) → ZM-159 대용량 호출 방어 완주**(C1~C8·결함 4·C5 완전성, 코덱스 13회 검수, 부하 시험 설계). → [[2026-09-21-zm159-scale-call-guard]] · [[moveseye-history-scan-held-budget]]
+- **2026-09-16~21** — **권한 로직 전면 수정(ZM-157)**: 검토 3갈래(BE 코어·역할 관리·FE+AI) → 권한 칸 BE 강제·권한 상승/IDOR/오대상 수정·세션 세대+계열 회수·계정 경로 행 잠금·MCP 파괴 작업 차단 → Codex 5회(🔴 18건 반영) → 세 레포 병합·IT 429·MCP 12항목 실측(09-21). → [[2026-09-17-zm157-permission-enforcement]]
+- **2026-09-17** — 설계만: APM 보존 정책 [[2026-09-17-apm-retention-policy-design]] · GPU 모니터링 [[2026-09-17-gpu-monitoring-design]] · 09-19 라이선스 로직 검수 [[2026-09-19-license-logic-review]]
+- **2026-09-16~28** — **백로그 스프린트 ZM-151~156**(스냅샷 적재량·수집 주기·화면 자기설명·APM 내보내기 구현 4 + 설계 2) + 파생 ZM-167 리포트 관리 APM 탭 분리. 09-28 남은 일 전부 master 병합. → [[2026-09-22-zm151-156-backlog-sprint]]
+- **2026-09-22** — ZM-161 설정 메뉴 → 관리 콘솔 분리(FE) [[2026-09-22-zm161-admin-console]] · ZM-166 호스트 중복 이름 안내(기술명/표시명 두 축) [[2026-09-22-zm166-host-duplicate-name]]
+- **2026-09-23** — ZM-168 Redis 읽기-통과 캐시 공통화+스탬피드 방어, `common/redis` 집결. → [[2026-09-23-redis-cache-common]]
+- **2026-09-23~28** — **APM 수집 회복력**(BE 재기동·Collector 큐) 설계 v2 → ZM-122 구현 진행 중(워크트리, 커밋 전). → [[2026-09-28-apm-ingest-resilience]]
+- **2026-09-28** — APM 1m 배치 UPSERT 데드락 수정 [[2026-09-28-apm-metric1m-deadlock]] · **APM 전체 검토**(🔴6, 조치는 백로그) [[2026-09-28-apm-full-review]]
+- **2026-09-29~10-01** — APM 도메인 3분할 리뷰 → 개선 스윕(RUM·수집기 로그 데드락 형제, RUM 예산 환급, bounds family, stuck N+1, liveInstances 배치) + 🔴 **APM 알람을 자빅스에서 분리** 결정(09-30). → [[2026-10-01-apm-domain-review-sweep]] · [[2026-09-30-apm-rum-collectorlog-deadlock]] · SSE ERROR 디스패치 permitAll [[spring-security-error-dispatch-sse]]
+- **2026-10-01** — APM 화면 구성·UI UX·경쟁사 비교 검수(캡처 37, 구현 변경 0) → Codex 전용 워크트리로 UX 우선 개선 구현 → 수집기·알람 규칙을 관리 콘솔로 이동(주소가 레이아웃을 정한다). → [[2026-10-01-apm-ux-review]] · [[2026-10-01-apm-ux-isolated-fix]] · [[2026-10-01-apm-collectors-to-admin-console]]
+- **2026-10-01~02** — **ZM-156 APM 콜드 아카이브**: 결정 7개(A안·보류 7일·공통 기반·로그 감사) → DROP 게이트(꺼짐 = 옛 코드 byte-identical) + 공통 기반 + 배치 + 데이터 아카이브 화면, V69, 코덱스 BE 5회·FE 3회 → master ff(미푸시). → [[2026-10-02-zm156-apm-cold-archive]]
+- **2026-10-05~06** — 문서: 최근 작업·APM 쉽게 설명·OpenTelemetry·부족점 정리 [[2026-10-05-documentation-apm-overview]] · 기능별 상세 가이드 13종 + 전 제품 문제점 리포트(309건) [[2026-10-06-feature-guides-and-gap-report]] · 코드 그래프 도구 시험(미도입) [[code-graph-tools-trial]]
+- **2026-10-06** — APM 전반 재평가(우선순위 23) + Claude 독립 검토 → 하드닝(메트릭 원자성·SSE·조회 상한·RUM) → 우선순위 5~8(dirty rollup·trace 재분류·RUM 시간창·archive 무결성)·rollup completeness 소비자 enforcement. → [[2026-10-06-apm-overall-review]] · [[2026-10-06-apm-hardening-scale]] · [[2026-10-06-apm-hardening-stage5-8]]
+- **2026-10-07** — 문서 785개 한글 파일명 사본을 비공개 GitHub에(출퇴근 읽기용) [[2026-10-07-docs-reading-repo]] · APM OTLP 수신 컨트롤러 분리(코덱스 대화형, 메인 트리) [[2026-10-07-otlp-controller-split]] · **SOLO-CLAUDE 전환** 후 남은 작업 재파악: c05 소비자 완전성·trace 시간창·env 필터 master [[2026-10-07-apm-remaining-work-priorities]]
+- **2026-10-07~13** — **ZM-78 GPU 모니터링 P1 구현 완주**(엔진·프리셋 템플릿 3종·app API·설치 가이드 API·FE, V72·V73, 실장비 7.0.6/7.4.15 런타임) + 🔴 Zabbix 7.2+ 인증 결함 수정 → 10-10 1차·10-13 2차(프리셋 표시·GPU 위젯 대시보드) master 병합 → 10-13 푸시·정리, nvidia-smi 방식 문서. → [[2026-09-17-gpu-monitoring-design]]
+- **2026-10-08** — APM 알람 이벤트 원자성 1차(V74, PostgreSQL ≥ 15 전제, outbox는 2차) [[2026-10-08-apm-alert-atomicity]] · 커밋 메시지에 절차 단어 금지 피드백 [[commit-message-hygiene]]
+- **2026-10-08~10** — APM「장애 및 에러」메뉴 신설(알람 이력·요청 걸림·에러 3탭, V75) [[2026-10-10-apm-incidents-menu]] · jest mock 무한 루프·고아 워커 [[jest-mock-identity-render-loop]]
+- **2026-10-10~19** — **APM 알람 전송 계층 채널 중립화**(독자 창구는 대기·이력 보존 B안·자동 item.delete 금지): 브랜치 `apm-alert-history` 단위 1~7 커밋(V79·V80), 6b→8 DEAD 회복→병합 남음. → [[2026-10-12-apm-alert-channel-neutral-delivery]] · 「오늘 사용자 수」보류 [[2026-10-12-apm-daily-users-ip-hash]]
+- **2026-10-13~19** — **ZM-155 APM 커스텀 지표 허용목록**: 보류 → "일단 하자" 오독 정정 → 결정 9개(이름만·서비스당 50·같은 테이블) → BE(V81, DB 자리 원장·fail-closed·규칙 세대)·FE(받기·규칙 탭·서비스 탭) 코덱스 각 5회 → 10-19 master ff(미푸시). **이로써 ZM-151~156 전부 종료, 기능 문서 6종.** → [[2026-10-19-zm155-apm-custom-metric-allowlist]] · [[2026-09-22-zm151-156-backlog-sprint]]
+- **2026-10-19** — **DB 모니터링(PREMIUM) 설계 v1.1**(시장 조사 → 코덱스 독립 제안 교차 → 검수 11건 반영, BE 내장 JDBC 폴러, Q1~Q21 대기) [[2026-10-19-db-monitoring-design]] · Vault 10월 싱크 + **기능 지도 MOC(영역 노드 15개)** [[무브스아이-기능-지도]]
+
+- **2026-10-28** — APM 심층 진단 설계 v0.2: trace 진단 탭·instance 문맥·Hikari 획득 구간 MVP, JFR/로그/DBM 후속 경계, 독립 문서 검수. 제품 구현 없음. → [[2026-10-28-apm-deep-diagnostics-design]]
+- **2026-10-28** — APM 심층 진단 R0~M1b 격리 구현·실제 Agent/Collector/브라우저 검증. BE109+IT107·FE120·확장34·E2E44 통과, master 미병합. → [[2026-10-28-apm-deep-diagnostics-implementation]]
+- **2026-10-27** — **ZM-175 Zabbix Web 시나리오 관리**(유료 `WEB_SCENARIO`, APM 합성 감시와 코드 분리·단계 id 보존·이력에 비밀값 없음) 푸시(BE `21358d8`·FE `edf667c`·발급기 `44bb3e0`) + 요청 걸림 장부 IT 간헐 실패 수정 `c1ebf58`. → [[2026-10-27-zm175-zabbix-web-scenario]]
+- **2026-10-28** — 미뤄 둔 실측 소진: ZM-155 커스텀 지표·콜드 아카이브 S6 통과, ZM-114 워크트리 정리 + 실측 중 발견한 **감사 행위자 이름 null**(APM 9곳) `ActorResolver`로 수정·ArchUnit 규칙 `df1b39f`(미푸시). → [[2026-10-28-runtime-verification-and-actor-fix]]
+- **2026-10-28** — **Zabbix 프록시·프록시 그룹 관리**(기본 기능) BE·FE 구현, BE 검수 2차 승인·FE 1차 반영(2차 대기)·런타임 실측 대기, 미커밋. 🔴 PSK는 결과 TLS에서 빠지면 Zabbix가 지운다(내 첫 해석 오류를 Codex가 정정). → [[2026-10-28-zabbix-proxy-management]]
+
+## 교차 주제 (Topics)
+- [[zabbix-api-quirks]] — ⚠️ JSON-RPC 실전 함정(tags 전체교체·offset 없음·정렬 대소문자·폴백체인이 값을 바꿈 등).
+- [[strangler-port-migration]] — 포트/어댑터 스트랭글러 전환 방법론(수집 엔진 Phase 1에서 추출).
+- [[zabbix-api-auth]] — BE의 Zabbix API 호출 진입점·authToken(sessionid) 흐름.
+- [[zabbix-api-reference]] — host.get·history.get·problem.get 등 메서드별 레퍼런스 + 개발 체크리스트.
+- [[zabbix-agent-item-keys]] — Zabbix 객체 구조 + agent item key 레퍼런스(범용 지식).
+- [[zabbix-admin-manual-nexen]] — 원천 Zabbix(넥센) 운영·UI·알림 파이프라인.
+- [[offline-license-enforcement]] — 폐쇄망 서명 라이선스의 원리·함정(라이선스 3개 세션에서 추출한 재사용 지식).
+- [[test-false-safety-nets]] — 테스트가 green인데 아무것도 안 지키는 자리 6종(라이선스 게이트에서 추출).
+- [[session-auth-hardening]] — 세션·인증 강화 패턴(라이선스 게이트와 인터셉터 순서를 겨루는 상대). 09-17 회수 경합 2단계 추가.
+- [[nestjs-operations]] — NestJS 운영 기본기(BE 공통).
+- [[harness-engineering]] — 하네스 구축 노하우(풀스택 하네스의 토대).
+- [[codex-exec-operations]] — `codex exec` 운용 함정(샌드박스 unelevated·killed 후 파일 잔존·근거 인라인)과 "하네스 구현 + 코덱스 검수" 조합.
+- [[shared-it-db-worktree-collision]] — 워크트리끼리 공유하는 IT DB가 만드는 가짜 실패의 판별·예방.
+- [[otel-collector-pitfalls]] — OTel Collector 실전 함정(500 즉시 폐기·redaction 13자리·keep_keys·feature gate·자기 제외).
+- [[concurrent-upsert-lock-order]] — 동시 배치 UPSERT는 conflict 키로 정렬해 잠금 순서 통일.
+- [[moveseye-history-scan-held-budget]] — 요청 단위 보유 예산(창 버퍼+소비자 누적의 공유 cap).
+- [[static-checks-miss-asset-imports]] — tsc·eslint·jest 통과해도 지운 scss 상대 import로 Vite가 죽는다.
+
+## 열린 항목 (Open)
+- **2026-08-07 운영 배포 후속**: Apache `httpd_can_network_connect=on` 적용 후 `/api` proxy와 로그인→새로고침 E2E 최종 확인 필요. Zabbix `role: []` 정규화·기본 사용자 조회 및 `SettingService` 수정은 BE worktree 미커밋/미배포 상태. → [[2026-08-07-onprem-deployment-recovery]]
+- **🔴 시크릿 노출**: BE `.env.example`에 실제 운영 자격증명이 평문으로 들어 있음 — JWT secret, Twilio/AWS/Firebase/Novu 키, Zabbix 운영 서버(`api_admin / Dmove1122!`), AES/RSA 개인키. **키 로테이션·시크릿 분리 필요.** 외부 공유/푸시 금지.
+  - 부분 해소(2026-08-12, ZM-105): **DB `setting` 테이블의 Zabbix·AWS 자격증명 평문**은 AES-256-GCM(`enc:v1:` 접두사, 무접두사=평문으로 읽어 무중단 이행)으로 감쌌다. 키는 설치본별 `CREDENTIAL_ENCRYPTION_KEY`이며 우리가 알지 않는다. **`.env.example`·JWT_SECRET은 그대로 남아 있다.** → [[2026-08-12-license-expiry-in-key]]
+- **자산 관리(`/asset`)** 코어 구현 완료([[2026-07-08-assets-management]]) — 화이트보드 3건(User Flow·API Sequence·Cost 흐름)은 여전히 미반영, Cost 도메인 미착수.
+- **⏸ 수집 엔진 스텝 6(Prometheus)** 보류 — 재개 지점은 `_workspace/devdesign_collector-engine.md`의 `⏸ 스텝 6 착수 가이드`. 선결: proto enum `SYSTEM` 중복 해소. → [[2026-07-28-collector-engine-phase1]]
+- **라이선스/에디션(STANDARD·PREMIUM)** — 설계 v4 확정 + **0단계 커널 완료·푸시**(BE·발급기). 완료 판정 18/19(잔여 12는 1단계 GPU 대기). 1단계 GPU·2단계 DB·3단계 APM 미착수. → [[2026-08-10-license-kernel-implementation]] · [[2026-08-12-license-expiry-in-key]]
+- **디자인 시스템·화면 도움말** — 팔레트 정본(하드코딩 hex 66→40 파일)·차트 색 규칙·다크 모드 정식 지원, 화면 도움말 31개(용어 46개). 도움말은 **AI 카탈로그와 분리 유지**(AI 미사용 고객이 대상). `.env` JWT_SECRET 20바이트 → 64바이트 교체(재기동 불가 상태였음). → [[2026-08-20-design-system-and-help]]
+- **🔴 운영 서명 키쌍 미결** — 현재 개인키는 2026-08-06 개발 PC에서 만든 것. ① 운영용 재생성 여부 ② 개인키 백업 위치. **실제 고객 키가 0건인 지금이 비용 최저점.** → [[2026-08-12-license-expiry-in-key]]
+- **FE 라이선스 게이트 컴포넌트 미사용** — `LicenseAwareContent`·`FeatureGate`가 테스트 외 0곳. 실제 위젯에 부착 필요.
+- **Confluence 게시 대기** — 라이선스 운영 가이드([[license-guide]])는 MCP가 읽기 전용이라 수동 게시.
+- **⚠️ 지리 맵 배포 전 자산 동기화 1회** — dev DB `asset.linked_hostid`가 전부 NULL이라 후보가 0건으로 보인다.
+- app의 `event/` ↔ 엔진 `Alert` **어휘 통일**은 REST 경로·FE까지 걸리는 별도 과제로 남김. → [[2026-07-28-be-package-restructure]]
+- **AI 계정 모니터링 — 설계 v1 확정(2026-08-24, 구현 0)**: 폴링(Anthropic+OpenAI 동시)+수신(Claude Code OTel http/json) 2경로 1스키마, 일반 에디션. 착수 전 준비물=양사 Admin 키(사용자 액션). 정본 `_workspace/devdesign_ai-account-monitoring.md` → [[2026-08-24-ai-account-monitoring-design]]
+- **클라우드 플릿 지표(2026-08-26) 잔여**: 커밋 7건 **미푸시**(BE ZM-79 `3a33131`·`0000d45`·`e6e3199`, FE `72c531b`·`a8cae71`·`71bf2b0`·`7bc64d2`) · 브라우저 렌더 미확인(컬럼 폭·스파크라인) · 홈 위젯 `fleetOff`가 리전 0개(자격증명 없음)일 때 "no data"로 뜸 · FE 전체 jest 선재 실패 2건(`TriggerFormDrawer`·`AiAssistantPage`, 무관) · 1h 고정 캐시(개요를 6h/24h로 본 뒤 목록 열면 팬아웃 1회 추가) 재검토 여지. → [[2026-08-26-cloud-fleet-extras]]
+- **향후 추가 예정**: GPU·DB 모니터링(프리미엄), APM(별도 설계서 예정). 맵뷰는 [[2026-07-13-network-maps]]·[[2026-07-29-geo-maps]]로 완료. (커스텀 차트는 호스트 상세에 1차 구현됨 → [[2026-06-17-custom-chart]])
+- 권한 모델(user-group ↔ host-group 다대다) 동작 미검증 — 모니터링 접근제어 핵심.
+- **ZM-157 후속(2026-09-21 갱신)**: 세 레포 병합·IT·MCP 실측 완료, **전부 미푸시**. 남은 것 = 푸시(사용자) · 배포 공지(전원 1회 재로그인·MCP 재연결·일반 사용자 차트 편집 차단, BE→즉시 AI→FE 순) · 후속 10건(`_workspace/features/auth-license/zm-157-permission/tasks_zm-157-후속.md`). → [[2026-09-17-zm157-permission-enforcement]]
+- **🔴 미푸시 커밋 누적(2026-10-19 갱신)**: BE·FE·AI 세 레포 모두 9~10월 작업이 로컬 master에만 있다(#ZM-122·136·151~168·78·155·156, 알람 원자성 V74·장애 메뉴 V75·GPU V72/73·아카이브 V69·허용목록 V81). 푸시는 사용자 직접(GPU V72·73은 V74·75와 함께). 배포 시 Redis 6.2+·`COOKIE_SECURE`·`zabbix.call.*`·**PostgreSQL ≥ 15**·**아카이브 볼륨 마운트** 확인.
+- **APM 열린 것(2026-10-19)**: 알람 채널 중립화 브랜치 6b→8 DEAD 회복→병합(🔴 V76~V80 out-of-order 재번호 결정) → [[2026-10-12-apm-alert-channel-neutral-delivery]] · 독자 알림 창구(메일·웹훅) 대기 · 152·154 v2·155·156 런타임 실측(BE 재기동 + 임시 계정) · 156 실서버 볼륨 마운트·S6 · 155 2차(차원 선택) · 전체 검토 🔴6 백로그·R2′ 출시 게이트 → [[2026-09-28-apm-full-review]] · [[2026-09-23-apm-p5-realtime]] · 오늘 사용자 수 보류 [[2026-10-12-apm-daily-users-ip-hash]]
+- **백로그(미착수, 판단 보류)**: APM 이해도·AI 접목 · 자빅스 아카이빙(공통 기반은 ZM-156으로 생김) · 자체 점검 페이지 · APM 규모 관측 공백 → [[2026-09-16-apm-observability-backlogs]] · ZM-159 후속(A-2 커서·16MiB·부하 시험) → [[2026-09-21-zm159-scale-call-guard]] · 기능별 가이드 13종 정정(재개 시 코덱스 의견 먼저) → [[2026-10-06-feature-guides-and-gap-report]] · DB 모니터링 Q1~Q21 → [[2026-10-19-db-monitoring-design]] · GPU 후속(관리 콘솔 항목·6.0 템플릿) · 원문 노출 틈 티켓 · 스케줄러 DTO 시각 `Z` 결함
+- 최초 계정 `admin / Admin@123`, Zabbix 계정 동기화 시 비밀번호 재정의 필요.
+- **모니터링 커버리지 후속 고도화**: Host 관리 설정으로의 조치 링크, AI 권장 조치 구조화, 실제 브라우저 UI 밀도 검증, Prometheus 등 추가 데이터 소스 메뉴 확장. → [[2026-08-21-monitoring-coverage-api]]
+
+## 환경/실행 메모
+> 상세: [[2026-06-01-runtime-environment]] (local/dev/qa, Docker, GitLab CI, 포트맵, env 파일 비교)
+
+- 환경 3종: **local**(docker-compose) / **dev**(`dmove-dev.savvycom.xyz`) / **qa**(`dmove-qa.savvycom.xyz`). prod 정의 없음.
+- BE: `.env.example`→`.env` → `docker-compose up -d` (postgres+redis+app, 포트 3000). 부팅 시 TypeORM 마이그레이션 자동 실행. Swagger `/api`. ⚠️ 운영도 `start:dev`(watch) 구동.
+- FE: `yarn install` → `.env.server`(BE 연동) 또는 `.env.example`(독립) → `yarn dev` (포트 5174). 빌드 `yarn build:dev|qa`.
+- 배포: GitLab CI(runner `owner-sv`), **dev/qa 브랜치 push 시 자동**. BE=git pull+env교체+docker restart, FE=git pull+yarn build.
+- ⚠️ 위는 인수 시점(2026-06) 서술. **실서버(2026-08-27~)**는 FE(아파치 80·정적)/BE+AI(도커) 서버 2대·HTTP, 비트버킷 파이프라인 러너가 레포별 각 서버 — 함정(COOKIE_SECURE 기본 true·admin 매 요청 Zabbix 로그인)은 [[2026-08-07-onprem-deployment-recovery]]·메모리 `deploy-server-topology`. 로컬 dev BE 기동은 `_tools/run_be_3000_dev.ps1`(APM 셀프 계측은 `_dev_apm.ps1`), 검증용 격리 BE는 `:3001`/`:3002`.
+- 정식 문서: 모니터링 갱신·SSE·증분 조회 `moveseye-docs/technical/모니터링-갱신과-SSE.md`(2026-09-07, [[2026-09-07-zabbix-load-next-steps]]) · FAQ `moveseye-docs/guides/자주-묻는-질문.md`(2026-09-01, 13영역 90문항, review 상태 — 런타임 실측 후 current로).

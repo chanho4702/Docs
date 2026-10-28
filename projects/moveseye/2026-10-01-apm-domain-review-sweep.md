@@ -1,0 +1,33 @@
+---
+tags: [moveseye, apm, backend, review, performance, rum]
+updated: 2026-10-01
+---
+
+# APM 도메인 리뷰 → 개선 스윕 (2026-09-30~10-01)
+
+[[2026-09-28-apm-metric1m-deadlock]] 데드락을 고친 뒤 "코드로 개선점 찾아줘" 요청 → **premium/apm 전 도메인을 3분할 병렬 서브에이전트로 리뷰**(적재·배치 동시성 / 조회·읽기 성능 / 트레이스·알람·RUM) → 백로그(`_workspace/features/apm/deadlock-fixes/backlog_apm-improvements-2026-09-29.md`, 코덱스 검수 반영) → 안전한 항목부터 순차 수정. 데드락 형제 구현 상세는 [[2026-09-30-apm-rum-collectorlog-deadlock]].
+
+## 커밋 (전부 #ZM-122, master 미푸시, 각 테스트 동반·통과)
+1. `ad57ea5` 1m 메트릭 배치 UPSERT 데드락 · `5b6d5a0` RUM·수집기로그 데드락 형제
+2. `85d9e9d` **RUM 저장 실패 시 일예산 환급 + RUM_UNAVAILABLE 관측**
+3. `92e6857` **RUM bounds 조회 family 포함 + 시드 기동 검증**
+4. `c1d14fb` 요청 걸림 조회 N+1 제거(findAllById)
+5. `79becc0` 인스턴스 조회 전량 로드 제거(`findLiveByServiceIdIn` JPQL 배치)
+6. `d2b42c8` 2차 코덱스 검수 반영(테스트+주석)
+
+## 결정 — APM 알람을 자빅스에서 분리 (사용자, 2026-09-30)
+- 현재: APM 알람 **판정·기록·조회는 무브스아이 자체**(`apm_alert_event`·`/apm/alert-events`·`/apm/stuck-requests`), **통지 발송만 자빅스 경유**(자체 채널이 이메일뿐이라 — 코드 주석에 명시된 설계).
+- 사용자 방향: **독자 알림 시스템 구축**(우리 메일서버 등) + 자빅스와 병행 가능하되 **알림 페이지는 안 섞음**. 착수는 **나중에 따로 지시**.
+- 그래서 **B1/B2/B3(알람 걸림 락·이중소유·트랜잭션 재설계)는 그 독자 알림 작업과 한 덩어리로 미룸** — 지금 자빅스 브리지를 고쳐봐야 갈아엎힌다.
+
+## 교훈
+- **RUM 적재 실패 = 무음 손실**(전송이 `fetch(keepalive)`라 503을 안 봄). 예산은 저장 *전*에 차감되므로, 서버 잘못(503)일 때만 **환급**하도록 명시 설계("적재503 환급 안 함")를 뒤집음 — 뒤집을 땐 주석에 결정·날짜를 남긴다.
+- **ON CONFLICT가 안 고치는 컬럼**(error group의 type/sample_stack)은 정렬이 "최초 삽입 승자"를 바꾼다 → 샘플을 관측순서로 미리 고정. 재사용 노트 [[concurrent-upsert-lock-order]].
+- **복합 UNIQUE면 조회도 전 키로**: `apm_hist_bounds`가 V43에서 `(bounds,family)`가 됐는데 조회는 `bounds`만 → 같은 배열 다른 family가 생기면 깨진다.
+- **N+1/전량로드**는 `findAllById`·`findByServiceIdIn`(+창 필터) 배치로. JPQL로 기존 JVM 필터 의미(`>=` 경계·null 유지)를 **그대로** 옮긴다(동작 보존).
+- **결정적 회귀 가드는 단위로**: "같은 bounds·다른 family" IT는 heap 순서상 구버전도 통과할 수 있어, family 인자가 쿼리에 들어가는지는 가짜 JdbcTemplate 단위 테스트로 못박는 게 확실.
+- **코덱스 CLI 운영**: `windows.sandbox=unelevated` 필수 · 검수 전문은 `tee`로(끝에 flush) · **백그라운드 Codex는 시스템 메모리 부족 시 유휴 중 강제 종료(3회 겪음) → 포그라운드로 실행** · `C:/solutions`는 git 아님 → 레포 안에서 실행.
+
+## 상태 / 남은 것
+- ✅ 급한 결함·안전한 개선 종료, 2회 코덱스 검수(조건부 승인·🔴 0) 반영 완료. 미푸시.
+- 남음: **C2**(hostlink ILIKE, 자산 도메인 교차) · **B1/B2/B3 + 독자 알림**(지시 대기) · 이전 백로그(부하시험·이해도·규모관측·콜드아카이브).

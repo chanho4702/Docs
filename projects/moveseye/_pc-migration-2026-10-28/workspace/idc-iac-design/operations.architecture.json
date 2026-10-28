@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "코드 기반 운영 · 변경에서 검증까지",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1350,
+      400
+    ]
+  },
+  "components": [
+    {
+      "id": "git",
+      "type": "external",
+      "label": "Git 변경",
+      "sublabel": "문서·코드 / 비밀 제외",
+      "pos": [
+        30,
+        150
+      ],
+      "size": [
+        180,
+        85
+      ]
+    },
+    {
+      "id": "plan",
+      "type": "backend",
+      "label": "OpenTofu plan",
+      "sublabel": "VM 변경·삭제 검토",
+      "pos": [
+        295,
+        150
+      ],
+      "size": [
+        180,
+        85
+      ]
+    },
+    {
+      "id": "apply",
+      "type": "security",
+      "label": "검토 후 apply",
+      "sublabel": "VM 생성 / cloud-init",
+      "pos": [
+        560,
+        150
+      ],
+      "size": [
+        180,
+        85
+      ]
+    },
+    {
+      "id": "ansible",
+      "type": "backend",
+      "label": "Ansible 적용",
+      "sublabel": "OS·VPN·서비스 설정",
+      "pos": [
+        825,
+        150
+      ],
+      "size": [
+        180,
+        85
+      ]
+    },
+    {
+      "id": "verify",
+      "type": "security",
+      "label": "실제 접속 검증",
+      "sublabel": "권한·차단·복구 확인",
+      "pos": [
+        1090,
+        150
+      ],
+      "size": [
+        180,
+        85
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "git",
+      "to": "plan",
+      "label": "차이 확인"
+    },
+    {
+      "from": "plan",
+      "to": "apply",
+      "label": "변경 승인"
+    },
+    {
+      "from": "apply",
+      "to": "ansible",
+      "label": "SSH 접속"
+    },
+    {
+      "from": "ansible",
+      "to": "verify",
+      "label": "행위 검증"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "최초 설치는 별도 단계",
+      "items": [
+        "Proxmox·관리 경로·템플릿 먼저 준비",
+        "VPN 구축 후 VPN 관리 경로로 전환"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "한 설정에는 한 소유 도구",
+      "items": [
+        "OpenTofu: VM·cloud-init",
+        "Ansible: 호스트 네트워크·게스트 설정"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "서버 밖에서 보관",
+      "items": [
+        "state·암호화 키·백업을 외부에 보관",
+        "Git 되돌리기는 데이터 복구가 아님"
+      ]
+    }
+  ]
+}
