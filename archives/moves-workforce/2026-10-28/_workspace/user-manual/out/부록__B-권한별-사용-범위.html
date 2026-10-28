@@ -1,0 +1,218 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이 페이지</td>
+<td><strong>권한 불필요</strong> — 권한 정책을 설명하는 문서입니다</td>
+</tr>
+<tr>
+<td>실제 권한 설정 화면</td>
+<td>「권한 관리」 (<ac:link><ri:page ri:content-title="7.8 권한 관리" /><ac:plain-text-link-body><![CDATA[7.8]]></ac:plain-text-link-body></ac:link>)</td>
+</tr>
+<tr>
+<td>내 현재 권한 확인</td>
+<td><strong>권한 불필요</strong> (<ac:link ac:anchor="31-내-현황"><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지 &gt; 내 권한]]></ac:plain-text-link-body></ac:link>)</td>
+</tr>
+</tbody></table>
+<hr />
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">기본-세트-두-가지로-무엇이-되나</ac:parameter></ac:structured-macro>기본 세트 두 가지로 무엇이 되나</h2>
+<table>
+<thead>
+<tr>
+<th>기능</th>
+<th>Admin</th>
+<th>Member</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>My Work(워크로그 작성)</td>
+<td>필수</td>
+<td>가능 (본인 데이터 — 권한 불요)</td>
+</tr>
+<tr>
+<td>Jira 이슈 화면 패널(공수 확인·워크로그 기록)</td>
+<td>필수</td>
+<td>가능 (Jira 권한만 필요)</td>
+</tr>
+<tr>
+<td>마이페이지</td>
+<td>필수</td>
+<td>가능</td>
+</tr>
+<tr>
+<td>프로젝트 목록·칸반 조회</td>
+<td>필수</td>
+<td>가능(조회)</td>
+</tr>
+<tr>
+<td>프로젝트/상태 추가·수정·삭제</td>
+<td>필수</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>작업 관리 목록(조회)</td>
+<td>필수</td>
+<td>가능</td>
+</tr>
+<tr>
+<td>작업 관리 인라인 편집·일괄 적용·작업 추가·구독</td>
+<td>필수</td>
+<td>불가 (「프로젝트 관리」 쓰기)</td>
+</tr>
+<tr>
+<td>트리·간트·맵 조회</td>
+<td>필수</td>
+<td>가능(조회 전용)</td>
+</tr>
+<tr>
+<td>트리·간트 편집(일정·연결·상위 지정·폴더)</td>
+<td>필수</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>프로젝트 대시보드 조회</td>
+<td>필수</td>
+<td>가능(「대시보드」 읽기 시)</td>
+</tr>
+<tr>
+<td>진척·분석 리포트 조회</td>
+<td>필수</td>
+<td>가능(「리포트」 읽기 시)</td>
+</tr>
+<tr>
+<td>통합 대시보드 조회</td>
+<td>필수</td>
+<td>가능(「리포트」 읽기 시)</td>
+</tr>
+<tr>
+<td>통합 대시보드 재집계</td>
+<td>필수</td>
+<td>불가 (「리포트」 쓰기 필요)</td>
+</tr>
+<tr>
+<td>비용 탭(인건비)·급여 관리 조회</td>
+<td>필수</td>
+<td>불가 (재무 민감정보)</td>
+</tr>
+<tr>
+<td>자원 관리(인력·조직·팀·배정)</td>
+<td>필수</td>
+<td>불가 (「자원관리」 필요)</td>
+</tr>
+<tr>
+<td>워크로그 추출</td>
+<td>필수</td>
+<td>불가 (「워크로그 추출」 필요. 기존 설치는 Admin만 켜짐)</td>
+</tr>
+<tr>
+<td>팀/스킬 기준정보 관리</td>
+<td>필수</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>일반 설정</td>
+<td>필수</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>인력/역할/등급/권한 관리</td>
+<td>필수</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>휴일 관리</td>
+<td>필수</td>
+<td>직접 주소로 조회 가능(사이드바 게이트 불일치)</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>실제 노출은 설치 환경의 권한 설정에 따라 달라집니다. 권한은 <ac:link><ri:page ri:content-title="7.8 권한 관리" /><ac:plain-text-link-body><![CDATA[7.8 권한 관리]]></ac:plain-text-link-body></ac:link>에서 조정하며, 모든 권한은 화면 노출과 별개로 <strong>서버에서도 검증</strong>됩니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">권한-항목과-제어-대상</ac:parameter></ac:structured-macro>권한 항목과 제어 대상</h2>
+<table>
+<thead>
+<tr>
+<th>권한 항목</th>
+<th>읽기로 열리는 것</th>
+<th>쓰기로 열리는 것</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트 관리</td>
+<td>프로젝트 목록·상세 진입, 인력 목록, 작업 관리 4개 보기, 캘린더</td>
+<td>프로젝트·인력·작업 편집, 일괄 적용, 구독, 트리·간트 편집, 작업 이력 탭</td>
+</tr>
+<tr>
+<td>대시보드</td>
+<td>프로젝트 대시보드</td>
+<td>위젯 추가·배치·커스텀 필터</td>
+</tr>
+<tr>
+<td>칸반 보드</td>
+<td>칸반 조회</td>
+<td>카드 드래그·컬럼 편집</td>
+</tr>
+<tr>
+<td>리포트</td>
+<td>작업·인력·팀·진척 분석, 통합 대시보드, 대시보드의 분석 위젯</td>
+<td>통합 대시보드 재집계</td>
+</tr>
+<tr>
+<td>비용</td>
+<td>급여 관리·비용 탭·총 인건비·비용 위젯</td>
+<td>급여 금액 수정</td>
+</tr>
+<tr>
+<td>자원관리</td>
+<td>인력 현황·조직 현황·팀 분석·프로젝트 배정 후보</td>
+<td>스킬 편집·배정 실행</td>
+</tr>
+<tr>
+<td>워크로그 추출</td>
+<td>워크로그 추출 화면</td>
+<td>—</td>
+</tr>
+<tr>
+<td>일반 설정 / 인력 관리 / 팀 관리 / 역할 관리 / 등급 관리 / 스킬 관리 / 프로젝트 상태 관리 / 권한 관리 / 휴일 관리 / 저장공간 관리</td>
+<td>각 설정 화면 조회</td>
+<td>각 설정 편집</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">프로젝트-조회-범위</ac:parameter></ac:structured-macro>프로젝트 조회 범위</h2>
+<table>
+<thead>
+<tr>
+<th>범위</th>
+<th>보이는 프로젝트</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>전체 프로젝트</strong></td>
+<td>모든 프로젝트</td>
+</tr>
+<tr>
+<td><strong>소속 프로젝트만</strong></td>
+<td>본인이 인력으로 등록된 프로젝트만</td>
+</tr>
+<tr>
+<td><strong>내 팀만</strong></td>
+<td>내 소속 팀·하위 팀과 내가 이끄는 팀·하위 팀 기준의 프로젝트. <strong>유효한 팀이 없으면 비어 있음</strong></td>
+</tr>
+</tbody></table>
+<p>Jira 관리자와 Admin 세트는 이 설정과 무관하게 항상 전체를 조회합니다.</p>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>내 팀만</strong>은 <strong>프로젝트 범위만</strong> 제한합니다. 자원 관리·인력 관리 조회 권한이 함께 있으면 전사 인원 목록은 그대로 보입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>워크로그 추출과 Jira 이슈 패널은 이 범위와 무관</strong>합니다. 둘 다 본인의 Jira 권한으로 동작합니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">화면이-안-보일-때-확인-순서</ac:parameter></ac:structured-macro>화면이 안 보일 때 확인 순서</h2>
+<ol>
+<li><strong><ac:link ac:anchor="31-내-현황"><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지 &gt; 내 권한]]></ac:plain-text-link-body></ac:link></strong> 에서 내 권한 세트와 프로젝트 조회 범위를 확인합니다.</li>
+<li>위 표에서 그 기능에 필요한 권한을 확인합니다.</li>
+<li>관리자에게 <strong>필요한 권한 항목명과 읽기/쓰기 여부</strong>를 명시해 요청합니다.</li>
+<li>프로젝트가 안 보이는 경우라면, 권한이 아니라 <strong><ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 인력 등록]]></ac:plain-text-link-body></ac:link></strong> 이 빠진 것일 수 있습니다.</li>
+<li>그래도 안 되면 Jira 자체 권한(Browse Projects 등)을 확인합니다 — <ac:link ac:anchor="④-jira-자체-권한도-따로-있습니다"><ri:page ri:content-title="1. 개요" /><ac:plain-text-link-body><![CDATA[1.4 ④]]></ac:plain-text-link-body></ac:link>.</li>
+</ol>

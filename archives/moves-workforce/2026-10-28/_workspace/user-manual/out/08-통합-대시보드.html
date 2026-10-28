@@ -1,0 +1,244 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>메뉴·화면 진입</td>
+<td>「리포트」 읽기 (없으면 <strong>사이드바에 메뉴가 없고</strong>, 주소로 들어가도 권한 안내 화면이 뜹니다)</td>
+</tr>
+<tr>
+<td>종합 개요 · 일정 · 범위 · 자원 서브탭</td>
+<td>「리포트」 읽기</td>
+</tr>
+<tr>
+<td><strong>비용</strong> 서브탭</td>
+<td>「리포트」 읽기 <strong>+</strong> 「비용」 읽기</td>
+</tr>
+<tr>
+<td><strong>지금 재집계</strong> 실행</td>
+<td>「리포트」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>표시되는 프로젝트는 권한 세트의 <strong>조회 범위</strong>(전체 / 소속 프로젝트만 / 내 팀만)로 필터됩니다. 범위가 좁으면 전사 대시보드라도 일부 프로젝트만 비교됩니다.</li>
+<li>가동률 밴드(과소/과부하/심한 과부하) 경계값은 <ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1 일반 설정]]></ac:plain-text-link-body></ac:link>을 따릅니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 프로젝트 하나가 아니라 <strong>여러 프로젝트를 한 화면에서 비교</strong>할 때. 경영 보고, 포트폴리오 점검, 위험 프로젝트 선별에 씁니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 8-1 통합 대시보드 상단</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 8-1 통합 대시보드 상단"><ri:attachment ri:filename="08-portfolio-overview.png" /></ac:image><p><em>그림 8-1. 통합 대시보드 — ① 기준 시각과 지금 재집계 ② 프로젝트 필터 바(인원·투입 MM·인건비 요약) ③ 종합 개요 T/S/R 신호등 표 ④ 비교 서브탭(일정·범위·자원·비용).</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">81-화면-공통</ac:parameter></ac:structured-macro>8.1 화면 공통</h2>
+<table>
+<thead>
+<tr>
+<th>요소</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>기준 시각</strong></td>
+<td>마지막 집계 시각. 이 화면은 <strong>실시간이 아니라 배치 집계 결과</strong>입니다</td>
+</tr>
+<tr>
+<td><strong>지금 재집계</strong></td>
+<td>즉시 집계를 실행합니다. 백그라운드로 <strong>수 초~수십 초</strong> 걸리며 완료되면 화면이 자동 갱신됩니다. 일부 프로젝트 집계가 실패하면 &quot;직전 값 표시&quot; 안내가 붙습니다</td>
+</tr>
+<tr>
+<td><strong>프로젝트 필터 바</strong></td>
+<td>비교할 프로젝트를 선택(전체 선택/해제)하면 <strong>아래 모든 위젯이 함께 반응</strong>합니다. 선택 프로젝트의 인원·투입 MM·인건비 합계가 요약됩니다</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>숫자가 방금 한 작업과 다르다면</strong> 기준 시각을 먼저 확인하세요. 워크로그를 막 입력했다면 재집계 전까지 반영되지 않습니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">82-종합-개요tsr-신호</ac:parameter></ac:structured-macro>8.2 종합 개요(T/S/R 신호)</h2>
+<p>각 프로젝트의 <strong>일정(Time) / 범위(Scope) / 자원(Resource)</strong> 상태를 <strong>신호등(정상 / 주의 / 위험)</strong> 으로 요약합니다. <strong>신호등 ↔ 수치표</strong> 보기를 전환할 수 있고, 행을 클릭하면 프로젝트 상세로 드릴다운합니다.</p>
+<table>
+<thead>
+<tr>
+<th>축</th>
+<th>판정 기준</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>일정 (Time)</strong></td>
+<td>완성 진척 − 일정 진척 (음수로 벌어질수록 위험)</td>
+</tr>
+<tr>
+<td><strong>범위 (Scope)</strong></td>
+<td>대기(할 일) 이슈 비중</td>
+</tr>
+<tr>
+<td><strong>자원 (Resource)</strong></td>
+<td>프로젝트 평균 가동률 밴드 — 과소 0.7 미만 / 과부하 1.1 이상 / 심한 과부하 1.3 이상 (<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1 설정값]]></ac:plain-text-link-body></ac:link>)</td>
+</tr>
+</tbody></table>
+<p><strong>읽는 법</strong></p>
+<ul>
+<li>세 축이 모두 초록이면 정상 운영 중입니다.</li>
+<li><strong>일정 적색 + 자원 과부하</strong>는 투입을 늘려도 일정을 따라가지 못하는 상태 — 범위 조정이나 증원을 검토합니다.</li>
+<li><strong>일정 적색 + 자원 과소</strong>는 투입 부족 신호입니다.</li>
+<li><strong>범위 적색</strong>은 착수도 못한 일이 많다는 뜻이라, 일정이 아직 초록이어도 후반에 몰릴 위험이 큽니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">83-비교-서브탭</ac:parameter></ac:structured-macro>8.3 비교 서브탭</h2>
+<table>
+<thead>
+<tr>
+<th>서브탭</th>
+<th>위젯</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>일정 (Time)</strong></td>
+<td>프로젝트 일정(간트·경과율) · 공수 추이 비교(월/주·누적) · 리스크 TOP 프로젝트</td>
+</tr>
+<tr>
+<td><strong>범위 (Scope)</strong></td>
+<td>이슈 상태 분포(완료/진행/대기) · 완성률 vs 일정률 · 계획 대비 실적 공수 · 문제 이슈 한눈에(버블 TOP 50) · <strong>토폴로지</strong>(8.4) · 이슈 완료율 vs 진척률 · 지연 이슈가 몰린 담당자</td>
+</tr>
+<tr>
+<td><strong>자원 (Resource)</strong></td>
+<td>롤/레벨 분포 비교 · 인력 가동률(전사 종합 / 프로젝트별) · 작업 분포(투입 인력 대비 공수) · 인력 집중도 · 가동률과 투입 공수(산점도) · 전사 배정 관계도</td>
+</tr>
+<tr>
+<td><strong>비용 (Cost)</strong></td>
+<td>전사 비용 요약 · 계획 대비 실집행 · 비용 초과 위험 순위 · 소진율 vs 진척률 · 전사 월별 소진 추이 · 역할/레벨별 비용 · 완료 시 예상 비용 · MD 단가 비교</td>
+</tr>
+</tbody></table>
+<ul>
+<li>각 위젯에는 <strong>계산식/해석 안내(ⓘ)</strong> 가 있어 지표의 의미를 그 자리에서 확인할 수 있습니다.</li>
+<li>일부 위젯은 <strong>상단 프로젝트 필터와 무관</strong>하게 전사 기준으로 그립니다(전사 가동률 분포, 지연 이슈가 몰린 담당자, 전사 배정 관계도). 위젯의 안내 문구에 명시돼 있습니다.</li>
+<li>비용 서브탭은 「비용」 권한이 없으면 &quot;인건비 조회 권한이 없어 비용 정보를 표시하지 않습니다&quot;로 가려집니다. 급여 정책을 바꾼 뒤에는 <strong>재집계 전까지</strong> 이전 집계의 인건비를 표시하지 않습니다.</li>
+<li>팀 축 비교는 이 화면이 아니라 <ac:link><ri:page ri:content-title="6.3 팀 분석" /><ac:plain-text-link-body><![CDATA[6.3 자원 관리 &gt; 팀 분석]]></ac:plain-text-link-body></ac:link>에서 제공합니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">84-토폴로지</ac:parameter></ac:structured-macro>8.4 토폴로지</h2>
+<p>범위 서브탭 상단의 <strong>Workforce(RMS) 프로젝트 · 상태 · 이슈 토폴로지</strong>는 <code>Workforce 허브 → 앱 프로젝트 → (Jira 스페이스) → 작업 상태 → 이슈</code> 경로를 관계망으로 그립니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 8-2 토폴로지 위젯</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 8-2 토폴로지 위젯"><ri:attachment ri:filename="08-portfolio-topology.png" /></ac:image><p><em>그림 8-2. 토폴로지 — ① 계층 필터(프로젝트/스페이스/상태)와 작업 상태 필터 ② Workforce 허브 ③ 프로젝트 노드(크기 = 투입 MD) ④ 상태 노드를 눌러 펼친 이슈 노드 ⑤ 스페이스 이슈 패널.</em></p></ac:rich-text-body></ac:structured-macro>
+<table>
+<thead>
+<tr>
+<th>조작</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>계층</strong> 필터</td>
+<td>프로젝트까지 / 스페이스까지 / 상태까지 중 어디까지 펼칠지</td>
+</tr>
+<tr>
+<td><strong>작업 상태</strong> 필터</td>
+<td>할 일 / 진행 중 / 완료 중 보고 싶은 상태만</td>
+</tr>
+<tr>
+<td>상태 노드 클릭</td>
+<td>그 상태의 이슈가 그래프에 펼쳐집니다(여러 노드 동시 가능). 다시 누르면 접힘</td>
+</tr>
+<tr>
+<td><strong>전체 이슈 펼치기 / 모두 접기</strong></td>
+<td>한 번에 펼치거나 접기</td>
+</tr>
+<tr>
+<td>프로젝트 노드 클릭</td>
+<td>프로젝트 상세로 이동</td>
+</tr>
+<tr>
+<td>스페이스 노드 클릭</td>
+<td>오른쪽에 <strong>스페이스 이슈</strong> 패널(최대 300건, 실적·계획 포함)</td>
+</tr>
+<tr>
+<td>이슈 노드 클릭</td>
+<td>Jira에서 엽니다</td>
+</tr>
+</tbody></table>
+<ul>
+<li>프로젝트 노드 크기는 투입 공수(MD), 스페이스 노드 크기는 이슈 수, 이슈 노드 크기는 실제 투입 공수입니다.</li>
+<li>프로젝트가 많으면 <strong>위험도 상위만</strong> 먼저 표시하고 <strong>전체 표시</strong>로 펼칠 수 있습니다.</li>
+<li>&quot;스페이스 계층은 다음 집계 후 표시됩니다&quot;가 뜨면 아직 스페이스 정보가 집계되지 않은 것입니다. 재집계 후 다시 열어 보세요.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">85-가동률-두-종류의-차이</ac:parameter></ac:structured-macro>8.5 가동률 두 종류의 차이</h2>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>분모</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>가동률(종합)</strong></td>
+<td>한 사람이 참여한 <strong>모든 프로젝트 기간을 겹치지 않게 합산</strong></td>
+<td>이중 계상 방지. <strong>프로젝트 필터와 무관</strong>하게 고정</td>
+</tr>
+<tr>
+<td><strong>프로젝트별 가동률</strong></td>
+<td>그 프로젝트 기간의 실효 가용 MD</td>
+<td><ac:link ac:anchor="552-인력-분석"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 인력 분석]]></ac:plain-text-link-body></ac:link>과 같은 기준</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>두 숫자가 다르다고 오류가 아닙니다. <strong>분모가 다른 서로 다른 지표</strong>입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">86-프로젝트-상세-화면과의-관계</ac:parameter></ac:structured-macro>8.6 프로젝트 상세 화면과의 관계</h2>
+<table>
+<thead>
+<tr>
+<th>질문</th>
+<th>이 화면 (8장)</th>
+<th>프로젝트 상세 (5장)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>어느 프로젝트가 위험한가?</td>
+<td><strong>종합 개요 신호등</strong>으로 선별</td>
+<td>—</td>
+</tr>
+<tr>
+<td>왜 위험한가?</td>
+<td>비교 서브탭·토폴로지로 축을 좁힘</td>
+<td><ac:link ac:anchor="554-진척률"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 진척률]]></ac:plain-text-link-body></ac:link>에서 원인 이슈까지 추적</td>
+</tr>
+<tr>
+<td>누구를 조정할까?</td>
+<td>자원 서브탭에서 부하 비교</td>
+<td><ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 인력 관리]]></ac:plain-text-link-body></ac:link> · <ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[6.4 프로젝트 배정]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+</tbody></table>
+<p><strong>권장 흐름</strong>: 통합 대시보드에서 <strong>위험 프로젝트를 고르고</strong> → 프로젝트 상세 진척률에서 <strong>원인을 찾고</strong> → 자원 관리에서 <strong>사람을 조정</strong>합니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">문제-해결</ac:parameter></ac:structured-macro>문제 해결</h2>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>원인과 해결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>사이드바에 메뉴가 없습니다</td>
+<td>「리포트」 읽기 권한이 없습니다</td>
+</tr>
+<tr>
+<td>프로젝트가 일부만 보입니다</td>
+<td>권한 세트의 조회 범위가 &quot;소속 프로젝트만&quot; 또는 &quot;내 팀만&quot;입니다</td>
+</tr>
+<tr>
+<td>비용 서브탭이 가려져 있습니다</td>
+<td>「비용」 읽기 권한이 없거나, 급여 정책 변경 후 아직 재집계하지 않았습니다</td>
+</tr>
+<tr>
+<td>숫자가 오래됐습니다</td>
+<td>배치 집계 결과입니다. 기준 시각을 확인하고 <strong>지금 재집계</strong>를 실행하세요(「리포트」 쓰기 필요)</td>
+</tr>
+<tr>
+<td>재집계 버튼이 없습니다</td>
+<td>「리포트」 <strong>쓰기</strong> 권한이 없습니다</td>
+</tr>
+<tr>
+<td>토폴로지에 스페이스 계층이 없습니다</td>
+<td>다음 집계 후 표시됩니다. 지금 재집계를 실행하세요</td>
+</tr>
+<tr>
+<td>인건비가 0인 프로젝트가 있습니다</td>
+<td>급여 미등록·기간 미설정 등입니다 — <ac:link ac:anchor="인건비가-0원으로-나올-때"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 인건비가 0원으로 나올 때]]></ac:plain-text-link-body></ac:link></td>
+</tr>
+</tbody></table>

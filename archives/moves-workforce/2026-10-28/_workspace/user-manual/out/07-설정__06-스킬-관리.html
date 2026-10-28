@@ -1,0 +1,106 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「스킬 관리」 읽기</td>
+</tr>
+<tr>
+<td>스킬 추가·수정·삭제·프리셋 추가</td>
+<td>「스킬 관리」 쓰기</td>
+</tr>
+<tr>
+<td>인력의 <strong>보유 스킬</strong> 지정</td>
+<td>이 화면이 아님 — 「자원관리」 쓰기(또는 본인·팀장)</td>
+</tr>
+<tr>
+<td>프로젝트 <strong>필요 스킬</strong> 지정</td>
+<td>이 화면이 아님 — 「프로젝트 관리」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>이 화면은 <strong>사전(선택지)만</strong> 정의합니다. 실제로 누구에게/어느 프로젝트에 붙이는지는 프로젝트 창과 자원 관리에서 합니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 자원 적합도 계산에 쓰는 <strong>스킬 사전</strong>을 직군별로 정의할 때.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 7-8 스킬 관리</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 7-8 스킬 관리"><ri:attachment ri:filename="07-skills.png" /></ac:image><p><em>그림 7-8. 스킬 관리 — ① 스킬 표(스킬명·직군·설명) ② 스킬 추가 ③ 직군 프리셋 추가(직군별 대표 스킬 다중 선택).</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">목록-컬럼</ac:parameter></ac:structured-macro>목록 컬럼</h2>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>스킬명</td>
+<td>예: React</td>
+</tr>
+<tr>
+<td>직군</td>
+<td>카테고리 (선택하거나 직접 입력)</td>
+</tr>
+<tr>
+<td>설명</td>
+<td>예: 프론트엔드 라이브러리</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">등록-방법-두-가지</ac:parameter></ac:structured-macro>등록 방법 두 가지</h2>
+<table>
+<thead>
+<tr>
+<th>방법</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>스킬 추가</strong></td>
+<td>스킬명·직군·설명을 입력해 하나씩 등록</td>
+</tr>
+<tr>
+<td><strong>직군 프리셋 추가</strong></td>
+<td>직군별 대표 스킬 목록에서 골라 한 번에 등록. 이미 있는 항목은 건너뜁니다</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">삭제-제약</ac:parameter></ac:structured-macro>삭제 제약</h2>
+<ul>
+<li><strong>사용 중인 스킬은 삭제할 수 없습니다.</strong> 먼저 해당 인력의 보유 스킬이나 프로젝트 필요 스킬에서 떼어내야 합니다.</li>
+<li>스킬명은 중복될 수 없습니다. 목록이 100건을 넘어도 전체가 표시되고 중복 판정도 전체 기준입니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">여기서-정의한-스킬이-쓰이는-곳</ac:parameter></ac:structured-macro>여기서 정의한 스킬이 쓰이는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>화면</th>
+<th>쓰임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><ac:link ac:anchor="프로젝트-추가--수정"><ri:page ri:content-title="4. 프로젝트 관리" /><ac:plain-text-link-body><![CDATA[4.1 프로젝트 추가/수정]]></ac:plain-text-link-body></ac:link></td>
+<td>프로젝트 <strong>필요 스킬</strong> 선택</td>
+</tr>
+<tr>
+<td><ac:link ac:anchor="31-내-현황"><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지 &gt; 내 스킬]]></ac:plain-text-link-body></ac:link></td>
+<td>본인 보유 스킬 등록</td>
+</tr>
+<tr>
+<td><ac:link ac:anchor="스킬-편집"><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[6.1 인력 현황]]></ac:plain-text-link-body></ac:link></td>
+<td>인력별 보유 스킬 편집·스킬 필터</td>
+</tr>
+<tr>
+<td><ac:link><ri:page ri:content-title="6.4 프로젝트 배정" /><ac:plain-text-link-body><![CDATA[6.4 프로젝트 배정]]></ac:plain-text-link-body></ac:link></td>
+<td>프로젝트 <strong>필요 스킬</strong> 대비 후보의 <strong>적합도</strong> 계산</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">적합도가-동작하려면</ac:parameter></ac:structured-macro>적합도가 동작하려면</h2>
+<p>적합도는 <strong>필요 스킬</strong>과 <strong>보유 스킬</strong>을 맞대어 계산합니다. 둘 중 하나라도 비어 있으면 의미 있는 값이 나오지 않습니다.</p>
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[1. 여기(7.6)에서 스킬 사전을 만든다
+2. 프로젝트에 필요 스킬을 지정한다        → 4.1 프로젝트 추가/수정 창 또는 6.4의 요구 스킬 편집
+3. 인력에 보유 스킬을 지정한다            → 6.1 인력 현황 / 마이페이지 / 팀장의 내 팀
+4. 6.4에서 적합도 순으로 후보를 본다
+]]></ac:plain-text-body></ac:structured-macro>

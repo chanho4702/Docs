@@ -1,0 +1,170 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「대시보드」 읽기</td>
+</tr>
+<tr>
+<td>위젯 추가·레이아웃 편집·삭제·커스텀 필터 편집</td>
+<td>「대시보드」 쓰기</td>
+</tr>
+<tr>
+<td><strong>총 인건비</strong> 카드, 급여 분포·비용 소진 위젯</td>
+<td>「비용」 읽기 (없으면 <strong>항목 자체가 표시되지 않음</strong>)</td>
+</tr>
+<tr>
+<td>상태별 분포·계획 대비 실적·진척 추이·지연 이슈 등 분석 위젯</td>
+<td>「리포트」 읽기 (없으면 위젯 자리에 &quot;분석 리포트 열람 권한이 필요합니다&quot; 안내)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>급여 정책이 <strong>등급 기반</strong>이면 「비용」이 있어도 총 인건비 카드와 급여 분포 위젯이 숨겨집니다(<ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1]]></ac:plain-text-link-body></ac:link>).</li>
+<li>대시보드 데이터는 프로젝트 단위라 <strong>조회 범위 밖 프로젝트</strong>에서는 열리지 않습니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 프로젝트 현황을 <strong>한 화면에서 요약</strong>해 보고할 때. 위젯을 골라 프로젝트마다 다른 대시보드를 꾸밀 수 있습니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 5-2 프로젝트 대시보드 전체</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 5-2 프로젝트 대시보드 전체"><ri:attachment ri:filename="05-dashboard-overview.png" /></ac:image><p><em>그림 5-2. 대시보드 — ① 요약 카드 6개 ② 위젯 그리드 ③ 편집 / 차트 추가 버튼. &amp;quot;전부 추가&amp;quot; 직후의 기본 배치로 캡처.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">상단-요약-카드</ac:parameter></ac:structured-macro>상단 요약 카드</h2>
+<table>
+<thead>
+<tr>
+<th>카드</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트 참여 인력</td>
+<td><ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link>에 등록된 인원 수</td>
+</tr>
+<tr>
+<td>프로젝트 기간</td>
+<td>시작일 ~ 종료일</td>
+</tr>
+<tr>
+<td>총 인건비</td>
+<td>「비용」 읽기 권한자에게만. 급여 정책이 <ac:link ac:anchor="계산-방식은-급여-정책이-결정합니다"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[등급 기반]]></ac:plain-text-link-body></ac:link>이면 숨김</td>
+</tr>
+<tr>
+<td>진척률</td>
+<td>완성 진척(계획 공수 가중). <ac:link ac:anchor="554-진척률"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5.4 진척률]]></ac:plain-text-link-body></ac:link>과 같은 값</td>
+</tr>
+<tr>
+<td>남은 기간</td>
+<td>종료일까지 D-day. 기간이 없으면 &quot;기간 미설정&quot;</td>
+</tr>
+<tr>
+<td>지연 이슈</td>
+<td>기한이 지났는데 완료되지 않은 이슈 수</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>이슈가 아주 많은 프로젝트는 &quot;이슈가 많아 일부만 집계했습니다&quot;가 함께 표시됩니다. 실제 값은 표시된 값보다 큽니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">위젯-종류</ac:parameter></ac:structured-macro>위젯 종류</h2>
+<p><strong>차트 추가</strong>에서 고를 수 있는 데이터 유형입니다. 유형마다 어울리는 차트 종류가 정해져 있습니다.</p>
+<table>
+<thead>
+<tr>
+<th>데이터 유형</th>
+<th>차트</th>
+<th>무엇을 보여주나</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>역할 분포 / 등급 분포 / 팀 분포</td>
+<td>도넛·바</td>
+<td>참여 인력의 역할·등급·소속 팀 구성 비율</td>
+</tr>
+<tr>
+<td>담당자 분포</td>
+<td>도넛·바</td>
+<td>이슈 담당자별 분포</td>
+</tr>
+<tr>
+<td>작업 분포</td>
+<td>도넛·바</td>
+<td>이슈별 참여 인원 분포</td>
+</tr>
+<tr>
+<td>급여 분포</td>
+<td>바</td>
+<td>인건비 구간별 인원 (「비용」 권한)</td>
+</tr>
+<tr>
+<td>워크로그</td>
+<td>히트맵 · 멀티 라인</td>
+<td>일자별 작업 시간 강도(히트맵은 <strong>일일 용량</strong> 대비 0h / 0<del>1h / 1</del>4h / 4~8h / 8h+ 단계) 또는 작업자별 일별 추이</td>
+</tr>
+<tr>
+<td>상태별 분포</td>
+<td>도넛</td>
+<td>완료 / 진행 중 / 할 일. <strong>건수 기준 ↔ 공수 기준</strong> 전환</td>
+</tr>
+<tr>
+<td>계획 대비 실적</td>
+<td>바</td>
+<td>계획 공수(MD) 합계 vs 실투입 공수</td>
+</tr>
+<tr>
+<td>지연·임박 이슈</td>
+<td>목록</td>
+<td>기한 초과·임박 미완료 이슈를 위험한 순서로. 전체/지연/임박 필터, 클릭 시 Jira로 이동</td>
+</tr>
+<tr>
+<td>이슈 규모</td>
+<td>트리맵</td>
+<td>어느 이슈가 작업량을 많이 차지하는지 면적으로 비교. <strong>실투입 ↔ 계획</strong> 전환</td>
+</tr>
+<tr>
+<td>관계 토폴로지</td>
+<td>관계망</td>
+<td>이슈–하위 이슈–연결 이슈–워크포스 상위 관계를 그래프로. 원 크기 = 투입 시간, 색 = 소속 Jira 프로젝트. &quot;관계 있는 이슈만&quot; 토글</td>
+</tr>
+<tr>
+<td>진척 추이</td>
+<td>S-curve</td>
+<td>계획 누적 vs 실적 누적 공수. <ac:link ac:anchor="554-진척률"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[진척률 탭]]></ac:plain-text-link-body></ac:link>과 같은 데이터</td>
+</tr>
+<tr>
+<td>비용 소진</td>
+<td>번업</td>
+<td>월별 누적 인건비 vs 예산선 (「비용」 권한). <ac:link ac:anchor="555-비용"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[비용 탭]]></ac:plain-text-link-body></ac:link>과 같은 데이터</td>
+</tr>
+<tr>
+<td>커스텀 필터</td>
+<td>목록</td>
+<td>담당자·상태·이슈 타입·우선순위·기한·계획 공수 조건을 직접 지정해 원하는 이슈만 모아 봄</td>
+</tr>
+</tbody></table>
+<p>각 위젯은 <strong>차트/표 전환</strong>, <strong>펼치기</strong>, <strong>새로고침</strong>, <strong>계산식 안내(ⓘ)</strong> 를 제공합니다. 조회가 무거운 위젯(토폴로지·진척 추이·비용 소진 등)에는 <strong>무거움</strong> 배지가 붙고, 이슈가 많은 프로젝트에서는 로딩이 오래 걸릴 수 있습니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 5-3 차트 추가 창</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 5-3 차트 추가 창"><ri:attachment ri:filename="05-dashboard-add-chart.png" /></ac:image><p><em>그림 5-3. 차트 추가 — ① 추천(템플릿) ② 직접 선택(데이터 유형 → 차트 타입) ③ 전부 추가(추가 예정 수·건너뛸 수 안내).</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">대시보드-꾸미기</ac:parameter></ac:structured-macro>대시보드 꾸미기</h2>
+<ol>
+<li>우측 위 <strong>편집</strong>을 누릅니다.</li>
+<li>위젯을 <strong>드래그해 재배치</strong>하거나 모서리를 끌어 <strong>크기를 조정</strong>합니다.</li>
+<li><strong>차트 추가</strong>로 위젯을 늘립니다.<ul>
+<li><strong>추천(템플릿)</strong>: 목적별 묶음 — 인력 분석(역할·등급) / 비용 분석(급여) / 업무 분석(작업·담당자) / <strong>프로젝트 건강</strong>(상태별 분포·지연 임박·계획 대비 실적) / <strong>작업 규모</strong>(이슈 규모·상태별 분포) / <strong>일정·비용 심층</strong>(진척 추이·비용 소진)</li>
+<li><strong>직접 선택</strong>: 데이터 유형을 고른 뒤 그에 맞는 차트 종류와 이름을 지정</li>
+<li><strong>전부 추가</strong>: 지금 권한으로 볼 수 있는 위젯을 <strong>한 번에</strong> 추가합니다. 이미 있는 위젯은 건너뛰며, 배치는 정해진 줄 순서로 채워집니다</li>
+</ul>
+</li>
+<li><strong>편집 완료</strong>를 누르면 배치가 <strong>프로젝트별로 저장</strong>됩니다.</li>
+</ol>
+<h3><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">커스텀-필터-위젯-쓰기</ac:parameter></ac:structured-macro>커스텀 필터 위젯 쓰기</h3>
+<ol>
+<li>커스텀 필터 위젯을 추가하면 처음엔 &quot;조건이 설정되지 않아 전체 이슈를 표시합니다&quot; 상태입니다.</li>
+<li>위젯의 <strong>필터 편집</strong>에서 담당자(<strong>나</strong> 선택 가능)·상태·이슈 타입·우선순위·기한(기한 초과 / 임박 / 기한 없음)·계획 공수(입력됨 / 미입력)를 조합합니다. 아래에 <strong>현재 조건: N건</strong> 미리보기가 갱신됩니다.</li>
+<li>저장하면 조건이 위젯과 함께 프로젝트에 저장되어 다른 사용자에게도 같은 목록이 보입니다.</li>
+</ol>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">알아두기</ac:parameter></ac:structured-macro>알아두기</h2>
+<ul>
+<li>담당자 분포·지연 이슈 등 이슈 기반 위젯은 <ac:link><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[작업 관리]]></ac:plain-text-link-body></ac:link>에 편입된 이슈만 대상으로 합니다.</li>
+<li>역할·등급·팀 분포는 <ac:link><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[인력 관리]]></ac:plain-text-link-body></ac:link>에서 각 멤버에게 부여한 값 기준입니다. 값이 비어 있는 인원은 분포에서 빠집니다.</li>
+<li>「리포트」 권한이 없는 사용자가 대시보드를 열면 분석 위젯 자리에 권한 안내만 보이고 나머지 위젯은 정상 표시됩니다. 위젯이 잘못된 것이 아닙니다.</li>
+<li>더 깊은 분석(담당자별 계획 대비 실적, 가동률, 지연 원인 이슈)은 <ac:link><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 분석 및 리포트]]></ac:plain-text-link-body></ac:link>를 사용하세요.</li>
+</ul>

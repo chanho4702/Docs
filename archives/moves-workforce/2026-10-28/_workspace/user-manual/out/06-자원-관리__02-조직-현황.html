@@ -1,0 +1,87 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>조직 계층·팀장·팀원 <strong>편집</strong></td>
+<td>이 화면에서는 불가 — <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 팀 관리]]></ac:plain-text-link-body></ac:link>에서 「팀 관리」 쓰기로 수행</td>
+</tr>
+</tbody></table>
+<ul>
+<li>이 화면은 <strong>조회 전용</strong>입니다. 팀 생성·이동·팀원 배치는 설정 화면에서 합니다.</li>
+<li>보이는 팀·인원 범위는 관리자면 전사, 팀장이면 자신이 이끄는 팀과 하위 팀입니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — <strong>조직도 관점</strong>에서 팀 구성과 팀별 인원·가동률을 볼 때.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 6-3 조직 현황</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 6-3 조직 현황"><ri:attachment ri:filename="06-resource-org.png" /></ac:image><p><em>그림 6-3. 조직 현황 — ① 팀 트리(팀장·직속/누적 인원) ② 직속 인원만 보기 토글 ③ 선택 팀의 팀원 목록(팀장 배지·가동률·보유 스킬).</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">화면-구성</ac:parameter></ac:structured-macro>화면 구성</h2>
+<p><strong>왼쪽 — 팀 트리</strong></p>
+<ul>
+<li>전사 → 팀 → 하위 팀 계층</li>
+<li>팀별 <strong>팀장</strong>, <strong>인원 수</strong> 표시 — <code>직속 N명 / 누적 M명</code></li>
+<li><strong>직속 인원만 보기</strong> 토글로 하위 팀 인원 포함 여부를 전환</li>
+</ul>
+<p><strong>오른쪽 — 팀원 목록</strong></p>
+<table>
+<thead>
+<tr>
+<th>컬럼</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>팀원</td>
+<td>이름·아바타. 팀장은 맨 앞에 <strong>팀장</strong> 배지와 함께</td>
+</tr>
+<tr>
+<td>팀</td>
+<td>소속 팀</td>
+</tr>
+<tr>
+<td>직무 / 등급</td>
+<td>직무 정보</td>
+</tr>
+<tr>
+<td>가동률</td>
+<td>배치 집계 기준</td>
+</tr>
+<tr>
+<td>보유 스킬</td>
+<td>등록된 스킬 태그</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">알아두기</ac:parameter></ac:structured-macro>알아두기</h2>
+<ul>
+<li>아직 집계되지 않은 인원이 있으면 <strong>&quot;N명은 아직 집계 전이라 합계에서 제외되었습니다&quot;</strong> 가 표시됩니다. 팀 합계를 읽을 때 이 안내를 함께 확인하세요.</li>
+<li>표시할 팀원이 없으면 빈 상태 안내가 나옵니다. 팀에 사람을 배치하려면 <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 팀 관리]]></ac:plain-text-link-body></ac:link>의 <strong>팀원 배치</strong>를 사용합니다.</li>
+<li>조직 계층 자체(상위 팀·팀장·팀 권한)는 이 화면이 아니라 <ac:link><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 팀 관리]]></ac:plain-text-link-body></ac:link>에서 편집합니다.</li>
+<li>팀장은 항상 그 팀의 소속 인원으로 세어집니다(<ac:link ac:anchor="팀장-규칙"><ri:page ri:content-title="7.3 팀 관리" /><ac:plain-text-link-body><![CDATA[7.3 규칙]]></ac:plain-text-link-body></ac:link>).</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">이-화면과-팀-분석의-차이</ac:parameter></ac:structured-macro>이 화면과 팀 분석의 차이</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>조직 현황</th>
+<th><ac:link><ri:page ri:content-title="6.3 팀 분석" /><ac:plain-text-link-body><![CDATA[팀 분석]]></ac:plain-text-link-body></ac:link></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>보는 단위</td>
+<td><strong>사람</strong> (팀에 속한 개인 목록)</td>
+<td><strong>팀</strong> (팀 간 비교·롤업)</td>
+</tr>
+<tr>
+<td>쓰는 때</td>
+<td>&quot;이 팀에 누가 있지?&quot;</td>
+<td>&quot;어느 팀이 과부하지?&quot;</td>
+</tr>
+</tbody></table>

@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Linking Confluence documents</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Linking Confluence documents</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/documents.html">한국어</a></p>
+<blockquote>
+<p>Review draft: availability of document management and the same-site Confluence connection must be verified on staging.</p>
+</blockquote>
+<p>Link designs, meeting notes, and deliverables to a project or Jira work item so they are easy to find. Linking does not edit or copy the source Confluence page.</p>
+<h2>Required access</h2>
+<ul>
+<li>Project read allows viewing; Project write allows linking, classification changes, and unlinking.</li>
+<li>Linking to a Jira work item also requires editing access to that item.</li>
+<li>Search and live status checks use your own Confluence access.</li>
+</ul>
+<p>Prepare Confluence access on the site where the app is used. <strong>The guide destination, dmove-addons, is a different site from the app reference site, dmove-staging.</strong> Publishing this guide on another site does not make its pages searchable from the app.</p>
+<!-- detailed-walkthrough:start -->
+
+<h2>Prepare the example and understand the link dialog</h2>
+<p><strong>Path:</strong> Jira → Apps → Moves Workforce → Project Management → Demo website launch → <strong>Document Management</strong>.</p>
+<p>Prepare a Confluence page you can open on the same site, such as <strong>Demo release design</strong>. Also prepare the project and link DEMO-12 to it. These names are illustrative; use your actual page title and issue key. Confluence on another site is outside this search workflow.</p>
+<table>
+<thead>
+<tr>
+<th>Dialog area</th>
+<th>What you choose</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Documents</td>
+<td>Pages found using a space and search term</td>
+<td>Checked pages are linked. Seeing a result is different from selecting it.</td>
+</tr>
+<tr>
+<td>Work items</td>
+<td>Jira issues already linked to this project</td>
+<td>Leave empty for project documents; select issues for work-item documents.</td>
+</tr>
+<tr>
+<td>Category</td>
+<td>A document category prepared by your organization</td>
+<td>Identifies the document&#39;s purpose. You can start uncategorized when no category is available.</td>
+</tr>
+</tbody></table>
+<h3>Example A: a project document</h3>
+<ol>
+<li>Open <strong>Link documents</strong> and search the Documents area by space and title. If no result appears, try page-content search or open the original page to check your access.</li>
+<li>Check Demo release design. Review the selected count and title.</li>
+<li><strong>Leave Work items empty.</strong> Choose a category if one is available, then save.</li>
+<li>In Documents view, check the title and <strong>Project document</strong> indicator. This does not mean the page was linked to a specific issue.</li>
+<li>Click the title and check that the original Confluence page opens.</li>
+</ol>
+<h3>Example B: a document for DEMO-12</h3>
+<ol>
+<li>Open Link documents again and select the same page.</li>
+<li>This time select <strong>DEMO-12</strong> in Work items. Check the key and title, choose a category, and save.</li>
+<li>Find DEMO-12 in Work items view and check its document link. Also check the linked issue in Documents view.</li>
+<li>For multiple issues, review per-issue success and failure results first. Check edit permission and document limits for failed items, then retry only those targets.</li>
+</ol>
+<h3>Verify category changes and unlinking</h3>
+<p>Open the document row&#39;s category-change or unlink action and review the affected issue/project relationships. When a page has several links, check which relationship you are changing before saving. After a category change, verify the row&#39;s category; after unlinking, verify that the link disappears from the selected target. The original Confluence page should still open. Relinking the same page to the same issue can update its category; do not expect a second document entry.</p>
+<!-- detailed-walkthrough:end -->
+
+<h2>Link documents</h2>
+<ol>
+<li>Open document management in the project and choose the link-document action.</li>
+<li>Find pages using a Confluence space, title, or page URL. Enable body search when needed.</li>
+<li>Select the work items to link. With none selected, the document is linked to the project as a whole.</li>
+<li>Choose a classification and save.</li>
+<li>If you selected multiple work items, check their individual success and failure results.</li>
+</ol>
+<p><img src="../images/en/05-documents-link-modal.jpg" alt="Document, work-item, and category selection. With no work item selected, the document is linked to the project."></p>
+<p>Document, work-item, and category selection. With no work item selected, the document is linked to the project.</p>
+<p><img src="../images/en/05-documents-work-selection.jpg" alt="The work-item selection list in the document dialog. Selecting a work item links documents to that work item."></p>
+<p>The work-item selection list in the document dialog. Selecting a work item links documents to that work item.</p>
+<h2>Read document status</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning and check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Healthy</td>
+<td>A document currently accessible to you</td>
+</tr>
+<tr>
+<td>Stale</td>
+<td>A document not updated within the administrator-defined period</td>
+</tr>
+<tr>
+<td>Broken</td>
+<td>The page may have been deleted or may be inaccessible to the current user</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td>Current status could not be determined, for example because of connectivity or verification limits</td>
+</tr>
+</tbody></table>
+<p>Use work items without documents and missing required classifications to identify gaps. Unknown does not mean healthy or zero documents.</p>
+<h2>Changes and troubleshooting</h2>
+<ul>
+<li>Changing classification or unlinking changes the relationship. Unlinking does not delete the Confluence source.</li>
+<li>Limits apply to documents per work item and pages selected in one operation. If a limit is reported, reduce the selection and check the result.</li>
+<li>For failures on only some work items, check Jira editing access and limits.</li>
+<li>With Confluence disconnected, previously saved titles may still be visible. Ask an administrator to check the connection and access before adding links or relying on current status.</li>
+<li>If a colleague sees a different status, open the same Confluence page directly to check access differences.</li>
+</ul>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Distinguish viewing/searching/selecting from changing document links. Source pages follow your Confluence access on the same site as the app&#39;s Jira installation.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Documents / Work items</td>
+<td>Switch between page-oriented and issue-oriented lists without changing relationships.</td>
+<td>Project document identifies a project-level relationship made without selecting issues.</td>
+</tr>
+<tr>
+<td>Summary cards / work without documents</td>
+<td>Review linked documents, work without documents, stale/broken pages, and missing required categories. Use the undocumented-work card to find such issues.</td>
+<td>Do not read Unknown as zero documents or Healthy. Check the displayed scope if a partial-list warning appears.</td>
+</tr>
+<tr>
+<td>Document search / category / status filters</td>
+<td>Find by title/space/issue and narrow by category/status. Filtering the linked list does not delete source pages.</td>
+<td>Clear filters to distinguish no matches from no linked documents.</td>
+</tr>
+<tr>
+<td>Link dialog space / title-URL / include content</td>
+<td>A space selection can list recently updated pages; search by title/page URL. Include page content broadens matching.</td>
+<td>Check the all-space fallback notice if spaces fail to load and verify that the same account can open the original page.</td>
+</tr>
+<tr>
+<td>Select all / clear all / show more</td>
+<td>Select all applies only to the loaded list. Show more loads additional search results.</td>
+<td>Review selected titles/counts. Distinguish the 30-page selection limit from the 30-page total per issue.</td>
+</tr>
+<tr>
+<td>Work items / category / Save</td>
+<td>No issues selected means a project-level link; selected issues receive issue-level links. Choose an available category or save uncategorized.</td>
+<td>Review per-target success/failure. An issue exceeding the total limit including existing links can fail individually.</td>
+</tr>
+<tr>
+<td>Open title / metadata status</td>
+<td>The title opens the Confluence original. Healthy/Stale/Broken/Unknown reflect metadata checking for the current user.</td>
+<td>Current metadata checking covers up to 500 pages. Connection/coverage limits can produce Unknown; Broken alone does not prove deletion.</td>
+</tr>
+<tr>
+<td>Category change / unlink target selection</td>
+<td>All current targets are selected by default. Narrow the selection before saving when changing only some issue links.</td>
+<td>Also check whether the project document is selected. Unlink removes selected relationships without deleting the source page.</td>
+</tr>
+<tr>
+<td>Retry / Confluence unavailable</td>
+<td>Use Retry for loading failures. When disconnected, saved titles can remain visible while new links/current checking are restricted.</td>
+<td>Check same-site Confluence installation, current-user access, app write access, and Jira Edit Issues.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

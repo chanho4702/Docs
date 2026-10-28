@@ -1,0 +1,127 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>패널 표시</td>
+<td><strong>앱 권한 불필요</strong> — 그 이슈가 <strong>앱 프로젝트에 편입</strong>돼 있고, Jira에서 이슈를 볼 수 있으면 표시됩니다</td>
+</tr>
+<tr>
+<td>워크로그 기록</td>
+<td>Jira의 <strong>Work On Issues</strong> 권한 + 그 Jira 프로젝트의 <strong>시간 추적 활성화</strong></td>
+</tr>
+<tr>
+<td>워크로그 수정·삭제</td>
+<td><strong>본인이 쓴 것만</strong> (Jira의 Edit/Delete Own Worklogs)</td>
+</tr>
+<tr>
+<td>프로젝트명·&quot;Workforce에서 열기&quot; 링크</td>
+<td>「프로젝트 관리」 읽기 <strong>+</strong> 그 프로젝트가 내 조회 범위 안일 때. 범위 밖이면 링크만 숨겨지고 공수·기록은 그대로 됩니다</td>
+</tr>
+<tr>
+<td>라이선스</td>
+<td>앱 라이선스가 명시적으로 비활성이면 패널이 안내만 표시합니다</td>
+</tr>
+</tbody></table>
+<hr />
+<p><strong>언제 쓰나</strong> — Jira에서 이슈를 보다가 <strong>앱을 열지 않고</strong> 그 자리에서 계획 공수 대비 투입을 확인하고 워크로그를 남길 때.</p>
+<p>패널은 이슈가 <strong>앱 프로젝트에 편입된 경우에만</strong> 나타납니다. 편입은 <ac:link ac:anchor="534-작업-추가-창"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[5.3 작업 추가]]></ac:plain-text-link-body></ac:link> 또는 <ac:link ac:anchor="533-자동-편입프로젝트-구독"><ri:page ri:content-title="5.3 작업 관리" /><ac:plain-text-link-body><![CDATA[자동 편입]]></ac:plain-text-link-body></ac:link>으로 합니다. 앱 업그레이드 전에 편입된 이슈는 백그라운드 정리 후 순차적으로 표시됩니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">101-표시-위치</ac:parameter></ac:structured-macro>10.1 표시 위치</h2>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 10-1 Jira 이슈 화면의 두 패널</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 10-1 Jira 이슈 화면의 두 패널"><ri:attachment ri:filename="10-issue-panel-both.png" /></ac:image><p><em>그림 10-1. Jira 이슈 화면 — ① 오른쪽 컨텍스트 패널(요약: 프로젝트명·KPI·+ 워크로그 기록·Workforce에서 열기) ② 활동 탭 &amp;quot;Moves Workforce&amp;quot;(전체: KPI·기록 폼·최근 워크로그).</em></p></ac:rich-text-body></ac:structured-macro>
+<table>
+<thead>
+<tr>
+<th>위치</th>
+<th>이름</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이슈 오른쪽 <strong>컨텍스트 패널</strong></td>
+<td>Moves Workforce</td>
+<td>요약 — 프로젝트명, KPI 4개(간략), <strong>+ 워크로그 기록</strong>, <strong>Workforce에서 열기</strong></td>
+</tr>
+<tr>
+<td>이슈 하단 <strong>활동 탭</strong></td>
+<td>Moves Workforce</td>
+<td>전체 — KPI 4개, 워크로그 기록 폼, <strong>최근 워크로그</strong> 목록(내 것 수정·삭제)</td>
+</tr>
+</tbody></table>
+<p>컨텍스트 패널의 <strong>+ 워크로그 기록</strong>을 누르면 활동 탭으로 이동해 기록합니다(&quot;목록·수정은 활동 탭에서&quot;).</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">102-kpi-읽기</ac:parameter></ac:structured-macro>10.2 KPI 읽기</h2>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>계획 작업량</td>
+<td>이슈의 Original Estimate를 MD/MM로 환산</td>
+</tr>
+<tr>
+<td>투입 공수</td>
+<td>누적 워크로그</td>
+</tr>
+<tr>
+<td><strong>내 몫</strong></td>
+<td>투입 공수 중 <strong>내가 기록한</strong> 부분. 최근 워크로그 N건만 읽어 계산하므로 <strong>근사치</strong>입니다</td>
+</tr>
+<tr>
+<td>진행률</td>
+<td>Jira 시간 추적 기준 진행 정도</td>
+</tr>
+</tbody></table>
+<p>단위는 MM/MD이며 안내(ⓘ)에 <code>1MM = N일(H h) · MD = 시간 ÷ 1Day 근무 시간 · MM = MD ÷ N (이번 달 기준)</code> 이 표시됩니다. 기준값은 <ac:link><ri:page ri:content-title="7.1 일반 설정" /><ac:plain-text-link-body><![CDATA[7.1 일반 설정]]></ac:plain-text-link-body></ac:link>과 <ac:link><ri:page ri:content-title="7.9 휴일 관리" /><ac:plain-text-link-body><![CDATA[7.9 휴일 관리]]></ac:plain-text-link-body></ac:link>의 이번 달 근무일입니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">103-워크로그-기록하기</ac:parameter></ac:structured-macro>10.3 워크로그 기록하기</h2>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 10-2 활동 탭의 워크로그 기록 폼과 최근 워크로그</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 10-2 활동 탭의 워크로그 기록 폼과 최근 워크로그"><ri:attachment ri:filename="10-issue-panel-activity.png" /></ac:image><p><em>그림 10-2. 활동 탭 — ① KPI ② 기록 폼(날짜·시작·종료·소요 시간·코멘트) ③ 최근 워크로그(내 것에 수정·삭제 버튼).</em></p></ac:rich-text-body></ac:structured-macro>
+<ol>
+<li>활동 탭의 <strong>워크로그 기록</strong> 폼에서 날짜, 시작 시간, 종료 시간을 입력합니다. 소요 시간이 자동 계산되며 직접 고칠 수도 있습니다.</li>
+<li>코멘트를 적고 <strong>기록</strong>을 누릅니다. <strong>되돌리기</strong>로 입력을 초기화합니다.</li>
+<li>아래 <strong>최근 워크로그</strong>에 바로 반영되고 KPI가 갱신됩니다. 앱의 <ac:link><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[My Work]]></ac:plain-text-link-body></ac:link>에서도 같은 워크로그가 보입니다.</li>
+</ol>
+<p><strong>최근 워크로그</strong> 목록에서 내가 쓴 항목(<strong>나</strong> 표시)은 <strong>수정 / 삭제</strong>할 수 있습니다. 다른 사람 것은 조회만 됩니다. 목록은 최근 N건만 보여주며 &quot;최근 N건만 표시 — 내 몫은 근사치입니다&quot; 안내가 붙습니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">104-패널이-안내만-보여줄-때</ac:parameter></ac:structured-macro>10.4 패널이 안내만 보여줄 때</h2>
+<table>
+<thead>
+<tr>
+<th>안내</th>
+<th>의미와 조치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>연결된 프로젝트가 없습니다</td>
+<td>이 이슈가 앱 프로젝트에 편입되지 않았습니다. 작업 관리에서 추가하면 표시됩니다</td>
+</tr>
+<tr>
+<td>시간 추적이 꺼져 있습니다</td>
+<td>그 Jira 프로젝트에서 시간 추적이 비활성이라 워크로그를 기록할 수 없습니다. Jira 관리자에게 요청하세요</td>
+</tr>
+<tr>
+<td>Jira 워크로그 기록 권한이 없습니다</td>
+<td>Work On Issues 권한이 없습니다</td>
+</tr>
+<tr>
+<td>Moves Workforce 라이선스가 활성 상태가 아닙니다</td>
+<td>관리자에게 라이선스 상태를 확인하세요</td>
+</tr>
+<tr>
+<td>이슈 정보를 불러오지 못했습니다</td>
+<td>일시 오류. 새로고침하세요</td>
+</tr>
+<tr>
+<td>워크로그 목록을 불러오지 못했습니다. 내 몫은 알 수 없습니다</td>
+<td>KPI 중 내 몫만 계산 불가. 기록은 가능합니다</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">알아두기</ac:parameter></ac:structured-macro>알아두기</h2>
+<ul>
+<li>패널에서 기록한 워크로그는 Jira 워크로그 그 자체입니다. 앱의 워크로그와 별도 저장소가 아닙니다.</li>
+<li>프로젝트명과 <strong>Workforce에서 열기</strong> 링크는 내 조회 범위 안의 프로젝트일 때만 보입니다. 범위 밖이면 링크가 숨겨질 뿐 공수 확인과 기록은 됩니다. 이슈 자체는 Jira가 이미 보여주고 있기 때문입니다.</li>
+<li>이슈를 프로젝트에서 <strong>제외</strong>하거나 프로젝트를 <strong>삭제</strong>하면 그 이슈의 패널도 사라집니다.</li>
+</ul>

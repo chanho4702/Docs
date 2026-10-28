@@ -1,0 +1,124 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>탭 진입</td>
+<td>「리포트」 읽기 또는 「자원관리」 읽기 또는 「팀 관리」 읽기</td>
+</tr>
+<tr>
+<td>가동률·인원 축</td>
+<td>위 진입 권한만으로 표시</td>
+</tr>
+<tr>
+<td>공수·진척·리스크 축</td>
+<td>「리포트」 읽기</td>
+</tr>
+<tr>
+<td>인건비</td>
+<td>「비용」 읽기 (+ 급여 정책 스냅샷 정합성)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>「리포트」가 없어도 <strong>탭 전체가 막히지는 않습니다.</strong> 가동률·인원 축만 보이고 나머지 축은 안내와 함께 숨겨집니다.</li>
+<li>보이는 팀 범위는 서버가 판정합니다 — 전사 조직 조회 권한과 &quot;전체 프로젝트&quot; 범위를 가지면 전 팀, 팀장은 자신이 이끄는 팀과 하위 팀입니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 여러 팀·프로젝트를 가로질러 <strong>팀 단위 자원 지표</strong>를 비교할 때.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 6-4 팀 분석</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 6-4 팀 분석"><ri:attachment ri:filename="06-resource-team-analytics.png" /></ac:image><p><em>그림 6-4. 팀 분석 — ① 팀·프로젝트 필터 ② KPI ③ 프로젝트별 팀 투입 ④ 가동률 분포·팀 간 비교 ⑤ 가동률-규모 산점도 ⑥ 계층 롤업.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">제공-위젯</ac:parameter></ac:structured-macro>제공 위젯</h2>
+<table>
+<thead>
+<tr>
+<th>위젯</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>KPI</td>
+<td>팀 단위 핵심 지표 요약</td>
+</tr>
+<tr>
+<td>프로젝트별 팀 투입</td>
+<td>어느 팀이 어느 프로젝트에 얼마나 투입됐는지</td>
+</tr>
+<tr>
+<td>가동률 분포</td>
+<td>팀별 가동률 밴드 분포</td>
+</tr>
+<tr>
+<td>팀 간 비교</td>
+<td>팀을 나란히 두고 지표 비교</td>
+</tr>
+<tr>
+<td>인력 구성</td>
+<td>직무·등급 구성</td>
+</tr>
+<tr>
+<td>가동률-규모 산점도</td>
+<td>팀 규모 대비 가동률 위치</td>
+</tr>
+<tr>
+<td>계층 롤업</td>
+<td>하위 팀을 합산한 상위 팀 지표</td>
+</tr>
+</tbody></table>
+<p><strong>필터</strong>: 팀 · 프로젝트</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">보이는-범위는-서버가-판정합니다</ac:parameter></ac:structured-macro>보이는 범위는 서버가 판정합니다</h2>
+<table>
+<thead>
+<tr>
+<th>사용자</th>
+<th>범위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>전사 조직 조회 신호 + &quot;전체 프로젝트&quot; 범위</td>
+<td>전 팀</td>
+</tr>
+<tr>
+<td>팀장</td>
+<td>자신이 이끄는 팀과 하위 팀</td>
+</tr>
+</tbody></table>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">권한에-따른-축-제한</ac:parameter></ac:structured-macro>권한에 따른 축 제한</h2>
+<ul>
+<li>「리포트」 권한이 없으면 <strong>탭 전체를 막지 않고 가동률·인원 축만</strong> 제공합니다. 공수·진척·리스크 축은 안내와 함께 숨겨집니다.</li>
+<li><strong>인건비</strong>는 「비용」 권한과 급여 정책 스냅샷 정합성이 <strong>모두</strong> 충족돼야 표시됩니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">알아두기</ac:parameter></ac:structured-macro>알아두기</h2>
+<ul>
+<li>인원이 <strong>500명을 초과</strong>하면 팀 필터와 팀별 보기를 사용할 수 없습니다.</li>
+<li>팀 분석은 <strong>현재 소속 기준</strong>입니다. 과거에 다른 팀이었던 인원의 실적도 <strong>지금 소속된 팀</strong>에 집계됩니다(소급하지 않습니다).</li>
+<li>미래 기간은 가동률 계산에서 제외됩니다.</li>
+<li>&quot;N개 프로젝트는 아직 집계 전이라 제외되었습니다&quot;가 뜨면 다음 배치 이후 포함됩니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">세-개의-팀-화면-구분</ac:parameter></ac:structured-macro>세 개의 팀 화면 구분</h2>
+<table>
+<thead>
+<tr>
+<th>화면</th>
+<th>답하는 질문</th>
+<th>범위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><ac:link ac:anchor="32-내-팀-팀장-전용"><ri:page ri:content-title="3. 마이페이지" /><ac:plain-text-link-body><![CDATA[마이페이지 → 내 팀]]></ac:plain-text-link-body></ac:link></td>
+<td>내가 이끄는 조직의 업무 현황은?</td>
+<td>본인이 팀장인 팀과 하위 팀</td>
+</tr>
+<tr>
+<td><ac:link ac:anchor="553-팀-분석"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[프로젝트 상세 → 팀 분석]]></ac:plain-text-link-body></ac:link></td>
+<td>이 프로젝트의 담당 조직과 실제 기여가 일치하는가?</td>
+<td>현재 프로젝트</td>
+</tr>
+<tr>
+<td><strong>자원 관리 → 팀 분석</strong> (이 화면)</td>
+<td>여러 팀·프로젝트의 자원 지표와 계층 롤업은?</td>
+<td>허용된 전 팀 또는 리딩 팀</td>
+</tr>
+</tbody></table>

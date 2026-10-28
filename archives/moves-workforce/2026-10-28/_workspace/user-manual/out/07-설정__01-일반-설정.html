@@ -1,0 +1,143 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회</td>
+<td>「일반 설정」 읽기</td>
+</tr>
+<tr>
+<td>설정 변경·전체 초기화</td>
+<td>「일반 설정」 쓰기</td>
+</tr>
+<tr>
+<td>급여 정책 변경</td>
+<td>「일반 설정」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li>여기서 정한 값(근무시간·가동률 밴드 등)은 <strong>모든 사용자의 화면 계산에 쓰이므로</strong>, 조회 권한 없이도 값 자체는 각 화면에 반영됩니다. 권한은 <strong>이 설정 화면의 접근과 변경</strong>을 제어합니다.</li>
+<li>급여 정책을 바꾸면 전사 인건비 표시가 달라집니다. 영향 범위는 아래 본문을 확인하세요.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — 전사 공통 기준값을 정할 때. <strong>여기 값이 바뀌면 거의 모든 화면의 숫자가 함께 바뀝니다.</strong></p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 7-2 일반 설정</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 7-2 일반 설정"><ri:attachment ri:filename="07-general-settings.png" /></ac:image><p><em>그림 7-2. 일반 설정 — ① 화폐 단위·1Day 근무 시간·1MM 기준 일수 ② 월별 기준(일괄/개별) ③ 진척도 임계값·가동률 기준 3단계 ④ 급여 정책 카드(밴드 미설정 등급 수 경고) ⑤ 전체 초기화.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">설정-항목</ac:parameter></ac:structured-macro>설정 항목</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>설명</th>
+<th>기본값</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화폐 단위</td>
+<td>시스템 전역 통화</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>1Day 근무 시간</strong></td>
+<td><code>1MD = N시간</code>. 0.5 단위, 0.5~24h. 모든 MD/MM/목표시간 계산의 기준</td>
+<td>8h</td>
+</tr>
+<tr>
+<td><strong>1MM 기준 일수</strong></td>
+<td><code>1MM</code>이 며칠에 해당하는지</td>
+<td>—</td>
+</tr>
+<tr>
+<td>월별 기준 설정</td>
+<td>모든 월에 같은 기준을 쓰거나(<strong>일괄 적용</strong>), 월마다 다르게(<strong>개별 설정</strong>) 지정</td>
+<td>일괄</td>
+</tr>
+<tr>
+<td>진척도 임계값</td>
+<td>완성률과 일정률 차이를 &quot;정상&quot;으로 볼 허용 범위(%p). 0~100</td>
+<td>5%p</td>
+</tr>
+<tr>
+<td>가동률 기준 — 과소</td>
+<td>이 값 <strong>미만</strong>은 &#39;과소&#39;</td>
+<td>0.7</td>
+</tr>
+<tr>
+<td>가동률 기준 — 과부하</td>
+<td>이 값 <strong>이상</strong>은 &#39;과부하&#39;</td>
+<td>1.1</td>
+</tr>
+<tr>
+<td>가동률 기준 — 심한 과부하</td>
+<td>이 값 <strong>이상</strong>이면 신호등 적색(위험)</td>
+<td>1.3</td>
+</tr>
+<tr>
+<td><strong>급여 정책</strong></td>
+<td><strong>인원별</strong> 또는 <strong>등급 기반</strong></td>
+<td>인원별</td>
+</tr>
+</tbody></table>
+<p>하단의 <strong>전체 초기화(기본값으로)</strong> 로 되돌릴 수 있습니다. 값은 서버에서도 범위를 검증하므로 허용 범위 밖 값은 저장되지 않습니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">각-값이-영향을-주는-곳</ac:parameter></ac:structured-macro>각 값이 영향을 주는 곳</h2>
+<table>
+<thead>
+<tr>
+<th>설정</th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1Day 근무 시간</td>
+<td><ac:link ac:anchor="목표-시간-계산"><ri:page ri:content-title="2. My Work" /><ac:plain-text-link-body><![CDATA[My Work 목표 시간]]></ac:plain-text-link-body></ac:link>, 계획 작업량(MD) 환산, 인력 분석의 MD/MM, 진척률, <ac:link><ri:page ri:content-title="9. 워크로그 추출" /><ac:plain-text-link-body><![CDATA[워크로그 추출]]></ac:plain-text-link-body></ac:link>의 총 MD, <ac:link><ri:page ri:content-title="10. Jira 이슈 화면 패널" /><ac:plain-text-link-body><![CDATA[Jira 이슈 패널]]></ac:plain-text-link-body></ac:link> KPI</td>
+</tr>
+<tr>
+<td>1MM 기준 일수 / 월별 기준</td>
+<td>인력 분석의 <code>MM = MD ÷ 1MM 근무일</code>, 월별 1MM 기준선, 이슈 패널의 MM 환산</td>
+</tr>
+<tr>
+<td>진척도 임계값</td>
+<td><ac:link ac:anchor="554-진척률"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[진척률]]></ac:plain-text-link-body></ac:link>의 정상/주의/지연 배지 판정</td>
+</tr>
+<tr>
+<td>가동률 기준(band)</td>
+<td><ac:link><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[인력 현황]]></ac:plain-text-link-body></ac:link> 밴드 색상, 전사 대시보드의 가동률 분포 차트와 종합 개요 신호등(자원 축)</td>
+</tr>
+<tr>
+<td>급여 정책</td>
+<td><ac:link ac:anchor="523-급여-관리"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 급여 관리]]></ac:plain-text-link-body></ac:link>, 비용 탭, 대시보드 총 인건비·비용 소진 위젯</td>
+</tr>
+</tbody></table>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>가동률 1.0 = 100%(기준 가동)입니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">급여-정책을-바꿀-때-일어나는-일</ac:parameter></ac:structured-macro>급여 정책을 바꿀 때 일어나는 일</h2>
+<p>변경 전 확인 창에서 영향 범위를 안내합니다.</p>
+<table>
+<thead>
+<tr>
+<th>방향</th>
+<th>즉시 일어나는 일</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>→ <strong>등급 기반</strong></td>
+<td>개인 연봉이 화면·응답에서 <strong>즉시 숨겨지고</strong>, 인건비가 등급 대표값 기준으로 재계산됩니다. <strong>저장된 값은 삭제되지 않으며</strong> 언제든 되돌릴 수 있습니다</td>
+</tr>
+<tr>
+<td>→ <strong>인원별</strong></td>
+<td>개인 연봉이 다시 표시되고 인건비가 개인 연봉·투입 급여 기준으로 돌아갑니다. 등급 기반으로 운영하는 동안 등록된 인원은 연봉이 비어 있을 수 있습니다</td>
+</tr>
+</tbody></table>
+<p><strong>반영 시점</strong></p>
+<ul>
+<li>프로젝트 비용 분석: 최대 <strong>10분</strong></li>
+<li>전사 대시보드: <strong>다음 집계</strong> 후. 그 전까지 비용 서브탭은 &quot;급여 정책이 변경되어 이전 집계 결과의 인건비는 표시하지 않습니다&quot;로 가려집니다</li>
+</ul>
+<p><strong>주의</strong></p>
+<ul>
+<li><strong>급여 밴드가 없는 등급</strong>의 인원은 인건비가 0으로 계산됩니다. 전환 전 &quot;등급 N개에 급여 밴드가 없습니다&quot; 경고가 표시되며, <ac:link><ri:page ri:content-title="7.5 등급 관리" /><ac:plain-text-link-body><![CDATA[7.5 등급 관리]]></ac:plain-text-link-body></ac:link>에서 채울 수 있습니다.</li>
+<li>프로젝트에 직접 입력한 <strong>프로젝트 비용(예산)</strong> 값은 이 전환으로 바뀌지 않습니다.</li>
+</ul>

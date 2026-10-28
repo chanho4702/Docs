@@ -1,0 +1,118 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reading analysis and reports</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Reading analysis and reports</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/analytics.html">한국어</a></p>
+<blockquote>
+<p>Review draft: the screens and deployed version on the designated staging site have not yet been verified.</p>
+</blockquote>
+<p>Analysis provides different views of work, people, teams, progress, and cost. Before comparing figures, align the period, included issues and people, units, and aggregation timestamp.</p>
+<h2>Required access</h2>
+<p>General analysis uses Report read and project visibility scope. Cost analysis also requires Cost read. Separate tabs such as work history follow their applicable project permissions.</p>
+<h2>Analyze work and people</h2>
+<ol>
+<li>Select a period in people/team analysis. Distinguish it from cumulative work figures and whole-project progress/cost.</li>
+<li>Compare planned effort with actual worklogs in work analysis.</li>
+<li>Review time, MD, MM, and utilization by person or team in people analysis.</li>
+<li>Investigate unusual values using the person&#39;s or issue&#39;s detailed worklogs.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Meaning and example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MD</td>
+<td>Recorded hours ÷ standard hours per day. At 8 hours per day, 16 hours is 2MD</td>
+</tr>
+<tr>
+<td>MM</td>
+<td>MD ÷ the working-day basis for 1MM applied on that screen</td>
+</tr>
+<tr>
+<td>Effective available MD</td>
+<td>Available working capacity in the period; check holiday and leave treatment</td>
+</tr>
+<tr>
+<td>Utilization</td>
+<td>Recorded MD ÷ effective available MD. 8MD ÷ 10MD = 80%</td>
+</tr>
+</tbody></table>
+<p>Project utilization and organization-wide utilization can use different populations and denominators. A team ratio should not be interpreted as a simple average of individual ratios.</p>
+<h2>Three views of progress</h2>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Question it answers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Completion progress</td>
+<td>How much is completed, accounting for planned effort?</td>
+</tr>
+<tr>
+<td>Schedule progress</td>
+<td>How much of the project&#39;s working period has elapsed?</td>
+</tr>
+<tr>
+<td>Effort consumption</td>
+<td>How much time has actually been spent?</td>
+</tr>
+</tbody></table>
+<p>If completion is 40% and schedule progress is 60%, the gap is -20 percentage points. Completion is behind elapsed schedule. Spending 80% of the effort does not mean that 80% of the work is complete.</p>
+<p>Missing estimates or project dates can prevent a meaningful calculation. Expected finish dates and predicted delays are approximations; consider issue deadlines, dependencies, and actual staffing as well.</p>
+<blockquote>
+<p><strong>[Image insertion point · Additional capture required]</strong> Progress — completion, elapsed schedule, effort, and at-risk issues shown together.</p>
+</blockquote>
+<h2>Team and cost analysis</h2>
+<ul>
+<li>Responsible teams describe ownership; contributing teams describe recorded work in the selected period. Different lists do not automatically indicate an error.</li>
+<li>Team analysis may use current membership. Do not treat it as a reconstruction of historical organizational assignments.</li>
+<li>Budget is an entered amount. Labor cost is calculated using salary policy, period, and allocation assumptions. Estimated app costs can differ from confirmed accounting payments.</li>
+<li>If team cost is labeled as covering the whole project, distinguish it from the worklog period selected above.</li>
+</ul>
+<h2>When figures do not match</h2>
+<p>Check the period → project, member, and issue scope → working-hour and holiday settings → planned effort → aggregation timestamp. If the screen reports missing, partial, or stale data, do not present the result as complete.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Analysis views use different date bases. Distinguish views with date controls from whole-project/current-state views.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Work / people / team / progress / cost / history</td>
+<td>Work compares issue plans/cumulative effort; people/team use worklogs in a selected period; progress uses project dates/current issue status; cost uses the project cost basis; history uses app inclusion dates.</td>
+<td>Align periods, populations, units, and aggregation time before comparing tabs.</td>
+</tr>
+<tr>
+<td>People/team quick period / dates</td>
+<td>Default is the first day of this month through today; choose Today/This week/This month/Last week/Last month or custom dates.</td>
+<td>Check actual dates after a quick selection. Do not assume progress/cost has the same date filter.</td>
+</tr>
+<tr>
+<td>MD / MM / capacity / utilization</td>
+<td>MD divides recorded hours by daily hours; MM divides MD by the applicable monthly workday basis. Utilization divides effort by effective capacity.</td>
+<td>Check hours, holidays, personal schedules, and zero denominators. Distinguish unavailable calculation from actual zero.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+<!-- supplemental-guides:start -->
+
+<h2>Detailed guides</h2>
+<ul>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046946">Work analysis</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046982">People analysis</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047018">Project team analysis</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047050">Progress analysis</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047088">Cost analysis</a></li>
+<li><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204047131">Work inclusion and change history</a></li>
+</ul>
+<!-- supplemental-guides:end -->
+</body></html>

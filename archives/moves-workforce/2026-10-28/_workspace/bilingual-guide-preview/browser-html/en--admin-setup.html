@@ -1,0 +1,140 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173506595">한국어</a></p>
+<p>Prepare the app so users can open it, record work, and see the correct data. Your organization&#39;s app-installation administrator handles installation; customer administrators then manage organizational settings in the app.</p>
+<h2>Before setup</h2>
+<ul>
+<li>Check that Moves Workforce is installed on the intended Jira site and has an active license available.</li>
+<li>Check that the initial setup owner can access the app with Jira administrative permissions.</li>
+<li>Check that operational administrators and users have Jira accounts and the necessary project access.</li>
+<li>Distinguish development, test, and production sites and confirm which site you are changing.</li>
+</ul>
+<!-- detailed-walkthrough:start -->
+
+<h2>Practical first-installation setup</h2>
+<p>Start with an installation/setup administrator, one real Jira user, and one accessible Jira issue. Prepare a same-site Confluence page only if you need the document feature. Values below are examples; use your organization&#39;s operating standards.</p>
+<table>
+<thead>
+<tr>
+<th>Order and menu</th>
+<th>Action</th>
+<th>Check before proceeding</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Jira Apps → Moves Workforce → Settings</td>
+<td>Check the installed site and administrator access; prepare operational administrator permissions.</td>
+<td>Settings opens on the intended site.</td>
+</tr>
+<tr>
+<td>2. Settings → General Settings</td>
+<td>Check/set the currency and daily working hours, such as 8 hours, and prepare holidays.</td>
+<td>Currency and hours match organizational standards. Do not assume MM is a separate arbitrary input; review the <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046926">calculation basis</a>.</td>
+</tr>
+<tr>
+<td>3. Roles, levels, skills, project statuses</td>
+<td>Prepare the options used by people and projects.</td>
+<td>Required options appear in user/project forms.</td>
+</tr>
+<tr>
+<td>4. Users and teams</td>
+<td>Register real Jira accounts as app users, then set team membership and leadership.</td>
+<td>User and team relationships appear in the lists. Register a leader as a user first.</td>
+</tr>
+<tr>
+<td>5. Permissions</td>
+<td>Set the necessary read/write permissions and visibility scope for users and leaders.</td>
+<td>Their accounts can open permitted views without seeing out-of-scope data. Distinguish member management from cost access.</td>
+</tr>
+<tr>
+<td>6. Salary/cost basis</td>
+<td>Prepare the salary policy and used level or individual amounts only when operating cost features.</td>
+<td>An authorized cost user can review the basis. Do not invent monetary values just to begin worklogging.</td>
+</tr>
+<tr>
+<td>7. Project Management</td>
+<td><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046601">Create the example project</a>, <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046716">add its member</a>, and <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046828">link the Jira issue</a> separately.</td>
+<td>Both the intended member and issue appear in their respective project lists.</td>
+</tr>
+<tr>
+<td>8. My Work</td>
+<td>Follow <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751497">Quick start</a> with an actual work date to add one worklog.</td>
+<td>The app and Jira show the same issue, date, and duration.</td>
+</tr>
+<tr>
+<td>9. Document Management (optional)</td>
+<td>Follow the project/work-item examples in <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203751465">Document linking</a>.</td>
+<td>The correct target is linked and the original Confluence page opens.</td>
+</tr>
+</tbody></table>
+<p>Before opening the app to the organization, ask ordinary users and team leaders to check access using their own accounts as well as checking the administrator account. For a user without cost access, verify that costs/personal amounts are unavailable; for a leader, verify the allowed team scope. Record the screen path, issue key, time, and error message when something fails, then resolve app permissions or Jira access first. This is a verification checklist, not a claim that your site&#39;s live validation has been completed.</p>
+<!-- detailed-walkthrough:end -->
+
+<h2>Setup sequence</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Configuration</th>
+<th>Completion check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Register operational administrators and assign access</td>
+<td>They can open Settings</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Currency, daily hours, MM calculation review, and holidays</td>
+<td>Values match organizational standards</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Roles, levels, skills, and project statuses</td>
+<td>Choices are available for users and projects</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Users, teams, and leaders</td>
+<td>Register users first, then check membership and leadership</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Read, write, and visibility scope</td>
+<td>Check actual access for users, leaders, and administrators</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Salary policy and amounts (when operating cost features)</td>
+<td>Prepare the individual or level-based cost basis in use</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Sample project, members, and linked issues</td>
+<td>Each relationship is configured separately</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Sample worklog and analysis</td>
+<td>Figures are compared using the same period and scope</td>
+</tr>
+</tbody></table>
+<p>Register a person before selecting them as a team leader. For level-based cost, prepare the amount basis for every level actually used.</p>
+<h2>Check each user role</h2>
+<ol>
+<li>With a regular user, check My Work and their own projects.</li>
+<li>With a team leader, check My Team and the permitted people.</li>
+<li>With a user without cost access, check access to personal amounts and cost views.</li>
+<li>With an administrative account, check that settings can be changed.</li>
+</ol>
+<p>Checking only an administrator&#39;s screen can miss ordinary-user permission problems. Ask users to verify access in their own accounts rather than share passwords.</p>
+<h2>Regular operational checks</h2>
+<ul>
+<li>Latest aggregation and failures in portfolio and resource views</li>
+<li>Subscription status and issue inclusion results</li>
+<li>New-year holidays and working standards</li>
+<li>Leadership, inherited permissions, and allocations after team changes</li>
+<li>New permission items and available features after upgrades</li>
+</ul>
+<p>For support requests, include the site, time, screen path, issue key, attempted action, and error message. Share only the necessary salary or personal information.</p>
+<p>Ask the product operations team to handle deployment, database migration, or recovery commands. Use the <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718796">FAQ</a> for user-facing troubleshooting steps.</p>
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/203718677">Jira and Confluence installation and reviewer walkthrough</a></p>

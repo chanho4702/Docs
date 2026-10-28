@@ -1,0 +1,100 @@
+<p><a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/204046349">Guide home</a> · <a href="https://dmove-addons.atlassian.net/wiki/spaces/MW/pages/173342810">한국어</a></p>
+<h2>Access and purpose</h2>
+<p>Register Workforce people before adding them to teams, projects, or leader assignments. People management read opens the screen and export; write is required for adding, editing, deleting, and bulk uploads. Assigning a permission set cannot grant more access than you hold, except for authorized Jira administrators or Permission management writers.</p>
+<p>Role, level, team, and permission choices can be read in this screen. Creating those choices requires the corresponding reference-data permission. Individual annual salary follows People management access and the individual salary policy; it is hidden under level-band policy.</p>
+<h2>List and filters</h2>
+<p>Review headcounts by permissions, roles, levels, and teams. Search or filter people, then export the filtered list to Excel. Columns show identity, job role, level, team, permission set or team inheritance, salary where permitted, registration time, and actions. Team leaders have a leader badge. Check the displayed salary unit; the documented Korean annual-salary form uses ten-thousand-currency units.</p>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> People management filters, headcount cards, rows, and Add person. Use example names and hide real salaries.</p>
+</blockquote>
+<h2>Add or edit a person</h2>
+<ol>
+<li>Select Add person and search for an existing Jira user by name or email.</li>
+<li>Choose role, level, and permissions.</li>
+<li>Leaving the permission choice unset assigns the default Member set. Select team inheritance explicitly if the person should follow a team permission set.</li>
+<li>Enter an annual salary only where the individual policy and your access permit it.</li>
+<li>Save and verify the registered person.</li>
+</ol>
+<p>A team leader cannot be moved outside the team they lead. Change or clear the leader in Team management first. Deleting a registered leader clears that team&#39;s leader; review deletion carefully because the registration cannot be restored through the ordinary form.</p>
+<h2>Bulk upload</h2>
+<ol>
+<li>Open Bulk upload and download the template.</li>
+<li>Complete the template and save an xlsx file. The documented limit is 5MB, xlsx only.</li>
+<li>Drop or select the file.</li>
+<li>Follow background progress and review Total, Registered, Duplicate, Not found, and Failed counts.</li>
+<li>Open the failed-item list and correct only unsuccessful entries.</li>
+</ol>
+<blockquote>
+<p><strong>[Image insertion point · additional capture needed]</strong> Template download, file area, progress, result summary, and failed-item list. Use a fictitious example workbook.</p>
+</blockquote>
+<p>Duplicates are already registered people. Not found means the Jira account could not be identified using the entered email. Check invitation status, the exact Email value, and account discoverability. A failed result has another cause explained in the failure list.</p>
+<h2>Troubleshooting</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>All rows are Not found</td>
+<td>Check Jira invitation status, exact Email values, and account discoverability</td>
+</tr>
+<tr>
+<td>Salary input is absent</td>
+<td>Check level-band policy and your access</td>
+</tr>
+<tr>
+<td>A permission set cannot be selected</td>
+<td>Ask a Permission management writer if the set exceeds your access</td>
+</tr>
+<tr>
+<td>Changing the team is rejected</td>
+<td>Clear or replace the person&#39;s leader assignment first</td>
+</tr>
+<tr>
+<td>A leader or project candidate is missing</td>
+<td>Register the person here first</td>
+</tr>
+</tbody></table>
+<p>Annual salary is used by the annual-salary allocation type in project cost calculations; it is separate from an explicitly entered project amount.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>People Management registers app users. Jira account creation/invitation and project membership are separate.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Add User / Jira User</td>
+<td>Select an accessible Jira account and set organizational role/level/permission/team. Duplicate registration is rejected.</td>
+<td>Check account/name after saving. For failed lookup, check account identification and Jira search access as well as invitation status.</td>
+</tr>
+<tr>
+<td>Permission / team / salary fields</td>
+<td>Set personal permission/team relationship. Salary fields depend on policy and monetary access. A leader may need to be unassigned as leader before moving teams.</td>
+<td>Do not equate unset, inherit, and default Member. Check effective access with the affected account.</td>
+</tr>
+<tr>
+<td>Download Template / select Excel / Upload</td>
+<td>Enter Jira account emails under the template&#39;s exact Email header. Maximum file size is 5MB. Extra role/level/team/Salary columns are not applied by this uploader.</td>
+<td>Registration is asynchronous. Dialog closure/acceptance is not completion for every row; check job status and the actual user list.</td>
+</tr>
+<tr>
+<td>Bulk Upload Failures</td>
+<td>Inspect failed emails/reasons and separate successful users from failed rows.</td>
+<td>Correct Email header, empty rows, discoverability, and duplicates; retry failed users. Set organizational details through editing afterward.</td>
+</tr>
+<tr>
+<td>Delete User</td>
+<td>Remove app registration and related project assignments, personal schedules, skills, and leadership references. This does not delete the Jira account, original worklogs, or historical project performance.</td>
+<td>Review the irreversible-action notice and assignments. Do not assume this removes Jira access.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+

@@ -1,0 +1,107 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Worklog export</title><style>body{font:16px/1.75 system-ui,Segoe UI,sans-serif;color:#172b4d;margin:32px auto;max-width:980px;padding:0 24px}h1{font-size:32px}h2{margin-top:2em;border-bottom:1px solid #dfe1e6;padding-bottom:8px}a{color:#0052cc}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;border:1px solid #dfe1e6;text-align:left;vertical-align:top}th{background:#f4f5f7}blockquote{margin:20px 0;padding:12px 18px;background:#fff7df;border-left:4px solid #e2b203}blockquote p{margin:0}code{background:#f1f2f4;padding:2px 4px;border-radius:3px}nav{font-size:14px}li{margin:5px 0}@media(max-width:700px){body{padding:0 12px}table{display:block;overflow:auto}}</style></head><body><nav><a href="../index.html">전체 검토 목차 / Review index</a></nav><style>img{max-width:100%;height:auto;border:1px solid #dfe1e6}</style><h1>Worklog export</h1>
+<p><a href="./index.html">Guide home</a> · <a href="../ko/worklog-export.html">한국어</a></p>
+<blockquote>
+<p>Review draft: the screens and deployed version on the designated staging site have not yet been verified.</p>
+</blockquote>
+<p>Search Jira worklogs you can access and download them as an Excel file. This feature is not limited to issues linked to Moves Workforce projects.</p>
+<h2>Required access and scope</h2>
+<p>You need Worklog Export read. Results follow your Jira access and may differ from the app&#39;s project visibility scope. Align issues and authors before comparing totals with app project analysis.</p>
+<h2>Export worklogs</h2>
+<ol>
+<li>In <strong>Worklog Export</strong>, select the period based on worklog start dates.</li>
+<li>Select Jira spaces and authors. Add JQL conditions when needed.</li>
+<li>Search and monitor issue discovery and worklog collection.</li>
+<li>Check the completion message and any partial-failure or limit notices.</li>
+<li>Review the summary and preview, then download the Excel file.</li>
+</ol>
+<p>For example, specify the period and authors when collecting a team&#39;s work for this month. Leaving authors empty can include other accessible authors&#39; records.</p>
+<blockquote>
+<p>Image candidate IMG-16: search conditions, collection result, summary, and download control together.</p>
+</blockquote>
+<h2>Before sharing the file</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cancellation or partial failures</td>
+<td>A downloadable result may still be incomplete</td>
+</tr>
+<tr>
+<td>Search limit notices</td>
+<td>You may need separate searches by period or space</td>
+</tr>
+<tr>
+<td>Preview versus file</td>
+<td>The preview shows a subset; the file includes all successfully collected rows</td>
+</tr>
+<tr>
+<td>Authors and comments</td>
+<td>Check that the contents suit the intended recipients</td>
+</tr>
+<tr>
+<td>Hours per MD</td>
+<td>Align units when comparing reports</td>
+</tr>
+</tbody></table>
+<p><strong>All collected records</strong> does not mean <strong>all records in Jira</strong>. Records omitted because of cancellation, permissions, limits, or failures are not included in the download.</p>
+<p>For slow searches, narrow the period and spaces first. For a missing space, check whether you can open it directly in Jira. For JQL errors, remove additional conditions to isolate the cause.</p>
+<!-- control-reference:start -->
+
+<h2>Buttons, fields, and result checks</h2>
+<p>Worklog Export queries accessible Jira data and downloads a file. Do not assume it has the same population as an app-project member roster.</p>
+<table>
+<thead>
+<tr>
+<th>Control or field</th>
+<th>Function, conditions, and data affected</th>
+<th>Result check and recovery</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Project / author</td>
+<td>Select Jira projects/authors. An empty selection includes accessible projects or all authors under your Jira access.</td>
+<td>Issue assignee and worklog author differ; check the author filter when finding another person&#39;s logged time.</td>
+</tr>
+<tr>
+<td>From / to dates</td>
+<td>Limit worklog dates. Collected entries are filtered again by date/author to form the result.</td>
+<td>Check date order and actual work dates; do not confuse them with issue creation dates.</td>
+</tr>
+<tr>
+<td>Additional JQL</td>
+<td>Enter a Jira condition combined with project/date/author conditions using AND, for example issuetype = Bug.</td>
+<td>For a 400 error, check JQL syntax/field names. Remove extra conditions to diagnose unexpectedly small results.</td>
+</tr>
+<tr>
+<td>Search</td>
+<td>Find matching issues and collect their worklogs. A new search replaces previous results with the new run.</td>
+<td>Review progress and failed issues. Do not treat a partial/limited result as a complete total.</td>
+</tr>
+<tr>
+<td>Cancel</td>
+<td>Stop an ongoing query while retaining collected rows. This does not cancel/delete Jira worklogs.</td>
+<td>Cancelled results/downloads are partial. Adjust conditions and search again for a complete result.</td>
+</tr>
+<tr>
+<td>Reset</td>
+<td>Restore filter inputs to their default state without changing Jira worklogs.</td>
+<td>Run Search for results under new conditions. Distinguish resetting inputs from deleting data.</td>
+</tr>
+<tr>
+<td>Issue count / worklog count / total hours</td>
+<td>Summarize collected data. With failures, cancellation, or truncation, these totals describe the partial result.</td>
+<td>An issue&#39;s lifetime total can differ from a date/author-filtered total.</td>
+</tr>
+<tr>
+<td>Download Excel</td>
+<td>Build a file from currently collected rows. The first download can take a moment to load file-generation code.</td>
+<td>Check period, authors, counts, hours, and the MD basis. For Jira 429, wait briefly and retry with narrower conditions.</td>
+</tr>
+</tbody></table>
+<!-- control-reference:end -->
+
+</body></html>

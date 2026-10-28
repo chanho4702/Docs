@@ -1,0 +1,112 @@
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">접근-권한</ac:parameter></ac:structured-macro>접근 권한</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>필요 권한</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>화면 조회(프로젝트 카드·작업 현황)</td>
+<td>「프로젝트 관리」 읽기 또는 「자원관리」 읽기</td>
+</tr>
+<tr>
+<td><strong>전사 인력 후보 목록</strong></td>
+<td>「자원관리」 읽기</td>
+</tr>
+<tr>
+<td>배정 실행·팀 전체 배정</td>
+<td>「프로젝트 관리」 쓰기 또는 「자원관리」 쓰기 <strong>+ Jira 담당자 지정 권한</strong></td>
+</tr>
+<tr>
+<td>프로젝트 필요 스킬 편집</td>
+<td>「프로젝트 관리」 쓰기</td>
+</tr>
+<tr>
+<td>인력 보유 스킬 편집</td>
+<td>「자원관리」 쓰기</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>조회 전용 자원 관리자(읽기만)는 배정을 실행할 수 없습니다.</strong> 쓰기 권한이 필요합니다.</li>
+<li>배정 대상 후보는 <ac:link><ri:page ri:content-title="7.2 인력 관리" /><ac:plain-text-link-body><![CDATA[7.2 인력 관리]]></ac:plain-text-link-body></ac:link>에 등록된 인원으로 한정됩니다.</li>
+<li>보이는 프로젝트는 조회 범위(소속 프로젝트만 / 내 팀만)로 필터됩니다.</li>
+</ul>
+<hr />
+<p><strong>언제 쓰나</strong> — &quot;이 프로젝트에 누구를 넣을까&quot;를 전사 인력 풀에서 고를 때.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 6-5 프로젝트 배정</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 6-5 프로젝트 배정"><ri:attachment ri:filename="06-resource-assignment.png" /></ac:image><p><em>그림 6-5. 프로젝트 배정 — ① 배정 대상 프로젝트 카드(D-day·미배정/임박/지연) ② 작업 현황(배정 인원) ③ 전사 인력 후보(적합도·신호·배정 버튼) ④ 패널 접기 버튼 ⑤ 팀 전체 배정.</em></p></ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">화면-구성</ac:parameter></ac:structured-macro>화면 구성</h2>
+<table>
+<thead>
+<tr>
+<th>영역</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>배정 대상 프로젝트</strong> (좌)</td>
+<td>프로젝트 카드 — D-day, 미배정·임박·지연 작업 수. 검색·상태 필터, <strong>종료·일정오버 포함</strong> 토글</td>
+</tr>
+<tr>
+<td><strong>작업 현황</strong> (중)</td>
+<td>선택 프로젝트의 열린 작업과 <strong>배정 인원 N명</strong></td>
+</tr>
+<tr>
+<td><strong>전사 인력</strong> (우)</td>
+<td>후보 목록 — 직무/등급 · 스킬 · <strong>적합도</strong> · 신호 · 배정 버튼</td>
+</tr>
+</tbody></table>
+<p>세 패널은 카드 헤더의 접기 버튼과 경계선 드래그로 폭을 조절할 수 있습니다. 프로젝트 카드에는 <code>D-7</code>, <code>D-DAY</code>, <code>D+3 지연</code> 같은 일정 배지와 종료·일정 오버 표시가 붙습니다.</p>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">배정하는-법</ac:parameter></ac:structured-macro>배정하는 법</h2>
+<ol>
+<li>왼쪽에서 프로젝트를 선택합니다. (선택 전에는 &quot;프로젝트를 선택하면 적합도가 표시됩니다&quot;)</li>
+<li>오른쪽 전사 인력 목록에서 <strong>적합도</strong>와 <strong>신호</strong>(부하 상태)를 확인합니다.</li>
+<li><strong>배정</strong>을 눌러 맡길 작업을 고르거나, 배정할 작업이 없으면 <strong>프로젝트 인력으로만</strong> 배정합니다.</li>
+<li>팀 단위로 넣으려면 팀을 선택한 뒤 <strong>팀 전체 배정</strong>을 사용합니다.</li>
+</ol>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>적합도</strong>는 프로젝트 <strong>필요 스킬</strong> 대비 후보의 보유 스킬 일치도입니다. 필요 스킬은 <ac:link ac:anchor="프로젝트-추가--수정"><ri:page ri:content-title="4. 프로젝트 관리" /><ac:plain-text-link-body><![CDATA[프로젝트 추가/수정 창]]></ac:plain-text-link-body></ac:link>의 필요 스킬 영역 또는 이 화면의 <strong>요구 스킬 편집</strong>으로, 보유 스킬은 <ac:link ac:anchor="스킬-편집"><ri:page ri:content-title="6.1 인력 현황" /><ac:plain-text-link-body><![CDATA[6.1 인력 현황]]></ac:plain-text-link-body></ac:link>에서 지정합니다. 둘 중 하나가 비어 있으면 적합도가 의미를 갖지 못합니다.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p>백오피스에 등록되지 않은 Jira 사용자는 배정할 수 없습니다 — 먼저 <ac:link><ri:page ri:content-title="7.2 인력 관리" /><ac:plain-text-link-body><![CDATA[7.2 인력 관리]]></ac:plain-text-link-body></ac:link>에서 등록하세요.</p>
+</ac:rich-text-body></ac:structured-macro>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">팀-전체-배정-규칙</ac:parameter></ac:structured-macro>팀 전체 배정 규칙</h2>
+<ul>
+<li><strong>이미 배정된 인원은 대상에서 제외</strong>됩니다. 실행 전 &quot;{팀} {N}명을 [{프로젝트}]에 배정합니다&quot;로 확인합니다.</li>
+<li>되돌리려면 배정 명단에서 <strong>한 명씩 취소</strong>해야 합니다(일괄 취소 없음).</li>
+<li>배정 취소 시 <strong>이미 할당된 작업의 담당은 해제되지 않습니다</strong> — 해당 건수가 안내됩니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">배정-관계도</ac:parameter></ac:structured-macro>배정 관계도</h2>
+<p>프로젝트–팀–담당자 3레이어 관계를 그래프로 보여줍니다.</p>
+<ac:structured-macro ac:name="expand"><ac:parameter ac:name="title">그림 6-6 배정 관계도</ac:parameter><ac:rich-text-body><ac:image ac:align="center" ac:layout="center" ac:alt="그림 6-6 배정 관계도"><ri:attachment ri:filename="06-resource-allocation-graph.png" /></ac:image><p><em>그림 6-6. 배정 관계도 — ① 프로젝트 노드 ② 팀 노드 ③ 담당자 노드(여러 프로젝트에 선이 이어진 중복 배정 강조) ④ 진행 상태·프로젝트 필터, 종료 프로젝트 포함 토글.</em></p></ac:rich-text-body></ac:structured-macro>
+<ac:structured-macro ac:name="info"><ac:rich-text-body><p><strong>링크 기준은 &quot;프로젝트 인력 배정 명단&quot;이지 워크로그 투입이 아닙니다.</strong> 배정만 되고 아직 착수하지 않은 인원도 표시됩니다. 실제 기여도는 <ac:link ac:anchor="553-팀-분석"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 팀 분석]]></ac:plain-text-link-body></ac:link>이나 <ac:link ac:anchor="552-인력-분석"><ri:page ri:content-title="5.5 분석 및 리포트" /><ac:plain-text-link-body><![CDATA[5.5 인력 분석]]></ac:plain-text-link-body></ac:link>에서 확인하세요.</p>
+</ac:rich-text-body></ac:structured-macro>
+<ul>
+<li>배정 인원이 많으면 상위 N개 프로젝트만 표시되며 <strong>전체 표시</strong>로 펼칠 수 있습니다.</li>
+<li>진행 상태·프로젝트 필터, <strong>종료 프로젝트 포함</strong> 토글을 제공합니다.</li>
+<li>노드를 클릭하면 해당 인력의 상세 드로어가 열립니다.</li>
+<li>같은 관계도를 <ac:link ac:anchor="83-비교-서브탭"><ri:page ri:content-title="8. 통합 대시보드" /><ac:plain-text-link-body><![CDATA[통합 대시보드 &gt; 자원 서브탭]]></ac:plain-text-link-body></ac:link>의 <strong>전사 배정 관계도</strong>에서도 볼 수 있습니다.</li>
+</ul>
+<h2><ac:structured-macro ac:name="anchor"><ac:parameter ac:name="">프로젝트-상세의-작업-배정과-어떻게-다른가</ac:parameter></ac:structured-macro>프로젝트 상세의 작업 배정과 어떻게 다른가</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>이 화면 (6.4)</th>
+<th><ac:link ac:anchor="524-작업-배정"><ri:page ri:content-title="5.2 인력 관리" /><ac:plain-text-link-body><![CDATA[5.2 작업 배정]]></ac:plain-text-link-body></ac:link></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>후보 범위</td>
+<td><strong>전사 인력</strong></td>
+<td>이미 등록된 <strong>프로젝트 인력</strong></td>
+</tr>
+<tr>
+<td>출발점</td>
+<td>여러 프로젝트를 비교하며 사람 고르기</td>
+<td>이 프로젝트 안에서 작업 나누기</td>
+</tr>
+<tr>
+<td>팀 단위 처리</td>
+<td><strong>팀 전체 배정</strong> 지원</td>
+<td>담당 팀에서 팀 전체 추가</td>
+</tr>
+</tbody></table>

@@ -1,0 +1,10 @@
+# ── 시크릿이 노출된 캡처 이미지 ──
+archives/**/img/14-client-id-secret.jpg
+
+# ── Obsidian 개인 UI 상태 ──
+.obsidian/workspace.json
+.obsidian/graph.json
+
+# ── OS ──
+Thumbs.db
+.DS_Store
