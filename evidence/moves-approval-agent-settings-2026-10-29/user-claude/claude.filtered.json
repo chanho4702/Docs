@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    }
+  },
+  "projects": {
+    "C:/CloudJira/moves-approval": {
+      "allowedTools": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": true
+    }
+  }
+}

@@ -1,0 +1,202 @@
+[
+  {
+    "source_archive": "project/AGENTS.md",
+    "view": "views/project__AGENTS.md.md",
+    "sha256": "b28576e65ab8077d74686656e46503ab6e9eaa8dd8935bcbbcc8dd65db651a21"
+  },
+  {
+    "source_archive": "project/CLAUDE.md",
+    "view": "views/project__CLAUDE.md.md",
+    "sha256": "88635a1d5dbb5969ca5f1becc9f851dc7259604671291db98bd0f160e4774942"
+  },
+  {
+    "source_archive": "project/.claude/settings.local.json",
+    "view": "views/project__claude__settings.local.json.md",
+    "sha256": "9c93cfae7e4532e8ee2d0ad061c51dbcb478f6039095b2c32d594087af7f5bba"
+  },
+  {
+    "source_archive": "ancestor/CloudJira/settings.local.json",
+    "view": "views/ancestor__CloudJira__settings.local.json.md",
+    "sha256": "15cd49ce3b28e0a7fee18c3cc8841d41d10dae40a69e8a58890b83db200699e4"
+  },
+  {
+    "source_archive": "user-home/AGENTS.md",
+    "view": "views/user-home__AGENTS.md.md",
+    "sha256": "915242f58b3a9d20f31fe27841e68655547d22cd210a1c2d963c9a3b9e8d5d49"
+  },
+  {
+    "source_archive": "user-codex/AGENTS.md",
+    "view": "views/user-codex__AGENTS.md.md",
+    "sha256": "95124079923298d5b339d37544ede31b74cbeced01eb80a3e64510d2e0c84933"
+  },
+  {
+    "source_archive": "user-codex/hooks.json",
+    "view": "views/user-codex__hooks.json.md",
+    "sha256": "79477f23e1f890557fad3b491acc10fff193ea6a06950d7824f769bf4d14de51"
+  },
+  {
+    "source_archive": "user-codex/rules/default.rules",
+    "view": "views/user-codex__rules__default.rules.md",
+    "sha256": "e89c572b7860f2e7b1da8299a397e18212f4d9ce7c5b08a6fafd934024061739"
+  },
+  {
+    "source_archive": "user-codex/hooks/notify-stop.ps1",
+    "view": "views/user-codex__hooks__notify-stop.ps1.md",
+    "sha256": "c432e5aa36caecdcaf333e243afe4f32bbd55f0bb36c58f91ef3a86cb50f43c7"
+  },
+  {
+    "source_archive": "user-codex/version.json",
+    "view": "views/user-codex__version.json.md",
+    "sha256": "1663dce73c3348986db492554d94d1d66b4d87792316fdfec0bd643e091a4ea8"
+  },
+  {
+    "source_archive": "user-codex/config.filtered.json",
+    "view": "views/user-codex__config.filtered.json.md",
+    "sha256": "52cec469026e4feb3a87c15b7e81cc6ce9b48d4adc70973b2272b01df4fdb85f"
+  },
+  {
+    "source_archive": "user-claude/CLAUDE.md",
+    "view": "views/user-claude__CLAUDE.md.md",
+    "sha256": "952eff30fb3f8cfa74d5043e3937cc9a4e860198e839ca3709b5cd649123b2cf"
+  },
+  {
+    "source_archive": "user-claude/settings.json",
+    "view": "views/user-claude__settings.json.md",
+    "sha256": "a3f9f44f3f1ae7fcfa93ef036536273d610c254058742e8495d7421900c7bce6"
+  },
+  {
+    "source_archive": "user-claude/settings.local.json",
+    "view": "views/user-claude__settings.local.json.md",
+    "sha256": "593d14f6b16d831a12235ff58bcf6093ae7de590741aa0c594afd04440269c52"
+  },
+  {
+    "source_archive": "user-claude/hooks/notify-stop.ps1",
+    "view": "views/user-claude__hooks__notify-stop.ps1.md",
+    "sha256": "53bd308572a05cdcba265abc0f64004d27120ac3f57cac9c5c536973d3575564"
+  },
+  {
+    "source_archive": "user-claude/plugins/installed_plugins.json",
+    "view": "views/user-claude__plugins__installed_plugins.json.md",
+    "sha256": "bd2ba1bf08773a3904cb06e20f0404d33e04bf25e49c1dd2179b57eac45123da"
+  },
+  {
+    "source_archive": "user-claude/plugins/known_marketplaces.json",
+    "view": "views/user-claude__plugins__known_marketplaces.json.md",
+    "sha256": "cb04fabf7dd59ea0f13f5015a91623584264b313e7fd7e05cf32105968b96824"
+  },
+  {
+    "source_archive": "user-claude/claude.filtered.json",
+    "view": "views/user-claude__claude.filtered.json.md",
+    "sha256": "71e11e0d1a2d0f94dd40e26b9bce06c5f1634870beedac24b1e874c3d8a78451"
+  },
+  {
+    "source_archive": "hooks-orca/claude-hook.cmd",
+    "view": "views/hooks-orca__claude-hook.cmd.md",
+    "sha256": "12bb98b8777284697dcd8e1c6709cd4c620892d8c0978c0fc924ce06c41d6dc4"
+  },
+  {
+    "source_archive": "hooks-orca/claude-hook-impl.cmd",
+    "view": "views/hooks-orca__claude-hook-impl.cmd.md",
+    "sha256": "0bcea6efc70ece6f439fa2ded31d2c7e50e53fff3ea0cfe02858babe2fdfce2f"
+  },
+  {
+    "source_archive": "hooks-orca/codex-hook.cmd",
+    "view": "views/hooks-orca__codex-hook.cmd.md",
+    "sha256": "993f696c8b022583a07165a6a5cd38ceff796f1dbe2f2138b7a289d55f1d727f"
+  },
+  {
+    "source_archive": "hooks-orca/claude-statusline.cmd",
+    "view": "views/hooks-orca__claude-statusline.cmd.md",
+    "sha256": "17082f75dd8ff98700299b19315d9101b428e093505b9579144c4f5a19fac202"
+  },
+  {
+    "source_archive": "project-memory/MEMORY.md",
+    "view": "views/project-memory__MEMORY.md.md",
+    "sha256": "f00ed548e7709e0430a7c7c97b4052b4c23bce50d681e8fe21575f088a8f0c89"
+  },
+  {
+    "source_archive": "project-memory/jira-approval-repo.md",
+    "view": "views/project-memory__jira-approval-repo.md.md",
+    "sha256": "0efcabf6e18c8af154805e7d1d2e1dc689f016df927dcc4822cfb31d9510f818"
+  },
+  {
+    "source_archive": "project-memory/marketplace-launch-status.md",
+    "view": "views/project-memory__marketplace-launch-status.md.md",
+    "sha256": "44649ad2f21c2779afa76f224ec4890e7c77f2c03b360d60db8bc53978cb43ea"
+  },
+  {
+    "source_archive": "user-codex/skills/.system/imagegen/SKILL.md",
+    "view": "views/user-codex__skills__system__imagegen__SKILL.md.md",
+    "sha256": "782624525915006b8ebb5199b8d44ab2a584fefb268ed841db7c64887b1e3468"
+  },
+  {
+    "source_archive": "user-codex/skills/.system/openai-docs/SKILL.md",
+    "view": "views/user-codex__skills__system__openai-docs__SKILL.md.md",
+    "sha256": "8ed9b22a0d63aed7630ad616685583f2743860b773f448dc782766778bbfef08"
+  },
+  {
+    "source_archive": "user-codex/skills/.system/review-agent/SKILL.md",
+    "view": "views/user-codex__skills__system__review-agent__SKILL.md.md",
+    "sha256": "fc3ba89d168062ffe93544959cfc1e3b14a7bd8c702f655ff67104eb4d06860c"
+  },
+  {
+    "source_archive": "user-codex/skills/.system/skill-creator/SKILL.md",
+    "view": "views/user-codex__skills__system__skill-creator__SKILL.md.md",
+    "sha256": "11cf251f505a64fe80de4792148e9f7d7584fc1bb46abcddd818214a776849ab"
+  },
+  {
+    "source_archive": "user-codex/skills/.system/skill-installer/SKILL.md",
+    "view": "views/user-codex__skills__system__skill-installer__SKILL.md.md",
+    "sha256": "3d157ec57a1c0793c8fbc5afc2ba17ee389576e52e130646c3295ba25e23d244"
+  },
+  {
+    "source_archive": "plugins/codex/harness-marketplace/harness/2.1.0/.claude-plugin/marketplace.json",
+    "view": "views/plugins__codex__harness-marketplace__harness__2.1.0__claude-plugin__marketplace.json.md",
+    "sha256": "3c58e32993b1e0594cc10b66d1be819f98453b4e044e2d5601760c064df303ca"
+  },
+  {
+    "source_archive": "plugins/codex/harness-marketplace/harness/2.1.0/.claude-plugin/plugin.json",
+    "view": "views/plugins__codex__harness-marketplace__harness__2.1.0__claude-plugin__plugin.json.md",
+    "sha256": "25fdf0fbd1b6b8bafe39495947334f8dd71a41276699aca8744eba3f2c40305e"
+  },
+  {
+    "source_archive": "plugins/codex/openai-bundled/codex-app-tools/26.1023.50603/.mcp.json",
+    "view": "views/plugins__codex__openai-bundled__codex-app-tools__26.1023.50603__.mcp.json.md",
+    "sha256": "9255ad8886776135413f94975b7ee3af5ad05b45a864967f7827ab926647eaa8"
+  },
+  {
+    "source_archive": "plugins/codex/openai-bundled/unified-computer-use/26.1023.50603/.mcp.json",
+    "view": "views/plugins__codex__openai-bundled__unified-computer-use__26.1023.50603__.mcp.json.md",
+    "sha256": "c8f96500c58191c4d8e10215ccccd81d4ad5679cbde0d2cbbcddb113000f3bde"
+  },
+  {
+    "source_archive": "plugins/codex/openai-curated-remote/notion/3.0.2/.mcp.json",
+    "view": "views/plugins__codex__openai-curated-remote__notion__3.0.2__.mcp.json.md",
+    "sha256": "9bc204f6ccd995bba1903dc7d62cc914c8129344aceca73d9e87ea34d5ab5baf"
+  },
+  {
+    "source_archive": "plugins/claude/harness-marketplace/harness/1.2.0/.claude-plugin/marketplace.json",
+    "view": "views/plugins__claude__harness-marketplace__harness__1.2.0__claude-plugin__marketplace.json.md",
+    "sha256": "f133ffe04a5cc666f0a6bf768d93a6f6e4619d2fbb7da10bdedeb4009ff41d38"
+  },
+  {
+    "source_archive": "plugins/claude/harness-marketplace/harness/1.2.0/.claude-plugin/plugin.json",
+    "view": "views/plugins__claude__harness-marketplace__harness__1.2.0__claude-plugin__plugin.json.md",
+    "sha256": "76efcf9c18600b7cf42823c8064930e75d450906eb19148f3c820586864468a2"
+  },
+  {
+    "source_archive": "plugins/claude/thedotmack/claude-mem-cowork/0.1.3/config.json",
+    "view": "views/plugins__claude__thedotmack__claude-mem-cowork__0.1.3__config.json.md",
+    "sha256": "c84baa81cb2139c1397a5b55db4db4f0c555c19c19282c37cda0d4e0beaa1486"
+  },
+  {
+    "source_archive": "plugins/claude/thedotmack/claude-mem-cowork/0.1.3/.claude-plugin/plugin.json",
+    "view": "views/plugins__claude__thedotmack__claude-mem-cowork__0.1.3__claude-plugin__plugin.json.md",
+    "sha256": "4c18ea16213ca952dd9634a169220072698d98f27ce980a1b81d90fb5d77a3ee"
+  },
+  {
+    "source_archive": "plugins/claude/thedotmack/claude-mem-cowork/0.1.3/hooks/hooks.json",
+    "view": "views/plugins__claude__thedotmack__claude-mem-cowork__0.1.3__hooks__hooks.json.md",
+    "sha256": "76dda29831f3e85e1b92511ab7cc06041baab731555055c643c3f0c15832ab33"
+  }
+]

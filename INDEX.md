@@ -1,11 +1,15 @@
 # Codex Experiences
 
+- [[projects/codex-experiences-portable-git-2026-10-29]] Vault를 Git으로 다른 PC에 복제하고 Moves Workforce 하네스를 설치하는 절차, Windows 장경로·로컬 설정·자격 증명 제외 기준.
+
+- [[projects/moves-approval-harness-claude-codex-settings-2026-10-29]] Confluence 승인 앱의 프로젝트·사용자 Claude/Codex 설정, 하네스 버전, Orca hook, 스킬 정의 113개·자료 1,524개와 프로젝트 메모리를 보관. 활성 설정 유지·인증 정보 제외.
+
 - [[projects/moves-approval-confluence-deep-audit-2026-10-28]] Confluence 승인 앱 심층 분석: 기존 340개 테스트와 별개로 18건 진단, 문제·설계 공백 18개 보고. 자료 5개를 Vault evidence로 이관하고 `audit/deep-review-2026-10-28` 브랜치 생성·전환(제품 수정 없음).
 
 - [[projects/moves-approval-jira-full-audit-2026-10-28]] Jira 승인 앱 전수 분석: 기존 4,042건 통과와 별개로 경합·부분 실패·만료·범위·validator·명부 등 12건 재현, 수정 없이 우선순위 보고서 작성.
 
 - [[projects/moveseye-apm-deep-diagnostics-design-2026-10-28]] APM 심층 진단 설계 v0.2와 독자 검수: instance 문맥·Hikari 획득 계측 MVP, 직접/정황·누락/0·수집 예산·단계별 검증. 구현 없음.
-- [[projects/moveseye-apm-deep-diagnostics-implementation-2026-10-28]] APM 심층 진단 R0~M1b를 전용 worktree·독립 런타임에 구현, BE216·FE120·확장34·E2E44 검증과 실제 Agent/Collector 결함 보정. master 미병합.
+- [[projects/moveseye-apm-deep-diagnostics-implementation-2026-10-28]] APM 심층 진단 R0~M1b를 전용 worktree·독립 런타임에 구현·검증하고 BE·FE·OTel master에 통합. 미배포·운영 성능 게이트 미완료.
 
 - [[projects/moves-approval-lifecycle-settings-ux-2026-10-26]] Moves Approval 고정 상태도를 실제 정책 탐색기로 전환하고 요청 수명 주기와 문서 재검토를 혼동하지 않은 설정 UI 개편.
 - [[projects/moves-approval-lifecycle-settings-ux-2026-10-26]] 새 설정 화면에 맞춘 한·영 공식 관리자 문서 게시, 이전 캡처 제거와 staging 화면 재확인 과제.
@@ -309,3 +313,5 @@
 - [[projects/moveseye-apm-functional-assessment-2026-10-28]] 심층 진단 방향 후속: 기존 지표와 trace 연결, 대기·JFR·로그·DBM 증거 확장. 공유 정본에 제안 기록(구현 없음).
 
 - [[archives/moves-workforce/2026-10-28/00-INDEX|Moves Workforce documents (2026-10-28)]] Full project documentation and attachments archive; originals preserved.
+
+- [[projects/moves-workforce-harness/2026-10-29/00-INDEX|Moves Workforce 하네스·스킬]] 에이전트·스킬·설정 전체 사본, SHA-256 검증.

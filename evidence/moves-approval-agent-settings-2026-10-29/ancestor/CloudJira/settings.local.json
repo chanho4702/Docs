@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(foreach \\($p in @\\('moves-workforce\\\\static\\\\ui', 'contents-user-management-jira\\\\static\\\\scheduler'\\)\\) { $pkg = Get-Content \"C:\\\\CloudJira\\\\$p\\\\package.json\" -Raw | ConvertFrom-Json; Write-Output \"=== $p ===\"; Write-Output \"react: $\\($pkg.dependencies.react\\) / react-dom: $\\($pkg.dependencies.'react-dom'\\) / avatar: $\\($pkg.dependencies.'@atlaskit/avatar'\\)\"; $lock = \"C:\\\\CloudJira\\\\$p\\\\package-lock.json\"; if \\(Test-Path $lock\\) { $l = Get-Content $lock -Raw | ConvertFrom-Json; Write-Output \"lock react: $\\($l.packages.'node_modules/react'.version\\) / lock react-dom: $\\($l.packages.'node_modules/react-dom'.version\\)\" } else { Write-Output \"no lockfile\" } })"
+    ]
+  }
+}

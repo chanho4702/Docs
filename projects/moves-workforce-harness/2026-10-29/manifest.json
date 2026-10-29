@@ -1,0 +1,122 @@
+[
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\AGENTS.md",
+    "file": "AGENTS.md",
+    "sha256": "0a525c8ccbfa7eea219e45e39ebea09d3c574953f8a1cb963b1449f529868a89"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\CLAUDE.md",
+    "file": "CLAUDE.md",
+    "sha256": "2b1f8bfd3236a3ab0c1ea00d6a307192fd40b88816b3cefe5968d6bf6b555dad"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\feature-design\\SKILL.md",
+    "file": "agents/skills/feature-design/SKILL.md",
+    "sha256": "2d0958508730e2975d76785fa0c50bafd07bb1a3bebcd75bc980b3eb3e1f6536"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\feature-harness\\SKILL.md",
+    "file": "agents/skills/feature-harness/SKILL.md",
+    "sha256": "e525b06bcdddcc92bf1e66147adee8a2880fa4e54ea504ac3b8efc65189b3e17"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\feature-harness\\references\\scenarios.md",
+    "file": "agents/skills/feature-harness/references/scenarios.md",
+    "sha256": "0dfe6558c40d24d91b2f5ff2fc4d8ec00cd39c6842aeb40d8754abc2def84b2e"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\feature-harness\\references\\verification.md",
+    "file": "agents/skills/feature-harness/references/verification.md",
+    "sha256": "5a59cd3336d95b217b6301cc14204b3e50f2d58bb49cb02816bb2e9b2b7fa452"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\feature-harness\\scripts\\validate_harness.py",
+    "file": "agents/skills/feature-harness/scripts/validate_harness.py",
+    "sha256": "b1a09d76ebab7ec1ab55073cb8928f6c18641846f96da8e6c105e11893484236"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\forge-backend-dev\\SKILL.md",
+    "file": "agents/skills/forge-backend-dev/SKILL.md",
+    "sha256": "ab8f9666276f2ae641076c3068bec87b7c31bdec8939e6c10f56cbd397f73c79"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\forge-frontend-dev\\SKILL.md",
+    "file": "agents/skills/forge-frontend-dev/SKILL.md",
+    "sha256": "9e66099c37547f9f4317d6d452e05db5de347787c270e6b8f4ab4bae6c818e27"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.agents\\skills\\integration-verify\\SKILL.md",
+    "file": "agents/skills/integration-verify/SKILL.md",
+    "sha256": "64822ba4389fd9776d8eab14f1cf3ae2ffc48c97e6a9dbe058d8db670cb7d0f4"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\settings.local.json",
+    "file": "claude/settings.local.json",
+    "sha256": "b06db0669b7b57ed0143e850aa724c035268284ac7db9de2daa08b42452e1a5c"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\agents\\backend-engineer.md",
+    "file": "claude/agents/backend-engineer.md",
+    "sha256": "944075ebfaf13b25b92b3eeb4f9f1da609dc56cd8717c5ec0ceda69e9c943ad9"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\agents\\feature-architect.md",
+    "file": "claude/agents/feature-architect.md",
+    "sha256": "ee15a57a1fb64ba125c53c78aafaeca775d4bd391fa6a379c8fc2ee091820090"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\agents\\frontend-engineer.md",
+    "file": "claude/agents/frontend-engineer.md",
+    "sha256": "c9b2f4f2cff57a0712788bd494560a1987a2f78d1f2081faa117ebe273313e00"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\agents\\integration-verifier.md",
+    "file": "claude/agents/integration-verifier.md",
+    "sha256": "3c1fb6534205497c4c65a92031640745f49dfb542f0b0b333c5a1e44dd0f54be"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\skills\\feature-design\\SKILL.md",
+    "file": "claude/skills/feature-design/SKILL.md",
+    "sha256": "52c0e3a7f5bae8f1adf4272b03866452bddd7a210fae65f3e1a397ff16e49105"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\skills\\feature-harness\\SKILL.md",
+    "file": "claude/skills/feature-harness/SKILL.md",
+    "sha256": "c4ecf28dedaa102335affcb2be3a89123a9955d755c03bc6187120196bbc9108"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\skills\\forge-backend-dev\\SKILL.md",
+    "file": "claude/skills/forge-backend-dev/SKILL.md",
+    "sha256": "6f2b91a4bee03b8c79a65f73b493a05642cf848639e7a2b0518476c5f33ad121"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\skills\\forge-frontend-dev\\SKILL.md",
+    "file": "claude/skills/forge-frontend-dev/SKILL.md",
+    "sha256": "b1c3af20400d76ff3a9f4cd95ac2acf339aabb6b42917f52fafd1e0d6f973f9f"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.claude\\skills\\integration-verify\\SKILL.md",
+    "file": "claude/skills/integration-verify/SKILL.md",
+    "sha256": "151d127aa1383866b6edd67ca5fb063dbe74352aec59ef32fe0fb885405d0aa6"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.codex\\agents\\backend-engineer.toml",
+    "file": "codex/agents/backend-engineer.toml",
+    "sha256": "e69e1845a6341dc1181919e4f2a8ef418f78fe3b4087dff92425d2121a125d62"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.codex\\agents\\feature-architect.toml",
+    "file": "codex/agents/feature-architect.toml",
+    "sha256": "9e5b8f7319647fa6a148811fa1be68b3a722d85a8538dd7d134ac2306ec43952"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.codex\\agents\\frontend-engineer.toml",
+    "file": "codex/agents/frontend-engineer.toml",
+    "sha256": "20c2832921a4bb5acafa28ad2acd016707149a174e41c22f50aa4bd299add0b8"
+  },
+  {
+    "source": "C:\\CloudJira\\moves-workforce\\.codex\\agents\\integration-verifier.toml",
+    "file": "codex/agents/integration-verifier.toml",
+    "sha256": "f5ad42e5994b6a07bb9642dc7259a6311d2016f653d22217d88a8ccba08f7fb5"
+  }
+]

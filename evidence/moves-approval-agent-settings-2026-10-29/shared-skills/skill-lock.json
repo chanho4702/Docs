@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "skills": {
+    "orchestration": {
+      "source": "stablyai/orca",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/stablyai/orca.git",
+      "skillPath": "skills/orchestration/SKILL.md",
+      "skillFolderHash": "ebd864919dd8cab9d7049fc624c9afeebce2767c",
+      "installedAt": "2026-07-31T03:58:30.675Z",
+      "updatedAt": "2026-09-15T06:53:44.982Z"
+    },
+    "archify": {
+      "source": "tt-a1i/archify",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tt-a1i/archify.git",
+      "skillPath": "archify/SKILL.md",
+      "skillFolderHash": "cff24583cbdc3b7c7313580f3fa0636ade2e5279",
+      "installedAt": "2026-09-02T02:15:09.086Z",
+      "updatedAt": "2026-09-02T02:15:09.086Z"
+    }
+  },
+  "dismissed": {}
+}
