@@ -26,3 +26,6 @@ auth.json
 *.bak
 *.swp
 .vscode/
+
+# ── 플러그인 런타임 잠금 파일(pid) ──
+.in_use/
