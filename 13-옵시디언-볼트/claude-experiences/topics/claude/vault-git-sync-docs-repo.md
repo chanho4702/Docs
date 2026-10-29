@@ -33,4 +33,8 @@
 4. **Bash 병렬 호출의 cwd 경합**: 서로 다른 폴더에 `cd`하는 두 Bash 호출을 동시에 보내면 한쪽이 다른 폴더에서 실행될 수 있다. 리포를 바꾸는 명령은 `git -C <경로>`로 고정한다.
 5. `gh` CLI 미설치. 리포 조회·생성은 저장된 PAT(scope: repo, gist, workflow)로 `curl api.github.com` 직접 호출.
 
+## 재동기화 기록
+
+- **2026-10-29**: `agent-config/`(Claude·Codex 설정 이식 사본, 506개)과 Codex `exports/moves-approval-portable-2026-10-29`(1,338개, 74MB — GIF·mp4·zip 포함) 추가 푸시. 함정 3·4를 그대로 다시 밟았다 — 노트에는 적혀 있었지만 Claude 자동 메모리에는 없어서. 이제 메모리에도 옮겨 적었다. 플러그인 pid 잠금 파일 `.in_use/`를 Codex `.gitignore`에 추가.
+
 관련: [[INDEX]] · 다른 PC로 옮긴 기록 [[_pc-migration-2026-10-28]]
