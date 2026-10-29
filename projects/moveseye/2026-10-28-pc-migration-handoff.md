@@ -78,6 +78,7 @@ git clone $M\moveseye-docs-all.bundle moveseye-docs   # 그다음 worktree.zip �
 | Codex 로그인 | `~/.codex` | 새 PC에서 다시 로그인 |
 | Claude 메모리 | `archives/claude-memory.zip` → `~/.claude/projects/<경로 슬러그>/memory/` | 작업 루트가 `C:\solutions`이면 슬러그 `C--solutions` |
 | 이 Vault 자체 | `C:\Users\DMOVE\claude-experiences` | git이 아니다 — 폴더째 복사 |
+| Claude·Codex 설정(하네스·메모리·훅·허용목록) | Vault `agent-config/` (10-29 추가) | `agent-config/README.md` 복원 표대로 같은 경로에 되돌린다. 비밀값은 뺐고 절대경로 `C:/Users/DMOVE`는 치환 |
 | 도커 DB 데이터 | `dmove-postgres-test`(5433, dev 데이터·Zabbix 설정)·`dbm-test-pg16`(5436)·`dmove-postgres-dev74`(5434) | **덤프 안 함**. 필요하면 `pg_dump` 후 새 PC에서 복원(Flyway 시드만으로도 기동은 된다) |
 | `_tools` 큰 파일 | `C:\solutions\_tools`(379MB: otel·headless-shot 등) | 기동 스크립트 2개만 넣었다 |
 | OTel 에이전트 | `C:\ProgramData\moveseye\otel\` | IDE로 APM 붙여 띄울 때 |

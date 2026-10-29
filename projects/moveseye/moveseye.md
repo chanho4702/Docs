@@ -125,7 +125,7 @@ status: active
 - **2026-10-19** — **DB 모니터링(PREMIUM) 설계 v1.1**(시장 조사 → 코덱스 독립 제안 교차 → 검수 11건 반영, BE 내장 JDBC 폴러, Q1~Q21 대기) [[2026-10-19-db-monitoring-design]] · Vault 10월 싱크 + **기능 지도 MOC(영역 노드 15개)** [[무브스아이-기능-지도]]
 
 - **2026-10-28** — APM 심층 진단 설계 v0.2: trace 진단 탭·instance 문맥·Hikari 획득 구간 MVP, JFR/로그/DBM 후속 경계, 독립 문서 검수. 제품 구현 없음. → [[2026-10-28-apm-deep-diagnostics-design]]
-- **2026-10-28** — APM 심층 진단 R0~M1b 격리 구현·실제 Agent/Collector/브라우저 검증. BE109+IT107·FE120·확장34·E2E44 통과, master 미병합. → [[2026-10-28-apm-deep-diagnostics-implementation]]
+- **2026-10-28** — APM 심층 진단 R0~M1b 격리 구현·실제 Agent/Collector/브라우저 검증 후 BE·FE·OTel master 통합. FE 전역 help-key 회귀 보정 포함, 미배포. → [[2026-10-28-apm-deep-diagnostics-implementation]]
 - **2026-10-27** — **ZM-175 Zabbix Web 시나리오 관리**(유료 `WEB_SCENARIO`, APM 합성 감시와 코드 분리·단계 id 보존·이력에 비밀값 없음) 푸시(BE `21358d8`·FE `edf667c`·발급기 `44bb3e0`) + 요청 걸림 장부 IT 간헐 실패 수정 `c1ebf58`. → [[2026-10-27-zm175-zabbix-web-scenario]]
 - **2026-10-28** — 미뤄 둔 실측 소진: ZM-155 커스텀 지표·콜드 아카이브 S6 통과, ZM-114 워크트리 정리 + 실측 중 발견한 **감사 행위자 이름 null**(APM 9곳) `ActorResolver`로 수정·ArchUnit 규칙 `df1b39f`(미푸시). → [[2026-10-28-runtime-verification-and-actor-fix]]
 - **2026-10-28** — **Zabbix 프록시·프록시 그룹 관리**(기본 기능) BE·FE 구현, BE 검수 2차 승인·FE 1차 반영(2차 대기)·런타임 실측 대기, 미커밋. 🔴 PSK는 결과 TLS에서 빠지면 Zabbix가 지운다(내 첫 해석 오류를 Codex가 정정). → [[2026-10-28-zabbix-proxy-management]]
