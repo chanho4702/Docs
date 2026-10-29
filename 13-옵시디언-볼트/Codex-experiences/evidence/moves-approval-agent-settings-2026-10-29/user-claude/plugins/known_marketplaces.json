@@ -1,0 +1,26 @@
+{
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "C:\\Users\\DMOVE\\.claude\\plugins\\marketplaces\\claude-plugins-official",
+    "lastUpdated": "2026-10-29T02:24:47.430Z"
+  },
+  "harness-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "revfactory/harness"
+    },
+    "installLocation": "C:\\Users\\DMOVE\\.claude\\plugins\\marketplaces\\harness-marketplace",
+    "lastUpdated": "2026-05-29T00:56:41.854Z"
+  },
+  "thedotmack": {
+    "source": {
+      "source": "github",
+      "repo": "thedotmack/claude-mem"
+    },
+    "installLocation": "C:\\Users\\DMOVE\\.claude\\plugins\\marketplaces\\thedotmack",
+    "lastUpdated": "2026-10-01T00:11:26.011Z"
+  }
+}

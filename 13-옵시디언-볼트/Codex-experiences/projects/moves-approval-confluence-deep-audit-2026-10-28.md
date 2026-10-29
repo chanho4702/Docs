@@ -289,3 +289,7 @@ npx jest --runInBand --testRegex audit.repro.js --runTestsByPath _workspace/deep
 - npm audit --omit=dev: backend 0건, frontend 0건. 원문은 backend-audit.json / frontend-audit.json.
 - 최종 git status --porcelain: 출력 없음. 추적되는 제품 소스 변경 없음.
 - 저장한 산출물은 Git 제외 경로 _workspace/deep-audit-2026-10-28 및 사용자 지정 경험 Vault에 있다.
+
+## 관련 설정 보관
+
+- [[moves-approval-harness-claude-codex-settings-2026-10-29]] — 2026-10-29 프로젝트·사용자 하네스, Claude·Codex 설정, 스킬·hook·메모리 스냅샷. 활성 파일은 그대로 유지.

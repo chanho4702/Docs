@@ -1,0 +1,2 @@
+- [Jira 판 리포](jira-approval-repo.md) — Jira 승인 앱은 별도 리포 moves-approval-jira, 하네스로 개발, 배포 전 app id 등록 필요
+- [Marketplace 출시 상태](marketplace-launch-status.md) — 2026-10-20 감사 완료·dev 배포, 남은 일(push·prod·리스팅·QA·가이드 재게시)과 확정된 미결제 정책

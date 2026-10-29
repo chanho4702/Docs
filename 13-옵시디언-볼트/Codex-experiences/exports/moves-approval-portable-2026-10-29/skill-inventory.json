@@ -1,0 +1,284 @@
+[
+  {
+    "host": "shared",
+    "name": "archify",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\archify",
+    "target": ".agents/skills/archify"
+  },
+  {
+    "host": "shared",
+    "name": "frontend-design",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\frontend-design",
+    "target": ".agents/skills/frontend-design"
+  },
+  {
+    "host": "shared",
+    "name": "fullstack-developer",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\fullstack-developer",
+    "target": ".agents/skills/fullstack-developer"
+  },
+  {
+    "host": "shared",
+    "name": "harness",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\harness",
+    "target": ".agents/skills/harness"
+  },
+  {
+    "host": "shared",
+    "name": "mcp-builder",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\mcp-builder",
+    "target": ".agents/skills/mcp-builder"
+  },
+  {
+    "host": "shared",
+    "name": "orchestration",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\orchestration",
+    "target": ".agents/skills/orchestration"
+  },
+  {
+    "host": "shared",
+    "name": "algorithmic-art",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\algorithmic-art",
+    "target": ".agents/skills/algorithmic-art"
+  },
+  {
+    "host": "shared",
+    "name": "brand-guidelines",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\brand-guidelines",
+    "target": ".agents/skills/brand-guidelines"
+  },
+  {
+    "host": "shared",
+    "name": "canvas-design",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\canvas-design",
+    "target": ".agents/skills/canvas-design"
+  },
+  {
+    "host": "shared",
+    "name": "claude-api",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\claude-api",
+    "target": ".agents/skills/claude-api"
+  },
+  {
+    "host": "shared",
+    "name": "doc-coauthoring",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\doc-coauthoring",
+    "target": ".agents/skills/doc-coauthoring"
+  },
+  {
+    "host": "shared",
+    "name": "docx",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\docx",
+    "target": ".agents/skills/docx"
+  },
+  {
+    "host": "shared",
+    "name": "anthropic-frontend-design",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\frontend-design",
+    "target": ".agents/skills/anthropic-frontend-design"
+  },
+  {
+    "host": "shared",
+    "name": "internal-comms",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\internal-comms",
+    "target": ".agents/skills/internal-comms"
+  },
+  {
+    "host": "shared",
+    "name": "anthropic-mcp-builder",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\mcp-builder",
+    "target": ".agents/skills/anthropic-mcp-builder"
+  },
+  {
+    "host": "shared",
+    "name": "pdf",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\pdf",
+    "target": ".agents/skills/pdf"
+  },
+  {
+    "host": "shared",
+    "name": "pptx",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\pptx",
+    "target": ".agents/skills/pptx"
+  },
+  {
+    "host": "shared",
+    "name": "skill-creator",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\skill-creator",
+    "target": ".agents/skills/skill-creator"
+  },
+  {
+    "host": "shared",
+    "name": "slack-gif-creator",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\slack-gif-creator",
+    "target": ".agents/skills/slack-gif-creator"
+  },
+  {
+    "host": "shared",
+    "name": "theme-factory",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\theme-factory",
+    "target": ".agents/skills/theme-factory"
+  },
+  {
+    "host": "shared",
+    "name": "web-artifacts-builder",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\web-artifacts-builder",
+    "target": ".agents/skills/web-artifacts-builder"
+  },
+  {
+    "host": "shared",
+    "name": "webapp-testing",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\webapp-testing",
+    "target": ".agents/skills/webapp-testing"
+  },
+  {
+    "host": "shared",
+    "name": "xlsx",
+    "original": "C:\\Users\\DMOVE\\.agents\\skills\\skills-main\\skills-main\\skills\\xlsx",
+    "target": ".agents/skills/xlsx"
+  },
+  {
+    "host": "claude",
+    "name": "archify",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\archify",
+    "target": ".claude/skills/archify"
+  },
+  {
+    "host": "claude",
+    "name": "frontend-design",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\frontend-design",
+    "target": ".claude/skills/frontend-design"
+  },
+  {
+    "host": "claude",
+    "name": "fullstack-developer",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\fullstack-developer",
+    "target": ".claude/skills/fullstack-developer"
+  },
+  {
+    "host": "claude",
+    "name": "harness",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\harness",
+    "target": ".claude/skills/harness"
+  },
+  {
+    "host": "claude",
+    "name": "mcp-builder",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\mcp-builder",
+    "target": ".claude/skills/mcp-builder"
+  },
+  {
+    "host": "claude",
+    "name": "orchestration",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\orchestration",
+    "target": ".claude/skills/orchestration"
+  },
+  {
+    "host": "claude",
+    "name": "algorithmic-art",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\algorithmic-art",
+    "target": ".claude/skills/algorithmic-art"
+  },
+  {
+    "host": "claude",
+    "name": "brand-guidelines",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\brand-guidelines",
+    "target": ".claude/skills/brand-guidelines"
+  },
+  {
+    "host": "claude",
+    "name": "canvas-design",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\canvas-design",
+    "target": ".claude/skills/canvas-design"
+  },
+  {
+    "host": "claude",
+    "name": "claude-api",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\claude-api",
+    "target": ".claude/skills/claude-api"
+  },
+  {
+    "host": "claude",
+    "name": "doc-coauthoring",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\doc-coauthoring",
+    "target": ".claude/skills/doc-coauthoring"
+  },
+  {
+    "host": "claude",
+    "name": "docx",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\docx",
+    "target": ".claude/skills/docx"
+  },
+  {
+    "host": "claude",
+    "name": "anthropic-frontend-design",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\frontend-design",
+    "target": ".claude/skills/anthropic-frontend-design"
+  },
+  {
+    "host": "claude",
+    "name": "internal-comms",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\internal-comms",
+    "target": ".claude/skills/internal-comms"
+  },
+  {
+    "host": "claude",
+    "name": "anthropic-mcp-builder",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\mcp-builder",
+    "target": ".claude/skills/anthropic-mcp-builder"
+  },
+  {
+    "host": "claude",
+    "name": "pdf",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\pdf",
+    "target": ".claude/skills/pdf"
+  },
+  {
+    "host": "claude",
+    "name": "pptx",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\pptx",
+    "target": ".claude/skills/pptx"
+  },
+  {
+    "host": "claude",
+    "name": "skill-creator",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\skill-creator",
+    "target": ".claude/skills/skill-creator"
+  },
+  {
+    "host": "claude",
+    "name": "slack-gif-creator",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\slack-gif-creator",
+    "target": ".claude/skills/slack-gif-creator"
+  },
+  {
+    "host": "claude",
+    "name": "theme-factory",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\theme-factory",
+    "target": ".claude/skills/theme-factory"
+  },
+  {
+    "host": "claude",
+    "name": "web-artifacts-builder",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\web-artifacts-builder",
+    "target": ".claude/skills/web-artifacts-builder"
+  },
+  {
+    "host": "claude",
+    "name": "webapp-testing",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\webapp-testing",
+    "target": ".claude/skills/webapp-testing"
+  },
+  {
+    "host": "claude",
+    "name": "xlsx",
+    "original": "C:\\Users\\DMOVE\\.claude\\skills\\skills-main\\skills-main\\skills\\xlsx",
+    "target": ".claude/skills/xlsx"
+  },
+  {
+    "host": "Codex",
+    "name": "figma-generate-design",
+    "original": "C:\\Users\\DMOVE\\.codex\\skills\\figma-generate-design",
+    "target": ".agents/skills/figma-generate-design"
+  }
+]

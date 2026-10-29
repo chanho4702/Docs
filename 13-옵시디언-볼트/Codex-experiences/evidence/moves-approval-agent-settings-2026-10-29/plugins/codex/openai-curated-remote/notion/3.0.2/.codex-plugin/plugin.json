@@ -1,0 +1,30 @@
+{
+  "author": {
+    "name": "Notion"
+  },
+  "description": "Connect Notion to your agent so it works from the same context as your team and other agents. Search your workspace, create and update pages, and save your work back to Notion.\n\n- **Find answers in your workspace:** Search your pages and databases for answers grounded in your team’s knowledge.\n- **Turn chats into docs:** Save research, plans, specs, and notes as pages your team can review and edit.\n- **Keep projects moving:** Create tasks, update statuses, and add notes to your databases directly from chat.\n- **Share one brain across agents:** Store memories and skills in Notion so your agents follow your preferences and ways of working.",
+  "interface": {
+    "capabilities": [],
+    "category": "Productivity",
+    "developerName": "Notion",
+    "displayName": "Notion",
+    "longDescription": "Connect Notion to your agent so it works from the same context as your team and other agents. Search your workspace, create and update pages, and save your work back to Notion.\n\n- **Find answers in your workspace:** Search your pages and databases for answers grounded in your team’s knowledge.\n- **Turn chats into docs:** Save research, plans, specs, and notes as pages your team can review and edit.\n- **Keep projects moving:** Create tasks, update statuses, and add notes to your databases directly from chat.\n- **Share one brain across agents:** Store memories and skills in Notion so your agents follow your preferences and ways of working.",
+    "privacyPolicyURL": "https://privacycenter.notion.so/policies",
+    "shortDescription": "Create docs, tasks, databases",
+    "supportURL": "https://www.notion.com/help",
+    "termsOfServiceURL": "https://notion.notion.site/Terms-and-Privacy-28ffdd083dc3473e9c2da6ec011b58ac",
+    "websiteURL": "https://mcp.notion.com/mcp",
+    "logo": "./assets/notion.png",
+    "composerIcon": "./assets/notion.png"
+  },
+  "name": "notion",
+  "version": "3.0.2",
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills/",
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/setup/SKILL.md"
+    }
+  },
+  "apps": "./.app.json"
+}

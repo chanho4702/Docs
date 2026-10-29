@@ -8,3 +8,24 @@ archives/**/img/14-client-id-secret.jpg
 # ── OS ──
 Thumbs.db
 .DS_Store
+
+# ── 자격 증명·로컬 환경 파일 ──
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+wf-token.json
+credentials.json
+auth.json
+
+# ── 에디터·임시 파일 ──
+*.tmp
+*.bak
+*.swp
+.vscode/
+
+# ── 플러그인 런타임 잠금 파일(pid) ──
+.in_use/
