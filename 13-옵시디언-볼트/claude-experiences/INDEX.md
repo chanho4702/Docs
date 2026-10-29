@@ -152,7 +152,7 @@
   - [[2026-10-20-apm-custom-metric-review]] — 커스텀 카운터 0·소수 표시 누락 재현, 자리 만료 후 과거 종류 재해석·단위 미보존 코드 검수. 관측 여부/측정량 및 자리/의미 메타데이터 수명 분리.
   - [[2026-10-21-moveseye-wide-review]] — 전반 검수 8건: 중복 요청 영구 pending·설정 거짓 성공 재현, 외부 토큰 전체 삭제·비용 페이지 합계·락 재획득·감사·OTP·배포 SHA. 기존 Jest 42개 통과와 검증 공백 구분.
   - [[2026-10-28-apm-deep-diagnostics-design]] — APM 심층 진단 설계 v0.2: instance 문맥+Hikari 획득 계측 MVP, 증거·상태·API·예산·검증 게이트와 독립 독자 검수. 구현 없음.
-  - [[2026-10-28-apm-deep-diagnostics-implementation]] — APM 심층 진단 R0~M1b 격리 구현: BE109+IT107, FE120, 확장34, E2E44 통과. Agent classloader·Collector ID 마스킹·metric 의미 손실 실증, master 미병합.
+  - [[2026-10-28-apm-deep-diagnostics-implementation]] — APM 심층 진단 R0~M1b 구현·master 통합: BE `5dfb755`, FE `060ad4d`+`de2178e`, OTel `cfef319`. 격리 E2E44와 통합 후 회귀 검증, 미배포.
   - [[2026-10-27-zm175-zabbix-web-scenario]] — Zabbix Web 시나리오 관리(유료 WEB_SCENARIO) 푸시: APM 합성 감시와 코드 분리, 단계 id 보존, 이력에 비밀값 없음, 대상 필터 하나. 교훈: 비제어 공용 필터는 URL만 지워선 화면이 안 지워진다
   - [[2026-10-28-runtime-verification-and-actor-fix]] — ZM-155·콜드 아카이브 S6 실측 통과 + 감사 행위자 이름 null(APM 9곳) ActorResolver·ArchUnit 수정. 교훈: "N개 파일"은 같은 타입·같은 메서드를 센 뒤에
   - [[2026-10-28-zabbix-proxy-management]] — 🚧 Zabbix 프록시·프록시 그룹(기본 기능) 구현·검수 중. 🔴 PSK는 결과 TLS에서 빠지면 Zabbix가 지움·모드만 바꾸면 암호화가 조용히 꺼짐. 교훈: 실측 한 번을 규칙으로 일반화하지 말 것
@@ -256,6 +256,7 @@
 - [[code-graph-tools-trial]] — 🧪 코드 그래프 도구 시험(미도입): Graft는 Windows 설치 불가(VS Build Tools), codebase-memory-mcp는 코덱스 샌드박스 ACL로 거부(env 2개로 우회)·모듈 간 IMPLEMENTS 누락·기본 제외가 실제 패키지를 빼먹음, OpenMontage는 AGPL·`PYTHONUTF8=1`
 
 - [[vault-git-sync-docs-repo]] — 📦 옵시디언 Vault 2개를 GitHub `chanho4702/Docs`의 `13-옵시디언-볼트/`에 git subtree로 푸시(2026-10-28). 걸러낸 것: Python 런타임·이력서·토큰·전자책. 함정: URL 오타(chanho470≠chanho4702)·longpaths·autocrlf 가짜 변경·Bash 병렬 cd 경합
+- [[agent-config/README]] — 🧳 Claude Code·Codex 설정 사본(2026-10-29): 하네스 에이전트·스킬·settings·훅·메모리 136개·Codex config/rules를 `agent-config/`에 — 새 PC는 README 복원 표대로 같은 경로에. 비밀값 제거, Sync 때문에 점 폴더명 금지. **같은 날 CloudJira 추가**: `claude/moves-approval-jira/`(하네스 에이전트 4·스킬 5·CLAUDE/AGENTS.md·autopilot·메모리 16)·`claude/moves-workforce/`(에이전트 4·스킬 5·settings·메모리 82) — Codex 는 리포 `AGENTS.md`+trust 항목으로만 걸려 있음. 재내보내기 스크립트가 claude/·codex/ 만 다시 만들고 마스킹까지 자동
 
 ### 🟨 Frontend (`topics/frontend/`)
 - [[jest-mock-identity-render-loop]] — 🔥 jest mock이 매 렌더 새 `URLSearchParams`를 주면 effect deps가 바뀌어 **동기 무한 렌더 루프**(timeout도 못 끊음) + 중단된 jest 고아 워커 26개·4.2GB가 다음 실행을 멈춘다. mock은 참조 캐시, 멈추면 `-t`로 이분 탐색·워커 정리

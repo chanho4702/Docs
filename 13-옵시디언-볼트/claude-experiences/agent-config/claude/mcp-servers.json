@@ -1,0 +1,16 @@
+{
+  "global": {
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    }
+  },
+  "projects": {
+    "C:/solutions/moveseye-ai": {
+      "moveseye": {
+        "type": "http",
+        "url": "http://localhost:3100/mcp"
+      }
+    }
+  }
+}

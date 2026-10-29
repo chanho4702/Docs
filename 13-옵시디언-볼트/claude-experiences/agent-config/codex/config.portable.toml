@@ -1,0 +1,95 @@
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+approvals_reviewer = "user"
+
+[projects.'C:\']
+trust_level = "trusted"
+
+[projects.'\\?\C:\CloudJira\moves-rms']
+trust_level = "trusted"
+
+[projects.'C:\Users\DMOVE']
+trust_level = "trusted"
+
+[projects.'c:\users\dmove\documents\codex\2026-07-31\detail-the-gpt-5-2-codex']
+trust_level = "trusted"
+
+[projects.'c:\users\dmove\claude-experiences']
+trust_level = "trusted"
+
+[projects.'c:\users\dmove\documents\codex\2026-08-27\new-chat']
+trust_level = "trusted"
+
+[windows]
+sandbox = "elevated"
+
+[marketplaces.harness-marketplace]
+last_updated = "2026-07-31T04:46:21Z"
+last_revision = "cceac68ea1d0ad198ef4b7b906cd238375836387"
+source_type = "git"
+source = "https://github.com/revfactory/harness.git"
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."harness@harness-marketplace"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[features]
+js_repl = false
+
+[desktop]
+conversationDetailMode = "STEPS_COMMANDS"
+ambient-suggestions-enabled = true
+followUpQueueMode = "queue"
+
+[projects."C:\\CloudJira\\moves-workforce"]
+trust_level = "trusted"
+
+[projects.'c:\users\dmove\onedrive - 디무브\문서\chatgpt\new project']
+trust_level = "trusted"
+
+[projects."C:\\CloudJira\\moves-approval"]
+trust_level = "trusted"
+
+[projects."C:\\Onpremise\\confluence-approval-dc"]
+trust_level = "trusted"
+
+[projects."C:\\solutions"]
+trust_level = "trusted"
+
+[projects."C:\\solutions\\moveseye-otel-extension"]
+trust_level = "trusted"
+
+[projects."C:\\CloudJira\\moves-approval-jira"]
+trust_level = "trusted"

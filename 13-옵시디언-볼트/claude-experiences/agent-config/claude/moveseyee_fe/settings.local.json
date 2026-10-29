@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npx tsc)",
+      "PowerShell(git checkout *)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('types:',d.get\\('types'\\)\\); print\\('exports:',json.dumps\\(d.get\\('exports'\\),indent=1\\)[:600]\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(echo \"---exit:$?---\")",
+      "Bash(node -e \"console.log\\('installed @types/react:', require\\('@types/react/package.json'\\).version\\)\")",
+      "Bash(echo \"---done\\($?\\)---\")",
+      "Bash(npx eslint *)",
+      "Bash(npm remove *)",
+      "Bash(yarn build *)",
+      "Bash(sort -t'\\(' -k2 -rn)",
+      "Bash(mkdir -p src/pages/zabbix-management)",
+      "Bash(git mv *)",
+      "PowerShell(npm run *)",
+      "Bash(npm run *)"
+    ]
+  }
+}
