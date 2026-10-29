@@ -255,7 +255,7 @@
 - [[bash-heredoc-and-inline-quoting]] — 🔥 Bash 툴 heredoc이 백슬래시(`\n`·`\b`)를 접어 JSON·정규식을 깨뜨리고, 큰따옴표 인라인 스크립트 안의 백틱은 **명령으로 실행**된다(0바이트 파일 생성 사고). 역슬래시·백틱·한글 섞인 편집은 Write/Edit 또는 파일 스크립트
 - [[code-graph-tools-trial]] — 🧪 코드 그래프 도구 시험(미도입): Graft는 Windows 설치 불가(VS Build Tools), codebase-memory-mcp는 코덱스 샌드박스 ACL로 거부(env 2개로 우회)·모듈 간 IMPLEMENTS 누락·기본 제외가 실제 패키지를 빼먹음, OpenMontage는 AGPL·`PYTHONUTF8=1`
 
-- [[vault-git-sync-docs-repo]] — 📦 옵시디언 Vault 2개를 GitHub `chanho4702/Docs`의 `13-옵시디언-볼트/`에 git subtree로 푸시(2026-10-28). 걸러낸 것: Python 런타임·이력서·토큰·전자책. 함정: URL 오타(chanho470≠chanho4702)·longpaths·autocrlf 가짜 변경·Bash 병렬 cd 경합
+- [[vault-git-sync-docs-repo]] — 📦 옵시디언 Vault 2개를 GitHub `chanho4702/Docs`의 `13-옵시디언-볼트/`에 git subtree로 푸시(2026-10-28). 걸러낸 것: Python 런타임·이력서·토큰·전자책. 함정: URL 오타(chanho470≠chanho4702)·longpaths·autocrlf 가짜 변경·Bash 병렬 cd 경합 (2026-10-29 재동기화: agent-config·exports 추가, 같은 함정 재발 → 메모리에 이관)
 - [[agent-config/README]] — 🧳 Claude Code·Codex 설정 사본(2026-10-29): 하네스 에이전트·스킬·settings·훅·메모리 136개·Codex config/rules를 `agent-config/`에 — 새 PC는 README 복원 표대로 같은 경로에. 비밀값 제거, Sync 때문에 점 폴더명 금지. **같은 날 CloudJira 추가**: `claude/moves-approval-jira/`(하네스 에이전트 4·스킬 5·CLAUDE/AGENTS.md·autopilot·메모리 16)·`claude/moves-workforce/`(에이전트 4·스킬 5·settings·메모리 82) — Codex 는 리포 `AGENTS.md`+trust 항목으로만 걸려 있음. 재내보내기 스크립트가 claude/·codex/ 만 다시 만들고 마스킹까지 자동
 
 ### 🟨 Frontend (`topics/frontend/`)
