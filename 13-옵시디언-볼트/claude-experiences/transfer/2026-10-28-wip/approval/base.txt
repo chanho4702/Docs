@@ -1,0 +1,96 @@
+repo: C:\CloudJira\moves-approval-jira
+branch: master
+HEAD: d9e5351f43d1f02adfb1ae5f901a37202efe5c89
+
+# git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   AGENTS.md
+	modified:   CLAUDE.md
+	modified:   locales/en/inbox.json
+	modified:   locales/kr/inbox.json
+	modified:   package-lock.json
+	modified:   src/domain/approval/transitions.js
+	modified:   src/domain/transition/__test__/judge.test.js
+	modified:   src/domain/transition/judge.js
+	modified:   src/rdb/schema/TableReadiness.js
+	modified:   src/resolver/approval/ApprovalRepository.js
+	modified:   src/resolver/approval/ApprovalService.js
+	modified:   src/resolver/approval/__test__/ApprovalRepository.test.js
+	modified:   src/resolver/channel/ChannelServer.js
+	modified:   src/resolver/channel/__test__/ChannelServer.test.js
+	modified:   src/resolver/flow/FlowRepository.js
+	modified:   src/resolver/flow/FlowService.js
+	modified:   src/resolver/flow/__test__/FlowReview.test.js
+	modified:   src/resolver/flow/__test__/FlowService.test.js
+	modified:   src/resolver/inbox/InboxRepository.js
+	modified:   src/resolver/inbox/InboxService.js
+	modified:   src/resolver/notification/NotificationService.js
+	modified:   src/resolver/transition/TransitionValidatorService.js
+	modified:   src/resolver/worklogControl/WorklogControlRepository.js
+	modified:   src/resolver/worklogControl/WorklogControlState.js
+	modified:   src/resolver/worklogControl/WorklogControlWorker.js
+	modified:   src/resolver/worklogControl/__test__/WorklogControlWorker.test.js
+	modified:   static/ui/package-lock.json
+	modified:   static/ui/src/features/inbox/InboxPage.jsx
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	src/domain/approval/__test__/expireContentChanged.test.js
+	src/rdb/schema/__test__/TableReadinessState.test.js
+	src/resolver/approval/__test__/ApprovalServiceDecisionRetry.test.js
+	src/resolver/approval/__test__/EngineConsistency.test.js
+	src/resolver/approval/__test__/bulkApproveBudget.test.js
+	src/resolver/approval/__test__/groupMembersComplete.test.js
+	src/resolver/flow/__test__/FlowProjectsReplace.test.js
+	src/resolver/inbox/__test__/InboxListIncomplete.test.js
+	src/resolver/notification/__test__/stepOpenedNotification.test.js
+	src/resolver/transition/__test__/TransitionValidatorUnavailable.test.js
+	src/resolver/worklogControl/__test__/WorklogControlConfirmScan.test.js
+	src/resolver/worklogControl/__test__/WorklogControlStateWrite.test.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+# git status --short
+ M AGENTS.md
+ M CLAUDE.md
+ M locales/en/inbox.json
+ M locales/kr/inbox.json
+ M package-lock.json
+ M src/domain/approval/transitions.js
+ M src/domain/transition/__test__/judge.test.js
+ M src/domain/transition/judge.js
+ M src/rdb/schema/TableReadiness.js
+ M src/resolver/approval/ApprovalRepository.js
+ M src/resolver/approval/ApprovalService.js
+ M src/resolver/approval/__test__/ApprovalRepository.test.js
+ M src/resolver/channel/ChannelServer.js
+ M src/resolver/channel/__test__/ChannelServer.test.js
+ M src/resolver/flow/FlowRepository.js
+ M src/resolver/flow/FlowService.js
+ M src/resolver/flow/__test__/FlowReview.test.js
+ M src/resolver/flow/__test__/FlowService.test.js
+ M src/resolver/inbox/InboxRepository.js
+ M src/resolver/inbox/InboxService.js
+ M src/resolver/notification/NotificationService.js
+ M src/resolver/transition/TransitionValidatorService.js
+ M src/resolver/worklogControl/WorklogControlRepository.js
+ M src/resolver/worklogControl/WorklogControlState.js
+ M src/resolver/worklogControl/WorklogControlWorker.js
+ M src/resolver/worklogControl/__test__/WorklogControlWorker.test.js
+ M static/ui/package-lock.json
+ M static/ui/src/features/inbox/InboxPage.jsx
+?? src/domain/approval/__test__/expireContentChanged.test.js
+?? src/rdb/schema/__test__/TableReadinessState.test.js
+?? src/resolver/approval/__test__/ApprovalServiceDecisionRetry.test.js
+?? src/resolver/approval/__test__/EngineConsistency.test.js
+?? src/resolver/approval/__test__/bulkApproveBudget.test.js
+?? src/resolver/approval/__test__/groupMembersComplete.test.js
+?? src/resolver/flow/__test__/FlowProjectsReplace.test.js
+?? src/resolver/inbox/__test__/InboxListIncomplete.test.js
+?? src/resolver/notification/__test__/stepOpenedNotification.test.js
+?? src/resolver/transition/__test__/TransitionValidatorUnavailable.test.js
+?? src/resolver/worklogControl/__test__/WorklogControlConfirmScan.test.js
+?? src/resolver/worklogControl/__test__/WorklogControlStateWrite.test.js
